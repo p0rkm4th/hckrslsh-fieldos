@@ -45,7 +45,7 @@ they are not part of the passing evidence above.
 | Offline maps | PASS | Firefox map screenshot and PMTiles tile response |
 | Reboot persistence | PASS | Two boot-ID changes and service checks after both |
 | Hardware adaptation | PARTIAL | CPU inference verified; simulated profiles pass; GPU physical validation absent |
-| Interactive customer ISO | FAIL / BLOCKED | `/mnt/shared/fieldos-e2e/customer-iso-20261102-2149/`; disk setup never enables Next; no installation attempted |
+| Interactive customer ISO | FAIL / BLOCKED | R2: `/mnt/shared/fieldos-e2e/customer-iso-r2-20261102/report.md`; disk setup never enables Next; no installation attempted |
 | Network-enabled exposure | NOT TESTED | Loopback bindings reviewed; separate routed guest check pending |
 | Redistribution and attribution | PENDING | Inventory exists; per-artifact release review incomplete |
 | Public Git history | REVIEWED | No tracked historical blobs over 1 MB or binary payload paths found; generated secret code reviewed |
@@ -55,13 +55,16 @@ they are not part of the passing evidence above.
 
 1. Keep `make test-e2e` passing with the final source and retain the report,
    logs, and screenshot.
-2. Repair the customer ISO installer handoff. The ISO currently boots into the
-   interactive installer, detects the disposable target disk, but the Next
-   button stays disabled. The installer log records
-   `Mirror/apply_autoinstall_config/waiting: FAIL`. No disk was modified; only
-   `guest.qcow2` is attached as a target. Retest the rebuilt customer ISO in a
-   fresh disposable VM and complete the full interactive install before any
-   customer-readiness recommendation.
+2. Diagnose the customer ISO installer handoff. Two interactive runs reached
+   Disk setup, where Next stayed disabled. R2 explicitly sets
+   `source.id: ubuntu-desktop` (also used by the passing automated test), but
+   the behavior persists. Subiquity successfully probes storage; its log's
+   transient `Mirror/apply_autoinstall_config/waiting: FAIL` is followed by a
+   successful mirror configuration and a debug message that the check was
+   skipped because no network was available, so it is not established as the
+   cause. Neither run reached installation; R2's live `vda` block stats showed
+   zero bytes written. Continue from the saved R2 VM/logs and complete installation in a fresh disposable VM
+   before any customer-readiness recommendation.
 4. Test with a virtual network interface attached. Confirm public-facing
    addresses cannot reach the loopback-only management/service ports and that
    remote access remains disabled.
@@ -81,10 +84,21 @@ physical-installation validation.
 
 ## Interactive ISO attempt — 2026-11-02
 
-The customer-facing ISO candidate is `/mnt/shared/fieldos-releases/fieldos-test.iso`
-(SHA-256 `6fbde7367baf9ce1fa6d861dc72f634f2ff9d7728f63a39c91924fdb480f9021`).
-It has BIOS and UEFI boot entries and retains interactive identity and storage
-configuration. The separate disposable VM test failed at Disk setup: Subiquity
-detected `/dev/vda`, but Next remained disabled and the live installer log
-recorded `Mirror/apply_autoinstall_config/waiting: FAIL`. No OS was installed.
-Full evidence is in `/mnt/shared/fieldos-e2e/customer-iso-20261102-2149/report.md`.
+The original customer-facing ISO candidate is
+`/mnt/shared/fieldos-releases/fieldos-test.iso` (SHA-256
+`6fbde7367baf9ce1fa6d861dc72f634f2ff9d7728f63a39c91924fdb480f9021`). It has
+BIOS and UEFI boot entries and retains interactive identity and storage
+configuration. The first disposable VM test stopped at Disk setup with Next
+disabled. Its mirror wait failure was transient: the live installer logged
+that the check was skipped offline and then logged mirror configuration
+success. No OS was installed. Full evidence is in
+`/mnt/shared/fieldos-e2e/customer-iso-20261102-2149/report.md`.
+
+The first attempt and the R2 diagnostic run have separate evidence directories:
+`/mnt/shared/fieldos-e2e/customer-iso-20261102-2149/` and
+`/mnt/shared/fieldos-e2e/customer-iso-r2-20261102/`. R2's ISO is
+`/mnt/shared/fieldos-releases/fieldos-test-customer-r2.iso` (SHA-256
+`2155fb0b6b498d053bdad98147e0d846ef84b87fb9107d1727e7f1c6b9b3d0f7`). It
+includes explicit `source.id: ubuntu-desktop`; this did not resolve the
+blocked Disk setup step. The primary candidate and R2 remain local and are not
+published.
