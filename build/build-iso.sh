@@ -89,10 +89,15 @@ entry = '''\nmenuentry "Install Hckrslsh FieldOS (interactive)" {
 '''
 if 'Install Hckrslsh FieldOS (interactive)' in source:
     raise SystemExit('source GRUB menu already contains FieldOS entry')
+source = source.replace(
+    'set timeout=30',
+    'set timeout=30\nset default="Install Hckrslsh FieldOS (interactive)"',
+    1,
+)
 Path(sys.argv[2]).write_text(source + entry)
 if os.environ.get('FIELDOS_TEST_AUTOBOOT') == '1':
     test_source = Path(sys.argv[2]).read_text()
-    test_source = test_source.replace('set timeout=30', 'set timeout=0\nset default="Install Hckrslsh FieldOS (interactive)"', 1)
+    test_source = test_source.replace('set timeout=30', 'set timeout=0', 1)
     test_source = test_source.replace('autoinstall ds=nocloud\\;s=/cdrom/nocloud/ --- quiet splash',
                                       'autoinstall ds=nocloud\\;s=/cdrom/nocloud/ console=ttyS0,115200n8 --- quiet')
     test_source = 'serial --unit=0 --speed=115200\nterminal_input console serial\nterminal_output console serial\n' + test_source

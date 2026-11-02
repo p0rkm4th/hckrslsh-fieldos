@@ -8,9 +8,13 @@ The customer facing ISO is built with:
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 ```
 
-It uses Ubuntu's interactive identity and storage setup. Select the intended
-target disk in the installer and review its erase confirmation carefully. Use
-the supported Ubuntu encryption option if full disk encryption is required.
+The GRUB menu defaults to `Install Hckrslsh FieldOS (interactive)` after its
+countdown. This entry invokes the local FieldOS NoCloud configuration while
+leaving identity and storage interactive. The ordinary `Try or Install Ubuntu`
+entry is the upstream Ubuntu live installer and does not run FieldOS
+provisioning. In the FieldOS installer, select the intended target disk and
+review its erase confirmation carefully. Use the supported Ubuntu encryption
+option if full disk encryption is required.
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
