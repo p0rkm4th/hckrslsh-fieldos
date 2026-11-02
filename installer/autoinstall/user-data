@@ -4,6 +4,8 @@ autoinstall:
   interactive-sections:
     - identity
     - storage
+  source:
+    id: ubuntu-desktop
   storage:
     layout:
       name: lvm
