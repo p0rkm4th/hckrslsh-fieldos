@@ -20,9 +20,11 @@ for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zs
   xorriso -osirrox on -indev "$ISO" -extract "$path" "$dest" >/dev/null 2>&1
   [[ -s "$dest" ]] || { echo "Missing required ISO path: $path" >&2; exit 1; }
 done
-grep -q 'Install Hckrslsh FieldOS (interactive)' <( \
-  xorriso -osirrox on -indev "$ISO" -extract /boot/grub/grub.cfg "$TMP/grub.cfg" >/dev/null 2>&1; cat "$TMP/grub.cfg") \
+xorriso -osirrox on -indev "$ISO" -extract /boot/grub/grub.cfg "$TMP/grub.cfg" >/dev/null 2>&1
+grep -q 'Install Hckrslsh FieldOS (interactive)' "$TMP/grub.cfg" \
   || { echo "FieldOS installer boot entry is missing" >&2; exit 1; }
+grep -q 'set default="Install Hckrslsh FieldOS (interactive)"' "$TMP/grub.cfg" \
+  || { echo "FieldOS interactive installer is not the default boot selection" >&2; exit 1; }
 
 echo "ISO structure, BIOS/UEFI boot records, installer config, and payload presence verified."
 sha256sum "$ISO"
