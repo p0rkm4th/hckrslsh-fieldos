@@ -27,16 +27,17 @@ reports a local diagnostic rather than blocking login.
 `hardware/detect/` reports CPU, memory, graphics, storage, battery, and GPS
 capabilities as JSON. `hardware/select_profile.py` applies a declarative model
 manifest, reserving memory for the OS and selecting the highest-priority model
-that fits known RAM/VRAM and backend constraints. Missing or uncertain GPU
-information falls back to CPU. A short load/inference check can fall back to
-the next compatible bundled model. Embeddings are selected independently.
+that fits known RAM/VRAM and backend constraints. GPU acceleration is only
+eligible when a backend is explicitly marked runtime-validated; first boot
+currently validates CPU only. Missing or uncertain GPU information falls back
+to CPU. Embeddings are selected independently. Runtime benchmarking and
+automatic fallback after a model load failure remain unimplemented.
 
 ## Offline payload boundary
 
-The ISO build assembles a manifest-verified payload: package dependencies,
-pinned N.O.M.A.D. and service images, Ollama runtime, at least one legally
-redistributable chat model and embedding model, a small ZIM, and a small map
-fixture. The test image contains one small tier; the full edition uses an
+The ISO build assembles a checksum-verified payload: package dependencies,
+pinned N.O.M.A.D. and service images, Ollama runtime, a redistributable chat
+model and embedding model, a small ZIM, and a low-zoom global map. The test image contains one small tier; the full edition uses an
 installer plus an automatically recognized offline payload partition when
 the resulting image exceeds practical USB-media limits. Large outputs and
 download caches stay out of Git.
