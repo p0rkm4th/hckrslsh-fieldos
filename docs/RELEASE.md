@@ -78,3 +78,13 @@ they are not part of the passing evidence above.
 The expanded/full ISO must wait until the test and customer-facing release
 gates pass. Do not describe simulated hardware tests or an ISO build as
 physical-installation validation.
+
+## Interactive ISO attempt — 2026-11-02
+
+The customer-facing ISO candidate is `/mnt/shared/fieldos-releases/fieldos-test.iso`
+(SHA-256 `6fbde7367baf9ce1fa6d861dc72f634f2ff9d7728f63a39c91924fdb480f9021`).
+It has BIOS and UEFI boot entries and retains interactive identity and storage
+configuration. The separate disposable VM test failed at Disk setup: Subiquity
+detected `/dev/vda`, but Next remained disabled and the live installer log
+recorded `Mirror/apply_autoinstall_config/waiting: FAIL`. No OS was installed.
+Full evidence is in `/mnt/shared/fieldos-e2e/customer-iso-20261102-2149/report.md`.
