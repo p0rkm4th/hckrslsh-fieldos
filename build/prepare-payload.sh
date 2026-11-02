@@ -2,11 +2,13 @@
 set -Eeuo pipefail
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
-OUT="$ROOT/build/payload"
+OUT=${FIELDOS_PAYLOAD_ROOT:-"$ROOT/build/payload"}
 ARCHIVE="$OUT/offline-payload.tar.zst"
 [[ ! -e "$ARCHIVE" ]] || { echo "Payload already exists; move it aside explicitly before rebuilding: $ARCHIVE" >&2; exit 1; }
 mkdir -p "$OUT"
-STAGE=$(mktemp -d "$OUT/stage.XXXXXX")
+WORK_ROOT=${FIELDOS_WORK_ROOT:-"$ROOT/build"}
+mkdir -p "$WORK_ROOT"
+STAGE=$(mktemp -d "$WORK_ROOT/work-payload.XXXXXX")
 trap 'docker rm -f "$MODEL_CONTAINER" >/dev/null 2>&1 || true; rm -rf "$STAGE"' EXIT
 MODEL_CONTAINER="fieldos-model-seed-$$"
 
@@ -87,8 +89,52 @@ docker run --rm --network bridge \
 docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
   --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/world.pmtiles \
   > "$STAGE/manifests/world-map-metadata.txt"
+REGION_FILENAME=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["file"])' "$ROOT/payload/manifests/maps.json")
+REGION_BBOX=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["bbox"])' "$ROOT/payload/manifests/maps.json")
+REGION_MINZOOM=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["minzoom"])' "$ROOT/payload/manifests/maps.json")
+REGION_MAXZOOM=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["maxzoom"])' "$ROOT/payload/manifests/maps.json")
+echo "Extracting the bundled sample region $REGION_FILENAME from the local world map..."
+docker run --rm --network none \
+  -v "$STAGE/content/maps/pmtiles:/maps" \
+  --entrypoint /usr/local/bin/pmtiles \
+  "$NOMAD_REF@$NOMAD_DIGEST" \
+  extract /maps/world.pmtiles "/maps/$REGION_FILENAME" \
+  --bbox="$REGION_BBOX" --minzoom="$REGION_MINZOOM" --maxzoom="$REGION_MAXZOOM"
+docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
+  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show "/maps/$REGION_FILENAME" \
+  > "$STAGE/manifests/$(basename "$REGION_FILENAME" .pmtiles)-metadata.txt"
+python3 - "$STAGE/content/maps/pmtiles/world.pmtiles" \
+  "$STAGE/content/maps/pmtiles/$REGION_FILENAME" \
+  "$ROOT/payload/manifests/maps.json" > "$STAGE/manifests/map-payload.json" <<'PY'
+import hashlib
+import json
+import pathlib
+import sys
+
+world, region, manifest = map(pathlib.Path, sys.argv[1:])
+record = json.loads(manifest.read_text())
+item = record["regions"][0]
+def file_record(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return {"file": path.name, "bytes": path.stat().st_size, "sha256": digest.hexdigest()}
+
+print(json.dumps({
+    "schema_version": 1,
+    "source_archive": file_record(world),
+    "region": {
+        **item,
+        "source": world.name,
+        "derived_file": file_record(region),
+        "license": record["license"],
+        "attribution": record["attribution"],
+    },
+}, indent=2))
+PY
 cat > "$STAGE/licenses/protomaps-odbl-attribution.txt" <<'EOF'
-The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json. Preserve this attribution in the map interface and any redistributed derivative.
+The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. The fieldos-sample-us.pmtiles file is an extract from that bundled world archive. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json and manifests/map-payload.json. Preserve this attribution in the map interface and any redistributed derivative.
 EOF
 
 echo "Fetching model license texts and pinned Ollama model payloads..."
@@ -151,6 +197,7 @@ cleared for public redistribution until that review is complete.
 EOF
 
 cp "$ROOT/payload/manifests/images.json" "$STAGE/manifests/"
+cp "$ROOT/payload/manifests/maps.json" "$STAGE/manifests/"
 cp "$ROOT/payload/manifests/ubuntu-26.04.1-desktop-amd64.json" "$STAGE/manifests/"
 printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c","requested_packages":["docker.io","docker-compose-v2","curl","zstd","qemu-guest-agent"],"install_recommends":false}\n' \
   > "$STAGE/manifests/package-request.json"

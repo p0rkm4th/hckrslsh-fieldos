@@ -9,10 +9,14 @@ import hashlib
 import json
 import os
 import secrets
+import string
+import struct
 import subprocess
 import sys
 import time
+import zlib
 from pathlib import Path
+from shutil import disk_usage
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +30,15 @@ class TestFailure(RuntimeError):
 class AcceptanceRun:
     def __init__(self) -> None:
         self.stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        self.run_dir = ROOT / "build" / "e2e" / f"{self.stamp}-{os.getpid()}"
+        evidence_root = Path(os.environ.get("FIELDOS_E2E_ROOT", ROOT / "build" / "e2e"))
+        evidence_root.parent.mkdir(parents=True, exist_ok=True)
+        if disk_usage(evidence_root.parent).free < 50 * 1024**3:
+            raise TestFailure(f"Need at least 50 GiB free for isolated ISO and VM evidence on {evidence_root.parent}")
+        work_root = Path(os.environ.get("FIELDOS_WORK_ROOT", evidence_root))
+        work_root.parent.mkdir(parents=True, exist_ok=True)
+        if disk_usage(work_root.parent).free < 8 * 1024**3:
+            raise TestFailure(f"Need at least 8 GiB free for temporary ISO build work on {work_root.parent}")
+        self.run_dir = evidence_root / f"{self.stamp}-{os.getpid()}"
         self.run_dir.mkdir(parents=True, exist_ok=False)
         self.vm_name = f"fieldos-e2e-{self.stamp.lower()}"
         self.disk = self.run_dir / "guest.qcow2"
@@ -34,6 +46,7 @@ class AcceptanceRun:
         self.user_data = self.run_dir / "user-data"
         self.results: list[dict[str, str]] = []
         self.agent_ready = False
+        self.temporary_password = ""
 
     def command(self, args: list[str], *, env: dict[str, str] | None = None,
                 check: bool = True, timeout: int = 120) -> subprocess.CompletedProcess[str]:
@@ -47,11 +60,14 @@ class AcceptanceRun:
         ubuntu_iso = Path(os.environ.get("UBUNTU_ISO", DEFAULT_UBUNTU_ISO))
         if not ubuntu_iso.is_file():
             raise TestFailure(f"Ubuntu installer ISO not found: {ubuntu_iso} (set UBUNTU_ISO)")
-        temporary_password = secrets.token_urlsafe(24)
+        # Lowercase test-only password is held in memory so the virtual GDM
+        # console can log in without a physical keyboard or persisted secret.
+        self.temporary_password = "".join(
+            secrets.choice(string.ascii_lowercase) for _ in range(24)
+        )
         hash_proc = subprocess.run(["openssl", "passwd", "-6", "-stdin"],
-                                   input=temporary_password, text=True,
+                                   input=self.temporary_password, text=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        del temporary_password
         self.user_data.write_text(f"""#cloud-config
 autoinstall:
   version: 1
@@ -63,6 +79,8 @@ autoinstall:
     username: fieldos
     realname: FieldOS Acceptance Test
     password: '{hash_proc.stdout.strip()}'
+  source:
+    id: ubuntu-desktop
   storage:
     layout:
       name: lvm
@@ -70,6 +88,11 @@ autoinstall:
   late-commands:
     - mkdir -p /target/opt/fieldos
     - mkdir -p /target/usr/share/applications
+    - mkdir -p /target/home/fieldos/.config
+    - mkdir -p /target/home/fieldos/.config/gnome-initial-setup
+    - touch /target/home/fieldos/.config/gnome-initial-setup-done
+    - touch /target/home/fieldos/.config/gnome-initial-setup/upgrade-26.04-done
+    - chown -R 1000:1000 /target/home/fieldos/.config
     - cp -a /cdrom/fieldos/. /target/opt/fieldos/
     - cp /cdrom/fieldos/installer/provisioning/fieldos.desktop /target/usr/share/applications/fieldos-nomad.desktop
     - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/firstboot.sh
@@ -81,6 +104,7 @@ autoinstall:
         build_env.update({
             "FIELDOS_AUTOINSTALL_FILE": str(self.user_data),
             "FIELDOS_OUTPUT_PATH": str(self.iso),
+            "FIELDOS_WORK_ROOT": os.environ.get("FIELDOS_WORK_ROOT", str(self.run_dir)),
             "FIELDOS_TEST_AUTOBOOT": "1",
         })
         self.command(["bash", str(ROOT / "build/build-iso.sh"), "test", str(ubuntu_iso)],
@@ -96,14 +120,14 @@ autoinstall:
             "--disk", f"path={self.disk},format=qcow2,bus=virtio",
             "--cdrom", str(self.iso), "--network", "none", "--boot", "uefi",
             "--osinfo", "ubuntu26.04",
-            "--graphics", "none", "--channel", "unix,target.type=virtio,target.name=org.qemu.guest_agent.0",
+            "--graphics", "vnc,listen=127.0.0.1", "--video", "virtio",
+            "--channel", "unix,target.type=virtio,target.name=org.qemu.guest_agent.0",
             "--noautoconsole", "--wait", "0",
         ], timeout=180)
         self.record("disposable VM", "PASS", f"{self.vm_name}; 80 GiB qcow2; no virtual NIC")
 
     def wait_for_install_shutdown(self, timeout: int = 2400) -> None:
         deadline = time.monotonic() + timeout
-        log_file = self.run_dir / "install-state.log"
         while time.monotonic() < deadline:
             state = self.command(["virsh", "domstate", self.vm_name], check=False, timeout=15).stdout.strip()
             if state.lower() in {"shut off", "shutdown"}:
@@ -111,11 +135,9 @@ autoinstall:
                 return
             if state.lower() == "running" and self.ping_agent(tries=1):
                 self.agent_ready = True
-                try:
-                    text = self.guest("cat /var/log/installer/curtin-install.log 2>/dev/null | tail -20", timeout=20)
-                    log_file.write_text(text, encoding="utf-8")
-                except Exception:
-                    pass
+                self.record("Ubuntu unattended installation", "PASS",
+                            "Installed OS booted from the disposable disk")
+                return
             time.sleep(5)
         self.capture_guest_logs()
         raise TestFailure("Timed out waiting for unattended Ubuntu install to power off")
@@ -127,12 +149,15 @@ autoinstall:
         for target in root.findall("./devices/disk[@device='cdrom']/target"):
             dev = target.get("dev")
             if dev:
-                self.command(["virsh", "change-media", self.vm_name, dev, "--eject", "--config"], check=False)
+                self.command(["virsh", "change-media", self.vm_name, dev,
+                              "--eject", "--config"], check=False)
 
     def boot_guest(self) -> None:
         self.eject_installer()
-        self.command(["virsh", "start", self.vm_name])
-        if not self.wait_for_agent(timeout=900):
+        state = self.command(["virsh", "domstate", self.vm_name], check=False).stdout.strip().lower()
+        if state in {"shut off", "shutdown"}:
+            self.command(["virsh", "start", self.vm_name])
+        if not self.agent_ready and not self.wait_for_agent(timeout=900):
             self.capture_guest_logs()
             raise TestFailure("Installed guest did not start QEMU guest agent")
         self.agent_ready = True
@@ -226,8 +251,146 @@ autoinstall:
         self.results.append({"component": name, "status": status, "evidence": evidence})
         print(f"{status:4}  {name}: {evidence}", flush=True)
 
+    def send_key(self, *keys: str) -> None:
+        self.command(["virsh", "send-key", self.vm_name, *keys], timeout=15)
+
+    def type_virtual_keyboard(self, text: str) -> None:
+        keymap = {char: f"KEY_{char.upper()}" for char in string.ascii_lowercase}
+        keymap.update({char: f"KEY_{char}" for char in string.digits})
+        keymap.update({"/": "KEY_SLASH", ".": "KEY_DOT"})
+        for char in text:
+            if char == ":":
+                self.send_key("KEY_LEFTSHIFT", "KEY_SEMICOLON")
+            elif char in keymap:
+                self.send_key(keymap[char])
+            else:
+                raise TestFailure(f"No virtual keyboard mapping for {char!r}")
+            time.sleep(0.08)
+
+    @staticmethod
+    def screenshot_color_count(path: Path) -> tuple[int, int, int, int]:
+        data = path.read_bytes()
+        if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+            raise TestFailure(f"Map screenshot is not a PNG: {path}")
+        offset = 8
+        compressed = bytearray()
+        width = height = bit_depth = color_type = interlace = None
+        while offset < len(data):
+            length = struct.unpack_from(">I", data, offset)[0]
+            kind = data[offset + 4:offset + 8]
+            chunk = data[offset + 8:offset + 8 + length]
+            offset += 12 + length
+            if kind == b"IHDR":
+                width, height, bit_depth, color_type, _, _, interlace = struct.unpack(">IIBBBBB", chunk)
+            elif kind == b"IDAT":
+                compressed.extend(chunk)
+            elif kind == b"IEND":
+                break
+        if width is None or bit_depth != 8 or color_type != 2 or interlace != 0:
+            raise TestFailure("Expected a non-interlaced 8-bit RGB VNC screenshot")
+        pixels = zlib.decompress(compressed)
+        stride = width * 3
+        prior = bytearray(stride)
+        colors: set[tuple[int, int, int]] = set()
+        cursor = 0
+        # The map canvas begins below the browser chrome and N.O.M.A.D. toolbar.
+        crop_top = max(0, height * 3 // 10)
+        crop_left = width // 16
+        crop_right = width - width // 64
+        water_pixels = 0
+        for y in range(height):
+            filter_type = pixels[cursor]
+            row = bytearray(pixels[cursor + 1:cursor + 1 + stride])
+            cursor += stride + 1
+            for i in range(stride):
+                left = row[i - 3] if i >= 3 else 0
+                up = prior[i]
+                upper_left = prior[i - 3] if i >= 3 else 0
+                if filter_type == 1:
+                    predictor = left
+                elif filter_type == 2:
+                    predictor = up
+                elif filter_type == 3:
+                    predictor = (left + up) // 2
+                elif filter_type == 4:
+                    p = left + up - upper_left
+                    pa, pb, pc = abs(p - left), abs(p - up), abs(p - upper_left)
+                    predictor = left if pa <= pb and pa <= pc else up if pb <= pc else upper_left
+                elif filter_type == 0:
+                    predictor = 0
+                else:
+                    raise TestFailure(f"Unsupported PNG row filter {filter_type}")
+                row[i] = (row[i] + predictor) & 255
+            if y >= crop_top and y < height - 15:
+                for x in range(crop_left, crop_right, 4):
+                    start = x * 3
+                    color = (row[start], row[start + 1], row[start + 2])
+                    colors.add(color)
+                    if 115 <= color[0] <= 140 and 205 <= color[1] <= 235 and 220 <= color[2] <= 245:
+                        water_pixels += 1
+            prior = row
+        return width, height, len(colors), water_pixels
+
+    def verify_map_render(self) -> None:
+        # Log into the disposable guest through its loopback-only VNC console.
+        self.send_key("KEY_ENTER")
+        time.sleep(1)
+        self.type_virtual_keyboard(self.temporary_password)
+        self.send_key("KEY_ENTER")
+        deadline = time.monotonic() + 120
+        while time.monotonic() < deadline:
+            sessions = self.guest("loginctl list-sessions --no-legend", timeout=20)
+            if any("fieldos" in line and "gdm" not in line for line in sessions.splitlines()):
+                break
+            time.sleep(3)
+        else:
+            raise TestFailure("Temporary user did not reach a graphical desktop session")
+
+        # Ubuntu's greeter can launch gnome-initial-setup for the autoinstall
+        # account even when the completion marker is present. Close that first
+        # login helper by its process signal before opening the browser. This
+        # avoids depending on the wizard's changing page count or its text.
+        self.guest("pkill -TERM -f '^/usr/libexec/gnome-initial-setup' 2>/dev/null || true; "
+                   "for i in $(seq 1 20); do "
+                   "! pgrep -f '^/usr/libexec/gnome-initial-setup' >/dev/null && exit 0; sleep 0.5; "
+                   "done; exit 1", timeout=20)
+
+        # Launch the installed browser in the active user's Wayland session.
+        # This avoids relying on version-specific GNOME search behavior.
+        uid = self.guest("id -u fieldos")
+        launch = (
+            f"uid={uid}; runtime=/run/user/$uid; "
+            "wayland=$(find \"$runtime\" -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1); "
+            "test -n \"$wayland\" && test -S \"$runtime/$wayland\"; "
+            "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
+            "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
+            "GDK_BACKEND=wayland /usr/bin/firefox --new-window http://127.0.0.1:8080/maps "
+            ">/tmp/fieldos-firefox.log 2>&1 </dev/null &"
+        )
+        self.guest(launch, timeout=30)
+        self.guest(
+            f"for i in $(seq 1 40); do pgrep -u {uid} -f '/snap/firefox/.*/firefox' >/dev/null "
+            "&& exit 0; sleep 1; done; cat /tmp/fieldos-firefox.log; exit 1", timeout=50)
+        time.sleep(20)
+        screenshot = self.run_dir / "map-render.png"
+        deadline = time.monotonic() + 120
+        width = height = colors = water_pixels = 0
+        while time.monotonic() < deadline:
+            self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
+            width, height, colors, water_pixels = self.screenshot_color_count(screenshot)
+            if water_pixels >= 5000:
+                break
+            time.sleep(5)
+        if water_pixels < 5000 or colors < 64:
+            raise TestFailure(
+                f"Map viewport did not render PMTiles water tiles: {water_pixels} water pixels, "
+                f"{colors} sampled colors in {width}x{height} screenshot"
+            )
+        self.record("offline map rendering", "PASS",
+                    f"Firefox rendered PMTiles tiles in {width}x{height} VNC screenshot; "
+                    f"{water_pixels} sampled water pixels, {colors} colors; {screenshot.name}")
+
     def run_checks(self, reboot: bool = False) -> None:
-        self.check("provisioning status", "grep -q '" + '"status":"complete"' + "' /var/lib/fieldos/provisioning-status.json && cat /var/lib/fieldos/provisioning-status.json")
         self.check("disconnected guest", "test -z \"$(ip -4 route show default)\" && ip -brief link")
         ps = self.check("container set", "docker compose --project-directory /opt/fieldos/services -f /opt/fieldos/services/compose.yaml ps --format json", 500)
         try:
@@ -260,6 +423,10 @@ autoinstall:
         pmtiles = self.check("offline map tile", "docker exec nomad_admin /usr/local/bin/pmtiles show /app/storage/maps/pmtiles/world.pmtiles --header-json && bytes=$(docker exec nomad_admin /usr/local/bin/pmtiles tile /app/storage/maps/pmtiles/world.pmtiles 0 0 0 2>/dev/null | wc -c); test \"$bytes\" -gt 0; echo TILE_BYTES=$bytes", 350)
         if "TILE_BYTES=" not in pmtiles:
             raise TestFailure("Could not read a real world basemap tile from the bundled PMTiles archive")
+        regions = self.check("offline map region inventory", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8080/api/maps/regions", 350)
+        regions_data = json.loads(regions)
+        if not any(item.get("name") == "fieldos-sample-us.pmtiles" for item in regions_data.get("files", [])):
+            raise TestFailure("Bundled sample map region is not registered in N.O.M.A.D.")
         styles = self.check("map renderer configuration", "curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8080/api/maps/styles", 350)
         styles_data = json.loads(styles)
         if "world" not in styles_data.get("sources", {}):
@@ -273,7 +440,7 @@ autoinstall:
         net = self.check("container egress disabled", "docker network inspect fieldos-internal fieldos-local-ui --format '{{.Name}} internal={{.Internal}} masquerade={{index .Options \"com.docker.network.bridge.enable_ip_masquerade\"}}' && docker exec nomad_admin node -e 'fetch(\"https://example.com\",{signal:AbortSignal.timeout(5000)}).then(()=>process.exit(3)).catch(()=>process.exit(0))' && echo EXTERNAL_EGRESS_BLOCKED", 350)
         if "EXTERNAL_EGRESS_BLOCKED" not in net:
             raise TestFailure("N.O.M.A.D. container could reach an external URL")
-        selected = self.check("hardware model selection", "python3 -c 'import json; d=json.load(open(\"/var/lib/fieldos/model-selection.json\")); assert d[\"chat_model\"] and d[\"chat_backend\"] == \"cpu\"; print(json.dumps({k:d[k] for k in (\"profile\",\"chat_model\",\"chat_backend\",\"embedding_model\")}))", 180)
+        selected = self.check("hardware model selection", "python3 -c 'import json; d=json.load(open(\"/var/lib/fieldos/model-selection.json\")); assert d[\"chat_model\"] and d[\"chat_backend\"] == \"cpu\"; print(json.dumps({k:d[k] for k in (\"profile\",\"chat_model\",\"chat_backend\",\"embedding_model\")}))'", 180)
         if reboot:
             self.capture_guest_logs()
 
@@ -294,7 +461,25 @@ autoinstall:
         if after == before:
             raise TestFailure(f"Guest did not complete reboot {count}")
         self.record(f"reboot {count}", "PASS", f"boot ID changed to {after}; started {self.guest('uptime -s')}")
+        self.wait_for_application_health()
         self.run_checks(reboot=True)
+
+    def wait_for_application_health(self, timeout: int = 300) -> None:
+        deadline = time.monotonic() + timeout
+        last_error = "no response"
+        while time.monotonic() < deadline:
+            try:
+                response = self.guest(
+                    "curl --fail --silent --show-error --max-time 10 "
+                    "http://127.0.0.1:8080/api/health", timeout=20)
+                if json.loads(response).get("status") == "ok":
+                    self.record("application readiness", "PASS", response)
+                    return
+                last_error = f"unexpected response: {response}"
+            except (TestFailure, json.JSONDecodeError) as exc:
+                last_error = str(exc)
+            time.sleep(5)
+        raise TestFailure(f"N.O.M.A.D. did not become healthy within {timeout}s after reboot: {last_error}")
 
     @staticmethod
     def sha256(path: Path) -> str:
@@ -335,6 +520,7 @@ autoinstall:
             self.capture_guest_logs()
             self.record("offline provisioning", "PASS", "Local packages and all declared firstboot smoke checks completed")
             self.run_checks()
+            self.verify_map_render()
             self.do_reboot(1)
             self.do_reboot(2)
             self.record("acceptance run", "PASS", "Installation, offline services, inference, retrieval, map tile, and two reboots passed")

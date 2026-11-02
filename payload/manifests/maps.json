@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "license": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors; Protomaps Basemap",
+  "regions": [
+    {
+      "id": "fieldos-sample-us",
+      "title": "Continental United States sample",
+      "file": "fieldos-sample-us.pmtiles",
+      "bbox": "-130,20,-60,55",
+      "minzoom": 0,
+      "maxzoom": 5
+    }
+  ]
+}

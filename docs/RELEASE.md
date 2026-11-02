@@ -1,71 +1,80 @@
 # Release status and process
 
-FieldOS is under active integration testing. A successful ISO build is not a
-release; release status requires the installed-system checks below and retained
-test evidence. Do not distribute an image until licensing and attribution review
-is complete for every bundled package, container, model, and reference dataset.
+FieldOS has passed the automated offline test-ISO acceptance gate. It is not
+yet ready for a physical customer installation. The separate interactive
+customer ISO installation, network-enabled exposure check, physical hardware
+validation, and full redistribution/attribution review remain release gates.
+Do not publish release binaries before those reviews are complete.
 
-## Current evidence (2026-11-02)
+## Latest acceptance evidence — 2026-11-02
 
-- Automated offline install acceptance passed in run
-  `build/e2e/20261102T175415Z-1942621/report.md` from source revision
-  `e0fb066`. It installed Ubuntu to a fresh 80 GiB qcow2 with no virtual NIC,
-  completed local APT and container provisioning, validated N.O.M.A.D., Ollama
-  chat and embedding, Kiwix search, real PMTiles tile retrieval and renderer
-  configuration, blocked container egress, then repeated service checks after
-  two reboots. Chat returned `FIELDOS_ACCEPTANCE_OK` and Kiwix search retrieved
-  the New York Times article. The full guest logs and report are retained beside
-  the disposable VM disk.
-- Offline APT dependency resolution passed in an `ubuntu:26.04` container with
-  networking disabled. The local package index installed the required Docker,
-  Compose, curl, zstd, and QEMU guest agent packages.
-- `make check` and `make test` passed (11 tests). Compose configuration
-  validation passed.
-- The customer-facing interactive test ISO was built at
-  `build/out/fieldos-test.iso`, SHA-256
-  `790fd21725e45ecb4625c313a87f8dcf58c811f29c31e919fb4ee4825205c834`.
-  `make verify` and `sha256sum -c build/out/fieldos-test.iso.sha256` passed;
-  BIOS and UEFI El Torito boot entries were present. A separate isolated VM
-  booted its GRUB menu and reached Ubuntu's interactive disk setup screen. The
-  observed screen evidence is under
-  `build/e2e/customer-ui-20261102T180430Z/`. Installation was not confirmed from
-  this interactive ISO.
-- Hardware profile selection has fixture coverage; CPU inference was exercised
-  in the installed guest. No physical GPU or accelerated backend was validated.
-- The browser did not render a captured map view. The E2E test verified map
-  style configuration, an actual tile response and bundled map assets, so map
-  rendering remains a partial verification.
-- Redistribution review for bundled third-party software, models, and content
-  is still pending. No release ISO is published.
-- The GitHub repository is public at
-  [p0rkm4th/hckrslsh-fieldos](https://github.com/p0rkm4th/hckrslsh-fieldos).
+- Run report: `/mnt/shared/fieldos-e2e/20261102T214900Z-2020461/report.md`.
+- Generated unattended test ISO SHA-256:
+  `c2177b7554ad69b13c88f4db28a88aafbdc536b5a78f1aaa175a21b5f80f9422`.
+- Ubuntu installed to a fresh 80 GiB qcow2 disk in UEFI mode. The VM had no
+  virtual NIC, and the installer powered off without manual input.
+- Offline APT provisioning, all seven local containers, N.O.M.A.D. health,
+  Ollama chat and embedding, Kiwix library and search, PMTiles tile serving,
+  and disabled container egress passed. Chat returned
+  `FIELDOS_ACCEPTANCE_OK`; N.O.M.A.D. returned `{"status":"ok"}`.
+- Firefox rendered the regional U.S. map in the installed guest. Screenshot:
+  `/mnt/shared/fieldos-e2e/20261102T214900Z-2020461/map-render.png`.
+- After each of two consecutive reboots, the runner waited for application
+  readiness and repeated the service, inference, reference, map tile, and
+  egress checks. Both reboots passed.
+- This verifies only the no-NIC configuration. The Compose ports are bound to
+  loopback and security boundaries are documented in `SECURITY.md`; a separate
+  network-enabled guest and LAN reachability test remains outstanding.
+- The regional/world map fixtures end at zoom level 5. They are broad
+  orientation fixtures, not field-level navigation. See `CONTENT-PACKS.md`.
 
-## Release gate
+Earlier failed runs remain under `/mnt/shared/fieldos-e2e/` with their reports,
+logs, and screenshots. Their reports record FAIL and any removed guest disk;
+they are not part of the passing evidence above.
 
-1. Run `make check`, `make test`, and `make test-e2e`; retain the human-readable
-   report and logs. The E2E test must install to a disposable VM disk with no
-   network adapter and pass service, inference, retrieval, map, and two-reboot
-   checks.
-2. Build the customer-facing interactive ISO only after the test ISO passes.
-   Verify BIOS/UEFI boot structure, embedded payload/checksums, interactive disk
-   selection and credentials, and install that ISO separately to a disposable
-   VM disk.
-3. Review redistribution terms and attribution for Ubuntu packages, container
-   images, models, and offline datasets. Record any restrictions in the release
-   manifest.
-4. Publish a manifest with source revision, build inputs/tool versions, ISO and
-   payload SHA-256 checksums, test results, known limitations, and installation
-   instructions. Keep ISO, model weights, generated credentials, VM disks, and
-   downloaded container archives out of Git history.
+## Current readiness table
 
-The expanded/full ISO must wait until the test release satisfies these gates.
+| Component | Status | Evidence |
+|---|---|---|
+| Automated offline OS install | PASS | Latest report; automatic installer power-off |
+| Offline provisioning | PASS | Local APT and firstboot smoke checks in report |
+| N.O.M.A.D. | PASS | `http://127.0.0.1:8080/api/health` returned `{"status":"ok"}` |
+| Local inference | PASS | Qwen3 returned `FIELDOS_ACCEPTANCE_OK` |
+| Embeddings | PASS | `nomic-embed-text:v1.5` returned an embedding vector |
+| Knowledge library | PASS | Kiwix catalog and New York Times reference search |
+| Offline maps | PASS | Firefox map screenshot and PMTiles tile response |
+| Reboot persistence | PASS | Two boot-ID changes and service checks after both |
+| Hardware adaptation | PARTIAL | CPU inference verified; simulated profiles pass; GPU physical validation absent |
+| Interactive customer ISO | FAIL / BLOCKED | `/mnt/shared/fieldos-e2e/customer-iso-20261102-2149/`; disk setup never enables Next; no installation attempted |
+| Network-enabled exposure | NOT TESTED | Loopback bindings reviewed; separate routed guest check pending |
+| Redistribution and attribution | PENDING | Inventory exists; per-artifact release review incomplete |
+| Public Git history | REVIEWED | No tracked historical blobs over 1 MB or binary payload paths found; generated secret code reviewed |
+| Content packs | ARCHITECTURE READY | Schema and empty catalog; no customer packs approved |
 
-## Known limitations
+## Remaining release gates
 
-- The automated acceptance script passed, but its map checks do not capture a
-  browser-rendered view.
-- The customer-facing interactive ISO reached disk setup in a separate VM but
-  has not completed a separate installation.
-- GPU acceleration is unvalidated. CPU is the tested inference backend.
-- Redistribution review for all bundled third-party software and content is
-  pending.
+1. Keep `make test-e2e` passing with the final source and retain the report,
+   logs, and screenshot.
+2. Repair the customer ISO installer handoff. The ISO currently boots into the
+   interactive installer, detects the disposable target disk, but the Next
+   button stays disabled. The installer log records
+   `Mirror/apply_autoinstall_config/waiting: FAIL`. No disk was modified; only
+   `guest.qcow2` is attached as a target. Retest the rebuilt customer ISO in a
+   fresh disposable VM and complete the full interactive install before any
+   customer-readiness recommendation.
+4. Test with a virtual network interface attached. Confirm public-facing
+   addresses cannot reach the loopback-only management/service ports and that
+   remote access remains disabled.
+5. Review redistribution and attribution for every Ubuntu package, container,
+   model, map, and reference artifact included in the candidate ISO. Record
+   source, license, notices, version, and checksum in the release manifest.
+6. Document tested CPU/RAM/storage support and unsupported accelerators.
+   Fixture-based hardware selection is simulated evidence; no physical GPU
+   backend has been tested.
+7. Publish installation, troubleshooting, and recovery instructions, then
+   preserve source revision, build inputs, test report, ISO checksum, and
+   known limitations. Keep release binaries private until explicitly approved.
+
+The expanded/full ISO must wait until the test and customer-facing release
+gates pass. Do not describe simulated hardware tests or an ISO build as
+physical-installation validation.

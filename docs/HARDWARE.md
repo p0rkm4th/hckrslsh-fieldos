@@ -12,14 +12,36 @@ physically validated.
 | Accelerated | 32–64 GiB | Prefer tested NVIDIA/AMD/Intel backend and compatible model |
 | High Performance | 64+ GiB | Highest-priority bundled model fitting usable RAM/VRAM |
 
-The detector reports free NVIDIA VRAM from `nvidia-smi` and available
-dedicated DRM VRAM where the kernel exposes `mem_info_vram_total` and
-`mem_info_vram_used`. It does not count shared system memory as dedicated
-VRAM. The selector reserves memory for the OS and other applications and
-falls back to CPU when an accelerator is unsupported or not verified. NVIDIA Secure Boot signing,
-proprietary driver availability, and AMD/Intel backend support are validated
-per image and are not promised generically. GPS, battery, and storage facts are
-reported when the kernel exposes them.
+The detector reports CPU architecture and supported instruction flags,
+logical cores, RAM, block storage, GPU vendor/device IDs, detected driver, and
+available dedicated VRAM where exposed by `nvidia-smi` or DRM sysfs. It does
+not count shared system memory as dedicated VRAM. It reports GPU/driver facts
+without treating them as proof that inference acceleration works.
+
+The selector reserves memory for the OS, only considers model IDs present in
+the offline payload, and checks model memory requirements. It requires an
+explicitly runtime-validated backend plus a matching available driver before
+choosing CUDA, ROCm, or Vulkan. VRAM from a different GPU vendor is not counted
+for that backend. Firstboot currently validates CPU inference only and falls
+back through smaller compatible bundled models if a generation smoke check
+fails. NVIDIA Secure Boot signing, driver packages, and AMD/Intel runtime
+support need per-device validation; they are not enabled generically. GPS,
+battery, and storage facts are reported when the kernel exposes them.
+
+## What adapts automatically and what needs support work
+
+| Hardware characteristic | Automatic behavior | Manual work needed |
+|---|---|---|
+| CPU architecture/features and core count | Detects x86-64 and relevant instruction flags | New architecture/runtime support requires compatible Ubuntu packages, container images, and model formats |
+| RAM and local storage | Reports capacities; chooses a bundled model that fits available RAM; records disks | The operator must choose a disk with sufficient capacity; a new payload tier/model needs its own manifest and bundle |
+| GPU vendor/device and dedicated VRAM | Reports NVIDIA and DRM-visible GPUs; includes a GPU backend only after driver and runtime validation | Driver/kernel compatibility, Secure Boot signing, container device access, runtime libraries, and physical inference tests must be added and validated |
+| Model override | Accepts `/etc/fieldos/model-override` only for a bundled model that fits | Operator is responsible for choosing a supported model ID |
+| GPS hardware | Detects likely device nodes | Device protocol, permission model, local position service, map UI integration, and field testing are not implemented |
+
+The measured acceptance VM was x86-64 with 12 GiB RAM, 6 virtual CPUs, an 80
+GiB virtual disk, no virtual NIC, and no GPU. It is the only end-to-end
+hardware profile tested so far. The initial physical support matrix is not
+established; do not infer universal laptop compatibility from the QEMU run.
 
 The operator may set `/etc/fieldos/model-override` before firstboot to request a
 bundled model by manifest ID. The selector still rejects a model absent from
@@ -28,7 +50,8 @@ marks only CPU as validated; GPU configuration is not enabled just because a
 GPU appears in the detector output.
 
 Fixture tests cover memory bands, model fallback, available payload IDs, manual
-override validation, CPU features, and available VRAM calculation. These are
-synthetic selection tests. They do not validate GPU inference. Hardware used
-by the current QEMU acceptance test is virtual CPU only; physical field
-laptops and accelerators still need separate test evidence.
+override validation, mixed GPU vendors/VRAM matching, CPU features, and
+available VRAM calculation. These are simulated hardware profiles. They do
+not validate GPU inference. Hardware used by the current QEMU acceptance test
+is virtual CPU only; physical field laptops and accelerators still need
+separate test evidence.

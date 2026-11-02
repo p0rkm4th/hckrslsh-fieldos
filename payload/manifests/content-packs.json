@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "manifest_schema": "content-pack.schema.json",
+  "status": "architecture-only",
+  "packs": [],
+  "planned_categories": [
+    "agriculture",
+    "wildlife-overlanding",
+    "water-food",
+    "first-aid-emergency",
+    "maps-gis"
+  ]
+}

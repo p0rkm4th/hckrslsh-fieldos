@@ -1,6 +1,12 @@
 PYTHON ?= python3
 UBUNTU_ISO ?=
 ISO ?=
+FIELDOS_STORAGE_ROOT ?= $(if $(wildcard /mnt/shared),/mnt/shared,$(CURDIR)/build)
+FIELDOS_E2E_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-e2e
+FIELDOS_PAYLOAD_ROOT ?= $(if $(wildcard /mnt/shared),/mnt/shared/fieldos-payload,$(CURDIR)/build/payload)
+FIELDOS_WORK_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-build
+FIELDOS_OUTPUT_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-releases
+export FIELDOS_E2E_ROOT FIELDOS_PAYLOAD_ROOT FIELDOS_WORK_ROOT FIELDOS_OUTPUT_ROOT
 
 .PHONY: check test test-e2e payload iso-test iso-full verify
 

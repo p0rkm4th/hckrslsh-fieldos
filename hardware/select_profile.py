@@ -18,8 +18,12 @@ def profile_for(memory_gib: float) -> str:
     return "high_performance"
 
 
-def usable_vram(hardware: dict) -> float:
-    return max((float(gpu.get("vram_gib") or 0) for gpu in hardware.get("gpus", [])), default=0.0)
+def usable_vram(hardware: dict, backend: str | None = None) -> float:
+    vendors = {"cuda": {"nvidia"}, "rocm": {"amd"}}
+    compatible = [gpu for gpu in hardware.get("gpus", [])
+                  if (backend is None or gpu.get("driver_available"))
+                  and (backend not in vendors or gpu.get("vendor") in vendors[backend])]
+    return max((float(gpu.get("vram_gib") or 0) for gpu in compatible), default=0.0)
 
 
 def select(hardware: dict, manifest: dict, available_ids: set[str] | None = None,
@@ -51,9 +55,14 @@ def select(hardware: dict, manifest: dict, available_ids: set[str] | None = None
         needs_vram = float(model.get("vram_gib", 0))
         # A GPU is used only when the backend is both present and explicitly validated.
         gpu_backend = next((backend for backend in ("cuda", "rocm", "vulkan")
-                            if backend in validated_backends and backend in model.get("backends", [])), None)
+                            if backend in validated_backends and backend in model.get("backends", [])
+                            and any(gpu.get("driver_available") and
+                                    (backend == "vulkan" or
+                                     gpu.get("vendor") == {"cuda": "nvidia", "rocm": "amd"}.get(backend))
+                                    for gpu in hardware.get("gpus", []))), None)
         fits_cpu = usable_ram >= needs_ram
-        fits_gpu = gpu_backend is not None and vram >= needs_vram and usable_ram >= min(needs_ram, 1.0)
+        backend_vram = usable_vram(hardware, gpu_backend) if gpu_backend else 0.0
+        fits_gpu = gpu_backend is not None and backend_vram >= needs_vram and usable_ram >= min(needs_ram, 1.0)
         if fits_cpu or fits_gpu:
             candidates.append((int(model.get("quality_priority", 0)), model, gpu_backend if fits_gpu else "cpu"))
     candidates.sort(key=lambda item: (item[0], item[1]["id"]), reverse=True)

@@ -16,22 +16,26 @@ if [[ "$ACTUAL" != "$EXPECTED" ]]; then
   exit 1
 fi
 
-PAYLOAD="$ROOT/build/payload/offline-payload.tar.zst"
+PAYLOAD_ROOT=${FIELDOS_PAYLOAD_ROOT:-"$ROOT/build/payload"}
+PAYLOAD="$PAYLOAD_ROOT/offline-payload.tar.zst"
 if [[ ! -s "$PAYLOAD" || ! -s "$PAYLOAD.sha256" ]]; then
   echo "Offline payload is not prepared. Run build/prepare-payload.sh first." >&2
   exit 1
 fi
 (cd "$(dirname "$PAYLOAD")" && sha256sum -c "$(basename "$PAYLOAD").sha256")
 
-OUT_DIR="$ROOT/build/out"
+OUT_DIR=${FIELDOS_OUTPUT_ROOT:-"$ROOT/build/out"}
 mkdir -p "$OUT_DIR"
 OUTPUT="$OUT_DIR/fieldos-${MODE}.iso"
 OUTPUT=${FIELDOS_OUTPUT_PATH:-$OUTPUT}
+mkdir -p "$(dirname "$OUTPUT")"
 if [[ -e "$OUTPUT" ]]; then
   echo "Refusing to overwrite existing artifact: $OUTPUT" >&2
   exit 1
 fi
-WORK=$(mktemp -d "$ROOT/build/work-${MODE}.XXXXXX")
+WORK_ROOT=${FIELDOS_WORK_ROOT:-"$ROOT/build"}
+mkdir -p "$WORK_ROOT"
+WORK=$(mktemp -d "$WORK_ROOT/work-${MODE}.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/hardware/detect" \
   "$WORK/fieldos/models" "$WORK/fieldos/services" "$WORK/fieldos/payload" \
