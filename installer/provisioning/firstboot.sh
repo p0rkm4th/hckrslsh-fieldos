@@ -38,11 +38,34 @@ install -d -m 0750 "$PAYLOAD"
 zstd --decompress --stdout "$PAYLOAD_ARCHIVE" | tar --extract --directory="$PAYLOAD" --no-same-owner
 
 echo "Installing bundled packages without network access..."
-if compgen -G "$PAYLOAD/debs/*.deb" >/dev/null; then
-  apt-get --no-download --yes install "$PAYLOAD"/debs/*.deb
+python3 "$ROOT/installer/provisioning/build_local_apt_index.py" "$PAYLOAD/debs" "$PAYLOAD/Packages"
+printf 'deb [trusted=yes] file:%s ./\n' "$PAYLOAD" > /etc/apt/sources.list.d/fieldos-offline.list
+apt_offline=(
+  -o APT::Sandbox::User=root
+  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/fieldos-offline.list
+  -o Dir::Etc::sourceparts=-
+  -o APT::Get::List-Cleanup=0
+)
+apt-get "${apt_offline[@]}" update
+apt-get "${apt_offline[@]}" --yes --no-install-recommends install \
+  docker.io docker-compose-v2 curl zstd qemu-guest-agent
+rm -f /etc/apt/sources.list.d/fieldos-offline.list
+systemctl enable --now qemu-guest-agent.service
+
+root_lv=$(findmnt --noheadings --output SOURCE /)
+if [[ "$root_lv" == /dev/mapper/* ]] && command -v lvextend >/dev/null && command -v vgs >/dev/null; then
+  root_vg=$(lvs --noheadings --options vg_name "$root_lv" | xargs)
+  if [[ -n "$root_vg" ]]; then
+    vg_free_bytes=$(vgs --noheadings --units b --nosuffix --options vg_free "$root_vg" | tr -d ' ' | cut -d. -f1)
+    if [[ "$vg_free_bytes" =~ ^[0-9]+$ ]] && (( vg_free_bytes > 0 )); then
+      echo "Extending the FieldOS root filesystem into unused installer-created volume-group space..."
+      lvextend --resizefs --extents +100%FREE "$root_lv"
+    fi
+  fi
 fi
 
-install -d -m 0750 "$STATE/storage/zim" "$STATE/storage/maps/pmtiles" "$STATE/storage/maps/basemaps-assets" "$STATE/storage/ollama" "$STATE/mysql" "$STATE/redis" "$STATE/qdrant"
+install -d -m 0755 "$STATE/storage/zim"
+install -d -m 0750 "$STATE/storage/maps/pmtiles" "$STATE/storage/maps/basemaps-assets" "$STATE/storage/ollama" "$STATE/mysql" "$STATE/redis" "$STATE/qdrant"
 
 if [[ -d "$PAYLOAD/content/zim" ]]; then
   cp -an "$PAYLOAD/content/zim/." "$STATE/storage/zim/"
@@ -68,12 +91,27 @@ done
 
 if [[ -f "$PAYLOAD/content/zim/wikipedia_en_100_mini_2026-01.zim" ]]; then
   library="$STATE/storage/zim/kiwix-library.xml"
-  [[ -e "$library" ]] || printf '<?xml version="1.0" encoding="UTF-8"?>\n<library version="20110515"></library>\n' > "$library"
-  docker run --rm --network none \
-    -v "$STATE/storage/zim:/data" \
-    --entrypoint kiwix-manage \
-    ghcr.io/kiwix/kiwix-serve:3.8.1@sha256:a80b64909744930d79be14542048d1fbf11f1fdd9ffe6712ef8c9cd3aa1740dd \
-    /data/kiwix-library.xml add /data/wikipedia_en_100_mini_2026-01.zim
+  zim_name=$(basename "$PAYLOAD/content/zim/wikipedia_en_100_mini_2026-01.zim")
+  if [[ -s "$library" ]] && python3 -c 'import sys,xml.etree.ElementTree as ET; ET.parse(sys.argv[1])' "$library"; then
+    if ! grep -Fq "$zim_name" "$library"; then
+      docker run --rm --network none --user 0:0 \
+        -v "$STATE/storage/zim:/data" \
+        --entrypoint kiwix-manage \
+        ghcr.io/kiwix/kiwix-serve:3.8.1@sha256:a80b64909744930d79be14542048d1fbf11f1fdd9ffe6712ef8c9cd3aa1740dd \
+        /data/kiwix-library.xml add "/data/$zim_name"
+    fi
+  else
+    if [[ -e "$library" ]]; then
+      mv "$library" "$library.invalid.$(date +%s)"
+    fi
+    docker run --rm --network none --user 0:0 \
+      -v "$STATE/storage/zim:/data" \
+      --entrypoint kiwix-manage \
+      ghcr.io/kiwix/kiwix-serve:3.8.1@sha256:a80b64909744930d79be14542048d1fbf11f1fdd9ffe6712ef8c9cd3aa1740dd \
+      /data/kiwix-library.xml.new add "/data/$zim_name"
+    mv "$library.new" "$library"
+  fi
+  chmod 0644 "$library"
 fi
 
 echo "Generating per-install credentials..."
@@ -101,10 +139,18 @@ curl --fail --silent http://127.0.0.1:8090 >/dev/null
 
 echo "Selecting a model from the local payload and detected hardware..."
 python3 "$ROOT/hardware/detect/detect.py" > "$STATE/hardware.json"
+model_args=()
+if [[ -s /etc/fieldos/model-override ]]; then
+  read -r model_override < /etc/fieldos/model-override
+  if [[ -n "$model_override" ]]; then
+    model_args+=(--model "$model_override")
+    echo "Validating operator model override: $model_override"
+  fi
+fi
 python3 "$ROOT/hardware/select_profile.py" \
   --hardware "$STATE/hardware.json" \
   --available "$PAYLOAD/model-ids.json" \
-  --validated-backends cpu > "$STATE/model-selection.json"
+  --validated-backends cpu "${model_args[@]}" > "$STATE/model-selection.json"
 model_ref=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("chat_model") or "")' "$STATE/model-selection.json")
 if [[ -z "$model_ref" ]]; then
   echo "No usable bundled chat model was selected." >&2

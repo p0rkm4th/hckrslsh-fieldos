@@ -2,14 +2,17 @@ PYTHON ?= python3
 UBUNTU_ISO ?=
 ISO ?=
 
-.PHONY: check test payload iso-test iso-full verify
+.PHONY: check test test-e2e payload iso-test iso-full verify
 
 check:
-	$(PYTHON) -m compileall -q hardware scripts tests
+	$(PYTHON) -m compileall -q hardware installer/provisioning scripts tests
 	bash -n scripts/*.sh build/*.sh
 
 test:
 	$(PYTHON) -m unittest discover -s tests -v
+
+test-e2e:
+	$(PYTHON) tests/test_e2e.py
 
 payload:
 	./build/prepare-payload.sh

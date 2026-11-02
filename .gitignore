@@ -2,6 +2,7 @@
 /build/work/
 /build/work-*/
 /build/out/
+/build/e2e/
 /build/payload/
 /build/payload/stage.*/
 /services/.env

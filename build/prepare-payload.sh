@@ -26,7 +26,7 @@ echo "Downloading the pinned Ubuntu package closure in an Ubuntu 26.04 environme
 docker run --rm --platform linux/amd64 \
   -v "$STAGE/debs:/out" \
   ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c \
-  bash -euxc 'apt-get update; apt-get install --download-only --yes docker.io docker-compose-v2 curl zstd; cp /var/cache/apt/archives/*.deb /out/'
+  bash -euxc 'apt-get update; apt-get install --download-only --yes --no-install-recommends docker.io docker-compose-v2 curl zstd qemu-guest-agent; cp /var/cache/apt/archives/*.deb /out/'
 
 while IFS=$'\t' read -r ref digest; do
   [[ -n "$ref" ]] || continue
@@ -83,12 +83,12 @@ docker run --rm --network bridge \
   -v "$STAGE/content/maps/pmtiles:/maps" \
   --entrypoint /usr/local/bin/pmtiles \
   "$NOMAD_REF@$NOMAD_DIGEST" \
-  extract "https://build.protomaps.com/$MAP_KEY" /maps/nomad.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
+  extract "https://build.protomaps.com/$MAP_KEY" /maps/world.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
 docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
-  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/nomad.pmtiles \
-  > "$STAGE/manifests/nomad-map-metadata.txt"
+  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/world.pmtiles \
+  > "$STAGE/manifests/world-map-metadata.txt"
 cat > "$STAGE/licenses/protomaps-odbl-attribution.txt" <<'EOF'
-The nomad.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json. Preserve this attribution in the map interface and any redistributed derivative.
+The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json. Preserve this attribution in the map interface and any redistributed derivative.
 EOF
 
 echo "Fetching model license texts and pinned Ollama model payloads..."
@@ -152,7 +152,7 @@ EOF
 
 cp "$ROOT/payload/manifests/images.json" "$STAGE/manifests/"
 cp "$ROOT/payload/manifests/ubuntu-26.04.1-desktop-amd64.json" "$STAGE/manifests/"
-printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c","requested_packages":["docker.io","docker-compose-v2","curl","zstd"]}\n' \
+printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c","requested_packages":["docker.io","docker-compose-v2","curl","zstd","qemu-guest-agent"],"install_recommends":false}\n' \
   > "$STAGE/manifests/package-request.json"
 
 echo "Creating deterministic compressed payload archive..."

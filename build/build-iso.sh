@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-MODE=${1:?usage: build-iso.sh test|full UBUNTU_ISO}
-SOURCE_ISO=${2:?usage: build-iso.sh test|full UBUNTU_ISO}
+MODE=${1:?usage: build-iso.sh test|full UBUNTU_ISO [AUTOINSTALL_FILE]}
+SOURCE_ISO=${2:?usage: build-iso.sh test|full UBUNTU_ISO [AUTOINSTALL_FILE]}
+AUTOINSTALL_FILE=${3:-${FIELDOS_AUTOINSTALL_FILE:-}}
 case "$MODE" in test|full) ;; *) echo "Unknown image mode: $MODE" >&2; exit 2 ;; esac
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
@@ -25,6 +26,7 @@ fi
 OUT_DIR="$ROOT/build/out"
 mkdir -p "$OUT_DIR"
 OUTPUT="$OUT_DIR/fieldos-${MODE}.iso"
+OUTPUT=${FIELDOS_OUTPUT_PATH:-$OUTPUT}
 if [[ -e "$OUTPUT" ]]; then
   echo "Refusing to overwrite existing artifact: $OUTPUT" >&2
   exit 1
@@ -33,18 +35,26 @@ WORK=$(mktemp -d "$ROOT/build/work-${MODE}.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/hardware/detect" \
   "$WORK/fieldos/models" "$WORK/fieldos/services" "$WORK/fieldos/payload" \
+  "$WORK/fieldos/scripts" \
   "$WORK/nocloud"
 
 install -m 0644 "$ROOT/installer/provisioning/firstboot.sh" "$WORK/fieldos/installer/provisioning/firstboot.sh"
+install -m 0644 "$ROOT/installer/provisioning/build_local_apt_index.py" "$WORK/fieldos/installer/provisioning/build_local_apt_index.py"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-firstboot.service" "$WORK/fieldos/installer/provisioning/fieldos-firstboot.service"
 install -m 0644 "$ROOT/installer/provisioning/fieldos.desktop" "$WORK/fieldos/installer/provisioning/fieldos.desktop"
 install -m 0644 "$ROOT/hardware/detect/detect.py" "$WORK/fieldos/hardware/detect/detect.py"
 install -m 0644 "$ROOT/hardware/select_profile.py" "$WORK/fieldos/hardware/select_profile.py"
 install -m 0644 "$ROOT/models/manifest.json" "$WORK/fieldos/models/manifest.json"
 install -m 0644 "$ROOT/services/compose.yaml" "$WORK/fieldos/services/compose.yaml"
+install -m 0755 "$ROOT/scripts/fieldos-diagnostics.sh" "$WORK/fieldos/scripts/fieldos-diagnostics.sh"
 install -m 0644 "$PAYLOAD" "$WORK/fieldos/payload/offline-payload.tar.zst"
 install -m 0644 "$PAYLOAD.sha256" "$WORK/fieldos/payload/offline-payload.tar.zst.sha256"
-install -m 0644 "$ROOT/installer/autoinstall/user-data" "$WORK/nocloud/user-data"
+if [[ -n "$AUTOINSTALL_FILE" ]]; then
+  AUTOINSTALL_FILE=$(realpath "$AUTOINSTALL_FILE")
+else
+  AUTOINSTALL_FILE="$ROOT/installer/autoinstall/user-data"
+fi
+install -m 0644 "$AUTOINSTALL_FILE" "$WORK/nocloud/user-data"
 install -m 0644 "$ROOT/installer/autoinstall/meta-data" "$WORK/nocloud/meta-data"
 
 cat > "$WORK/fieldos/build-manifest.json" <<EOF
@@ -63,6 +73,7 @@ xorriso -osirrox on -indev "$SOURCE_ISO" \
   -extract /boot/grub/grub.cfg "$WORK/grub.cfg"
 python3 - "$WORK/grub.cfg" "$WORK/grub-fieldos.cfg" <<'PY'
 from pathlib import Path
+import os
 import sys
 
 source = Path(sys.argv[1]).read_text()
@@ -75,6 +86,13 @@ entry = '''\nmenuentry "Install Hckrslsh FieldOS (interactive)" {
 if 'Install Hckrslsh FieldOS (interactive)' in source:
     raise SystemExit('source GRUB menu already contains FieldOS entry')
 Path(sys.argv[2]).write_text(source + entry)
+if os.environ.get('FIELDOS_TEST_AUTOBOOT') == '1':
+    test_source = Path(sys.argv[2]).read_text()
+    test_source = test_source.replace('set timeout=30', 'set timeout=0\nset default="Install Hckrslsh FieldOS (interactive)"', 1)
+    test_source = test_source.replace('autoinstall ds=nocloud\\;s=/cdrom/nocloud/ --- quiet splash',
+                                      'autoinstall ds=nocloud\\;s=/cdrom/nocloud/ console=ttyS0,115200n8 --- quiet')
+    test_source = 'serial --unit=0 --speed=115200\nterminal_input console serial\nterminal_output console serial\n' + test_source
+    Path(sys.argv[2]).write_text(test_source)
 PY
 
 echo "Composing $OUTPUT from checksum-verified Ubuntu media..."
@@ -85,8 +103,5 @@ xorriso -indev "$SOURCE_ISO" -outdev "$OUTPUT" \
   -boot_image any replay -commit
 
 "$ROOT/build/verify-iso.sh" "$OUTPUT"
-(
-  cd "$OUT_DIR"
-  sha256sum "$(basename "$OUTPUT")" > "$(basename "$OUTPUT").sha256"
-)
+sha256sum "$OUTPUT" > "$OUTPUT.sha256"
 echo "Created $OUTPUT"

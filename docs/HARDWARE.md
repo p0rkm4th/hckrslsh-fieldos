@@ -12,13 +12,23 @@ physically validated.
 | Accelerated | 32–64 GiB | Prefer tested NVIDIA/AMD/Intel backend and compatible model |
 | High Performance | 64+ GiB | Highest-priority bundled model fitting usable RAM/VRAM |
 
-The selector reserves memory for the OS and other applications, never assumes
-that shared graphics memory is dedicated VRAM, and falls back to CPU when an
-accelerator is unsupported or not verified. NVIDIA Secure Boot signing,
+The detector reports free NVIDIA VRAM from `nvidia-smi` and available
+dedicated DRM VRAM where the kernel exposes `mem_info_vram_total` and
+`mem_info_vram_used`. It does not count shared system memory as dedicated
+VRAM. The selector reserves memory for the OS and other applications and
+falls back to CPU when an accelerator is unsupported or not verified. NVIDIA Secure Boot signing,
 proprietary driver availability, and AMD/Intel backend support are validated
 per image and are not promised generically. GPS, battery, and storage facts are
 reported when the kernel exposes them.
 
-Test hardware fixtures are synthetic. Actual validation in the current build
-environment is limited to the workstation used for ISO construction; physical
-field laptops remain untested until a separate acceptance report names them.
+The operator may set `/etc/fieldos/model-override` before firstboot to request a
+bundled model by manifest ID. The selector still rejects a model absent from
+the payload or above the detected memory budget. The default firstboot path
+marks only CPU as validated; GPU configuration is not enabled just because a
+GPU appears in the detector output.
+
+Fixture tests cover memory bands, model fallback, available payload IDs, manual
+override validation, CPU features, and available VRAM calculation. These are
+synthetic selection tests. They do not validate GPU inference. Hardware used
+by the current QEMU acceptance test is virtual CPU only; physical field
+laptops and accelerators still need separate test evidence.

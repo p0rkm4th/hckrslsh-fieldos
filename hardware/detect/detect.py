@@ -52,22 +52,34 @@ def cpu_facts() -> dict:
 
 def gpu_facts() -> list[dict]:
     gpus = []
-    nvidia = run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"])
+    nvidia = run(["nvidia-smi", "--query-gpu=name,memory.total,memory.free", "--format=csv,noheader,nounits"])
     for row in nvidia.splitlines():
-        fields = [field.strip() for field in row.split(",", 1)]
-        if len(fields) == 2:
+        fields = [field.strip() for field in row.split(",")]
+        if len(fields) == 3:
             try:
-                memory = round(float(fields[1]) / 1024, 2)
+                total = round(float(fields[1]) / 1024, 2)
+                available = round(float(fields[2]) / 1024, 2)
             except ValueError:
-                memory = 0
-            gpus.append({"vendor": "nvidia", "model": fields[0], "vram_gib": memory, "cuda": True})
+                total = available = 0
+            gpus.append({"vendor": "nvidia", "model": fields[0], "vram_gib": available,
+                         "vram_total_gib": total, "cuda": True})
     if gpus:
         return gpus
     for device in sorted(Path("/sys/class/drm").glob("card[0-9]*/device")):
         vendor = read_text(device / "vendor")
         model = read_text(device / "device")
         if vendor:
-            gpus.append({"vendor_id": vendor, "device_id": model, "model": "", "vram_gib": 0, "cuda": False})
+            total_raw = read_text(device / "mem_info_vram_total")
+            used_raw = read_text(device / "mem_info_vram_used")
+            try:
+                total_bytes = int(total_raw)
+                used_bytes = int(used_raw) if used_raw else 0
+                total = round(total_bytes / 1024**3, 2)
+                available = round(max(0, total_bytes - used_bytes) / 1024**3, 2)
+            except ValueError:
+                total = available = 0
+            gpus.append({"vendor_id": vendor, "device_id": model, "model": "",
+                         "vram_gib": available, "vram_total_gib": total, "cuda": False})
     return gpus
 
 

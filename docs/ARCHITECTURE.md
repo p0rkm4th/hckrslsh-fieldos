@@ -1,58 +1,66 @@
 # Architecture
 
-## Base and upstream
+## Base and upstream components
 
-- x86-64 Ubuntu 26.04.1 LTS Desktop, official live installer.
-- Project N.O.M.A.D. v1.35.1, upstream commit
-  `0dbbd21c2f470975e86131c497694c147ca8bc00` (Apache-2.0).
-- Ollama for local inference, with independently selected chat and embedding
-  models. N.O.M.A.D. remains the central interface; no competing UI is added.
-- Kiwix ZIM content and ProtoMaps-compatible map data remain separate,
-  checksummed payloads with their own attribution and redistribution review.
-- Optional QGIS and GPS support are not required for the first test image.
+- x86-64 Ubuntu 26.04.1 LTS Desktop from the checksum pinned official ISO.
+- Project N.O.M.A.D. v1.35.1 from the upstream Apache-2.0 project.
+- Docker Compose services for MySQL, Redis, Ollama, Qdrant, Kiwix, and Dozzle.
+- A bundled Ollama chat model and separate embedding model.
+- A small Kiwix ZIM and N.O.M.A.D. compatible `world.pmtiles` basemap.
+
+N.O.M.A.D. remains the main application. FieldOS seeds its runtime data paths
+and loads pinned container images from the local payload before starting the
+Compose project. It does not add a separate assistant interface.
 
 ## Installer and first boot
 
-The installer must use explicit user account credentials, provide optional
-full-disk encryption through Ubuntu's supported installer path, and require
-explicit target-disk selection/erasure confirmation. Provisioning is
-idempotent and consumes only local package, container, model, and content
-payloads. It never performs a hidden network fetch. A local systemd unit
-completes provisioning after installation and before presenting the N.O.M.A.D.
-launcher. Failure of optional hardware or payloads leaves a usable desktop and
-reports a local diagnostic rather than blocking login.
+The customer ISO keeps Ubuntu's interactive account and storage setup, target
+disk choice, and supported full disk encryption option. The unattended
+identity and disk layout exist only in the generated acceptance ISO.
 
-## Hardware adaptation
+The installed system runs `fieldos-firstboot.service`. It checks the payload
+checksum, extracts the local APT package index and dependencies, installs
+packages without accessing remote repositories, loads OCI images, seeds
+persistent content and runtime directories, initializes the Kiwix library,
+creates per installation service secrets, and starts the services without
+pulling images. The provisioning marker and diagnostics are stored under
+`/var/lib/fieldos/`; logs are in `/var/log/fieldos-firstboot.log`.
 
-`hardware/detect/` reports CPU, memory, graphics, storage, battery, and GPS
-capabilities as JSON. `hardware/select_profile.py` applies a declarative model
-manifest, reserving memory for the OS and selecting the highest-priority model
-that fits known RAM/VRAM and backend constraints. GPU acceleration is only
-eligible when a backend is explicitly marked runtime-validated; first boot
-currently validates CPU only. Missing or uncertain GPU information falls back
-to CPU. Embeddings are selected independently. Runtime benchmarking and
-automatic fallback after a model load failure remain unimplemented.
+Repeated provisioning does not replace existing database, Redis, Qdrant,
+model, or valid Kiwix library data. Invalid Kiwix XML is retained with an
+`.invalid.<timestamp>` suffix before a new library is made.
 
-## Offline payload boundary
+## Local network boundaries
 
-The ISO build assembles a checksum-verified payload: package dependencies,
-pinned N.O.M.A.D. and service images, Ollama runtime, a redistributable chat
-model and embedding model, a small ZIM, and a low-zoom global map. The test image contains one small tier; the full edition uses an
-installer plus an automatically recognized offline payload partition when
-the resulting image exceeds practical USB-media limits. Large outputs and
-download caches stay out of Git.
+The containers share an internal Docker bridge. Services exposing local web
+or API ports also attach to a host accessible bridge with masquerading disabled.
+This addresses the current Docker 29 behavior for port publishing from an
+internal only bridge while allowing the owner to use loopback endpoints.
+Firstboot and acceptance tests use a VM with no virtual network adapter.
 
-## Trust boundaries
+The management UI and service ports bind to `127.0.0.1`. Opening them to a LAN
+is an explicit operator configuration change. The initial offline payload
+does not require remote registries, package repositories, or online content
+services at run time.
 
-N.O.M.A.D. requires Docker control of local services. Its management interface
-therefore binds to localhost by default. No remote exposure, telemetry,
-credentials, or online update is required for initial use. Upstream updates
-are opt-in and reviewed as versioned changes to the manifests.
+## Hardware selection
 
-## Current integration constraint
+`hardware/detect/detect.py` reports CPU instruction features, RAM, GPU facts,
+storage, battery, and GPS visibility as JSON. `hardware/select_profile.py`
+compares that data with `models/manifest.json` and the model IDs present in the
+offline payload. It reserves RAM, prefers a validated compatible backend, and
+falls back to CPU. The current firstboot path validates CPU inference only;
+GPU backends and their usable VRAM must not be described as tested until a
+physical hardware run validates model loading and generation on them.
 
-Upstream v1.35.1's documented setup wizard downloads container images, models,
-ZIMs, maps, and other content. FieldOS must stage these in advance and seed
-N.O.M.A.D.'s documented storage/runtime paths or provide a local image/content
-source. Until the boot/install/offline acceptance tests pass, the upstream UI
-and individual service integrations are not considered a completed appliance.
+## Payload and release boundary
+
+The test edition contains one small content/model tier. The expanded edition
+is a later release step and may use a separate content partition when its
+payload is too large for practical USB media. ISO images, VM disks, downloaded
+packages, model weights, container archives, and build caches stay outside Git.
+
+`make test-e2e` is the operational acceptance gate. A successful build or
+container start alone does not establish that the application, inference,
+reference content, maps, or reboot persistence work. See
+[`TESTING.md`](TESTING.md) and [`RELEASE.md`](RELEASE.md) for measured results.
