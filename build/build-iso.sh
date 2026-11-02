@@ -85,5 +85,8 @@ xorriso -indev "$SOURCE_ISO" -outdev "$OUTPUT" \
   -boot_image any replay -commit
 
 "$ROOT/build/verify-iso.sh" "$OUTPUT"
-sha256sum "$OUTPUT" > "$OUTPUT.sha256"
+(
+  cd "$OUT_DIR"
+  sha256sum "$(basename "$OUTPUT")" > "$(basename "$OUTPUT").sha256"
+)
 echo "Created $OUTPUT"
