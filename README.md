@@ -13,11 +13,13 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-FieldOS is still in integration testing. `make test-e2e` builds a test only
-unattended ISO and installs it into a disposable UEFI QEMU/KVM guest with no
-network device. The current acceptance result and captured logs are kept in
-`build/e2e/` on the build workstation. The customer ISO uses the separate
-interactive identity and disk selection flow in
+The unattended offline installation and service acceptance suite has passed
+in a disposable UEFI QEMU/KVM guest with no network device. Its report and
+captured logs are kept in `build/e2e/` on the build workstation. The separate
+customer ISO has been built and its interactive installer reached disk setup;
+a full customer ISO installation, rendered map view, GPU inference, and
+third-party redistribution review remain outstanding. The customer ISO uses
+the interactive identity and disk selection flow in
 [`installer/autoinstall/user-data`](installer/autoinstall/user-data).
 See [release evidence](docs/RELEASE.md) before treating any image as ready to
 install on a physical computer.
