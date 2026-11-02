@@ -28,6 +28,14 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertEqual(result["chat_model"], SMALL)
         self.assertEqual(result["chat_backend"], "cpu")
 
+    def test_fallback_uses_largest_bundled_model_that_fits(self):
+        small = SMALL
+        medium = "qwen3-1.7b-q4_k_m"
+        large = "qwen3-4b-instruct-2507-q4_k_m"
+        result = select({"memory_gib": 8.5, "gpus": []}, MANIFEST, {small, medium, large})
+        self.assertEqual(result["chat_model"], medium)
+        self.assertEqual(result["fallback_model_ids"], [small])
+
     def test_missing_payload_model_is_never_selected(self):
         result = select({"memory_gib": 64, "gpus": []}, MANIFEST, set(), available_embedding_ids=set())
         self.assertIsNone(result["chat_model"])

@@ -7,6 +7,9 @@ services:
     init: true
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - default
+      - local-ui
     ports:
       - 127.0.0.1:8080:8080
     volumes:
@@ -74,6 +77,9 @@ services:
     environment:
       OLLAMA_HOST: 0.0.0.0:11434
       OLLAMA_NO_CLOUD: "1"
+    networks:
+      - default
+      - local-ui
     ports:
       - 127.0.0.1:11434:11434
     volumes:
@@ -85,6 +91,9 @@ services:
     restart: unless-stopped
     environment:
       QDRANT__TELEMETRY_DISABLED: "true"
+    networks:
+      - default
+      - local-ui
     ports:
       - 127.0.0.1:6333:6333
     volumes:
@@ -95,6 +104,9 @@ services:
     container_name: nomad_kiwix_server
     restart: unless-stopped
     command: [--library, /data/kiwix-library.xml, --monitorLibrary, --address=all]
+    networks:
+      - default
+      - local-ui
     ports:
       - 127.0.0.1:8090:8080
     volumes:
@@ -111,8 +123,16 @@ services:
     environment:
       DOZZLE_ENABLE_ACTIONS: "false"
       DOZZLE_ENABLE_SHELL: "false"
+    networks:
+      - default
+      - local-ui
 
 networks:
   default:
     name: fieldos-internal
     internal: true
+  local-ui:
+    name: fieldos-local-ui
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"
