@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Project N.O.M.A.D.
+Comment=Offline field knowledge, maps, and local AI
+Exec=xdg-open http://localhost:8080
+Icon=applications-internet
+Terminal=false
+Categories=Education;Utility;

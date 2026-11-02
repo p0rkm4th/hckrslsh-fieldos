@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "notes": "Only artifacts actually present in the local payload may be selected. Memory values are conservative runtime estimates, not vendor guarantees.",
+  "chat_models": [
+    {
+      "id": "qwen3-0.6b-q4_k_m",
+      "ollama_ref": "qwen3:0.6b-q4_K_M",
+      "family": "Qwen3",
+      "parameters_b": 0.752,
+      "quantization": "Q4_K_M",
+      "disk_bytes": 523000000,
+      "ram_gib": 1.8,
+      "vram_gib": 1.2,
+      "context_tokens": 4096,
+      "backends": ["cpu", "cuda", "rocm", "vulkan"],
+      "license": "Apache-2.0",
+      "license_url": "https://ollama.com/library/qwen3:0.6b",
+      "quality_priority": 10,
+      "bundled_in_test_iso": true
+    },
+    {
+      "id": "qwen3-1.7b-q4_k_m",
+      "ollama_ref": "qwen3:1.7b-q4_K_M",
+      "family": "Qwen3",
+      "parameters_b": 1.7,
+      "quantization": "Q4_K_M",
+      "disk_bytes": 1400000000,
+      "ram_gib": 3.5,
+      "vram_gib": 2.4,
+      "context_tokens": 8192,
+      "backends": ["cpu", "cuda", "rocm", "vulkan"],
+      "license": "Apache-2.0",
+      "license_url": "https://ollama.com/library/qwen3/tags",
+      "quality_priority": 20,
+      "bundled_in_test_iso": false
+    },
+    {
+      "id": "qwen3-4b-instruct-2507-q4_k_m",
+      "ollama_ref": "qwen3:4b-instruct-2507-q4_K_M",
+      "family": "Qwen3",
+      "parameters_b": 4.0,
+      "quantization": "Q4_K_M",
+      "disk_bytes": 2500000000,
+      "ram_gib": 7.0,
+      "vram_gib": 5.0,
+      "context_tokens": 8192,
+      "backends": ["cpu", "cuda", "rocm", "vulkan"],
+      "license": "Apache-2.0",
+      "license_url": "https://ollama.com/library/qwen3/tags",
+      "quality_priority": 30,
+      "bundled_in_test_iso": false
+    }
+  ],
+  "embedding_models": [
+    {
+      "id": "nomic-embed-text-v1.5",
+      "ollama_ref": "nomic-embed-text:v1.5",
+      "disk_bytes": 274000000,
+      "ram_gib": 0.7,
+      "license": "Apache-2.0",
+      "license_url": "https://ollama.com/library/nomic-embed-text",
+      "bundled_in_test_iso": true
+    }
+  ],
+  "system_memory_reserve_gib": 4.0,
+  "minimum_free_disk_gib": 8.0
+}

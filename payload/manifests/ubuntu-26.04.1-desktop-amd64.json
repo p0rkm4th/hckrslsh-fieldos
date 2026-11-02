@@ -1,0 +1,6 @@
+{
+  "name": "Ubuntu 26.04.1 LTS Desktop AMD64",
+  "url": "https://releases.ubuntu.com/26.04/ubuntu-26.04.1-desktop-amd64.iso",
+  "sha256": "601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f",
+  "license": "Ubuntu licensing terms; see the original ISO and Ubuntu notices"
+}
