@@ -4,6 +4,9 @@ autoinstall:
   interactive-sections:
     - identity
     - storage
+  storage:
+    layout:
+      name: lvm
   late-commands:
     - mkdir -p /target/opt/fieldos
     - mkdir -p /target/usr/share/applications

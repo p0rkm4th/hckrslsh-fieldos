@@ -83,12 +83,12 @@ docker run --rm --network bridge \
   -v "$STAGE/content/maps/pmtiles:/maps" \
   --entrypoint /usr/local/bin/pmtiles \
   "$NOMAD_REF@$NOMAD_DIGEST" \
-  extract "https://build.protomaps.com/$MAP_KEY" /maps/world.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
+  extract "https://build.protomaps.com/$MAP_KEY" /maps/nomad.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
 docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
-  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/world.pmtiles \
-  > "$STAGE/manifests/world-map-metadata.txt"
+  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/nomad.pmtiles \
+  > "$STAGE/manifests/nomad-map-metadata.txt"
 cat > "$STAGE/licenses/protomaps-odbl-attribution.txt" <<'EOF'
-The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json. Preserve this attribution in the map interface and any redistributed derivative.
+The nomad.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json. Preserve this attribution in the map interface and any redistributed derivative.
 EOF
 
 echo "Fetching model license texts and pinned Ollama model payloads..."
@@ -112,6 +112,14 @@ docker exec "$MODEL_CONTAINER" ollama show qwen3:0.6b-q4_K_M --license > "$STAGE
 docker exec "$MODEL_CONTAINER" ollama show nomic-embed-text:v1.5 --license > "$STAGE/licenses/models/nomic-embed-text/Ollama-LICENSE.txt"
 docker rm -f "$MODEL_CONTAINER" >/dev/null
 MODEL_CONTAINER="fieldos-model-seed-$$"
+OLLAMA_REF=ollama/ollama:0.33.3
+OLLAMA_DIGEST=sha256:32931b46719f673c05fdbaa81ccb26da18ea4a1c57590a754874ab28ba269eb2
+# The Ollama CLI creates a private registry key and a recommendation cache.
+# Neither belongs in the offline model payload; only public model blobs do.
+docker run --rm --network none \
+  -v "$STAGE/content/ollama:/data" \
+  --entrypoint /bin/sh "$OLLAMA_REF@$OLLAMA_DIGEST" \
+  -c 'rm -rf /data/cache /data/id_ed25519; chmod -R a+rX /data/models'
 cat > "$STAGE/model-ids.json" <<'EOF'
 {
   "chat": ["qwen3-0.6b-q4_k_m"],
@@ -155,4 +163,9 @@ tar --sort=name --mtime='UTC 2026-11-02' --owner=0 --group=0 --numeric-owner \
   cd "$OUT"
   sha256sum "$(basename "$ARCHIVE")" > "$(basename "$ARCHIVE").sha256"
 )
+# Restore host ownership so the EXIT trap can remove root-owned Ollama files.
+docker run --rm --network none \
+  -v "$STAGE:/stage" \
+  --entrypoint /bin/sh "$OLLAMA_REF@$OLLAMA_DIGEST" \
+  -c "chown -R $(id -u):$(id -g) /stage/content/ollama"
 echo "Prepared payload: $ARCHIVE ($(du -h "$ARCHIVE" | awk '{print $1}'))"
