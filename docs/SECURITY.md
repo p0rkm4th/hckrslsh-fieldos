@@ -50,7 +50,8 @@ the generated `/etc/fieldos/services.env` readable only by root, and exclude
 its contents, SSH keys, VM credentials, and private machine identifiers from
 support bundles and Git history.
 
-The N.O.M.A.D. Docker socket permission is the one known privilege that cannot
-reasonably be removed while retaining its upstream container-management
-feature. This is a single-user appliance assumption, not a multi-user security
-boundary.
+The firstboot-generated credentials are stored in `/opt/fieldos/services/.env`
+with mode `0600` and root ownership. The N.O.M.A.D. Docker socket permission is
+the one known privilege that cannot reasonably be removed while retaining its
+upstream container-management feature. This is a single-user appliance
+assumption, not a multi-user security boundary.

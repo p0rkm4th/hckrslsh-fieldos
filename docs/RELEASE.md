@@ -68,11 +68,13 @@ still presents interactive disk and account setup.
   `e07f39a20e64fc1127086739afce39fbbffc12220f8cff126509072c32f7e899`.
 - `build/verify-iso.sh` passed BIOS/UEFI boot records, payload, NoCloud
   configuration, FieldOS boot entry, and default selection; SHA-256 sidecar
-  verified. A disposable VM booted the default selection automatically into
-  interactive disk setup without input. The installer was not run to
-  completion on R3; full interactive install evidence is from R2's same
-  FieldOS entry and payload.
-- Boot report and screenshots:
+  verified. A fresh 80 GiB disposable UEFI guest completed the R3 interactive
+  install with account and disk selection. The clean remove-media/Enter handoff
+  booted to the installed desktop. Offline firstboot loaded all seven local
+  images, N.O.M.A.D., chat, embedding, Kiwix, and map endpoints passed, and
+  Firefox rendered the regional map. Essential checks and content hashes
+  passed after two reboots.
+- Interactive install report and screenshots:
   `/mnt/shared/fieldos-e2e/customer-r3-bootcheck-20261102/report.md`.
 - ISO and test evidence are local and unpublished.
 
@@ -81,13 +83,13 @@ still presents interactive disk and account setup.
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | Current-source E2E report and test ISO hash |
-| Interactive customer installation | PASS | R2 FieldOS entry; `customer-correct-entry-20261102/report.md` |
-| Clean installer media/restart handoff | PASS | Prompt, post-prompt eject, Enter, installed disk boot |
-| R3 default installer selection | PASS | No-input GRUB countdown reached disk setup |
+| Interactive customer installation | PASS | Full R3 install, firstboot, and service checks |
+| Clean installer media/restart handoff | PASS | R3 prompt, post-prompt eject, Enter, installed disk boot |
+| R3 default installer selection | PASS | No-input GRUB countdown selected FieldOS and reached setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
 | Knowledge library and maps | PASS | Kiwix retrieval; PMTiles; real Firefox screenshot |
-| Reboot persistence | PASS | Two consecutive reboots; hashes and service checks |
+| Reboot persistence | PASS | R3 plus current-source E2E: two reboots, hashes and service checks |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | PENDING | Per-artifact legal/source review incomplete |
