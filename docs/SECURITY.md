@@ -31,9 +31,14 @@ Dozzle `9999`, Ollama `11434`, and Qdrant `6333`. MySQL and Redis are not
 published to the host. The main Compose bridge is internal; the UI bridge has
 IP masquerading disabled. Acceptance tests have verified no-NIC operation and
 blocked external egress from the N.O.M.A.D. container. A separate guest test
-with a network adapter enabled and LAN scanning has not yet been completed.
-Remote access is not configured. Do not change loopback binds to `0.0.0.0`
-without adding an explicit access-control and firewall plan.
+with QEMU user-mode networking enabled confirmed that the guest received an
+address, N.O.M.A.D. remained healthy, all five published ports were bound to
+`127.0.0.1`, and the same ports refused connections on the guest's NIC address.
+An outbound fetch from N.O.M.A.D. was blocked. This is not an inbound scan from
+a separate LAN peer; that remains unverified because this workstation's
+libvirt session cannot create a host bridge. Remote access is not configured.
+Do not change loopback binds to `0.0.0.0` without adding an explicit
+access-control and firewall plan.
 
 ## Operational checks
 

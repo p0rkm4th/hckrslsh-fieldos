@@ -89,16 +89,18 @@ still presents interactive disk and account setup.
 | Knowledge library and maps | PASS | Kiwix retrieval; PMTiles; real Firefox screenshot |
 | Reboot persistence | PASS | Two consecutive reboots; hashes and service checks |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
-| Network-enabled exposure | NOT TESTED | Loopback bindings reviewed; isolated LAN peer test pending |
+| Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | PENDING | Per-artifact legal/source review incomplete |
-| Public Git history | REVIEWED | Prior scan found no committed payload binaries or credentials |
+| Public Git history | PASS | Gitleaks found no secrets across 11 commits; tracked source scan also clean; no blobs over 1 MiB |
 | Content packs | ARCHITECTURE READY | Manifest schema/catalog; no customer content packs approved |
 
 ## Remaining release gates
 
-1. Attach a test VM to an isolated virtual network and test local usability,
-   LAN reachability, and remote-access defaults. Do not bridge it to production infrastructure or
-   other production networks.
+1. Test inbound service reachability from a separate guest on an isolated
+   virtual network. Current user-mode networking evidence verifies loopback
+   bindings and NIC-address refusal but is not a LAN peer scan. This host
+   session cannot create a libvirt bridge; do not bridge it to production infrastructure or other
+   production networks.
 2. Review redistribution and attribution for each Ubuntu package, container,
    model, map, and reference artifact in the candidate ISO. Record sources,
    licenses, notices, versions, and checksums.
@@ -107,6 +109,11 @@ still presents interactive disk and account setup.
 4. Synchronize installation, troubleshooting, and recovery instructions with
    the final implementation. Preserve source revision, build inputs, test
    reports, checksums, and known limitations.
+
+The 2026-11-02 Git history review scanned all 11 reachable commits with
+Gitleaks (no findings), scanned a snapshot of tracked source including current
+documentation (no findings), and found no Git blobs over 1 MiB. Scan reports
+are preserved under `/mnt/shared/fieldos-e2e/`.
 
 The expanded/full ISO must wait until these release gates pass. Never commit
 ISOs, model weights, credentials, VM disks, or downloaded image archives.
