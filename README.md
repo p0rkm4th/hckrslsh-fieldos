@@ -14,9 +14,12 @@ No production production infrastructure node or physical disk is a build target.
 ## Status
 
 Prototype in active development. Ubuntu 26.04.1 Desktop and Project N.O.M.A.D.
-v1.35.1 are the selected and pinned starting points. An existing official
-Ubuntu image is used only as a build input; the FieldOS artifact must be
-rebuilt, checksummed, and tested before it is called a release.
+v1.35.1 are pinned. The 11.1 GiB test ISO at
+`build/out/fieldos-test.iso` boots to the Ubuntu installer under UEFI; BIOS and
+UEFI records and payload presence pass `make verify`. The offline payload is
+5.11 GiB. A disposable QEMU guest detects its 80 GiB disk, but the install has
+not completed, so no installed-service or offline-operation result is claimed.
+See [current verification status](docs/RELEASE.md).
 
 ## Development
 
