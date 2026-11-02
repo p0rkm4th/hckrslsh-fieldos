@@ -41,11 +41,20 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertIsNone(result["chat_model"])
 
     def test_gpu_requires_explicit_backend_validation(self):
-        hw = {"memory_gib": 16, "gpus": [{"vendor": "nvidia", "vram_gib": 16, "cuda": True}]}
+        hw = {"memory_gib": 16, "gpus": [{"vendor": "nvidia", "vram_gib": 16,
+                                           "driver_available": True, "cuda": True}]}
         cpu_only = select(hw, MANIFEST, {SMALL})
         cuda_tested = select(hw, MANIFEST, {SMALL}, {"cpu", "cuda"})
         self.assertEqual(cpu_only["chat_backend"], "cpu")
         self.assertEqual(cuda_tested["chat_backend"], "cuda")
+
+    def test_backend_uses_its_own_driver_and_vram(self):
+        hw = {"memory_gib": 16, "gpus": [
+            {"vendor": "amd", "vram_gib": 24, "driver_available": True},
+            {"vendor": "nvidia", "vram_gib": 1, "driver_available": True},
+        ]}
+        selected = select(hw, MANIFEST, {SMALL}, {"cpu", "cuda"})
+        self.assertEqual(selected["chat_backend"], "cpu")
 
     def test_manual_override_must_fit_and_be_bundled(self):
         bigger = "qwen3-4b-instruct-2507-q4_k_m"

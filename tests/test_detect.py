@@ -33,6 +33,29 @@ class DetectionTests(unittest.TestCase):
         self.assertEqual(result[0]["vram_total_gib"], 8.0)
         self.assertEqual(result[0]["vram_gib"], 5.0)
 
+    @patch("hardware.detect.detect.run", return_value="RTX fixture, 12288, 10240")
+    @patch("hardware.detect.detect.Path.glob", return_value=[
+        Path("/fixture/card0/device"), Path("/fixture/card1/device")])
+    @patch("hardware.detect.detect.read_text")
+    def test_integrated_gpu_is_reported_alongside_nvidia(self, read, _glob, _run):
+        def facts(path):
+            return {
+                "/fixture/card0/device/vendor": "0x10de",
+                "/fixture/card0/device/device": "0x2208",
+                "/fixture/card0/device/mem_info_vram_total": str(12 * 1024**3),
+                "/fixture/card0/device/mem_info_vram_used": str(2 * 1024**3),
+                "/fixture/card1/device/vendor": "0x8086",
+                "/fixture/card1/device/device": "0x1234",
+            }.get(str(path), "")
+
+        read.side_effect = facts
+        result = gpu_facts()
+        self.assertEqual([gpu["vendor"] for gpu in result], ["nvidia", "intel"])
+        self.assertTrue(result[0]["driver_available"])
+        self.assertFalse(result[0]["runtime_validated"])
+        self.assertEqual(result[0]["vram_gib"], 10.0)
+        self.assertEqual(result[1]["vram_gib"], 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()

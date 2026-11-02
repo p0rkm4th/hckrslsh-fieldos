@@ -150,25 +150,54 @@ fi
 python3 "$ROOT/hardware/select_profile.py" \
   --hardware "$STATE/hardware.json" \
   --available "$PAYLOAD/model-ids.json" \
-  --validated-backends cpu "${model_args[@]}" > "$STATE/model-selection.json"
-model_ref=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("chat_model") or "")' "$STATE/model-selection.json")
+  --validated-backends cpu "${model_args[@]}" > "$STATE/model-selection-candidate.json"
+model_ref=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("chat_model") or "")' "$STATE/model-selection-candidate.json")
 if [[ -z "$model_ref" ]]; then
   echo "No usable bundled chat model was selected." >&2
   exit 1
 fi
-if [[ -n "$model_ref" ]]; then
-  ollama_ref=$(python3 - "$ROOT/models/manifest.json" "$model_ref" <<'PY'
+mapfile -t model_candidates < <(python3 - "$STATE/model-selection-candidate.json" <<'PY'
+import json, sys
+selection = json.load(open(sys.argv[1]))
+print(selection["chat_model"])
+print("\n".join(selection.get("fallback_model_ids", [])))
+PY
+)
+selected_id=""
+for candidate_id in "${model_candidates[@]}"; do
+  [[ -n "$candidate_id" ]] || continue
+  ollama_ref=$(python3 - "$ROOT/models/manifest.json" "$candidate_id" <<'PY'
 import json, sys
 manifest = json.load(open(sys.argv[1]))
 print(next(model["ollama_ref"] for model in manifest["chat_models"] if model["id"] == sys.argv[2]))
 PY
-)
-  curl --fail --silent http://127.0.0.1:11434/api/generate \
+  )
+  smoke_output="$STATE/inference-smoke-$candidate_id.json"
+  echo "Validating bundled model $candidate_id with a local generation request..."
+  if curl --fail --silent --show-error --max-time 180 http://127.0.0.1:11434/api/generate \
     -H 'Content-Type: application/json' \
     -d "{\"model\":\"$ollama_ref\",\"prompt\":\"Reply with FIELDOS_OK\",\"stream\":false,\"think\":false}" \
-    > "$STATE/inference-smoke.json"
-  grep -q FIELDOS_OK "$STATE/inference-smoke.json"
+    > "$smoke_output" && grep -q FIELDOS_OK "$smoke_output"; then
+    selected_id="$candidate_id"
+    break
+  fi
+  echo "Model $candidate_id failed its inference smoke check; trying the next compatible bundled model." >&2
+done
+if [[ -z "$selected_id" ]]; then
+  echo "No compatible bundled chat model passed the inference smoke check." >&2
+  exit 1
 fi
+python3 - "$STATE/model-selection-candidate.json" "$STATE/model-selection.json" "$selected_id" <<'PY'
+import json, sys
+from pathlib import Path
+selection = json.loads(Path(sys.argv[1]).read_text())
+selected = sys.argv[3]
+selection["chat_model"] = selected
+selection["fallback_model_ids"] = [item for item in selection.get("fallback_model_ids", []) if item != selected]
+selection["validation"] = "local chat generation passed"
+Path(sys.argv[2]).write_text(json.dumps(selection, indent=2) + "\n")
+PY
+rm -f "$STATE/model-selection-candidate.json"
 curl --fail --silent http://127.0.0.1:11434/api/embed \
   -H 'Content-Type: application/json' \
   -d '{"model":"nomic-embed-text:v1.5","input":"offline embedding smoke test"}' \

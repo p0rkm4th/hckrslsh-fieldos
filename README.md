@@ -13,13 +13,15 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The unattended offline installation and service acceptance suite has passed
-in a disposable UEFI QEMU/KVM guest with no network device. Its report and
-captured logs are kept in `build/e2e/` on the build workstation. The separate
-customer ISO has been built and its interactive installer reached disk setup;
-a full customer ISO installation, rendered map view, GPU inference, and
-third-party redistribution review remain outstanding. The customer ISO uses
-the interactive identity and disk selection flow in
+The unattended offline installation and service acceptance suite passed in a
+disposable UEFI QEMU/KVM guest with no network device, including Firefox map
+rendering and two service-verified reboots. The report, screenshots, and logs
+are retained at
+`/mnt/shared/fieldos-e2e/20261102T214900Z-2020461/report.md`. A separate current
+customer ISO still needs to be built and installed through its interactive
+flow. Network-enabled exposure, physical GPU inference, supported hardware
+limits, and third-party redistribution review remain outstanding. The
+customer ISO uses the interactive identity and disk selection flow in
 [`installer/autoinstall/user-data`](installer/autoinstall/user-data).
 See [release evidence](docs/RELEASE.md) before treating any image as ready to
 install on a physical computer.
@@ -64,8 +66,13 @@ release; it must not be built until test edition acceptance passes.
 - [`docs/`](docs/) — architecture, installation, hardware, content, test, and
   release records.
 
-Start with [installation](docs/INSTALLATION.md), [architecture](docs/ARCHITECTURE.md),
-[hardware support](docs/HARDWARE.md), and [offline content/licensing](docs/OFFLINE-CONTENT.md).
+Start with the [documentation guide](docs/README.md), then read
+[installation](docs/INSTALLATION.md), [architecture](docs/ARCHITECTURE.md),
+[operations and troubleshooting](docs/OPERATIONS.md), [hardware support](docs/HARDWARE.md),
+and [offline content/licensing](docs/OFFLINE-CONTENT.md). The
+[content-pack architecture](docs/CONTENT-PACKS.md) is defined with an empty
+catalog pending source and license review. Review [security boundaries](docs/SECURITY.md)
+before changing exposed ports or Docker access.
 
 ## Security and redistribution
 

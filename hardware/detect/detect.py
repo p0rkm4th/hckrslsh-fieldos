@@ -61,25 +61,32 @@ def gpu_facts() -> list[dict]:
                 available = round(float(fields[2]) / 1024, 2)
             except ValueError:
                 total = available = 0
-            gpus.append({"vendor": "nvidia", "model": fields[0], "vram_gib": available,
-                         "vram_total_gib": total, "cuda": True})
-    if gpus:
-        return gpus
+            gpus.append({"vendor": "nvidia", "vendor_id": "0x10de", "model": fields[0],
+                         "vram_gib": available, "vram_total_gib": total,
+                         "cuda": True, "driver_available": True, "runtime_validated": False})
     for device in sorted(Path("/sys/class/drm").glob("card[0-9]*/device")):
         vendor = read_text(device / "vendor")
         model = read_text(device / "device")
-        if vendor:
-            total_raw = read_text(device / "mem_info_vram_total")
-            used_raw = read_text(device / "mem_info_vram_used")
-            try:
-                total_bytes = int(total_raw)
-                used_bytes = int(used_raw) if used_raw else 0
-                total = round(total_bytes / 1024**3, 2)
-                available = round(max(0, total_bytes - used_bytes) / 1024**3, 2)
-            except ValueError:
-                total = available = 0
-            gpus.append({"vendor_id": vendor, "device_id": model, "model": "",
-                         "vram_gib": available, "vram_total_gib": total, "cuda": False})
+        if not vendor or (vendor.lower() == "0x10de" and gpus):
+            continue
+        total_raw = read_text(device / "mem_info_vram_total")
+        used_raw = read_text(device / "mem_info_vram_used")
+        try:
+            total_bytes = int(total_raw)
+            used_bytes = int(used_raw) if used_raw else 0
+            total = round(total_bytes / 1024**3, 2)
+            available = round(max(0, total_bytes - used_bytes) / 1024**3, 2)
+        except ValueError:
+            total = available = 0
+        vendor_name = {"0x10de": "nvidia", "0x1002": "amd", "0x8086": "intel"}.get(vendor.lower(), "unknown")
+        try:
+            driver = (device / "driver").resolve(strict=True).name
+        except OSError:
+            driver = ""
+        gpus.append({"vendor": vendor_name, "vendor_id": vendor, "device_id": model,
+                     "model": model, "driver": driver or None, "driver_available": bool(driver),
+                     "vram_gib": available, "vram_total_gib": total,
+                     "cuda": False, "runtime_validated": False})
     return gpus
 
 
