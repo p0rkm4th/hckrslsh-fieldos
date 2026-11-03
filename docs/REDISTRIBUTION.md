@@ -6,18 +6,24 @@
 This document records an engineering review of the current test payload; it is
 not a legal opinion or a substitute for counsel's review.
 
-The current test candidate is R5:
-`/mnt/shared/fieldos-releases/fieldos-test-customer-r5.iso`, size
-11,956,518,912 bytes, SHA-256
-`8b121916cd13af315d268cae16643eab06244a5b3a256662767650cbf2b52ee2`.
-Its build input tree is source commit
-`fa0a2034044ac994fb2ea9663dc597da20aa2fa3`. The candidate modifies the Ubuntu
-Desktop ISO by adding FieldOS payload, provisioning files, and a GRUB entry; it
-retains Ubuntu branding. `make verify` and the sidecar checksum check passed,
-but this verifies the artifact structure and identity only. The R5 interactive
-test passed installation and service checks but did not establish a clean
-post-install reboot; see `docs/RELEASE.md` and
-`/mnt/shared/fieldos-e2e/customer-r5-20261103/report.md`.
+The latest current-source test candidate is
+`/mnt/shared/fieldos-releases/fieldos-test-customer-main-a4eebb8.iso`, size
+11,956,584,448 bytes, SHA-256
+`47fdf3f07773bb61f2bca321513f875ade39f6a01bf51afba98fb282529c3b28`. It was
+built from source commit `a4eebb84be8667d061f20b34b8701aa169b66d3e`; later
+commits changed documentation only. `make verify` passed ISO structure,
+BIOS/UEFI boot record, installer configuration, and payload checks. A fresh
+no-NIC QEMU installation passed interactive installation, clean media handoff,
+firstboot, service checks, and two reboots. The guest's installed content
+source and CC BY-SA license files matched the repository copies by SHA-256.
+These are technical and integrity checks; they do not clear redistribution
+rights. This candidate retains Ubuntu branding and is not approved for
+distribution. Detailed installation evidence is in `docs/RELEASE.md` and
+`/mnt/shared/fieldos-e2e/customer-iso-current-main-a4eebb8/report.md`.
+
+R5, the preceding candidate, was built from
+`fa0a2034044ac994fb2ea9663dc597da20aa2fa3`; its interrupted handoff is
+historical evidence only. It was superseded by the current-source candidate.
 
 Canonical's [IP rights policy](https://ubuntu.com/legal/intellectual-property-policy)
 says modified Ubuntu versions associated with Ubuntu trademarks require
@@ -39,7 +45,7 @@ is a historical candidate; its binary has been removed.
 | Dozzle, Ollama, Qdrant, Kiwix images | Direct licenses are recorded in `payload/manifests/images.json` and upstream links in `CONTAINER-IMAGES.md` | Pinned OCI digests | Generate/review SBOMs for the exact images; include transitive notices and any corresponding source required by the applicable licenses. |
 | Qwen3 0.6B chat model | Apache-2.0 model page: <https://huggingface.co/Qwen/Qwen3-0.6B> | `models/manifest.json` pins the Ollama manifest SHA-256 and quantized model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Nomic Embed Text v1.5 | Apache-2.0 model page: <https://huggingface.co/nomic-ai/nomic-embed-text-v1.5> | `models/manifest.json` pins the Ollama manifest SHA-256 and model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
-| Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes | User-facing source notes and license copy are added for the next build. Article/media-level license review remains open; R5 predates the notes and has not been rebuilt with them. |
+| Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes. Current guest's source/license documents match the repo checksums. | Archive-level provenance and attribution are present; article/media-level license review remains open. |
 | Protomaps world and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | Build key, bounds, zoom, size/checksum for generated maps; OSM/Protomaps attribution is present in the map UI and payload notices | Archive the applicable ODbL text and verify the exact build's attribution and derivative database obligations before distribution. |
 | Project N.O.M.A.D. Maps assets | Upstream source README and license/OFL notices are carried in the generated payload | Source commit pinned during build | Confirm notices cover every bundled sprite/font/asset and their exact source revisions. |
 
@@ -47,16 +53,21 @@ is a historical candidate; its binary has been removed.
 
 1. Resolve Canonical's trademark/modified Ubuntu image requirement, or build a
    compliant debranded derivative and retest it.
-2. Review the preserved Ubuntu package archive inventory and generate a
-   reproducible license/SBOM inventory for the exact package closure and each
-   pinned OCI image, including transitive licenses, copyright notices, source
-   availability, and license-specific source offers.
-3. Verify the new reference manifest against a freshly prepared payload, then
-   rebuild and test an ISO that exposes the offline source/attribution notes.
-   Complete the entry-level media license review; archive-level metadata does
-   not establish clearance for every embedded item.
-4. Preserve exact map, sprite, and font attributions and license text in the
-   installed system.
+2. Review the preserved Ubuntu package archive inventory and complete a
+   reproducible license/SBOM inventory for the exact installed Ubuntu package
+   closure and each pinned OCI image. An initial all-layer SPDX 2.3 scan of the
+   seven pinned Compose images is preserved at
+   `/mnt/shared/fieldos-e2e/repository-review-233b980/`; it catalogues 2,619
+   package and 44,903 file entries. Syft emitted declared-license metadata for
+   2,137 packages and concluded-license fields for 179, so manual review of
+   missing metadata, transitive notices, source availability, and license-
+   specific source offers remains necessary.
+3. Complete the entry-level media license review; archive-level metadata does
+   not establish clearance for every embedded item. The current image includes
+   the source/attribution guide and CC BY-SA text, and guest-side SHA-256
+   matches passed.
+4. Finish reviewing exact map, sprite, and font attribution coverage and
+   corresponding license text in the installed system.
 5. Have the final notices and distribution method reviewed before publishing
    any ISO or offline payload.
 
