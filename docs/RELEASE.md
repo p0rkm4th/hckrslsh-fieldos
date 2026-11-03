@@ -49,6 +49,10 @@ redistribution review remain open. Do not publish release binaries.
   `/mnt/shared/fieldos-e2e/customer-iso-offline-r1/report.md`.
 - This candidate therefore **fails** the interactive customer installation
   gate. It remains a local test artifact and is not approved for distribution.
+  A separate 8 GiB user-mode-network diagnostic reached the same disabled
+  control with a virtio NIC attached, so absence of an adapter alone is not the
+  cause. External reachability was not measured. Its screenshots and report
+  are at `/mnt/shared/fieldos-e2e/customer-iso-network-diagnostic/`.
 
 ## Acceptance evidence
 
@@ -276,7 +280,7 @@ still presents interactive disk and account setup.
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks clean across 40 commits at `4d4fccc`; report at `/mnt/shared/fieldos-e2e-4d4fccc/repository-review/gitleaks.json` |
+| Public Git history | PASS | Gitleaks clean across 41 commits through `183e248`; report at `/mnt/shared/fieldos-e2e-4d4fccc/repository-review/gitleaks-183e248.json`; no Git blobs over 1 MiB |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
