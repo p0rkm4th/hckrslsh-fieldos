@@ -8,35 +8,36 @@ interactive test environment and is not release acceptance.
 
 ## Current source and artifacts
 
-- Tested implementation source: `8b0bda34f4dc3da993eed8663fffc15653d11679` (`main` at the time of test; subsequent changes are documentation only).
-- Customer-mode candidate:
-  `/mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso`
-- Customer ISO SHA-256:
-  `fbec9104316cf0407acc7a5e218a26922ea1849dc3a97d52a45fef09da5db7b1`.
-- Fresh unattended E2E test ISO SHA-256:
-  `2052d8f22f526425e0ea77ee59eba1016e573fb265a74342cf95345baf4f2ba4`.
-- E2E evidence:
-  `/mnt/shared/fieldos-e2e/20261103T174505Z-2544533/report.md`, with logs
-  and `map-render.png` in the same directory.
-- Fresh customer-mode evidence:
-  `/mnt/shared/fieldos-e2e/customer-interactive-branded-8b0bda3-20261103/report.md`.
-- Persistent Kasm test guest: see [FieldOS Lab operations](FIELDOS-LAB.md).
+- Latest clean-source E2E source: `ec57fed731e915c4c0585dc1e6c648d71d338566`.
+- E2E test ISO SHA-256: `c775083ba8538dd282bc20efd82851ec2c2ddb747327f2fa5a1a33d7dc38ad42`.
+- E2E report and retained logs/screenshots:
+  `/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/report.md`.
+  Browser screenshot: `map-render.png`; the map visibly renders Nashville roads,
+  labels, parks, and river at zoom 13.
+- The E2E guest had no virtual NIC. It installed the map pack from separate
+  read-only media, checked local chat and embeddings, reference retrieval, and
+  services, and passed checks after two reboots. The 80 GiB guest disk was
+  retired only after PASS; its retirement record is retained beside the report.
+- Latest customer-mode candidate is stale, built from `8b0bda3`:
+  `/mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso`.
+  SHA-256: `fbec9104316cf0407acc7a5e218a26922ea1849dc3a97d52a45fef09da5db7b1`.
+  A current-source rebuild and independent interactive install remain pending.
+- Persistent Kasm Lab details: [FieldOS Lab operations](FIELDOS-LAB.md).
 
-These images and evidence are local test artifacts, not public release assets.
-Do not commit them or represent structural ISO verification as an installation
-pass.
+These are local engineering artifacts, not public release assets. The accepted
+E2E result is not customer installer acceptance.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh Ubuntu installation, offline | PASS | Current-source unattended VM installation in E2E report |
+| Fresh Ubuntu installation, offline | PASS | ec57fed E2E report; no virtual NIC; installer log retained |
 | Offline provisioning and local images | PASS | Firstboot complete; seven Compose services; external access blocked |
 | N.O.M.A.D. | PASS | `/api/health` returned `{"status":"ok"}` |
 | Local chat inference | PASS | Bundled `qwen3:0.6b-q4_K_M` generated `FIELDOS_ACCEPTANCE_OK` |
 | Embeddings | PASS | Bundled model returned a 768-element embedding |
 | Kiwix retrieval | PASS | Search/article retrieval recorded in E2E report |
-| Offline map | PASS for test fixture | Firefox rendered the map in the no-NIC E2E guest; regional coverage and zoom remain limited |
+| Offline map | PASS for tested optional pack | Browser rendered Nashville at zoom 13 from offline Middle Tennessee pack; screenshot retained |
 | Branded installed desktop | PASS | Fresh guest session checked wallpaper/theme and launchers |
 | Two-reboot persistence | PASS | Essential service checks repeated after both guest reboots |
 | Customer interactive installation | PARTIAL | Fresh install with interactive identity/disk selection booted from installed disk and passed services plus two reboots. After media eject, the VM powered off and required a host start from disk; automatic handoff and physical behavior remain unverified. See the customer-mode report. |
@@ -60,14 +61,12 @@ acceptance.
 
 ## Content and hardware limitations
 
-The bundled Wikipedia ZIM and low-zoom map are test-sized fixtures, not a
-comprehensive field library or navigation-grade regional map. No broad medical,
+The bundled Wikipedia ZIM and zoom-5 map fixtures are test-sized. The separately tested Middle Tennessee pack provides roads through zoom 13, but is not included in the core ISO and is not a comprehensive field library or navigation-grade map. No broad medical,
 emergency, agricultural, or survival coverage is claimed. The upstream
 N.O.M.A.D. Command Center landing page uses generic copy that overstates the
 reference packs present in this image; the FieldOS Start Here guide describes
 the actual fixture limits, but the discrepancy should be corrected before
-public release. Optional N.O.M.A.D. content acquisition and activation workflow
-remains incomplete. Before
+public release. One optional PMTiles map pack transfers, installs, registers, renders, and persists offline. The pack is a locally staged test artifact, not bundled or publicly released; other pack types remain storage-only. Before
 redistribution, review the exact content sources, licenses, attribution, and
 Ubuntu image terms in `docs/REDISTRIBUTION.md` and `docs/OFFLINE-CONTENT.md`.
 
