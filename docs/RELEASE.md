@@ -409,3 +409,72 @@ updates, and Gitleaks scanned all 48 reachable commits with no findings. The
 expanded/full ISO must wait until these remaining release gates pass. Never
 commit ISOs, model weights, credentials, VM disks, or downloaded image
 archives.
+
+### Latest clean automated acceptance and source-offer payload — 2026-11-03
+
+This dated entry supersedes older “latest” claims above. Earlier records remain
+as historical evidence, including interrupted runs; an interrupted or manually
+recovered run is not counted as a clean PASS.
+
+- Source commit: `709c8932ba39184be9a24e40df5939b958d62e79` (clean worktree;
+  synchronized with `origin/main` at test time).
+- Test report and retained evidence:
+  `/mnt/shared/fieldos-e2e-sourceoffer-r2/20261103T044051Z-2183912/report.md`.
+  The 80 GiB sparse guest disk is preserved at `guest.qcow2`; the VM is shut
+  off. Logs and screenshots, including Firefox `map-render.png`, are in the
+  same directory. The ephemeral test ISO and temporary user-data were removed.
+- The test-only ISO hash was
+  `ffddec1fab1ba452684d1dca69eeb322bbe592320a397b09e8d8abaadad19b6d`.
+  The installer powered off after unattended installation; the harness
+  automatically booted the installed system and completed checks without
+  keyboard/OCR handoff or manual repair.
+- Ubuntu installation, local APT provisioning, all seven local container
+  images, N.O.M.A.D. health (`{"status":"ok"}`), Qwen CPU generation
+  (`FIELDOS_ACCEPTANCE_OK`), 768-value embeddings, Kiwix catalog/search, and
+  offline world/regional map APIs passed with no virtual NIC. The regional map
+  rendered in Firefox at 1280x800. Container egress was blocked. Essential
+  service, inference, reference, and map checks passed after each of two
+  reboots with changed boot IDs.
+- Installed-image verification found seven image indexes, 1,174 candidate
+  notice files, and three corresponding Ghostscript source files; source
+  sizes and SHA-256 values matched the manifest. This is traceable source
+  material, not a complete license clearance.
+- The exact payload used by this run is
+  `/mnt/shared/fieldos-payload-source-offer-69c48e7/offline-payload.tar.zst`,
+  5.12 GiB, SHA-256
+  `b42712b4544c583389e60eda5cb91d52f39c60a81516dc46ef994b5f31c18c67`.
+  Payload archive validation confirmed 1,189 selected files, seven image
+  indexes, and three exact source files.
+- One preceding automated attempt reached the installer completion screen but
+  did not hand off unattended; the harness interrupted it without manual
+  intervention. It is explicitly not a PASS. The test-only autoinstall now
+  schedules a system poweroff after installation, allowing the harness to
+  detect shutdown and boot the installed target. Customer-facing installation
+  configuration is unchanged.
+
+### Current artifacts, storage, and release gates — 2026-11-03
+
+- Current unpublished test customer ISO (older payload; not cleared for
+  distribution):
+  `/mnt/shared/fieldos-releases/fieldos-test-customer-main-a4eebb8.iso`, SHA-256
+  `47fdf3f07773bb61f2bca321513f875ade39f6a01bf51afba98fb282529c3b28`.
+  The clean run above used an ephemeral test ISO that the harness removed; no
+  new customer ISO was produced or published.
+- Current payload and acceptance evidence are listed above. At the end of the
+  run `/mnt/shared` had 42 GiB available (1.2 TiB total, 97% used). Check free
+  space before creating large artifacts.
+- Removed two superseded, unattached ISO binaries after checking that no VM
+  referenced them: `fieldos-test-customer-r5.iso` and
+  `fieldos-test-customer-offline-r1.iso`. Their checksum sidecars and release
+  records were retained; the current ISO and all VM disks were preserved.
+- Remaining physical-customer gates include third-party redistribution and
+  attribution clearance, Ubuntu trademark/branding resolution, network-enabled
+  LAN peer exposure review, physical hardware validation, and fuller content
+  pack licensing/requirements. GPU acceleration is not physically validated;
+  the acceptance guest passed with CPU inference. The content-pack architecture
+  is present, while the catalog intentionally has no customer packs. The
+  current miniature archive and zoom-5 world map remain fixtures.
+- Do not recommend physical installation or publish release binaries until the
+  documented customer-readiness gates are satisfied. The interactive installer
+  has previously completed in QEMU; the latest acceptance run above validates
+  the new payload through the unattended test-only path.
