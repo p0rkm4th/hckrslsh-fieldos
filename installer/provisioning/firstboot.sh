@@ -9,12 +9,28 @@ PAYLOAD="$STATE/payload"
 LOG=/var/log/fieldos-firstboot.log
 exec > >(tee -a "$LOG") 2>&1
 
+record_failure() {
+  local rc=$1
+  local status_tmp
+  install -d -m 0755 "$STATE"
+  status_tmp=$(mktemp "$STATE/provisioning-status.json.XXXXXX")
+  printf '{"status":"failed","exit_code":%s,"log":"%s"}\n' "$rc" "$LOG" > "$status_tmp"
+  mv -f "$status_tmp" "$STATE/provisioning-status.json"
+}
+
 fail() {
   local rc=$?
+  trap - ERR
   echo "FieldOS provisioning failed (exit $rc). Logs: $LOG"
-  install -d -m 0755 "$STATE"
-  printf '{"status":"failed","exit_code":%s,"log":"%s"}\n' "$rc" "$LOG" > "$STATE/provisioning-status.json"
+  record_failure "$rc"
   exit "$rc"
+}
+
+fatal() {
+  local message=$1
+  echo "$message" >&2
+  record_failure 1
+  exit 1
 }
 trap fail ERR
 trap '[[ -z "${env_tmp:-}" ]] || rm -f -- "$env_tmp"' EXIT
@@ -169,17 +185,18 @@ python3 "$ROOT/hardware/select_profile.py" \
   --available "$PAYLOAD/model-ids.json" \
   --validated-backends cpu "${model_args[@]}" > "$STATE/model-selection-candidate.json"
 model_ref=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("chat_model") or "")' "$STATE/model-selection-candidate.json")
-if [[ -z "$model_ref" ]]; then
-  echo "No usable bundled chat model was selected." >&2
-  exit 1
-fi
-mapfile -t model_candidates < <(python3 - "$STATE/model-selection-candidate.json" <<'PY'
+model_candidates=()
+if [[ -n "$model_ref" ]]; then
+  mapfile -t model_candidates < <(python3 - "$STATE/model-selection-candidate.json" <<'PY'
 import json, sys
 selection = json.load(open(sys.argv[1]))
 print(selection["chat_model"])
 print("\n".join(selection.get("fallback_model_ids", [])))
 PY
 )
+else
+  echo "No bundled chat model fits this hardware profile; continuing in reference-only mode."
+fi
 selected_id=""
 for candidate_id in "${model_candidates[@]}"; do
   [[ -n "$candidate_id" ]] || continue
@@ -200,18 +217,20 @@ PY
   fi
   echo "Model $candidate_id failed its inference smoke check; trying the next compatible bundled model." >&2
 done
-if [[ -z "$selected_id" ]]; then
-  echo "No compatible bundled chat model passed the inference smoke check." >&2
-  exit 1
+if [[ -n "$model_ref" && -z "$selected_id" ]]; then
+  fatal "No compatible bundled chat model passed the inference smoke check."
 fi
 python3 - "$STATE/model-selection-candidate.json" "$STATE/model-selection.json" "$selected_id" <<'PY'
 import json, sys
 from pathlib import Path
 selection = json.loads(Path(sys.argv[1]).read_text())
 selected = sys.argv[3]
-selection["chat_model"] = selected
-selection["fallback_model_ids"] = [item for item in selection.get("fallback_model_ids", []) if item != selected]
-selection["validation"] = "local chat generation passed"
+if selected:
+    selection["chat_model"] = selected
+    selection["fallback_model_ids"] = [item for item in selection.get("fallback_model_ids", []) if item != selected]
+    selection["validation"] = "local chat generation passed"
+else:
+    selection["validation"] = "no bundled chat model fits; reference-only mode"
 Path(sys.argv[2]).write_text(json.dumps(selection, indent=2) + "\n")
 PY
 rm -f "$STATE/model-selection-candidate.json"

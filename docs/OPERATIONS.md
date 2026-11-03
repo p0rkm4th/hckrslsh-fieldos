@@ -30,6 +30,12 @@ sudo systemctl reset-failed fieldos-firstboot.service
 sudo systemctl start fieldos-firstboot.service
 ```
 
+On a minimal-memory system where no bundled chat model fits the configured
+reserve, provisioning completes in reference-only mode and records that result
+in `/var/lib/fieldos/model-selection.json`. A compatible bundled embedding
+model is still smoke-tested independently. Systems with a selected chat model
+must pass a local generation smoke test before firstboot completes.
+
 Do not remove `/var/lib/fieldos` to force a retry: it contains user data and
 persistent application state. A completed marker makes subsequent service
 starts skip provisioning. Review the log and status after any retry.
