@@ -6,9 +6,9 @@ ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
 Current source is public at `origin/main`. `make check` and `make test` passed
-on rewritten source commit `d43ca99` with 49 tests. The captured log is
-`/mnt/shared/fieldos-e2e/current-tests-d43ca99.log` (SHA-256
-`14d13d32df2c1fb99af881876246039ab05ef14853855dd08760e5446ee8affd`). Hardware
+on rewritten source commit `1dcc3b1` with 49 tests. The captured log is
+`/mnt/shared/fieldos-e2e/current-tests-1dcc3b1.log` (SHA-256
+`87e93b242552d5b1b31052df6a23156dbc9d7da50e06dfe23ff7dfa5679ac027`). Hardware
 fixtures and workstation Vulkan detection are covered, but the existing
 offline payload predates `vulkan-tools`, so installed-system Vulkan reporting
 remains unverified. The earlier hardware evidence is in
