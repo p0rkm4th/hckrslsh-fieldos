@@ -28,9 +28,12 @@ confirmed. Neither result accepts the customer installer.
 The current customer ISO candidate is
 `/mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso`,
 SHA-256 `fbec9104316cf0407acc7a5e218a26922ea1849dc3a97d52a45fef09da5db7b1`.
-It has structural verification only; a fresh interactive customer installation
-and media handoff remain unverified. FieldOS is not ready for physical customer
-installation: customer install/handoff, LAN peer isolation, physical GPU
+It passed structural verification and a fresh interactive QEMU installation.
+The customer selected identity and target disk, the installed disk booted, and
+offline services passed over two reboots. The VM powered off after the media
+removal prompt, so the test runner had to start it from its installed disk;
+automatic handoff remains a caveat. FieldOS is not ready for physical
+customer installation: customer handoff, LAN peer isolation, physical GPU
 inference, broader hardware coverage, and redistribution review for the exact
 Ubuntu image and third-party payload remain open. The customer ISO retains
 interactive identity and disk selection in
