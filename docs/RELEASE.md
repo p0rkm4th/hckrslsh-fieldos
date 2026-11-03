@@ -5,6 +5,17 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
+Before this documentation update (2026-11-03), public `origin` was
+`git@github.com:p0rkm4th/hckrslsh-fieldos.git`; latest pushed commit is
+`14796afb0047c2133a7c61ee76a6b786a98986e0` and the working tree was clean.
+The latest clean unattended VM acceptance remains the report below at source
+`6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a fresh
+acceptance of the current head. The interactive customer ISO likewise predates
+current source. `/mnt/shared` has 18 GiB free, below the 50 GiB E2E preflight,
+so no current-source ISO or VM run was started. Existing VM disks were
+preserved. The historical passes remain useful evidence for the tested source
+and environment, but current-source release acceptance is open.
+
 Latest verified gates (2026-11-03): a clean unattended offline acceptance run
 passed, followed by a separate fresh-disk interactive customer ISO test. Both
 UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
