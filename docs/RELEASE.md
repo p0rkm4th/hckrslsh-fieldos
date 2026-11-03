@@ -2,15 +2,14 @@
 
 The latest clean unattended offline acceptance run passed on source commit
 `4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`; report and browser screenshot are
-under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. It verified
-installation, offline provisioning, local AI, reference retrieval, browser map
-rendering, and service persistence through two reboots. The latest interactive
-customer ISO diagnostic completed installation to its disposable target and
-booted that installed disk to GDM after a host start. The normal remove-media
-and Enter handoff powered the VM off, so the customer installation gate remains
-PARTIAL, not a clean pass. Earlier “disabled Next” reports used an incomplete
-QMP click sequence and do not establish an installer, storage, or network
-defect. FieldOS is not recommended for physical customer installation.
+under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. A separate
+interactive installation of the current customer ISO also completed normally,
+booted the installed disk after the remove-media prompt, and passed service,
+inference, content, map-tile, and two-reboot checks with no virtual NIC. This is
+QEMU validation, not a physical customer installation. FieldOS is not yet
+recommended for physical customer installation because network-enabled LAN
+exposure, customer hardware coverage, Canonical's modified Ubuntu trademark
+requirement, and detailed third-party redistribution review remain open.
 Customer installer completion, LAN peer scan, physical GPU validation,
 Canonical's modified Ubuntu trademark requirement, and exact third-party
 redistribution review remain open. Do not publish release binaries.
@@ -33,7 +32,43 @@ redistribution review remain open. Do not publish release binaries.
 - Full report, installation/firstboot logs, screenshots, and stopped guest disk
   remain at `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`.
 
-### Latest customer ISO attempt — offline R1, 2026-11-03
+### Latest current-source interactive customer ISO acceptance — 2026-11-03
+
+- Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-main-a4eebb8.iso`;
+  SHA-256 `47fdf3f07773bb61f2bca321513f875ade39f6a01bf51afba98fb282529c3b28`.
+  The source tree matches the code used in the clean unattended acceptance
+  above; the intervening source commits changed only these release/installation
+  documents. ISO structure, BIOS/UEFI boot records, installer configuration,
+  and bundled payload were verified when built.
+- Fresh 80 GiB UEFI QEMU guest with no virtual NIC, a disposable `vda`, and the
+  ISO on virtual `sda`. Interactive disk and account setup completed. At the
+  remove-media prompt, the virtual ISO was ejected and Enter pressed; firmware
+  booted the installed target to GDM without a host-side VM start. Firstboot
+  reached `status=complete` and loaded all seven local images without registry
+  access.
+- N.O.M.A.D. `/api/health` returned `{"status":"ok"}`; bundled Qwen generated
+  `FIELDOS_CUSTOMER_INSTALL_OK`; the bundled embedding model returned a
+  768-element vector; Kiwix catalog and New York article search succeeded;
+  world PMTiles returned a 66,795-byte tile; the regional pack appeared in the
+  map API and served a valid HTTP range. Firefox rendered the regional map in
+  the clean unattended run above, built from identical application, payload,
+  and provisioning code. The installed guest was isolated from external
+  networking; Docker's internal bridges/veth devices are present as expected.
+- After each of two in-guest reboots, all seven containers returned and the
+  health endpoint, chat generation, embeddings, Kiwix search, and map tile/API
+  checks passed. On the second boot an immediate API probe raced container
+  startup and got a connection reset; the endpoint became healthy moments
+  later, and the full post-reboot check passed on retry with no repair or data
+  change. The mounted Kiwix content is read-only, `/opt/fieldos/services/.env`
+  is `0600 root:root`, and desktop user `fieldos` is not in the Docker group.
+- Report, QGA acceptance logs, screenshots, and guest disk are under
+  `/mnt/shared/fieldos-e2e/customer-iso-current-main-a4eebb8/`. The guest disk
+  is retained and the VM remains running for inspection. ISO and VM disk are
+  test artifacts, not published release binaries. This pass validates the
+  customer installer path in a disposable VM, not a physical machine or a
+  network-enabled LAN configuration.
+
+### Earlier customer ISO attempt — offline R1, 2026-11-03
 
 - Candidate: `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`
   (11,956,584,448 bytes), SHA-256

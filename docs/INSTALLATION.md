@@ -16,21 +16,21 @@ provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” Keep the USB installation media connected until Ubuntu prompts
-you to remove it; then remove it and press ENTER. In the latest R2 QEMU
-diagnostic, installation completed, but the guest powered off after media
-ejection and ENTER. A host start booted the installed target to GDM. This is a
-partial diagnostic, not a verified handoff or a customer acceptance pass. If a
-test installation powers off, a single power-button start can boot it for
-recovery; record that as host intervention. The cause remains unresolved.
+you to remove it; then remove it and press ENTER. In the latest current-source
+QEMU customer-ISO acceptance, ejecting virtual media and pressing Enter booted
+the installed target to GDM without a host-side VM start. Services, local
+inference, reference retrieval, map tile serving, and persistence across two
+reboots then passed in a guest without a network adapter. This verifies the
+interactive installer in a disposable virtual machine; physical hardware and
+network-enabled LAN exposure remain unverified. See [`RELEASE.md`](RELEASE.md)
+for the candidate hash, exact evidence locations, and limitations.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
-FieldOS is not yet recommended for customer hardware.
-Earlier reports of a disabled installer Next button used incomplete QMP click
-events and are inconclusive. The latest no-network interactive diagnostic
-completed installation but did not verify automatic handoff or installed
-services. The ISO remains a local test candidate; see [`RELEASE.md`](RELEASE.md)
-for its report and current blockers.
+FieldOS is not yet recommended for physical customer hardware. Earlier reports
+of a disabled installer Next button used incomplete QMP click events and are
+inconclusive. The current ISO remains a local test candidate; see
+[`RELEASE.md`](RELEASE.md) for release gates and current blockers.
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
