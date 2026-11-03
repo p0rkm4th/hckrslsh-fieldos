@@ -28,8 +28,8 @@ local username path and unrelated infrastructure labels. The one published
 branch was rewritten with a lease; its tip tree is byte-for-byte unchanged.
 The audit of rewritten history found no remaining username or
 infrastructure-specific markers, no Gitleaks findings in its scan through
-`3f5a200`, no binary blobs, and no blobs larger than 10 MiB. Gitleaks report:
-`/mnt/shared/fieldos-e2e/gitleaks-history-clean.json`. Historical commit IDs in
+`df3566e`, no binary blobs, and no blobs larger than 10 MiB. Gitleaks report:
+`/mnt/shared/fieldos-e2e/gitleaks-df3566e.json`. Historical commit IDs in
 the dated records below refer to the pre-scrub graph and no longer resolve;
 their retained reports, artifact hashes, and test results remain the evidence
 for those historical runs. This scan does not substitute for licensing review.
