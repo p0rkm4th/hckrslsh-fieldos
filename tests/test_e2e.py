@@ -454,7 +454,7 @@ autoinstall:
         security = self.check(
             "container security baseline",
             "python3 - <<'PY'\n"
-            "import json, os, stat, subprocess\n"
+            "import grp, json, os, stat, subprocess\n"
             "names = ['nomad_admin', 'nomad_mysql', 'nomad_redis', 'nomad_ollama', 'nomad_qdrant', 'nomad_kiwix_server', 'nomad_dozzle']\n"
             "items = json.loads(subprocess.run(['docker', 'inspect', *names], check=True, capture_output=True, text=True).stdout)\n"
             "assert len(items) == len(names), 'missing expected containers'\n"
@@ -477,7 +477,9 @@ autoinstall:
             "assert socket_users == {'nomad_admin', 'nomad_dozzle'}, 'unexpected Docker socket consumers: ' + repr(socket_users)\n"
             "env = os.stat('/opt/fieldos/services/.env')\n"
             "assert stat.S_IMODE(env.st_mode) == 0o600 and env.st_uid == 0 and env.st_gid == 0, 'Compose credentials must be root:root mode 0600'\n"
-            "print(json.dumps({'containers': len(items), 'docker_socket_consumers': sorted(socket_users), 'published_ports_loopback_only': True, 'env_mode': oct(stat.S_IMODE(env.st_mode))}))\n"
+            "log = os.stat('/var/log/fieldos-firstboot.log')\n"
+            "assert stat.S_IMODE(log.st_mode) == 0o640 and log.st_uid == 0 and log.st_gid == grp.getgrnam('adm').gr_gid, 'firstboot log must be root:adm mode 0640'\n"
+            "print(json.dumps({'containers': len(items), 'docker_socket_consumers': sorted(socket_users), 'published_ports_loopback_only': True, 'env_mode': oct(stat.S_IMODE(env.st_mode)), 'firstboot_log_mode': oct(stat.S_IMODE(log.st_mode))}))\n"
             "PY",
             300,
         )

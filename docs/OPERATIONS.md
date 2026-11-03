@@ -51,9 +51,11 @@ sudo /opt/fieldos/scripts/fieldos-diagnostics.sh
 
 The script prints only the last 40 firstboot journal lines and last 80 lines
 from `/var/log/fieldos-firstboot.log`; it does not print the generated Compose
-credentials. Run it with `sudo` to read the root-owned status and logs. Review
-the output before sharing it because it may contain local file paths and
-hardware information.
+credentials. The log is `root:adm` mode `0640` so the local administrator
+group can read diagnostics; `/opt/fieldos/services/.env` remains `root:root`
+mode `0600`. Run the script with `sudo` to read the root-only provisioning
+status. Review output before sharing because it may contain local file paths
+and hardware information.
 
 Inspect service state and the local application health endpoint:
 

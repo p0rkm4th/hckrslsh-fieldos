@@ -7,6 +7,12 @@ STATE=/var/lib/fieldos
 PAYLOAD_ARCHIVE="$ROOT/payload/offline-payload.tar.zst"
 PAYLOAD="$STATE/payload"
 LOG=/var/log/fieldos-firstboot.log
+# Firstboot output contains setup diagnostics, not generated credentials. Let
+# local administrators read it while keeping .env and application data private.
+[[ ! -L "$LOG" ]] || { echo "Refusing symlink firstboot log: $LOG" >&2; exit 1; }
+touch "$LOG"
+chown root:adm "$LOG"
+chmod 0640 "$LOG"
 exec > >(tee -a "$LOG") 2>&1
 
 record_failure() {
@@ -15,6 +21,8 @@ record_failure() {
   install -d -m 0755 "$STATE"
   status_tmp=$(mktemp "$STATE/provisioning-status.json.XXXXXX")
   printf '{"status":"failed","exit_code":%s,"log":"%s"}\n' "$rc" "$LOG" > "$status_tmp"
+  chown root:root "$status_tmp"
+  chmod 0600 "$status_tmp"
   mv -f "$status_tmp" "$STATE/provisioning-status.json"
 }
 
