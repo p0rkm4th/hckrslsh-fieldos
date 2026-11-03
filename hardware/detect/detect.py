@@ -112,9 +112,20 @@ def gpu_facts() -> list[dict]:
 def storage_facts() -> list[dict]:
     raw = run(["lsblk", "--json", "-b", "-d", "-o", "NAME,SIZE,ROTA,TRAN,MODEL,TYPE"])
     try:
-        return json.loads(raw).get("blockdevices", []) if raw else []
+        devices = json.loads(raw).get("blockdevices", []) if raw else []
+        return [device for device in devices
+                if device.get("type") == "disk"
+                and not str(device.get("name", "")).startswith(("loop", "zram", "ram"))]
     except json.JSONDecodeError:
         return []
+
+
+def root_storage_facts() -> dict:
+    try:
+        usage = shutil.disk_usage("/")
+    except OSError:
+        return {"total_bytes": 0, "used_bytes": 0, "available_bytes": 0}
+    return {"total_bytes": usage.total, "used_bytes": usage.used, "available_bytes": usage.free}
 
 
 def battery_facts() -> list[dict]:
@@ -137,6 +148,7 @@ def detect() -> dict:
         "available_memory_gib": available_memory_gib(),
         "gpus": gpu_facts(),
         "storage": storage_facts(),
+        "root_filesystem": root_storage_facts(),
         "batteries": battery_facts(),
         "gps_device_present": gps_present(),
     }

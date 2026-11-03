@@ -1,8 +1,16 @@
 import unittest
+from collections import namedtuple
 from unittest.mock import patch
 
 from pathlib import Path
-from hardware.detect.detect import available_memory_gib, cpu_facts, gpu_facts, memory_gib
+from hardware.detect.detect import (
+    available_memory_gib,
+    cpu_facts,
+    gpu_facts,
+    memory_gib,
+    root_storage_facts,
+    storage_facts,
+)
 
 
 class DetectionTests(unittest.TestCase):
@@ -29,6 +37,27 @@ class DetectionTests(unittest.TestCase):
         result = cpu_facts()
         self.assertEqual(result["logical_cores"], 20)
         self.assertEqual(result["physical_cores"], 2)
+
+    @patch("hardware.detect.detect.run", return_value=(
+        '{"blockdevices":['
+        '{"name":"loop0","type":"loop","size":100},'
+        '{"name":"sr0","type":"rom","size":200},'
+        '{"name":"zram0","type":"disk","size":300},'
+        '{"name":"vda","type":"disk","size":400,"tran":"virtio"}]}'
+    ))
+    def test_storage_lists_candidate_disks_only(self, _):
+        self.assertEqual(storage_facts(), [
+            {"name": "vda", "type": "disk", "size": 400, "tran": "virtio"}
+        ])
+
+    @patch(
+        "hardware.detect.detect.shutil.disk_usage",
+        return_value=namedtuple("Usage", "total used free")(1000, 700, 300),
+    )
+    def test_root_storage_reports_available_bytes(self, _):
+        self.assertEqual(root_storage_facts(), {
+            "total_bytes": 1000, "used_bytes": 700, "available_bytes": 300
+        })
 
     @patch("hardware.detect.detect.run", return_value="")
     @patch("hardware.detect.detect.Path.glob", return_value=[Path("/sys/class/drm/card0/device")])

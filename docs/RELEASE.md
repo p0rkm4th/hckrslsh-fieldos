@@ -36,12 +36,16 @@ third-party redistribution review remain open. Do not publish release binaries.
 - `make check` and all 15 unit tests passed. A physical development-laptop
   spot-check observed the NVIDIA driver and GPU, Intel integrated graphics,
   NVMe, battery, CPU, and RAM. The evidence is
-  `/mnt/shared/fieldos-e2e/hardware-detection-20261102/`. GPU inference remains
-  unvalidated because Docker has no NVIDIA runtime/toolkit configured.
-- These detector changes have not been rebuilt into an ISO or retested in a
-  fresh full E2E guest. The passing E2E/interactive reports above predate this
-  small detector-only change; they remain evidence for the recorded ISO and
-  source revision, not for the latest source tree.
+  `/mnt/shared/fieldos-e2e/hardware-detection-20261102/`. The latest detector
+  source also ran successfully inside the existing installed, NIC-free E2E
+  guest via QEMU guest agent; it reported only the 80 GiB `vda` disk and
+  excluded Snap loop devices and the virtual DVD. This is a detector smoke
+  check, not a fresh installation test. GPU inference remains unvalidated
+  because Docker has no NVIDIA runtime/toolkit configured.
+- The detector changes have not been rebuilt into an ISO or verified through
+  a new full E2E install. The passing installation reports above remain
+  evidence for their recorded ISO and source revisions, not for latest-source
+  installation behavior.
 
 ### Offline unattended installation
 

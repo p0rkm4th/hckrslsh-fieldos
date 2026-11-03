@@ -14,7 +14,8 @@ physically validated.
 
 The detector reports CPU architecture and supported instruction flags,
 logical and (when exposed by Linux) physical cores, total and currently
-available RAM, block storage, battery status, likely GPS device nodes, GPU
+available RAM, candidate physical disks and root filesystem free space,
+battery status, likely GPS device nodes, GPU
 vendor/device IDs, detected driver, and available dedicated VRAM where exposed
 by `nvidia-smi` or DRM sysfs. It does not count shared system memory as
 dedicated VRAM. It reports GPU/driver facts without treating them as proof
@@ -36,7 +37,7 @@ battery, and storage facts are reported when the kernel exposes them.
 | Hardware characteristic | Automatic behavior | Manual work needed |
 |---|---|---|
 | CPU architecture/features and core count | Detects x86-64 and relevant instruction flags | New architecture/runtime support requires compatible Ubuntu packages, container images, and model formats |
-| RAM and local storage | Reports capacities; chooses a bundled model that fits available RAM; records disks | The operator must choose a disk with sufficient capacity; a new payload tier/model needs its own manifest and bundle |
+| RAM and local storage | Reports installed/available RAM, physical disk capacity/type, and root filesystem free space; chooses a bundled model that fits installed RAM | The operator must choose an installation disk with sufficient capacity; a new payload tier/model needs its own manifest and bundle |
 | GPU vendor/device and dedicated VRAM | Reports NVIDIA and DRM-visible GPUs; includes a GPU backend only after driver and runtime validation | Driver/kernel compatibility, Secure Boot signing, container device access, runtime libraries, and physical inference tests must be added and validated |
 | Model override | Accepts `/etc/fieldos/model-override` only for a bundled model that fits | Operator is responsible for choosing a supported model ID |
 | GPS hardware | Detects likely device nodes | Device protocol, permission model, local position service, map UI integration, and field testing are not implemented |
