@@ -93,7 +93,7 @@ still presents interactive disk and account setup.
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks found no secrets; tracked source scan is clean; no blobs over 1 MiB |
+| Public Git history | PASS | Gitleaks clean across reachable commits and tracked source; no private IPv4 matches or blobs over 1 MiB |
 | Content packs | ARCHITECTURE READY | Manifest schema/catalog; no customer content packs approved |
 
 ## Remaining release gates
