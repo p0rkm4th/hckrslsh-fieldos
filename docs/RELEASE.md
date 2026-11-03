@@ -27,6 +27,22 @@ third-party redistribution review remain open. Do not publish release binaries.
   clearance. The extracted package cache was removed after recording the JSON
   inventory and report.
 
+### Hardware inventory update
+
+- The detector now reports physical CPU cores where Linux exposes topology
+  and reports `MemAvailable` separately from installed memory. Model-selection
+  budgeting is unchanged: it reserves the configured amount from installed
+  RAM; the added available-memory field is diagnostic.
+- `make check` and all 15 unit tests passed. A physical development-laptop
+  spot-check observed the NVIDIA driver and GPU, Intel integrated graphics,
+  NVMe, battery, CPU, and RAM. The evidence is
+  `/mnt/shared/fieldos-e2e/hardware-detection-20261102/`. GPU inference remains
+  unvalidated because Docker has no NVIDIA runtime/toolkit configured.
+- These detector changes have not been rebuilt into an ISO or retested in a
+  fresh full E2E guest. The passing E2E/interactive reports above predate this
+  small detector-only change; they remain evidence for the recorded ISO and
+  source revision, not for the latest source tree.
+
 ### Offline unattended installation
 
 - Prior passing report:

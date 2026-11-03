@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from pathlib import Path
-from hardware.detect.detect import cpu_facts, gpu_facts, memory_gib
+from hardware.detect.detect import available_memory_gib, cpu_facts, gpu_facts, memory_gib
 
 
 class DetectionTests(unittest.TestCase):
@@ -15,6 +15,20 @@ class DetectionTests(unittest.TestCase):
     @patch("hardware.detect.detect.read_text", return_value="MemTotal:       8388608 kB")
     def test_memory_conversion(self, _):
         self.assertEqual(memory_gib(), 8.0)
+
+    @patch("hardware.detect.detect.read_text", return_value="MemAvailable: 4194304 kB")
+    def test_available_memory_conversion(self, _):
+        self.assertEqual(available_memory_gib(), 4.0)
+
+    @patch("hardware.detect.detect.read_text", return_value=(
+        "processor : 0\nphysical id : 0\ncore id : 0\nmodel name : Example CPU\nflags : avx2\n\n"
+        "processor : 1\nphysical id : 0\ncore id : 0\nmodel name : Example CPU\nflags : avx2\n\n"
+        "processor : 2\nphysical id : 0\ncore id : 1\nmodel name : Example CPU\nflags : avx2"
+    ))
+    def test_cpu_reports_unique_physical_cores(self, _):
+        result = cpu_facts()
+        self.assertEqual(result["logical_cores"], 20)
+        self.assertEqual(result["physical_cores"], 2)
 
     @patch("hardware.detect.detect.run", return_value="")
     @patch("hardware.detect.detect.Path.glob", return_value=[Path("/sys/class/drm/card0/device")])

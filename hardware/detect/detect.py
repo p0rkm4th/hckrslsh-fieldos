@@ -34,18 +34,37 @@ def memory_gib() -> float:
     return round(int(match.group(1)) / 1024 / 1024, 2) if match else 0.0
 
 
+def available_memory_gib() -> float:
+    match = re.search(r"^MemAvailable:\s+(\d+)\s+kB", read_text("/proc/meminfo"), re.M)
+    return round(int(match.group(1)) / 1024 / 1024, 2) if match else 0.0
+
+
 def cpu_facts() -> dict:
     model = ""
     flags: set[str] = set()
+    physical_cores: set[tuple[str, str]] = set()
+    physical_id = core_id = None
     for line in read_text("/proc/cpuinfo").splitlines():
+        if not line.strip():
+            if physical_id is not None and core_id is not None:
+                physical_cores.add((physical_id, core_id))
+            physical_id = core_id = None
+            continue
         if not model and (line.startswith("model name") or line.startswith("Hardware")):
             model = line.split(":", 1)[-1].strip()
         if line.startswith("flags") or line.startswith("Features"):
             flags.update(line.split(":", 1)[-1].split())
+        if line.startswith("physical id"):
+            physical_id = line.split(":", 1)[-1].strip()
+        elif line.startswith("core id"):
+            core_id = line.split(":", 1)[-1].strip()
+    if physical_id is not None and core_id is not None:
+        physical_cores.add((physical_id, core_id))
     return {
         "architecture": platform.machine(),
         "model": model,
         "logical_cores": os.cpu_count() or 1,
+        "physical_cores": len(physical_cores) or None,
         "instruction_sets": sorted(flags & {"avx", "avx2", "avx512f", "fma", "sse4_2", "neon"}),
     }
 
@@ -115,6 +134,7 @@ def detect() -> dict:
     return {
         "cpu": cpu_facts(),
         "memory_gib": memory_gib(),
+        "available_memory_gib": available_memory_gib(),
         "gpus": gpu_facts(),
         "storage": storage_facts(),
         "batteries": battery_facts(),

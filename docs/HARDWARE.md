@@ -13,10 +13,13 @@ physically validated.
 | High Performance | 64+ GiB | Highest-priority bundled model fitting usable RAM/VRAM |
 
 The detector reports CPU architecture and supported instruction flags,
-logical cores, RAM, block storage, GPU vendor/device IDs, detected driver, and
-available dedicated VRAM where exposed by `nvidia-smi` or DRM sysfs. It does
-not count shared system memory as dedicated VRAM. It reports GPU/driver facts
-without treating them as proof that inference acceleration works.
+logical and (when exposed by Linux) physical cores, total and currently
+available RAM, block storage, battery status, likely GPS device nodes, GPU
+vendor/device IDs, detected driver, and available dedicated VRAM where exposed
+by `nvidia-smi` or DRM sysfs. It does not count shared system memory as
+dedicated VRAM. It reports GPU/driver facts without treating them as proof
+that inference acceleration works. Available RAM is diagnostic; current model
+selection still uses installed RAM minus its configured system reserve.
 
 The selector reserves memory for the OS, only considers model IDs present in
 the offline payload, and checks model memory requirements. It requires an
@@ -49,9 +52,22 @@ the payload or above the detected memory budget. The default firstboot path
 marks only CPU as validated; GPU configuration is not enabled just because a
 GPU appears in the detector output.
 
-Fixture tests cover memory bands, model fallback, available payload IDs, manual
-override validation, mixed GPU vendors/VRAM matching, CPU features, and
-available VRAM calculation. These are simulated hardware profiles. They do
+Fixture tests cover memory bands and available-memory detection, physical-core
+counting, model fallback, available payload IDs, manual override validation,
+mixed GPU vendors/VRAM matching, CPU features, and available VRAM calculation.
+These are simulated hardware profiles. They do
 not validate GPU inference. Hardware used by the current QEMU acceptance test
 is virtual CPU only; physical field laptops and accelerators still need
 separate test evidence.
+
+## Physical development-workstation observation — 2026-11-02
+
+A read-only detector run on the development laptop identified an Intel Core
+i9-12900H, 62.46 GiB RAM, an NVIDIA GeForce RTX 3080 Ti Laptop GPU with a
+16 GiB device-memory report and loaded NVIDIA 615.78.08 driver, an Intel
+integrated GPU, NVMe storage, and a reported battery. `nvidia-smi` succeeded.
+The Docker daemon exposes only its default runtime and the NVIDIA Container
+Toolkit is absent, so Ollama container inference on this physical GPU was not
+validated. This proves the host detector can observe this hardware; it does
+not establish FieldOS GPU acceleration support or change the CPU-only firstboot
+selection policy.
