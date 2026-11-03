@@ -11,7 +11,7 @@ export FIELDOS_E2E_ROOT FIELDOS_PAYLOAD_ROOT FIELDOS_WORK_ROOT FIELDOS_OUTPUT_RO
 .PHONY: check test test-e2e payload iso-test iso-full verify validate-content-packs
 
 check: validate-content-packs
-	$(PYTHON) -m compileall -q hardware installer/provisioning payload scripts tests
+	$(PYTHON) -m compileall -q build hardware installer/provisioning payload scripts tests
 	bash -n scripts/*.sh build/*.sh
 
 validate-content-packs:

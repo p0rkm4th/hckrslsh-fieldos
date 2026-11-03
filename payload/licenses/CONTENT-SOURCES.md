@@ -48,6 +48,22 @@ check its source and revision information. FieldOS currently ships no reviewed
 first-aid or emergency reference pack; do not rely on the AI as medical,
 emergency, or safety guidance.
 
+## Software notices
+
+Payloads built from a source revision with the container notice-collection
+step include `CONTAINER-IMAGES.md` and candidate copyright/license files under
+`/usr/share/doc/fieldos/container-images/`. Per-image indexes record the image
+digest, original layer path, and file checksum. This aids review but is not
+complete license clearance: some images may carry no filename-matched notices,
+and corresponding source or license-specific offers may still be required.
+The release record identifies the source revision and known unresolved
+obligations. Older installed payloads may not contain the candidate indexes.
+Identified corresponding-source packages are listed in
+`/usr/share/doc/fieldos/source-offers.json` and included under
+`/usr/share/doc/fieldos/source-offers/` in payloads built from a revision that
+implements those offers. Check the release record for the exact verified
+contents.
+
 ## Additional packs
 
 The content-pack format supports independently sourced and licensed additions.

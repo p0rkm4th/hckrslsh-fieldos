@@ -18,10 +18,30 @@ done
 
 mkdir -p "$STAGE"/{debs,oci,content/zim,content/maps/pmtiles,content/maps/basemaps-assets,content/ollama,licenses,manifests}
 
+echo "Fetching checksum-pinned corresponding source for identified AGPL components..."
+python3 - "$ROOT/payload/manifests/source-offers.json" "$STAGE/licenses/source-offers" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+from urllib.request import urlretrieve
+
+manifest = json.loads(Path(sys.argv[1]).read_text())
+root = Path(sys.argv[2])
+for offer in manifest["source_offers"]:
+    target_dir = root / offer["name"]
+    target_dir.mkdir(parents=True, exist_ok=True)
+    for item in offer["files"]:
+        target = target_dir / item["name"]
+        urlretrieve(item["url"], target)
+        data = target.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        if len(data) != item["size_bytes"] or digest != item["sha256"]:
+            raise SystemExit(f"Source archive integrity mismatch: {target}")
+PY
+
 python3 - "$ROOT/payload/manifests/images.json" <<'PY' > "$STAGE/manifests/images.tsv"
 import json, sys
 for image in json.load(open(sys.argv[1]))["images"]:
-    print(image["ref"], image["digest"], sep="\t")
+    print(image["name"], image["ref"], image["digest"], sep="\t")
 PY
 
 echo "Downloading the pinned Ubuntu package closure in an Ubuntu 26.04 environment..."
@@ -30,19 +50,19 @@ docker run --rm --platform linux/amd64 \
   ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c \
   bash -euxc 'apt-get update; apt-get install --download-only --yes --no-install-recommends docker.io docker-compose-v2 curl zstd qemu-guest-agent; cp /var/cache/apt/archives/*.deb /out/'
 
-while IFS=$'\t' read -r ref digest; do
+while IFS=$'\t' read -r name ref digest; do
   [[ -n "$ref" ]] || continue
   echo "Pulling $ref@$digest"
   docker pull --platform linux/amd64 "$ref@$digest"
   docker image tag "$ref@$digest" "$ref"
-  name=$(python3 - "$ref" <<'PY'
-import sys
-name = sys.argv[1].split('/')[-1].split(':')[0]
-print(name.replace('/', '_'))
-PY
-)
-  docker image save "$ref" --output "$STAGE/oci/${name}.tar"
+  docker image save --output "$STAGE/oci/${name}.tar" "$ref"
 done < "$STAGE/manifests/images.tsv"
+
+echo "Collecting candidate license and notice files from pinned container layers..."
+python3 "$ROOT/build/collect_image_notices.py" \
+  --manifest "$ROOT/payload/manifests/images.json" \
+  --archive-dir "$STAGE/oci" \
+  --output-dir "$STAGE/licenses/container-images"
 
 NOMAD_REF=ghcr.io/crosstalk-solutions/project-nomad:v1.35.1
 NOMAD_DIGEST=sha256:1445a3eaba19801ce27435b7edc57fce74d9543601808d719b432e3bc7468ea1
@@ -251,13 +271,22 @@ objects for private evaluation. Upstream source and license locations:
 | Qdrant | Apache-2.0 | https://github.com/qdrant/qdrant |
 | Kiwix Serve | GPL-3.0-or-later | https://github.com/kiwix/kiwix-tools |
 
-Before public release, inspect each image SBOM and all transitive license
-notices, include corresponding source/offers where required, and verify
-compatibility with the exact registry layers. Do not describe an image as
-cleared for public redistribution until that review is complete.
+Candidate license/copyright files from all image layers are stored under
+`container-images/`; per-image indexes map content hashes back to original
+paths and layers. This filename-based extraction does not establish complete
+coverage. Review all SBOM entries, notices, and corresponding-source or offer
+obligations before distribution. The pinned N.O.M.A.D. image includes Debian
+Ghostscript packages whose copyright metadata identifies AGPL-3+; verify and
+provide the exact corresponding source package as required. The payload
+includes its checksum-pinned Debian source package under
+`licenses/source-offers/ghostscript/`, described in
+`manifests/source-offers.json`. No image is cleared for public redistribution
+by this automated inventory.
 EOF
 
 cp "$ROOT/payload/manifests/images.json" "$STAGE/manifests/"
+cp "$ROOT/payload/manifests/source-offers.json" "$STAGE/manifests/"
+cp "$ROOT/payload/manifests/source-offers.json" "$STAGE/licenses/source-offers.json"
 cp "$ROOT/payload/manifests/maps.json" "$STAGE/manifests/"
 cp "$ROOT/payload/manifests/ubuntu-26.04.1-desktop-amd64.json" "$STAGE/manifests/"
 printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c","requested_packages":["docker.io","docker-compose-v2","curl","zstd","qemu-guest-agent"],"install_recommends":false}\n' \

@@ -39,7 +39,7 @@ is a historical candidate; its binary has been removed.
 |---|---|---|---|
 | Ubuntu 26.04.1 Desktop ISO | Original ISO URL and SHA-256 are in `payload/manifests/ubuntu-26.04.1-desktop-amd64.json`; Canonical IPR policy: <https://ubuntu.com/legal/intellectual-property-policy> | Original ISO retained as build input | Resolve Ubuntu trademark/modified-image permission; inventory notices for every redistributed Ubuntu package and confirm source/offer obligations. |
 | Offline APT packages | Requested package set is in `package-request.json`; the reviewed payload contains 61 resolved `.deb` packages | Local audit inventory `/mnt/shared/fieldos-e2e/package-license-audit-20261102/packages.json` records package identity and archive hashes. `notice-files.json` records size/SHA-256 for 59 bundled copyright notices. Follow-up in `source-notice-review.json` traces `libpython3.14-stdlib` to its same-version companion notice and `libatomic1` to GCC source copyright; the GCC source tar checksum matches its `.dsc`, but that descriptor's signature could not be verified with the available keyring. | This is provenance and notice evidence, not an SPDX/license determination. Verify trusted source metadata, review every notice and source/offer obligation, and complete exact package licensing/SBOM analysis before release. |
-| N.O.M.A.D. image | Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest and upstream license text | Inspect the exact image's SBOM and all bundled third-party notices. |
+| N.O.M.A.D. image | Project N.O.M.A.D. is Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest; all-layer SBOM and candidate notice inventory are retained under `/mnt/shared/fieldos-e2e/repository-review-233b980/`. The pinned image includes Debian `ghostscript`, `libgs10`, and `libgs10-common` version `10.0.0~dfsg-11+deb12u8`; `/usr/share/doc/ghostscript/copyright` identifies AGPL-3+. New source payload builds now include the exact source archives listed in `payload/manifests/source-offers.json`. | Review the checksum-pinned source offer and its notice in a newly built payload, review its dependencies and all other SBOM components, and finish license-specific offer analysis. The current test ISO predates the source-offer addition. |
 | MySQL image | GPL-2.0 with MySQL's additional permissions; upstream licensing information: <https://github.com/mysql/mysql-server/blob/8.0/LICENSE> | Pinned OCI digest | Verify exact image version/layers, third-party component notices, and corresponding source/offer requirements. |
 | Redis image | Manifest currently labels `redis:7-alpine` BSD-3-Clause | Pinned OCI digest | Verify the exact Redis version and Alpine/transitive components for this digest; do not infer terms from the mutable tag alone. |
 | Dozzle, Ollama, Qdrant, Kiwix images | Direct licenses are recorded in `payload/manifests/images.json` and upstream links in `CONTAINER-IMAGES.md` | Pinned OCI digests | Generate/review SBOMs for the exact images; include transitive notices and any corresponding source required by the applicable licenses. |
@@ -61,7 +61,28 @@ is a historical candidate; its binary has been removed.
    package and 44,903 file entries. Syft emitted declared-license metadata for
    2,137 packages and concluded-license fields for 179, so manual review of
    missing metadata, transitive notices, source availability, and license-
-   specific source offers remains necessary.
+   specific source offers remains necessary. An all-layer notice extraction
+   from the seven exact pinned images found 1,174 unique candidate notice files
+   (2,367 layer/path occurrences; 11.45 MB). It is filename-based, so zero
+   matches for Redis, Dozzle, or Kiwix does not mean those images have no notice
+   obligations. The source collector added to this revision creates these
+   indexes in newly built payloads; the current ISO predates that change and
+   does not contain them.
+
+   The exact Project N.O.M.A.D. image's installed Debian packages and
+   copyright metadata establish that Ghostscript
+   `10.0.0~dfsg-11+deb12u8` is present and identifies AGPL-3+. Its Debian `.dsc`
+   signature verified as cryptographically good and both source archive
+   hashes/sizes match the signed descriptor. The signing key's trust chain was
+   not established from a locally installed Debian keyring; that limit is
+   recorded in `/mnt/shared/fieldos-e2e/repository-review-233b980/sources/ghostscript/verification.txt`.
+   The source archives and exact image notice evidence are in the same
+   `/mnt/shared/fieldos-e2e/repository-review-233b980/` directory. The source
+   package is now checksum-pinned in `payload/manifests/source-offers.json` and
+   future payload builds bundle it; it is not included in Git or the current
+   ISO. The builder checks archive sizes and hashes against the committed
+   manifest; separate trust-chain review of the Debian signing key is still
+   outstanding.
 3. Complete the entry-level media license review; archive-level metadata does
    not establish clearance for every embedded item. The current image includes
    the source/attribution guide and CC BY-SA text, and guest-side SHA-256
