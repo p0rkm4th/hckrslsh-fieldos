@@ -8,7 +8,24 @@ recommended for physical customer installation. A LAN peer scan, physical GPU
 validation, Canonical's modified Ubuntu trademark requirement, and exact
 third-party redistribution review remain open. Do not publish release binaries.
 
-## Acceptance evidence — 2026-11-02
+## Acceptance evidence
+
+### Current-source unattended acceptance — 2026-11-03
+
+- Run report: `/mnt/shared/fieldos-e2e/20261103T002115Z-2083709/report.md`.
+- Source: commit `945751325ab80b1acadb870f0754f3fc7a378fab`, clean worktree.
+  Test ISO SHA-256: `78c96f8d37fe6d08804de62d0fd8c69dd01801e0e1a0382e6ea9493b1a2174e1`.
+- A fresh 80 GiB UEFI qcow2 installed unattended with no virtual NIC. Offline
+  provisioning completed; all seven containers ran; N.O.M.A.D. returned
+  `{"status":"ok"}`; Qwen generated `FIELDOS_ACCEPTANCE_OK`; the embedding
+  endpoint returned a vector; Kiwix retrieved the bundled New York article;
+  and the world plus bundled U.S. regional PMTiles were served. Firefox
+  rendered the regional map over the offline basemap. Container egress was
+  blocked. Service, inference, retrieval, and tile checks passed after two
+  reboots.
+- Browser screenshot: `/mnt/shared/fieldos-e2e/20261103T002115Z-2083709/map-render.png`.
+  Installer, firstboot, service, and test evidence remain beside the report;
+  the temporary ISO and test credentials were removed by the harness.
 
 ### Reproducibility and source hygiene update
 
@@ -44,10 +61,10 @@ third-party redistribution review remain open. Do not publish release binaries.
   excluded Snap loop devices and the virtual DVD. This is a detector smoke
   check, not a fresh installation test. GPU inference remains unvalidated
   because Docker has no NVIDIA runtime/toolkit configured.
-- The detector changes have not been rebuilt into an ISO or verified through
-  a new full E2E install. The passing installation reports above remain
-  evidence for their recorded ISO and source revisions, not for latest-source
-  installation behavior.
+- The 2026-11-03 current-source E2E below rebuilt the test ISO from this
+  detector revision and confirmed the CPU profile in a fresh disconnected
+  install. This validates the CPU path only; simulated hardware fixtures are
+  not physical GPU validation.
 - The acceptance harness now records the source commit and dirty/clean
   worktree state in new reports; unit tests cover both Git-query success and
   unavailable-Git behavior. Existing reports were generated before that
