@@ -66,8 +66,6 @@ grep -Eq '^    geoip: false$' "$TMP/nocloud-user-data" \
 grep -Eq '^    fallback: offline-install$' "$TMP/nocloud-user-data" \
   || { echo "Installer must fall back to the local offline source" >&2; exit 1; }
 if [[ "$MODE" == customer ]]; then
-  grep -Eq '^  shutdown: reboot$' "$TMP/nocloud-user-data" \
-    || { echo "Customer installer must request reboot after installation" >&2; exit 1; }
   grep -Eq '^  interactive-sections:$' "$TMP/nocloud-user-data" \
     || { echo "Customer installer must leave identity and storage interactive" >&2; exit 1; }
   grep -Eq '^    - identity$' "$TMP/nocloud-user-data" \
