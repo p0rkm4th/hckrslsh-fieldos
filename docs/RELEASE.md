@@ -93,7 +93,7 @@ still presents interactive disk and account setup.
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | PENDING | Per-artifact legal/source review incomplete |
-| Public Git history | PASS | Gitleaks found no secrets across 11 commits; tracked source scan also clean; no blobs over 1 MiB |
+| Public Git history | PASS | Gitleaks found no secrets; tracked source scan is clean; no blobs over 1 MiB |
 | Content packs | ARCHITECTURE READY | Manifest schema/catalog; no customer content packs approved |
 
 ## Remaining release gates
@@ -112,8 +112,8 @@ still presents interactive disk and account setup.
    the final implementation. Preserve source revision, build inputs, test
    reports, checksums, and known limitations.
 
-The 2026-11-02 Git history review scanned all 11 reachable commits with
-Gitleaks (no findings), scanned a snapshot of tracked source including current
+The 2026-11-02 Git history review scanned all reachable commits with Gitleaks
+(no findings), scanned a snapshot of tracked source including current
 documentation (no findings), and found no Git blobs over 1 MiB. Scan reports
 are preserved under `/mnt/shared/fieldos-e2e/`.
 
