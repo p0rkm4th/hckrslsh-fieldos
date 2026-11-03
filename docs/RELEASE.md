@@ -31,12 +31,16 @@ completion marker: its 6 GiB VM had 5.22 GiB detected RAM, leaving too little
 for the configured reserve plus the model estimate. Diagnostic checks after a
 temporary test-account credential reset found all seven containers running,
 N.O.M.A.D. healthy, successful Qwen generation and embedding, Kiwix search,
-and regional/world map API and tile delivery. The regional map was not
-verified in a browser on this guest and reboot persistence was not checked;
-this is explicitly not a customer acceptance pass. Full evidence is at
-`/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`. Source has
-since been changed so a profile with no compatible chat model can complete in
-reference-only mode; that change still needs a rebuilt ISO and verification.
+and regional/world map API and tile delivery. After manually injecting the
+subsequent source fix into the installed guest, firstboot completed in
+reference-only mode; all seven services, N.O.M.A.D., Kiwix, embeddings, map
+registration, and `.env` permissions survived two guest reboots. Firefox in
+the guest rendered the regional US map (`map-browser-check.png`). This remains
+a repaired diagnostic result, not a customer acceptance pass: a test password
+was reset and source was copied in after installation. Full evidence is at
+`/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`. The ISO
+does not contain the source fix; rebuild and repeat the clean install before
+customer acceptance.
 
 The preceding `f27305f` candidate (SHA-256
 `aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`) did pass
