@@ -58,8 +58,8 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials. A fresh scan of all 92 commits through current source HEAD
-`43a1620` found no leaks; its redacted report is
+credentials. A fresh scan of all 92 public-history commits through source
+commit `43a1620` found no leaks; its redacted report is
 `/mnt/shared/fieldos-e2e/gitleaks-43a1620.json`.
 
 ### Current source milestone — 2026-11-03
