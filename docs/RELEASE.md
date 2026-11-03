@@ -12,16 +12,53 @@ rebuilt offline payload SHA-256 is
 
 The interactive customer ISO was tested separately. Installation completed
 and the installed system passed service, inference, content, map, browser
-render, and two-reboot checks with no virtual NIC. However, pressing Enter at
-the installer's remove-media prompt powered off the VM; a host-side start was
-needed to boot the installed disk. The interactive installer/handoff gate
-therefore remains PARTIAL. This is QEMU validation, not a physical customer
+render, and two-reboot checks with no virtual NIC. A later USB-media run
+reached GDM after the virtual USB device was detached during restart, without a
+host-side VM start. However, this handoff followed an erase-and-reinstall on
+the same disposable disk after an earlier install, so a clean blank-disk
+customer handoff remains PARTIAL. The virtual CD-ROM path still powered off at
+the remove-media prompt. These are QEMU results, not a physical customer
 installation. FieldOS is not yet
 recommended for physical customer installation because guest-to-guest LAN
 exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
+
+### USB customer handoff and persistence follow-up — 2026-11-03
+
+- Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-280fda2.iso`,
+  SHA-256 `f3b8f5c2ff5cb9bf98e3e07c98b1fce219195d7bb4fe4490a38351cb145c751d`.
+  The ISO was attached as USB install media to a disposable UEFI QEMU guest;
+  target `vda` was a qcow2 under `/mnt/shared` and there was no virtual NIC.
+- The initial blank-disk install completed but, with USB media still attached,
+  firmware returned to the installer. We then explicitly selected “Erase
+  Ubuntu and install” on the same disposable target. The installer media was
+  detached during its restart request. The guest remained running and booted
+  the installed system to GDM without a host-side VM start. The target disk
+  selection and installer-media block-device details are in `review.png`,
+  `block-devices.txt`, and `usb-removal.txt`.
+- This is useful evidence for the expected USB removal handoff, but it is not
+  reported as a clean fresh-disk pass: the successful handoff followed an
+  erase-and-reinstall on the already-installed test disk, and media removal
+  was an explicit test action. CD-ROM behavior remains different and unresolved.
+- On the installed guest, firstboot completed and seven services ran. N.O.M.A.D.
+  returned `{"status":"ok"}`; Qwen generated
+  `FIELDOS_CUSTOMER_INSTALL_OK`; the embedding endpoint returned 768 values;
+  Kiwix search retrieved the New York reference; world and regional PMTiles
+  checks passed, including an HTTP byte range. No external NIC/default route
+  was present. After two in-guest reboots, the boot IDs changed and the same
+  health, inference, embedding, retrieval, and map checks passed. The user was
+  outside the Docker group, Kiwix content was mounted read-only, and the
+  generated service environment file was mode 0600 root:root.
+- Full evidence, including screenshots and guest disk:
+  `/mnt/shared/fieldos-e2e/customer-usb-280fda2-20261103/`. Runtime output is in
+  `acceptance-after-usb-boot.txt`, `acceptance-reboot-1.txt`, and
+  `acceptance-reboot-2.txt`. Browser map rendering evidence remains from the
+  clean automated run at
+  `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/map-render.png`; this USB
+  guest verified map APIs and tile delivery but did not independently repeat
+  the browser screenshot test.
 
 ### Fresh clean E2E after payload manifest repair — 2026-11-03
 

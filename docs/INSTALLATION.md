@@ -2,13 +2,14 @@
 
 ## Customer installation
 
-**Current candidate status (2026-11-03):** The source-offer candidate ISO
-`fieldos-test-customer-sourceoffer-709c893.iso` installed in two disposable
-QEMU attempts, but both guests powered off after Enter at the remove-media
-prompt and required a host-side start. The latest run used correct account and
-disk selections, then passed offline service checks, browser map rendering,
-and two-reboot persistence. The installer/handoff remains PARTIAL; see the
-evidence, checksums, and release gates in [`RELEASE.md`](RELEASE.md).
+**Current candidate status (2026-11-03):** Interactive installation and
+post-install service acceptance passed in disposable QEMU guests. The USB
+media test reached GDM after the virtual USB installer was detached during
+restart, then passed offline service checks and two-reboot persistence. That
+handoff test followed an erase-and-reinstall on the same disposable disk, so
+the clean fresh-disk customer handoff gate remains PARTIAL. The CD-ROM media
+variant powered off at the remove-media prompt and needed a host-side start.
+See the evidence, checksums, and release gates in [`RELEASE.md`](RELEASE.md).
 
 The customer facing ISO is built with:
 
@@ -23,17 +24,16 @@ entry is the upstream Ubuntu live installer and does not run FieldOS
 provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
-“Restart now.” Keep the USB installation media connected until Ubuntu prompts
-you to remove it; then remove it and press ENTER. In the latest current-source
-QEMU customer-ISO acceptance, the installer had already opened the virtual
-CD tray; pressing Enter powered off the guest. In this validation setup, the
-installed target booted only after a host-side VM start. Services, local
-inference, reference retrieval, map rendering, and two-reboot persistence
-passed after that recovery. This verifies the installed system in a disposable
-virtual machine, but the automatic interactive handoff remains unresolved.
-Physical hardware and network-enabled LAN exposure are unverified. See
-[`RELEASE.md`](RELEASE.md) for the candidate hash, exact evidence locations,
-and limitations.
+“Restart now.” For USB installation, remove the USB media when prompted so
+firmware can boot the installed disk. In the latest USB QEMU run, removing the
+virtual USB device during restart led to GDM without a host-side VM start. The
+earlier virtual CD-ROM run powered off at the remove-media prompt and needed a
+host-side start. The USB success followed an erase-and-reinstall on the same
+disposable target, not a new blank disk, so it does not establish a clean
+fresh-disk handoff pass. Post-boot services, local inference, reference
+retrieval, map APIs/tiles, and two-reboot persistence passed. Physical hardware
+and network-enabled LAN exposure are unverified. See [`RELEASE.md`](RELEASE.md)
+for hashes, evidence locations, and limitations.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
