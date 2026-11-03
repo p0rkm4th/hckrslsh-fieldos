@@ -92,6 +92,16 @@ At this checkpoint `/mnt/shared` has 18 GiB free (99% used), below the
 50-GiB clean-E2E preflight. No additional ISO or VM disk was created. Existing
 active VM disks were retained.
 
+### Blank diagnostic disk retirement — 2026-11-03
+
+The guarded `make cleanup-test-disk` command retired two blank, stopped
+197,888-byte qcow2 disks from old failed/inconclusive customer-installer
+diagnostics: `customer-iso-03b6552` and `customer-iso-offline-r1`. The tool
+confirmed neither disk was attached and neither run was referenced by current
+release documentation. Both reports, screenshots, and per-run
+`disk-retirement.txt` audits remain. The cleanup recovered less than 1 MiB and
+does not change the 18-GiB storage constraint.
+
 The public Git history was scrubbed because earlier release notes contained a
 local username path and unrelated infrastructure labels. The one published
 branch was rewritten with a lease; its tip tree is byte-for-byte unchanged.
