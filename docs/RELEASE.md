@@ -53,6 +53,19 @@ The same `make check` and 47-test suite passed on clean source commit
 `/mnt/shared/fieldos-e2e/source-bc1681f-checks.log`. Runtime ISO acceptance is
 still separate and has not been repeated for this source.
 
+At clean source commit `d8fbc5588afcae3dec5db439059aa7424d5bd22b`, `make check`
+and all 49 tests passed on 2026-11-03. Coverage includes Vulkan device-local
+memory-budget parsing, software GPU exclusion, and the rule that Vulkan
+selection still requires explicit runtime validation. The live development
+workstation detector reported 15.57 GiB for its NVIDIA GPU and a 7.06 GiB
+device-local budget for Intel integrated graphics; CPU-only selection remained
+in effect. Combined evidence is
+`/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`; test log is
+`/mnt/shared/fieldos-e2e/vulkan-memory-d8fbc55-tests.log`. This host run did
+not validate model inference on either GPU. The existing payload predates the
+`vulkan-tools` package request in this source, so installation-time detection
+from the rebuilt payload remains unverified.
+
 Latest verified gates (2026-11-03): a clean unattended offline acceptance run
 passed, followed by a separate fresh-disk interactive customer ISO test. Both
 UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
