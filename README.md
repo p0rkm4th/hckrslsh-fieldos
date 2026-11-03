@@ -13,9 +13,8 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest clean-source offline acceptance passed on implementation revision
-`ec57fed731e915c4c0585dc1e6c648d71d338566` (later changes are documentation
-only). The run completed unattended
+The clean-source offline E2E acceptance passed on implementation revision
+`ec57fed731e915c4c0585dc1e6c648d71d338566`. It completed unattended
 Ubuntu installation with no virtual NIC, local package and image provisioning,
 N.O.M.A.D. health, a real Ollama response, embeddings, Kiwix retrieval, and
 browser rendering of the separately transferred Middle Tennessee map at zoom
@@ -26,18 +25,20 @@ browser screenshot is `map-render.png`. The disposable 80 GiB disk was retired
 after the PASS; installer/firstboot logs, report, screenshot, and retirement
 audit remain. This does not certify the separate customer installer.
 
-The current customer-mode test candidate is
-`/mnt/shared/fieldos-releases/fieldos-test.iso`, SHA-256
-`4e41822852d9e911f186ab1f3659a904eedddef48154c9ca6d955cd2de7ddcd2`. Its fresh
-interactive QEMU install selected identity and disk and installed to the
-virtual disk, but the guest powered off at the media-removal prompt. A host
-start from disk then completed provisioning and passed local service, chat,
-embedding, Kiwix, map, and two-reboot checks. Automatic installer handoff is
-still a release blocker; FieldOS is not approved for physical customer
-installation. LAN peer isolation, physical GPU inference, broader hardware
-coverage, and redistribution review also remain open. The persistent owner-only
-Kasm lab now stages the branded system on VM 913, but owner-authenticated
-desktop launch is not yet verified. See
+The current customer-mode engineering candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso`, SHA-256
+`c8b09f678351b87a2d3784c4bd91949b6add9a7bb6ad5a9a8a5401a059f762f7`, built
+from `c744e52`. A fresh interactive QEMU install selected identity and disk,
+but the guest powered off after Enter at the media-removal prompt. The host had
+to start the installed disk. The system then passed provisioning, local
+service, inference, and two-reboot checks. End-user testing also found that the
+one-book Wikipedia fixture and zoom-5 map are inadequate for field emergencies,
+and the local AI can label unsourced generic guidance “Verified.” FieldOS is
+not ready for customer or emergency use. Installer handoff, practical licensed
+content, LAN peer isolation, physical GPU inference, broader hardware coverage,
+and redistribution review remain open. The persistent owner-only Kasm lab now
+stages the branded system on VM 913, but owner-authenticated desktop launch is
+not yet verified. See
 [release evidence](docs/RELEASE.md) for the current gate matrix.
 
 ## Build and test
@@ -52,7 +53,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=build/out/fieldos-test.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

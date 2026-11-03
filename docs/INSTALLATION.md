@@ -53,7 +53,7 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 [`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-test.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso
 ```
 
 Use a disposable VM with a disposable virtual disk and no network adapter to
