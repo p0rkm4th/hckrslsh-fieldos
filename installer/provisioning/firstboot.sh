@@ -193,6 +193,9 @@ curl --fail --silent http://127.0.0.1:8080/api/health >/dev/null
 curl --fail --silent http://127.0.0.1:11434/api/version >/dev/null
 curl --fail --silent http://127.0.0.1:8090 >/dev/null
 
+echo "Making N.O.M.A.D. reference-library descriptions accurate for installed FieldOS content..."
+bash "$ROOT/installer/provisioning/patch-nomad-fieldos-copy.sh"
+
 echo "Selecting a model from the local payload and detected hardware..."
 python3 "$ROOT/hardware/detect/detect.py" > "$STATE/hardware.json"
 model_args=()

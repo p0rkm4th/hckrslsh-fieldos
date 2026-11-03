@@ -17,6 +17,8 @@ grep -q 'UEFI' <<<"$REPORT" || { echo "ISO has no UEFI El Torito boot entry" >&2
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zst \
+  /fieldos/installer/provisioning/patch-nomad-fieldos-copy.sh \
+  /fieldos/installer/provisioning/patch-nomad-fieldos-copy.js \
   /fieldos/installer/provisioning/fieldos-sources.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.html \
