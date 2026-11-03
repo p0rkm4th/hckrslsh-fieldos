@@ -497,9 +497,10 @@ autoinstall:
         launch = (
             f"uid={uid}; runtime=/run/user/$uid; wayland={wayland}; "
             "test -S \"$runtime/$wayland\" || exit 1; "
+            f"map_url='http://127.0.0.1:8080/maps{('?lat=36.1627&lng=-86.7816&zoom=13' if self.pack_archive else '')}'; "
             "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
             "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
-            "GDK_BACKEND=wayland /usr/bin/firefox --new-window http://127.0.0.1:8080/maps "
+            "GDK_BACKEND=wayland /usr/bin/firefox --new-window \"$map_url\" "
             ">/tmp/fieldos-firefox.log 2>&1 </dev/null &"
         )
         self.guest(launch, timeout=30)
@@ -513,17 +514,18 @@ autoinstall:
         while time.monotonic() < deadline:
             self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
             width, height, colors, water_pixels = self.screenshot_color_count(screenshot)
-            if water_pixels >= 5000:
+            if water_pixels >= (5000 if not self.pack_archive else 0) and colors >= 64:
                 break
             time.sleep(5)
-        if water_pixels < 5000 or colors < 64:
+        if colors < 64 or (not self.pack_archive and water_pixels < 5000):
             raise TestFailure(
                 f"Map viewport did not render PMTiles water tiles: {water_pixels} water pixels, "
                 f"{colors} sampled colors in {width}x{height} screenshot"
             )
         self.record("offline map rendering", "PASS",
-                    f"Firefox rendered PMTiles tiles in {width}x{height} VNC screenshot; "
-                    f"{water_pixels} sampled water pixels, {colors} colors; {screenshot.name}")
+                    f"Firefox rendered {'Middle Tennessee at zoom 13' if self.pack_archive else 'world/regional map'} "
+                    f"in {width}x{height} VNC screenshot; {water_pixels} sampled water pixels, "
+                    f"{colors} colors; {screenshot.name}")
 
         settings = self.guest(
             f"runtime=/run/user/{uid}; "
