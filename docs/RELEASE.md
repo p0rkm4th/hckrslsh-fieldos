@@ -23,7 +23,15 @@ below its 50 GiB preflight. It wrote the human-readable FAIL report
 `/mnt/shared/fieldos-e2e/preflight-20261103T123146Z-2375961.md` (SHA-256
 `5b2a252b4e7afefbe351eaed9300c26b8d222f74c065f621cbe4be61597bd25f`). No ISO,
 VM disk, or test credentials were created. The new guest permission assertions
-remain unverified until a fresh installation can run.
+remain unverified until a fresh installation can run. A narrower component
+check executed the exact status-writing functions from the current firstboot
+source in a temporary directory on the retained older Ubuntu guest. The
+desktop account read the status but could not list the state directory; the
+temporary directory was removed and N.O.M.A.D. plus all seven containers
+remained healthy. Evidence is
+`/mnt/shared/fieldos-e2e/status-permissions-helper-guest-check-20261103.md`.
+This does not verify a current-source installation or the full E2E security
+assertion.
 
 On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
 The captured log is
