@@ -57,8 +57,17 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 `fieldos-auto-test2`, `fieldos-auto-test3`, and `fieldos-auto-test4` disks;
 libvirt reports all three domains running, so they were preserved.
 
-A public-history Gitleaks scan of all 81 commits through `0b2fd8c` found no
-credentials. The current documentation-only release update is pending commit.
+A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
+credentials.
+
+The specifically named legacy `fieldos-auto-test4` guest was rechecked on
+2026-11-03 and is failed: `fieldos-firstboot.service` reports `failed`, Docker
+is active but its local N.O.M.A.D. and Kiwix endpoints refuse connections, and
+the root-only firstboot log cannot be read from its unprivileged terminal. Its
+guest agent is unresponsive and an ACPI shutdown request did not stop it. The
+VM and disk were left intact. This failed legacy run is not counted as the
+separate clean E2E acceptance PASS. Diagnostic screenshots and limitations are
+recorded in `/mnt/shared/fieldos-e2e/fieldos-auto-test4-diagnostic.md`.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
