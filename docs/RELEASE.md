@@ -53,6 +53,12 @@ redistribution review remain open. Do not publish release binaries.
   control with a virtio NIC attached, so absence of an adapter alone is not the
   cause. External reachability was not measured. Its screenshots and report
   are at `/mnt/shared/fieldos-e2e/customer-iso-network-diagnostic/`.
+  The same disposable QEMU setup booted unmodified Ubuntu 26.04.1 media, but
+  its Next control also appeared disabled on the earlier language screen and
+  did not advance by keyboard or pointer input. That comparison leaves a
+  possible baseline installer/UI or guest-input issue; it does not establish
+  the root cause or count as an install test. Evidence:
+  `/mnt/shared/fieldos-e2e/stock-installer-disk-diagnostic/`.
 
 ## Acceptance evidence
 
