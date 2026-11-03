@@ -65,8 +65,10 @@ release gates. Do not publish release binaries.
 - The first rerun from the previously prepared payload failed because its
   archive predated the reference manifest added to source; the installed
   guest lacked `/var/lib/fieldos/payload/manifests/references.json`. That FAIL
-  report and guest disk are retained at
+  report, logs, and screenshots are retained at
   `/mnt/shared/fieldos-e2e/20261103T054638Z-2209484/`.
+  After review and a successful clean rerun, its stopped disposable qcow2 was
+  removed to reclaim space; no active VM or test evidence was removed.
 - Rebuilt payload SHA-256:
   `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
   The prior stale payload and its matching hash are retained under
