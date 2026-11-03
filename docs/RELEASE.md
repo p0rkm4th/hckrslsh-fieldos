@@ -25,10 +25,18 @@ The current interactive customer candidate is
 `d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`), built
 from source commit `47d128e79f3b53fed8f5e954b866ceb5e32b20e4`. `make iso-test`
 passed ISO structure, BIOS/UEFI boot records, interactive installer
-configuration, and payload checks. The separate customer installation test
-is currently being run in a fresh no-NIC UEFI guest at
-`/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`; it is not
-recorded as a pass until service, browser, and persistence checks finish.
+configuration, and payload checks. A fresh no-NIC UEFI interactive install
+completed and booted its installed target, but provisioning did not reach its
+completion marker: its 6 GiB VM had 5.22 GiB detected RAM, leaving too little
+for the configured reserve plus the model estimate. Diagnostic checks after a
+temporary test-account credential reset found all seven containers running,
+N.O.M.A.D. healthy, successful Qwen generation and embedding, Kiwix search,
+and regional/world map API and tile delivery. The regional map was not
+verified in a browser on this guest and reboot persistence was not checked;
+this is explicitly not a customer acceptance pass. Full evidence is at
+`/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`. Source has
+since been changed so a profile with no compatible chat model can complete in
+reference-only mode; that change still needs a rebuilt ISO and verification.
 
 The preceding `f27305f` candidate (SHA-256
 `aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`) did pass

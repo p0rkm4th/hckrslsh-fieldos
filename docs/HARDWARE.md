@@ -6,7 +6,7 @@ physically validated.
 
 | Profile | Typical RAM | Initial AI behavior |
 |---|---:|---|
-| Minimal | 4–8 GiB | Offline references; optional smallest CPU model if runtime check passes |
+| Minimal | 4–8 GiB | Offline references; smallest bundled CPU model when reserved memory allows and its smoke test passes |
 | Lightweight | 8–16 GiB | Small quantized CPU or supported GPU model |
 | Standard | 16–32 GiB | Mid-size quantized model selected from verified payload |
 | Accelerated | 32–64 GiB | Prefer tested NVIDIA/AMD/Intel backend and compatible model |
