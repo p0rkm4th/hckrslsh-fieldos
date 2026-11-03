@@ -16,6 +16,16 @@ and release outputs to `/mnt/shared/fieldos-releases`. Override
 test requires at least 50 GiB free on the evidence volume and 8 GiB free for
 temporary build work.
 
+`make payload` also requires at least 50 GiB free on both the payload output
+and staging volumes. It refuses to overwrite an existing payload archive;
+move an old archive aside explicitly before rebuilding. The acceptance VM RAM
+can be configured with `FIELDOS_TEST_MEMORY_MIB` (default `12288`, minimum
+`8192` MiB). For example, to run at the minimum supported acceptance size:
+
+```sh
+FIELDOS_TEST_MEMORY_MIB=8192 make test-e2e
+```
+
 ```sh
 make check
 make test
@@ -54,6 +64,12 @@ Docker's local UI bridge also disables masquerading.
 Each report records the source commit and whether the worktree had local
 changes, alongside the test ISO SHA-256, so a test result can be tied to the
 source used to build it.
+
+An automated PASS requires an untouched fresh guest, unattended installation,
+and all recorded checks to complete without manual repair. A recovered VM or
+an installation that needed host-side intervention is diagnostic evidence,
+not a clean automated PASS. Interactive customer-ISO installation is a
+separate release gate and must be reported separately.
 
 ## Outputs and cleanup
 
