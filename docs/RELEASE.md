@@ -58,9 +58,9 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials. A fresh scan of all 97 public-history commits through source
-commit `a76315a` found no leaks; its redacted report is
-`/mnt/shared/fieldos-e2e/gitleaks-a76315a.json`.
+credentials. A fresh scan of all 103 public-history commits through source
+commit `71ade26` found no leaks; its redacted report is
+`/mnt/shared/fieldos-e2e/gitleaks-71ade26.json`.
 
 ### Redis license correction — 2026-11-03
 
@@ -95,7 +95,21 @@ commit `a76315a` found no leaks; its redacted report is
   disk or release ISO was removed. A current-source ISO/VM acceptance run is
   still required.
 
-### Current source milestone — 2026-11-03
+### Diagnostics command runtime check — 2026-11-03
+
+- The updated `fieldos-diagnostics.sh` was run read-only through the QEMU guest
+  agent on the existing accepted disposable guest
+  `fieldos-e2e-20261103t070244z`. It exited successfully and reported
+  firstboot `Result=success`, recent journal/log output, Compose service state,
+  storage usage, and N.O.M.A.D., Ollama, and Kiwix as healthy.
+- Output is retained at
+  `/mnt/shared/fieldos-e2e/fieldos-diagnostics-existing-guest-20261103.txt`
+  (SHA-256 `a0ce935d218f4471d927409640e60d8e8a35b2c53bba21fa5976897158045656`).
+  The guest disk was not changed. This verifies the diagnostics commands on an
+  existing installation; the current source has not yet been installed in a
+  fresh VM.
+
+### Content-pack source milestone — 2026-11-03
 
 - Source HEAD `43a1620a6192080152d138f98d34aa06611ad680` adds independent
   content-pack archives and an installed-system verification/storage command.
