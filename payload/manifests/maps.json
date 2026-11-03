@@ -2,6 +2,14 @@
   "schema_version": 1,
   "license": "ODbL-1.0",
   "attribution": "© OpenStreetMap contributors; Protomaps Basemap",
+  "source_build": {
+    "key": "20261102.pmtiles",
+    "version": "4.15.2",
+    "size": 139247504393,
+    "md5sum": "9hvfHlpoO11WbCGWWKrDNg==",
+    "b3sum": "86fc96ad110d085ea64db20cce8fe6cd88a5e382e5f988c8db9a9e8127ad7753",
+    "uploaded": "2026-11-02T09:02:58.311Z"
+  },
   "regions": [
     {
       "id": "fieldos-sample-us",
