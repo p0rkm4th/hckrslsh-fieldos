@@ -102,6 +102,17 @@ class ContentPackBundleTests(unittest.TestCase):
         with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "refusing to replace existing pack data"):
             CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
 
+    def test_install_refuses_a_symlink_at_the_version_path(self):
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+        outside = self.base / "outside"
+        outside.mkdir()
+        id_root = self.install_root / "content-packs/fixture-reference"
+        id_root.mkdir(parents=True)
+        (id_root / "1.0.0").symlink_to(outside, target_is_directory=True)
+        with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "symlink as installed pack data"):
+            CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertEqual(list(outside.iterdir()), [])
+
 
 if __name__ == "__main__":
     unittest.main()

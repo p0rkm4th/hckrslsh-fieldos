@@ -66,10 +66,11 @@ credentials. A fresh scan of all 88 commits through current source HEAD
 
 - Source HEAD `013324c9e98b180c2ecee7ec008ead4a4638d82f` adds independent
   content-pack archives and an installed-system verification/storage command.
-  All 44 unit tests and `make check` pass. The fixture suite exercises archive
+  All 45 unit tests and `make check` pass. The fixture suite exercises archive
   build, checksum and manifest validation, safe extraction, idempotent install,
-  and refusal to replace an existing version. Test output is retained at
-  `/mnt/shared/fieldos-e2e/content-pack-tests-013324c.log`.
+  refusal to replace an existing version, and symlink-path rejection. Test
+  output is retained at
+  `/mnt/shared/fieldos-e2e/content-pack-tests-current.log`.
 - The content-pack catalog remains empty. No customer pack is built or
   approved. The archive builder emits separate `.tar.zst` files under
   `/mnt/shared/fieldos-payload/content-packs/`; the core ISO contains the schema

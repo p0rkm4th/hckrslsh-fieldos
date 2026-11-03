@@ -46,7 +46,9 @@ Installation checks the sidecar checksum, rejects unsafe archive entries,
 validates the manifest and artifact hashes, checks available space, and stores
 each immutable version under `/var/lib/fieldos/content-packs/<id>/<version>`.
 Repeating the same install is safe; a different bundle cannot overwrite an
-existing version. The command does not erase existing user data. This first
+existing version. It stages on the destination filesystem and atomically moves
+the verified version into place, so its free-space check accounts for one
+unpacked copy plus a 256 MiB reserve. The command does not erase existing user data. This first
 stage provides independent packaging, integrity checking, and local storage;
 it does not yet import or activate content in N.O.M.A.D., Kiwix, the map UI, or
 GIS applications. The manifest's `installation.target` and `requirements`
