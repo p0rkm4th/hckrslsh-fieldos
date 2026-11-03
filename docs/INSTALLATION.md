@@ -39,8 +39,9 @@ provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” For USB installation, remove the USB media when prompted so
-firmware can boot the installed disk. This workflow passed in the disposable VM
-with the media-handoff caveat above. Review the release gates in
+firmware can boot the installed disk. The latest disposable-VM run did not
+complete this handoff cleanly; see the PARTIAL result and retained evidence
+above. Review the release gates in
 [`RELEASE.md`](RELEASE.md) before installing on physical customer hardware.
 FieldOS leaves the customer identity and storage sections interactive. Ubuntu
 documents that an autoinstall `shutdown` action is ignored when interactive
