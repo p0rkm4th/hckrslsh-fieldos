@@ -2,18 +2,20 @@
 
 ## Customer installation
 
-**Current candidate status (2026-11-03):** The customer-mode test candidate
-`/mnt/shared/fieldos-releases/fieldos-test.iso` was built from source
-`d9d459b` (SHA-256
-`4e41822852d9e911f186ab1f3659a904eedddef48154c9ca6d955cd2de7ddcd2`). A fresh
-no-NIC interactive UEFI QEMU install accepted the selected identity and target
-disk. Ubuntu installed, but the guest powered off at the media-removal prompt.
-The host then started it from the installed disk; firstboot, offline services,
-local inference, Kiwix article retrieval, visible low-zoom map rendering, and
-two guest reboots passed. The automatic installer handoff remains a release
-blocker. Physical hardware is untested. See [`RELEASE.md`](RELEASE.md) and the
-detailed report at
-`/mnt/shared/fieldos-e2e/customer-interactive-d9d459b-20261103/report.md`.
+**Current candidate status (2026-11-03):**
+`/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso`, built from
+`c744e5275ec2f5002244c92cef5101b603e53195`, SHA-256
+`c8b09f678351b87a2d3784c4bd91949b6add9a7bb6ad5a9a8a5401a059f762f7`. A fresh
+no-NIC interactive UEFI QEMU install accepted an identity and disposable target
+disk and installed Ubuntu. After “Restart now,” the guest powered off at the
+media-removal prompt after Enter; a host start was required to boot the disk.
+The installed system then passed offline provisioning and service checks,
+including two guest reboots. A prepper-oriented UI review found that the bundled
+reference and map content are inadequate for emergencies and that the AI can
+present unsourced generic advice as verified. This remains an engineering test
+candidate, not a customer-ready appliance. Physical hardware is untested. See
+[`RELEASE.md`](RELEASE.md) and the detailed report at
+`/mnt/shared/fieldos-e2e/customer-interactive-c744e52-20261103/report.md`.
 
 The customer facing ISO is built with:
 
@@ -55,9 +57,8 @@ sha256sum /mnt/shared/fieldos-releases/fieldos-test.iso
 ```
 
 Use a disposable VM with a disposable virtual disk and no network adapter to
-reproduce and investigate the customer-mode handoff failure. Do not write this
-candidate to a physical disk or install it on customer hardware until the
-release gates pass.
+investigate the customer-mode handoff failure. Do not write this candidate to a
+physical disk or install it on customer hardware until the release gates pass.
 The E2E command below uses a separate unattended test image and does not
 exercise the customer install workflow.
 
