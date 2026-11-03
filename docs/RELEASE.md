@@ -230,6 +230,14 @@ read-only follow-up screenshot on 2026-11-03 again showed the failed unit,
 active Docker, unavailable service endpoints, and denied Docker socket access
 for the guest user; evidence is
 `/mnt/shared/fieldos-e2e/fieldos-auto-test4-followup-20261103.png`.
+On a further read-only check, libvirt confirmed the guest has no NIC and the
+guest agent is not connected. The displayed terminal again showed the failed
+firstboot unit and refused N.O.M.A.D. and Kiwix probes. This session cannot
+read the root-only firstboot log from the guest or authenticate for sudo, so
+the provisioning cause remains undetermined and the guest was left unchanged.
+Captured display evidence is
+`/mnt/shared/fieldos-e2e/auto-test4-current-view.png` (PNG view) and
+`/mnt/shared/fieldos-e2e/auto-test4-current.ppm` (QEMU capture).
 
 ### Earlier clean E2E rerun — 2026-11-03
 
