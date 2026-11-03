@@ -75,8 +75,8 @@ redistribution review remain open. Do not publish release binaries.
 - Clean unattended E2E report and screenshots: `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/` (32 GiB sparse guest disk retained).
 - Interactive customer ISO evidence and recovered guest disk:
   `/mnt/shared/fieldos-e2e/customer-iso-ui-r2/` (about 33 GiB, including the
-  31 GiB sparse qcow2). The VM remains at GDM for diagnosis; do not treat it as
-  a clean acceptance guest.
+  31 GiB sparse qcow2). The VM reached GDM after host start and was then
+  gracefully shut down; the qcow2 remains preserved as diagnostic evidence.
 - Current local customer ISO candidate:
   `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`,
   SHA-256 `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
