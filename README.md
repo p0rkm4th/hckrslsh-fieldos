@@ -13,21 +13,27 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-FieldOS Lab was installed from the test-only unattended ISO built from source
-`c61b553` and passed service, inference, reference retrieval, map data, and
-network-restriction checks across two consecutive reboots. It uses a restricted
-management NIC for Kasm and is not the no-NIC offline acceptance configuration.
-The owner reached the guest login screen through Kasm, but desktop login,
-application interaction, and visible map rendering in that workspace remain
-unverified. The customer interactive installer is a separate release gate and
-is not accepted by the FieldOS Lab result. See
-[`docs/FIELDOS-LAB.md`](docs/FIELDOS-LAB.md) and
-[`docs/RELEASE.md`](docs/RELEASE.md) for evidence and current limitations.
-FieldOS is not ready for physical customer installation: current-source clean
-customer installation/handoff, guest-to-guest LAN isolation, physical GPU
-inference, broader hardware coverage, and distribution rights for the modified
-Ubuntu image and exact third-party payload remain unresolved. The customer ISO
-retains interactive identity and disk selection in
+The latest tested implementation revision is
+`8b0bda34f4dc3da993eed8663fffc15653d11679`. A fresh no-NIC unattended install
+from this revision passed the recorded E2E checks:
+firstboot, seven services, N.O.M.A.D. health, local chat generation, embeddings,
+Kiwix retrieval, an actual Firefox map render, branded desktop defaults, no
+virtual NIC, and persistence across two reboots. The report and screenshot are
+retained at `/mnt/shared/fieldos-e2e/20261103T174505Z-2544533/`. The separate
+persistent Kasm lab is installed from this source and passes service and
+two-reboot checks with a restricted management NIC. A fresh owner-authenticated
+Kasm launch and interaction with the replacement desktop remain to be
+confirmed. Neither result accepts the customer installer.
+
+The current customer ISO candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso`,
+SHA-256 `fbec9104316cf0407acc7a5e218a26922ea1849dc3a97d52a45fef09da5db7b1`.
+It has structural verification only; a fresh interactive customer installation
+and media handoff remain unverified. FieldOS is not ready for physical customer
+installation: customer install/handoff, LAN peer isolation, physical GPU
+inference, broader hardware coverage, and redistribution review for the exact
+Ubuntu image and third-party payload remain open. The customer ISO retains
+interactive identity and disk selection in
 [`installer/autoinstall/user-data`](installer/autoinstall/user-data).
 See [release evidence](docs/RELEASE.md) before treating any image as ready to
 install on a physical computer.

@@ -1,213 +1,95 @@
 # FieldOS Lab operations
 
-FieldOS Lab is a persistent, owner-only Kasm workspace used for interactive
-integration testing. It is separate from disposable E2E guests and from the
-customer installer acceptance gate. It is built from the test-only unattended
-installer and is not a customer release image.
+FieldOS Lab is a persistent, owner-only Kasm workspace for interactive testing.
+It is separate from the disposable no-network E2E acceptance guest and from the
+customer installer. The Lab currently runs the branded test-only installer
+built from implementation revision
+`8b0bda34f4dc3da993eed8663fffc15653d11679`.
 
-## Current validated deployment
+## Deployment
 
-As of 2026-11-03, the lab VM was installed from source revision `c61b553` and
-the test-only ISO whose SHA-256 is
-`b245f6654cf84fedd86b2f14ca16b5414ca5e358cacec30d490ae5267d298339`. The
-ISO is retained outside Git under the shared E2E test artifacts. The installed
-VM has 4 vCPU, 8 GiB RAM, and a 120 GiB virtual disk. The exact hypervisor,
-management addresses, VM identifier, and account identifiers are kept in the
-private local operations record, not in this public repository.
+The replacement guest is Proxmox VM 912 (`fieldos-lab`) on Alexandra, allocated
+4 vCPU, 8 GiB RAM, and a 120 GiB virtual disk. The existing Kasm Server/RDP
+workspace named **FieldOS Lab** points to the guest, with access retained through
+the dedicated owner-only operator group. RDP credentials are prompted at
+launch; credentials and private infrastructure addresses are intentionally
+kept out of this public runbook. The desktop account password is held in the
+local private operations record, not in Git or the Kasm definition.
 
-The Kasm entry is named **FieldOS Lab** and is a **Server** workspace using an
-RDP connection to the guest's GNOME Remote Desktop service. Kasm is currently
-configured to prompt for RDP credentials at launch; no static RDP password is
-stored in the Kasm server record. This is a diagnostic/workaround state after
-the static credential produced repeated NLA failures.
-Access is mapped to a dedicated operator group containing only the owner's
-Kasm account. The workspace is not mapped to the default all-users group.
-Kasm proxies the browser session; the guest does not expose its application
-ports to Kasm users or the public network. RDP is configured for automatic
-security negotiation (`security=any`), with a locally generated certificate
-whose identity Kasm is configured to ignore. Certificate validation is
-therefore not provided by the current connection record.
+The guest needs a management NIC for the Kasm connection. Its static management
+configuration has no default route, DNS, or IPv6. The guest firewall defaults
+to deny inbound, outbound, and routed traffic, permits RDP only from the Kasm
+host, and allows the required container traffic on local Docker networks. Guest
+application ports are not published to the management network. A denied
+external request and the missing route were checked on the guest. The NIC is on
+a shared hypervisor bridge, however, so this is not a dedicated VLAN or
+layer-2-isolated network; a guest-to-guest LAN assessment remains outstanding.
 
-The VM requires one management NIC for Kasm. This is not the no-NIC offline
-acceptance configuration: the NIC is attached to the existing hypervisor
-bridge. The guest has no default route or DNS, disables IPv6, and uses a
-default-deny firewall for inbound, outbound, and routed traffic. DHCP is
-allowed, and inbound RDP is allowed only from the Kasm host. This blocks
-ordinary external access in the tested guest configuration, but a shared
-bridge is not a separate VLAN or physical layer-2 isolation. A guest-to-guest
-LAN scan has not been performed. Do not describe this lab as physically or
-layer-2 isolated.
+The test-only installer used for the guest has SHA-256
+`72e79196a7db55b64a5fbb0d7a3c6088e5e55112c29ae66f8c52feda64d3e3f5`. It is
+not the customer ISO and does not validate its interactive installation path.
 
-## Verification record
+## Verification and limits
 
-The installed system completed provisioning and remained functional through
-two consecutive guest reboots. Checks against the running guest after each
-reboot reported:
+VM 912 completed provisioning and two consecutive reboots. Checks after each
+reboot confirmed firstboot completion, seven running Compose services,
+N.O.M.A.D. health response `{"status":"ok"}`, generated Ollama chat output,
+a 768-value embedding response, Kiwix search retrieval, map-region registration,
+and persistence of a guest marker. The guest had no default route or DNS and
+could not reach an external HTTPS endpoint. Evidence, including the console
+verification transcript, is stored outside Git under
+`/mnt/shared/fieldos-lab/evidence/20261103/`.
 
-- Firstboot status `complete`; Docker and GNOME Remote Desktop active; seven
-  Compose containers running.
-- N.O.M.A.D. health endpoint returned `{"status":"ok"}`.
-- Ollama generated `FIELDOS_LAB_REBOOT_OK` from bundled
-  `qwen3:0.6b-q4_K_M`; the bundled `nomic-embed-text:v1.5` endpoint returned
-  a 768-element embedding.
-- Kiwix search for `New York` returned the bundled New York Times reference.
-- The regional map API listed `fieldos-sample-us.pmtiles`; the style endpoint
-  returned the world style, and the PMTiles range request returned HTTP 206
-  with 127 bytes.
-- The guest reported no IPv4 or IPv6 default route, no DNS server, and blocked
-  external access. A desktop persistence marker survived both reboots.
+A separate clean no-NIC E2E install from the same revision rendered the regional
+map in Firefox and verified the branded desktop defaults. This proves the
+current image's browser map path in that guest, not that map rendering has been
+observed in the Kasm session.
 
-These checks prove the map service and tile data are available, not that the
-map rendered visibly in the Kasm browser. A diagnostic headless Firefox
-capture at `/mnt/shared/fieldos-lab/evidence/20261103/map-headless.png` showed
-the map page chrome with a blank canvas. On 2026-11-03 at 17:32 UTC, a
-read-only Kasm API query showed the owner's `scotty` account with a running
-**FieldOS Lab** session. The guest reported `labdesk` user sessions and a
-Firefox process launched with `http://localhost:8080`. This confirms the
-workspace reached the guest desktop and launched the N.O.M.A.D. URL. It does
-not confirm the rendered browser view or functional interaction with chat,
-Kiwix, or maps. Evidence:
-`/mnt/shared/fieldos-lab/evidence/20261103/kasm-owner-fieldos-session.txt`
-(SHA-256 `392c998fe9a73eb97c2c74714b5bcc9f58ab2a3148851f0334e7d445adcbec47`).
-Earlier Firefox map rendering in a separate E2E guest is not evidence for this
-Kasm session.
+**Owner-visible Kasm interaction with the replacement is not yet confirmed.**
+The Kasm workspace configuration and host-to-guest RDP reachability are in
+place, but successful launch, desktop rendering, and application interaction
+must be verified in an authenticated owner browser session before calling the
+replacement complete or retiring the rollback guest. The old VM 911 remains
+stopped as rollback, with its prior snapshot intact. It shares the guest
+management address; never start it while VM 912 is running.
 
-The current test ISO and VM disk are test artifacts. The VM disk remains on
-the hypervisor; do not remove it during local artifact cleanup. A Proxmox
-snapshot was created after the two-reboot checks:
-`fieldos-lab-known-good-20261103`. The snapshot description records that map
-browser rendering remains incomplete. The interactive customer installer
-uses a different ISO path and has a separate handoff/release gate; this lab
-does not satisfy that requirement.
+The current guest includes test-sized reference and map fixtures. The sample
+Wikipedia archive and low-zoom map are demonstrations, not a complete field
+library or detailed regional map. Additional N.O.M.A.D. content still requires
+separate acquisition. No physical GPU validation has been performed.
 
-The post-snapshot two-reboot transcript is retained at
-`/mnt/shared/fieldos-lab/evidence/20261103/post-snapshot-two-reboots.txt`.
-It records both changed boot IDs and the checks above after each reboot.
+## Maintenance and recovery
 
-## Kasm RDP troubleshooting
+The known-good offline snapshot on VM 912 is
+`fieldos-lab-known-good-8b0bda3-20261103`. It was taken after provisioning and
+the service and reboot checks. For a reset, stop VM 912, restore that snapshot
+using the Proxmox UI or `qm rollback 912 fieldos-lab-known-good-8b0bda3-20261103`,
+then start VM 912. Snapshot rollback discards changes made after the snapshot;
+export any wanted test data first. Keep VM 911 and its rollback snapshot until
+the owner confirms the replacement works through Kasm.
 
-On 2026-11-03, Kasm authorized the owner's session, but the guest logged
-`HYBRID_REQUIRED_BY_SERVER` during RDP negotiation while the Kasm server
-record was set to `security=tls`. GNOME Remote Desktop requires NLA for this
-connection. The record was then changed to `security=nla`; that attempt
-selected NLA and reached GNOME's server-redirection handoff, but the transport
-closed before a signed-in desktop was verified. The record was changed to
-`security=any` so Guacamole can negotiate the mode across the initial endpoint
-and redirect. The owner then reported an authentication failure. Guacamole
-logged `STATUS_LOGON_FAILURE`, and GNOME logged a CredSSP NTLM MIC verification
-failure; no guest GDM/PAM account-password failure was logged. The first
-resynchronization helper had a stdin/script collision and is invalid evidence.
-Its replacement updated Kasm and GNOME credentials. Later failures at
-17:11:57, 17:12:02, and 17:13:06 UTC still reached GNOME NLA and failed CredSSP.
-The guest Linux password hash was verified against the intended credential, and
-`grdctl --system status --show-credentials` confirmed the GNOME RDP credential
-username and password match without exposing either value. GNOME Remote
-Desktop was restarted at 17:16:47 UTC to reload the saved credential. Because
-the Kasm server API masks stored passwords, the gateway's actual password could
-not be compared directly. Its static username/password fields are now blank;
-Kasm should prompt for RDP credentials at workspace launch. This supported
-prompt mode is documented by [Kasm](https://www.kasmweb.com/docs/1.17.0/how_to/fixed_infrastructure.html#forcing-login-on-connection).
-The Kasm website password was not changed. At 17:32 UTC, Kasm reported a
-running FieldOS Lab session for the owner, and the guest showed a `labdesk`
-desktop session with Firefox launched at the local N.O.M.A.D. URL. This is
-evidence the prompt-mode connection reached the desktop. Neither password is
-recorded here.
+To recover the old guest, stop VM 912 first, then start VM 911. Both images use
+the same intended management address, so they must not run simultaneously.
+VM 912's complete config, private address, rotated desktop credential file path,
+and recovery details are in the host-local, mode-restricted record under
+`/home/scootz/.local/share/fieldos-lab/`. The credential itself is stored there
+with mode `0600`; shared NTFS storage is not used for secrets because its mount
+does not enforce Unix mode changes.
 
-There are two sign-in stages in the current prompt mode: Kasm asks for the RDP
-credential (`labdesk` and the desktop password), then GNOME presents its remote
-GDM greeter, where the operator signs in to `labdesk` again. The owner previously
-reached the greeter, but repeated RDP authentication failures occurred after
-the static credential update. The later prompt-mode desktop connection is
-confirmed at the Kasm session and guest-process level; rendered content and
-application interaction remain unverified. Diagnostic record:
-`/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
-(SHA-256 `b0c08f5978be942021c087d2a194fdcecdd6187aaf5b10ff92594e953285cb47`).
-This two-stage flow is GNOME's documented [headless multi-user remote login
-mode](https://github.com/GNOME/gnome-remote-desktop/blob/main/docs/configuration.md#headless-multi-user-remote-login).
-Credential synchronization evidence:
-`/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync.txt`
-(SHA-256 `8fc88a8385d9180e2c9119f5712a4b6a0ae1f0471b9531dfc5775c753eebd8b3`)
-records the superseded attempt and must not be used as proof. The corrected
-sync's redacted result is recorded at
-`/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync-corrected.txt`
-(SHA-256 `00621e1bf57ea9a6d6c5cc11a15e7f10a17f34cdc695aeac322be395880992a8`).
-This earlier record describes the superseded sync; the corrected sync and later
-credential checks are described above. Do not reset credentials again without
-new logs showing an authentication failure under the current prompt-mode
-configuration. The latest redacted diagnostic is
-`/mnt/shared/fieldos-lab/evidence/20261103/kasm-rdp-prompt-mode.txt`
-(SHA-256 `d0affb68b3fa2459a1a2a8c4d4dbbd768822cb4df271857b0405c9d55999e77c`).
+To rebuild instead of reset, run `make iso-test UBUNTU_ISO=/path/to/verified-ubuntu.iso`
+and `make verify ISO=/mnt/shared/fieldos-releases/fieldos-test.iso`. The E2E
+runner (`make test-e2e`) creates its unattended test image automatically. Install
+to a new disposable Proxmox guest and repeat the offline service/reboot checks
+before changing the Kasm target.
+Never attach the lab management NIC to an untrusted network. Keep Kasm and
+GNOME RDP credentials out of shell history, logs, screenshots, and Git.
 
-If the issue returns, inspect the Kasm Guacamole log and the guest's
-`gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
-`rdp_server_accept_nego`. Do not respond by resetting credentials unless the
-logs show an authentication failure after successful security negotiation.
-If the stream has closed, end the stale Kasm workspace session and launch
-**FieldOS Lab** by that exact name from the Kasm workspace catalog. Do not
-resume another existing workspace session. Enter `labdesk` and the desktop password in Kasm's RDP
-prompt, then enter the same guest account credentials at GNOME's GDM screen.
-Successful login and application interaction are still awaiting confirmation.
+## Current state
 
-## Launch and maintenance
-
-1. Sign in to the existing Kasm deployment with the owner's account.
-2. Select **FieldOS Lab** from the workspace catalog and launch it.
-3. Open **Applications** and search for **Project N.O.M.A.D.** The shortcut is
-   installed in the applications menu, not on the desktop. Alternatively,
-   open Firefox and go to `http://localhost:8080`. N.O.M.A.D. links to the
-   local reference and map services.
-4. The VM's application state is persistent across Kasm sessions and guest
-   reboots. Keep test notes and disposable test datasets separate from release
-   evidence.
-
-The current VM allocation is 4 vCPU, 8 GiB RAM, and a 120 GiB virtual disk.
-For routine checks, use the FieldOS diagnostics command and service checks in
-[Operations](OPERATIONS.md). Do not run an installer against this persistent
-VM disk. Use a disposable guest for installation or destructive tests.
-
-## Snapshot and recovery
-
-The known-good snapshot is
-`fieldos-lab-known-good-20261103`. The exact VM identifier and hypervisor are
-in the private local operations record. On the hypervisor, inspect snapshot
-state with:
-
-```sh
-qm listsnapshot <FIELDOS_LAB_VMID>
-qm config <FIELDOS_LAB_VMID>
-```
-
-Before restoring, save any user data created since the snapshot. Restore is
-destructive to changes made after the snapshot. Stop the VM and explicitly
-confirm the target snapshot before running:
-
-```sh
-qm shutdown <FIELDOS_LAB_VMID> --timeout 90
-qm status <FIELDOS_LAB_VMID>
-qm rollback <FIELDOS_LAB_VMID> fieldos-lab-known-good-20261103
-qm start <FIELDOS_LAB_VMID>
-qm status <FIELDOS_LAB_VMID>
-```
-
-Then repeat the health, inference, reference, map API, and network checks
-above. This restores VM disk state; it does not restore Kasm database
-configuration. Keep the owner-only group mapping and server record intact.
-
-To rebuild, create a new disposable FieldOS VM from a validated installer,
-complete offline installation and service checks, configure a restricted
-management path, then update the Kasm Server workspace target. Do not overwrite
-the existing VM or move the snapshot until the new VM has passed its own checks.
-
-## Readiness limits
-
-- The current lab image is test-only and unattended; it is not a customer ISO.
-- The interactive customer install and media handoff remain separate release
-  acceptance gates.
-- A running owner FieldOS Lab session and guest Firefox launch are confirmed.
-  Rendered desktop content, local inference through the browser, Kiwix
-  retrieval, and visible map rendering still need direct interactive checks.
-- The current management NIC shares a hypervisor bridge. The guest firewall
-  restricts traffic, but a dedicated isolated bridge and peer-scan evidence
-  are still needed for stronger isolation claims.
-- The sample regional map is test content, not a complete customer map pack.
-- No physical GPU validation has been performed.
+- VM 912: running replacement from source `8b0bda3`, services and two reboots
+  verified, owner-visible Kasm launch pending.
+- VM 911: stopped rollback from `c61b553`; retained pending owner confirmation.
+- Kasm workspace: existing owner-only **FieldOS Lab** entry retained and
+  pointed at the replacement guest.
+- Customer interactive install: unverified separately; see
+  [release status](RELEASE.md).
