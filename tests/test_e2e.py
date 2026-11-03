@@ -102,6 +102,9 @@ autoinstall:
     password: '{hash_proc.stdout.strip()}'
   source:
     id: ubuntu-desktop
+  apt:
+    geoip: false
+    fallback: offline-install
   storage:
     layout:
       name: lvm

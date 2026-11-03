@@ -1,18 +1,36 @@
 # Release status and process
 
 The clean unattended offline acceptance run passed on source commit
-`017987d99c4718ceb2a843030bc097546a354e52`. The latest source is `34f9604`;
-that commit adds installed content provenance notes and an archive integrity
-check, but has not yet been rebuilt or rerun through E2E. Earlier separate
-interactive R4 and R5 installations were also performed in disposable
-QEMU/KVM guests. R5's installation,
-firstboot, services, local inference, reference retrieval, map endpoints, and
-two reboots passed. Both R4 and R5 powered off after the remove-media prompt
-and required a host start to boot the installed target; automatic interactive
-restart remains a release blocker. FieldOS is not yet
-recommended for physical customer installation. A LAN peer scan, physical GPU
-validation, Canonical's modified Ubuntu trademark requirement, and exact
-third-party redistribution review remain open. Do not publish release binaries.
+`03b65524ff99b89c21374b4a6775c58a7da15333`; its report and browser screenshot
+are under `/mnt/shared/fieldos-e2e-03b6552/20261103T022031Z-2131949/`. It
+verified installation, provisioning, local AI, Kiwix retrieval, Firefox map
+rendering, and essential services after two reboots. A new customer ISO
+candidate was built locally with explicit offline APT settings, but its fresh
+no-NIC interactive install stopped at Disk Setup with Next disabled. That
+attempt failed before installation and is not an acceptance pass. The local
+source tree currently includes the offline APT setting change and is not yet
+committed. FieldOS is not recommended for physical customer installation.
+Customer installer completion, LAN peer scan, physical GPU validation,
+Canonical's modified Ubuntu trademark requirement, and exact third-party
+redistribution review remain open. Do not publish release binaries.
+
+### Latest customer ISO attempt — offline R1, 2026-11-03
+
+- Candidate: `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`
+  (11,956,584,448 bytes), SHA-256
+  `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
+- `make check`, 28 unit tests, ISO build, and ISO structure/BIOS/UEFI
+  verification passed. The candidate's NoCloud config sets `apt.geoip: false`
+  and `apt.fallback: offline-install`.
+- A fresh 80 GiB UEFI qcow2 guest with no NIC booted the FieldOS GRUB entry
+  and reached the real Ubuntu Disk Setup page. Next remained disabled after
+  waiting. The VM was not installed or repaired. The previous attempt's live
+  installer log showed storage state `DONE` and a mirror-configuration waiting
+  failure; the explicit offline APT settings did not clear the GUI blocker.
+  No hardware disks were attached. Report and screenshots:
+  `/mnt/shared/fieldos-e2e/customer-iso-offline-r1/report.md`.
+- This candidate therefore **fails** the interactive customer installation
+  gate. It remains a local test artifact and is not approved for distribution.
 
 ## Acceptance evidence
 
@@ -227,7 +245,7 @@ still presents interactive disk and account setup.
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T013805Z-2111810/report.md`, built from `017987d99c4718ceb2a843030bc097546a354e52` |
-| Interactive customer installation | PASS | R5 fresh no-NIC guest: interactive disk/account, firstboot, and service checks |
+| Interactive customer installation | BLOCKED | Latest offline R1 candidate stops at Disk Setup with Next disabled; see customer-iso-offline-r1 report |
 | Clean installer media/restart handoff | PARTIAL | R5 with explicit `shutdown: reboot`: Enter powered off VM; host start reached GDM |
 | Customer ISO default selection | PASS | R4 no-input GRUB countdown selected FieldOS and reached interactive setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
@@ -249,7 +267,9 @@ still presents interactive disk and account setup.
    bindings and NIC-address refusal but is not a LAN peer scan. This host
    session cannot create a libvirt bridge; do not bridge it to any production
    network.
-2. Resolve the interactive remove-media handoff. R5 explicitly requests
+2. Resolve the interactive installer blocker and remove-media handoff. The
+   current offline R1 candidate cannot proceed past Disk Setup even though
+   the installer sees the disposable guest disk. Earlier R5 explicitly requests
    `shutdown: reboot`, but Enter at the remove-media prompt still powered off
    the VM; a host start was required to boot the installed target. R3 did boot
    after the virtual CD was ejected at the prompt, while R4/R5 entered the

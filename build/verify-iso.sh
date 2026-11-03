@@ -28,6 +28,12 @@ grep -q 'Install Hckrslsh FieldOS (interactive)' "$TMP/grub.cfg" \
   || { echo "FieldOS installer boot entry is missing" >&2; exit 1; }
 grep -q 'set default="Install Hckrslsh FieldOS (interactive)"' "$TMP/grub.cfg" \
   || { echo "FieldOS interactive installer is not the default boot selection" >&2; exit 1; }
+grep -Eq '^  apt:$' "$TMP/nocloud-user-data" \
+  || { echo "Offline APT configuration is missing" >&2; exit 1; }
+grep -Eq '^    geoip: false$' "$TMP/nocloud-user-data" \
+  || { echo "Installer geo-IP lookup must be disabled" >&2; exit 1; }
+grep -Eq '^    fallback: offline-install$' "$TMP/nocloud-user-data" \
+  || { echo "Installer must fall back to the local offline source" >&2; exit 1; }
 
 echo "ISO structure, BIOS/UEFI boot records, installer config, and payload presence verified."
 sha256sum "$ISO"

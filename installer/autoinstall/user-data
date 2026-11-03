@@ -7,6 +7,9 @@ autoinstall:
     - storage
   source:
     id: ubuntu-desktop
+  apt:
+    geoip: false
+    fallback: offline-install
   storage:
     layout:
       name: lvm
