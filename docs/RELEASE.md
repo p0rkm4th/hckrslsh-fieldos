@@ -47,6 +47,12 @@ new GPU-only-model fixture. Log:
 `/mnt/shared/fieldos-e2e/hardware-backend-compat-5c2349f.log`. This is simulated
 selector coverage; it does not validate GPU inference or install a new ISO.
 
+The same `make check` and 47-test suite passed on clean source commit
+`bc1681f5a53c532ba5a1a5370388486ba9e9ccca` on 2026-11-03. The run recorded
+`worktree_dirty=false`; its log is
+`/mnt/shared/fieldos-e2e/source-bc1681f-checks.log`. Runtime ISO acceptance is
+still separate and has not been repeated for this source.
+
 Latest verified gates (2026-11-03): a clean unattended offline acceptance run
 passed, followed by a separate fresh-disk interactive customer ISO test. Both
 UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
