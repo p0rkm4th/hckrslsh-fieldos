@@ -104,6 +104,17 @@ source-level result is
 inspect a running current-source deployment or prove isolation from a LAN
 peer.
 
+The Compose configuration was rendered and rechecked again at source commit
+`0436069e99f972f25ae424597fa00d7337de9c60`. The seven services remained
+unprivileged with no added capabilities; all five host ports bound to
+`127.0.0.1`; and only N.O.M.A.D. and Dozzle mounted the Docker socket. The
+Dozzle mount is marked read-only, which does not constrain Docker API methods.
+Ephemeral synthetic credentials were supplied only to the command environment
+and are absent from the saved result. Evidence:
+`/mnt/shared/fieldos-e2e/compose-source-security-0436069.json` (SHA-256
+`2c8331bcaf29930a381769ca3299ee4c9b78d63432495a0a7bb75a8b0f450d41`). This
+is a source configuration check, not a fresh installation or LAN peer test.
+
 ## Live runtime recheck — 2026-11-03
 
 After two additional reboots of the retained no-NIC guest from the 10:23 E2E
