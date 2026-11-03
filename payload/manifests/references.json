@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "archives": [
+    {
+      "id": "wikipedia-en-100-mini",
+      "title": "English Wikipedia 100-mini test archive",
+      "version": "2026-01",
+      "path": "content/zim/wikipedia_en_100_mini_2026-01.zim",
+      "size_bytes": 4537782,
+      "sha256": "2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db",
+      "source": {
+        "project": "Project N.O.M.A.D.",
+        "release": "v1.35.1",
+        "commit": "0dbbd21c2f470975e86131c497694c147ca8bc00",
+        "path": "install/wikipedia_en_100_mini_2026-01.zim",
+        "url": "https://github.com/Crosstalk-Solutions/project-nomad/blob/v1.35.1/install/wikipedia_en_100_mini_2026-01.zim"
+      },
+      "license": {
+        "identifier": "CC-BY-SA-4.0",
+        "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "notice_path": "licenses/wikipedia-zim-attribution.txt",
+        "full_text_path": "licenses/CC-BY-SA-4.0.txt",
+        "scope_note": "Wikimedia text contributions generally use CC BY-SA 4.0 and GFDL under the Terms of Use; exceptions and individual non-text media licenses may differ. Per-entry clearance is not complete."
+      },
+      "attribution": "Wikipedia contributors; preserve article-level credits and notices contained in the archive.",
+      "status": "test-fixture; media-level redistribution review remains open"
+    }
+  ]
+}

@@ -39,7 +39,7 @@ is a historical candidate; its binary has been removed.
 | Dozzle, Ollama, Qdrant, Kiwix images | Direct licenses are recorded in `payload/manifests/images.json` and upstream links in `CONTAINER-IMAGES.md` | Pinned OCI digests | Generate/review SBOMs for the exact images; include transitive notices and any corresponding source required by the applicable licenses. |
 | Qwen3 0.6B chat model | Apache-2.0 model page: <https://huggingface.co/Qwen/Qwen3-0.6B> | `models/manifest.json` pins the Ollama manifest SHA-256 and quantized model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Nomic Embed Text v1.5 | Apache-2.0 model page: <https://huggingface.co/nomic-ai/nomic-embed-text-v1.5> | `models/manifest.json` pins the Ollama manifest SHA-256 and model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
-| Miniature Wikipedia ZIM | Wikimedia text licensing/attribution terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use> | ZIM is copied from Project N.O.M.A.D. v1.35.1; a general CC BY-SA attribution notice is included | Inspect the ZIM metadata and article notices; add exact archive version, source, size, SHA-256, license URI/text, and a practical attribution path in the installed UI. Wikimedia content can include media with separate licenses. |
+| Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes | User-facing source notes and license copy are added for the next build. Article/media-level license review remains open; R5 predates the notes and has not been rebuilt with them. |
 | Protomaps world and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | Build key, bounds, zoom, size/checksum for generated maps; OSM/Protomaps attribution is present in the map UI and payload notices | Archive the applicable ODbL text and verify the exact build's attribution and derivative database obligations before distribution. |
 | Project N.O.M.A.D. Maps assets | Upstream source README and license/OFL notices are carried in the generated payload | Source commit pinned during build | Confirm notices cover every bundled sprite/font/asset and their exact source revisions. |
 
@@ -51,9 +51,10 @@ is a historical candidate; its binary has been removed.
    reproducible license/SBOM inventory for the exact package closure and each
    pinned OCI image, including transitive licenses, copyright notices, source
    availability, and license-specific source offers.
-3. Add per-file SHA-256, version/source revision, and license identifiers for
-   the bundled model blobs and ZIM, then verify that the attribution is visible
-   and usable offline.
+3. Verify the new reference manifest against a freshly prepared payload, then
+   rebuild and test an ISO that exposes the offline source/attribution notes.
+   Complete the entry-level media license review; archive-level metadata does
+   not establish clearance for every embedded item.
 4. Preserve exact map, sprite, and font attributions and license text in the
    installed system.
 5. Have the final notices and distribution method reviewed before publishing

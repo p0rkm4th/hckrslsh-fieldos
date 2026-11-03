@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=FieldOS Content Sources and Limits
+Comment=View offline content sources, licenses, and safety limits
+Exec=xdg-open /usr/share/doc/fieldos/CONTENT-SOURCES.md
+Icon=help-about
+Terminal=false
+Categories=Utility;

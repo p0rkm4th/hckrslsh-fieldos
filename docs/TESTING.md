@@ -44,6 +44,8 @@ inside the guest.
 Checks include local package provisioning, container state, N.O.M.A.D. health,
 Ollama chat generation, embedding output, Kiwix library/search, a PMTiles world
 tile and a registered sample region, and a rendered browser map screenshot.
+They also check the installed content source guide, bundled license text, and
+the reference archive checksum against its pinned manifest.
 The runner checks the map viewport contains actual low-zoom water tiles, then
 checks blocked container egress and repeats service/model/reference/map-tile
 checks after two guest reboots. The guest has no external network interface;
