@@ -478,3 +478,61 @@ recovered run is not counted as a clean PASS.
   documented customer-readiness gates are satisfied. The interactive installer
   has previously completed in QEMU; the latest acceptance run above validates
   the new payload through the unattended test-only path.
+
+### Source-offer customer ISO candidate acceptance — 2026-11-03
+
+- Built the customer-facing interactive test candidate from clean source commit
+  `709c8932ba39184be9a24e40df5939b958d62e79` and the validated payload
+  containing the image notices and corresponding-source offer. ISO:
+  `/mnt/shared/fieldos-releases/fieldos-test-customer-sourceoffer-709c893.iso`,
+  11,983,912,960 bytes, SHA-256
+  `b3baf28dfb6be78f9f701fb53fd37e9cc083a205e05705da0bb2abfa123e7dc4`.
+  `make verify`, ISO sidecar verification, and BIOS/UEFI boot-record checks
+  passed. The embedded build manifest pins payload SHA-256
+  `b42712b4544c583389e60eda5cb91d52f39c60a81516dc46ef994b5f31c18c67`.
+- The interactive installer completed on a fresh 80 GiB disposable UEFI qcow2
+  with no virtual NIC. The review screen showed only target `vda`. At the
+  remove-media prompt, Enter powered off the guest; a host-side `virsh start`
+  was required to boot the installed target. The customer account QMP sequence
+  was accidentally run twice concurrently, producing unintended display-name
+  and hostname values. A temporary password was reset in the isolated guest to
+  reach the desktop and verify the browser. These actions make the interactive
+  install/handoff test **PARTIAL**, not a clean PASS. No guest application data
+  was manually repaired.
+- After target boot, firstboot reached `status=complete` using local APT and
+  container payloads. Seven services ran; N.O.M.A.D. returned `{"status":"ok"}`;
+  Qwen generated `FIELDOS_CUSTOMER_INSTALL_OK`; embeddings returned 768 values;
+  Kiwix search retrieved the New York article; installed image indexes and
+  corresponding-source files matched all pinned hashes. The guest had no
+  external NIC/default route. The regional map appeared in Firefox at
+  1280x800 (3,993 sampled colors, 69,563 water pixels); screenshot SHA-256 is
+  `0f860b1c952ee86573f1829f21c4ca253584589c9e445425dcfa47e9a9fbfb4e`.
+- Two in-guest reboots changed boot IDs. After each, the complete service,
+  inference, embedding, retrieval, and map API checks passed following an
+  explicit readiness wait. The first immediate health probe after reboot one
+  hit a transient connection reset while containers started; it recovered
+  without data changes. The initial failed probe and successful retry are both
+  preserved. This validates persistence after reboot, while the transient is
+  retained as evidence rather than hidden.
+- Full report, screenshots, logs, source-offer verification, listener and
+  secret-file metadata, and the stopped guest disk remain under
+  `/mnt/shared/fieldos-e2e/customer-sourceoffer-709c893/`. The local artifact
+  manifest is
+  `/mnt/shared/fieldos-releases/fieldos-test-customer-sourceoffer-709c893.manifest.json`.
+  This candidate is unpublished and not redistribution-cleared.
+
+### FieldOS test-disk cleanup — 2026-11-03
+
+- Removed nine stopped, superseded disposable test qcow2 disks and their stale
+  libvirt domain definitions after confirming each exact domain was shut off
+  and referenced its matching disk. The removed guests were older customer
+  installer attempts and superseded/aborted E2E runs. Their reports, logs, and
+  screenshots were retained and each available report records that its disk
+  was removed. No active VM, the current customer inspection VM, the latest
+  clean E2E guest disk, physical drive, or unrelated host service was touched.
+- `/mnt/shared` free space rose from 42 GiB to 254 GiB after cleanup. Building
+  the new ISO and retaining its stopped test disk/screenshot evidence used
+  some of that space; the later observed free space was 210 GiB. Recheck before
+  starting another full-size guest. Build, payload, and evidence paths remain
+  configurable through the `FIELDOS_*_ROOT` Make variables documented in
+  `TESTING.md`.
