@@ -34,12 +34,12 @@ remained healthy. Evidence is
 This does not verify a current-source installation or the full E2E security
 assertion.
 
-A fresh `make test-e2e` preflight at 23 GiB free again stopped before creating
+A pre-cleanup `make test-e2e` preflight at 23 GiB free stopped before creating
 artifacts, against the documented 50 GiB minimum. Report:
 `/mnt/shared/fieldos-e2e/preflight-20261103T124445Z-2380881.md` (SHA-256
 `5b2a252b4e7afefbe351eaed9300c26b8d222f74c065f621cbe4be61597bd25f`). This
-confirms the same storage blocker remains; the failed legacy VM was not
-repaired or counted as acceptance.
+records the state before the artifact cleanup below; it is not the current
+storage state. The failed legacy VM was not repaired or counted as acceptance.
 
 The root-only `auto-test4` firstboot log has now been recovered without
 stopping or repairing the VM. It shows all seven images loaded and containers
@@ -84,13 +84,19 @@ into an ISO or verified on a newly installed guest.
 
 The most recent clean unattended VM acceptance remains the report below at
 source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
-fresh acceptance of current source. `/mnt/shared` currently has 23 GiB free,
-still below the 50-GiB E2E preflight. A stopped interactive customer guest
-contains a successful install and two-reboot evidence, but its disk is retained
-because the release record references it; the guarded cleanup utility refuses
-to remove it. Running guests, current artifacts, and all test reports remain
-preserved. Historical passes remain evidence only for their tested source and
-environment; current-source release acceptance is open.
+fresh acceptance of current source. The stopped interactive customer guest was
+retired on 2026-11-03 after review: its disk and libvirt definition were
+removed, while reports, screenshots, logs, checksums, disk metadata, and domain
+XML remain under
+`/mnt/shared/fieldos-e2e/customer-interactive-0b2fd8c-20261103/`. Three
+superseded payload archives were also removed after their SHA-256 sidecars
+matched; the active payload and customer ISO candidate were preserved. These
+retirements raised `/mnt/shared` free space to 71 GiB, enough for a new E2E run.
+The current-source run has not yet been started. Historical passes remain
+evidence only for their tested source and environment; current-source release
+acceptance is still open. Exact retired paths, sizes, retained checksum sidecars,
+VM disposition, and before/after free-space values are recorded at
+`/mnt/shared/fieldos-e2e/artifact-retirement-20261103.md`.
 
 ### Existing installed guest live recheck — 2026-11-03
 
@@ -676,8 +682,11 @@ E2E rerun documented at the top of this file.
   `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`,
   SHA-256 `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
   It is an unpublished test candidate, not a release binary.
-- Bundled test payload: `/mnt/shared/fieldos-payload-34f9604/` (5.1 GiB);
-  current build temporary root `/mnt/shared/fieldos-build-03b6552/` (empty).
+- Bundled test payload archive was
+  `/mnt/shared/fieldos-payload-34f9604/offline-payload.tar.zst` (5.1 GiB,
+  SHA-256 `41b95ac8109bb3358cfd7c3512ce3022e8dd6b49906234bd32bbda4ae1441e59`).
+  It was retired on 2026-11-03; its `.sha256` sidecar remains. The current
+  build temporary root `/mnt/shared/fieldos-build-03b6552/` was empty.
 - At this documentation update, `/mnt/shared` had 49 GiB free (96% used).
   Check available space before creating further ISOs or VM disks. Active host
   VMs and unrelated storage were left untouched.
@@ -971,7 +980,8 @@ recovered run is not counted as a clean PASS.
   5.12 GiB, SHA-256
   `b42712b4544c583389e60eda5cb91d52f39c60a81516dc46ef994b5f31c18c67`.
   Payload archive validation confirmed 1,189 selected files, seven image
-  indexes, and three exact source files.
+  indexes, and three exact source files. The archive was retired on
+  2026-11-03 after the run; its checksum sidecar and this record remain.
 - One preceding automated attempt reached the installer completion screen but
   did not hand off unattended; the harness interrupted it without manual
   intervention. It is explicitly not a PASS. The test-only autoinstall now
