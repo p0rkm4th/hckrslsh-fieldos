@@ -1,8 +1,8 @@
 # Release status and process
 
 The latest clean unattended offline acceptance run passed on source commit
-`0eb3d24e47dc156942396e9557a85ffc6840f78a`; report, screenshots, logs, and
-guest disk are under `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/`.
+`ae1d18bb54974a4c949a046ed90fdf38a110ce4e`; report, screenshots, logs, and
+guest disk are under `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/`.
 The 80 GiB UEFI guest installed with 8 GiB RAM and no NIC; N.O.M.A.D., local
 inference, embeddings, source-verified reference retrieval, browser map
 rendering, and persistence after two reboots passed. The test ISO SHA-256 is
@@ -24,6 +24,28 @@ exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
+
+### Fresh clean E2E rerun — 2026-11-03
+
+- `make test-e2e` built test ISO SHA-256
+  `5c123c4ef136f7f44ff4bcc7866e361bb51b72a5cca4318773fdbec0cd5a273a`, then
+  installed Ubuntu unattended to a fresh 80 GiB qcow2 guest with 12 GiB RAM and
+  no virtual NIC. Installer shutdown was detected and the installed disk
+  booted through the guest agent without manual installer input or repair.
+- Offline provisioning and all seven pinned images passed. N.O.M.A.D. health
+  returned `{"status":"ok"}`; Ollama generated `FIELDOS_ACCEPTANCE_OK`; the
+  embedding endpoint responded; Kiwix reference search, archive attribution
+  and checksum, local map tiles, and regional map inventory passed. External
+  container egress remained blocked.
+- Firefox rendered the offline PMTiles map at 1280x800; the captured
+  `map-render.png` had 69,563 sampled water pixels and 3,993 sampled colors.
+  After each of two reboots, the boot ID changed and services, local inference,
+  retrieval, and map checks passed again.
+- Report, installer/firstboot logs, screenshot, and retained test guest disk:
+  `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/`. The temporary ISO and
+  test credentials were removed by the harness. This is a clean unattended
+  QEMU acceptance pass; the separate interactive customer handoff remains
+  PARTIAL as documented below.
 
 ### USB customer handoff and persistence follow-up — 2026-11-03
 
