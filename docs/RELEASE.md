@@ -4,11 +4,13 @@ The latest clean unattended offline acceptance run passed on source commit
 `4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`; report and browser screenshot are
 under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. It verified
 installation, offline provisioning, local AI, reference retrieval, browser map
-rendering, and service persistence through two reboots. The latest customer ISO
-candidate was built locally with explicit offline APT settings, but its fresh
-no-NIC interactive install stopped at Disk Setup with Next disabled. That
-attempt failed before installation and is not an acceptance pass. FieldOS is
-not recommended for physical customer installation.
+rendering, and service persistence through two reboots. The latest interactive
+customer ISO diagnostic completed installation to its disposable target and
+booted that installed disk to GDM after a host start. The normal remove-media
+and Enter handoff powered the VM off, so the customer installation gate remains
+PARTIAL, not a clean pass. Earlier “disabled Next” reports used an incomplete
+QMP click sequence and do not establish an installer, storage, or network
+defect. FieldOS is not recommended for physical customer installation.
 Customer installer completion, LAN peer scan, physical GPU validation,
 Canonical's modified Ubuntu trademark requirement, and exact third-party
 redistribution review remain open. Do not publish release binaries.
@@ -40,25 +42,52 @@ redistribution review remain open. Do not publish release binaries.
   verification passed. The candidate contains the same installer config now
   committed in `4d4fccc`, setting `apt.geoip: false` and
   `apt.fallback: offline-install`; the current verifier confirms both keys.
-- A fresh 80 GiB UEFI qcow2 guest with no NIC booted the FieldOS GRUB entry
-  and reached the real Ubuntu Disk Setup page. Next remained disabled after
-  waiting. The VM was not installed or repaired. The previous attempt's live
-  installer log showed storage state `DONE` and a mirror-configuration waiting
-  failure; the explicit offline APT settings did not clear the GUI blocker.
-  No hardware disks were attached. Report and screenshots:
-  `/mnt/shared/fieldos-e2e/customer-iso-offline-r1/report.md`.
-- This candidate therefore **fails** the interactive customer installation
-  gate. It remains a local test artifact and is not approved for distribution.
-  A separate 8 GiB user-mode-network diagnostic reached the same disabled
-  control with a virtio NIC attached, so absence of an adapter alone is not the
-  cause. External reachability was not measured. Its screenshots and report
-  are at `/mnt/shared/fieldos-e2e/customer-iso-network-diagnostic/`.
-  The same disposable QEMU setup booted unmodified Ubuntu 26.04.1 media, but
-  its Next control also appeared disabled on the earlier language screen and
-  did not advance by keyboard or pointer input. That comparison leaves a
-  possible baseline installer/UI or guest-input issue; it does not establish
-  the root cause or count as an install test. Evidence:
-  `/mnt/shared/fieldos-e2e/stock-installer-disk-diagnostic/`.
+- Initial navigation batched QMP pointer movement, press, and release. Later
+  input testing showed separate press and release calls were needed. The earlier
+  “disabled Next” observations therefore do not establish a FieldOS, storage,
+  network, or stock-Ubuntu installer defect. Those comparisons are
+  inconclusive; their reports have been amended with this limitation.
+- A later corrected interactive run with this candidate completed installation;
+  see R2 below. The candidate remains a local test artifact, not an approved
+  distribution binary.
+
+### Current interactive customer ISO diagnostic — R2, 2026-11-03
+
+- Candidate: `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`,
+  SHA-256 `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
+- A fresh UEFI QEMU guest had no network interface and only a disposable target
+  disk (`vda`) plus installer media. With separate QMP pointer press/release
+  events, interactive disk and account setup completed, followed by the
+  installer’s “Installation complete” screen. At the remove-media prompt, the
+  virtual CD was ejected and Enter pressed; the VM powered off. A host start
+  booted the installed target to GDM. The install and target-disk boot are
+  observed, but automatic handoff is not verified and needed host action.
+- The guest agent did not connect at GDM. The temporary password was not
+  retained; services, local inference, and browser map rendering were not
+  checked in this run. This recovered VM is not a clean automated customer
+  acceptance pass. Evidence and retained guest disk:
+  `/mnt/shared/fieldos-e2e/customer-iso-ui-r2/`.
+- The reason the remove-media/Enter step powers the guest off is unresolved.
+  Treat eject timing only as a hypothesis; this run does not verify a fix.
+
+### Current artifacts and storage snapshot
+
+- Clean unattended E2E report and screenshots: `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/` (32 GiB sparse guest disk retained).
+- Interactive customer ISO evidence and recovered guest disk:
+  `/mnt/shared/fieldos-e2e/customer-iso-ui-r2/` (about 33 GiB, including the
+  31 GiB sparse qcow2). The VM remains at GDM for diagnosis; do not treat it as
+  a clean acceptance guest.
+- Current local customer ISO candidate:
+  `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`,
+  SHA-256 `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
+  It is an unpublished test candidate, not a release binary.
+- Bundled test payload: `/mnt/shared/fieldos-payload-34f9604/` (5.1 GiB);
+  current build temporary root `/mnt/shared/fieldos-build-03b6552/` (empty).
+- At this documentation update, `/mnt/shared` had 49 GiB free (96% used).
+  Check available space before creating further ISOs or VM disks. Active host
+  VMs and unrelated storage were left untouched.
+- Source and documentation are maintained in the public Git repository; no
+  ISO, model weight, VM disk, or container archive is published there.
 
 ## Acceptance evidence
 
@@ -274,19 +303,19 @@ still presents interactive disk and account setup.
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/report.md`, clean source commit `4d4fccc` |
-| Interactive customer installation | BLOCKED | Latest offline R1 candidate stops at Disk Setup with Next disabled; see customer-iso-offline-r1 report |
-| Clean installer media/restart handoff | BLOCKED | Latest customer attempt stopped before installation; prior R5 handoff required a host start |
-| Customer ISO default selection | PASS | Offline R1 GRUB default selected FieldOS and reached Disk Setup |
+| Interactive customer installation | PARTIAL | R2 installed to disposable `vda`; target reached GDM after host start; services unverified |
+| Clean installer media/restart handoff | BLOCKED | R2 powered off at remove-media/Enter; host start required |
+| Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
 | Knowledge library and maps | PASS | R4 Kiwix retrieval; regional PMTiles; real Firefox screenshot |
 | Reboot persistence | PASS | Latest clean E2E: services, inference, retrieval, and map checks recovered after two in-guest reboots |
-| ISO release | BLOCKED | Offline R1 verified structurally but failed at Disk Setup; redistribution/attribution gates remain; binary unpublished |
+| ISO release | BLOCKED | Customer handoff is partial; redistribution/attribution and other gates remain; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks clean across 43 commits through `27b6517`; report at `/mnt/shared/fieldos-e2e-4d4fccc/repository-review/gitleaks-final.json`; no Git blobs over 1 MiB |
+| Public Git history | PASS | Gitleaks clean across 43 commits through `27b6517`; report at `/mnt/shared/fieldos-e2e-4d4fccc/repository-review/gitleaks-final.json`; no Git blobs over 1 MiB; later changes are documentation only |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
@@ -296,15 +325,11 @@ still presents interactive disk and account setup.
    bindings and NIC-address refusal but is not a LAN peer scan. This host
    session cannot create a libvirt bridge; do not bridge it to any production
    network.
-2. Resolve the interactive installer blocker and remove-media handoff. The
-   current offline R1 candidate cannot proceed past Disk Setup even though
-   the installer sees the disposable guest disk. Earlier R5 explicitly requests
-   `shutdown: reboot`, but Enter at the remove-media prompt still powered off
-   the VM; a host start was required to boot the installed target. R3 did boot
-   after the virtual CD was ejected at the prompt, while R4/R5 entered the
-   prompt with the tray already empty. This difference makes eject timing a
-   hypothesis to test, not a confirmed cause. Demonstrate a normal install
-   boots the target without host-side repair.
+2. Resolve the interactive installer remove-media/Enter handoff. R2 completed
+   installation, but the VM powered off at the prompt and a host start was
+   required to boot the installed target. Earlier “disabled Next” reports used
+   incomplete QMP pointer events and are inconclusive. Demonstrate that a
+   normal install boots the target without host-side intervention.
 3. Resolve and complete the itemized clearance work in
    [`REDISTRIBUTION.md`](REDISTRIBUTION.md), including Canonical's modified
    Ubuntu trademark requirement, exact package and image SBOMs, and content

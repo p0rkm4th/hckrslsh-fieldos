@@ -16,18 +16,21 @@ provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” Keep the USB installation media connected until Ubuntu prompts
-you to remove it; then remove it and press ENTER. An earlier R3 test booted the
-installed target after media was ejected at that prompt. Later R4/R5 tests
-reached the prompt with the virtual tray already empty and powered off after
-ENTER. Eject timing is a hypothesis, not a confirmed cause; the handoff remains
-unverified on the current candidate. If the computer powers off, press its
-power button once to start the installed system. Ubuntu documents
+you to remove it; then remove it and press ENTER. In the latest R2 QEMU
+diagnostic, installation completed, but the guest powered off after media
+ejection and ENTER. A host start booted the installed target to GDM. This is a
+partial diagnostic, not a verified handoff or a customer acceptance pass. If a
+test installation powers off, a single power-button start can boot it for
+recovery; record that as host intervention. The cause remains unresolved.
+Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
 FieldOS is not yet recommended for customer hardware.
-The latest 2026-11-03 no-network customer ISO attempt stopped at Disk Setup
-with Next disabled, before installation began. The ISO remains a local test
-candidate; see [`RELEASE.md`](RELEASE.md) for its report and current blockers.
+Earlier reports of a disabled installer Next button used incomplete QMP click
+events and are inconclusive. The latest no-network interactive diagnostic
+completed installation but did not verify automatic handoff or installed
+services. The ISO remains a local test candidate; see [`RELEASE.md`](RELEASE.md)
+for its report and current blockers.
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
