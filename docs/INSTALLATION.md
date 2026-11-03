@@ -3,14 +3,12 @@
 ## Customer installation
 
 **Current candidate status (2026-11-03):** The source-offer candidate ISO
-`fieldos-test-customer-sourceoffer-709c893.iso` installed and its offline
-services passed in a disposable QEMU guest, but the guest powered off at the
-remove-media prompt and required a host-side start. Its QMP account-entry
-automation also produced unintended test identity values and needed a
-temporary password reset to reach the desktop. This is a partial candidate
-test, not a clean interactive-install or handoff PASS. The independent
-unattended acceptance run passed with its test-only handoff. See the exact
-evidence, checksums, and remaining release gates in [`RELEASE.md`](RELEASE.md).
+`fieldos-test-customer-sourceoffer-709c893.iso` installed in two disposable
+QEMU attempts, but both guests powered off after Enter at the remove-media
+prompt and required a host-side start. The latest run used correct account and
+disk selections, then passed offline service checks, browser map rendering,
+and two-reboot persistence. The installer/handoff remains PARTIAL; see the
+evidence, checksums, and release gates in [`RELEASE.md`](RELEASE.md).
 
 The customer facing ISO is built with:
 
@@ -27,13 +25,15 @@ review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” Keep the USB installation media connected until Ubuntu prompts
 you to remove it; then remove it and press ENTER. In the latest current-source
-QEMU customer-ISO acceptance, ejecting virtual media and pressing Enter booted
-the installed target to GDM without a host-side VM start. Services, local
-inference, reference retrieval, map tile serving, and persistence across two
-reboots then passed in a guest without a network adapter. This verifies the
-interactive installer in a disposable virtual machine; physical hardware and
-network-enabled LAN exposure remain unverified. See [`RELEASE.md`](RELEASE.md)
-for the candidate hash, exact evidence locations, and limitations.
+QEMU customer-ISO acceptance, the installer had already opened the virtual
+CD tray; pressing Enter powered off the guest. In this validation setup, the
+installed target booted only after a host-side VM start. Services, local
+inference, reference retrieval, map rendering, and two-reboot persistence
+passed after that recovery. This verifies the installed system in a disposable
+virtual machine, but the automatic interactive handoff remains unresolved.
+Physical hardware and network-enabled LAN exposure are unverified. See
+[`RELEASE.md`](RELEASE.md) for the candidate hash, exact evidence locations,
+and limitations.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).

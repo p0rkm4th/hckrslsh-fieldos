@@ -2,16 +2,45 @@
 
 The latest clean unattended offline acceptance run passed on source commit
 `4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`; report and browser screenshot are
-under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. A separate
-interactive installation of the current customer ISO also completed normally,
-booted the installed disk after the remove-media prompt, and passed service,
-inference, content, map-tile, and two-reboot checks with no virtual NIC. This is
-QEMU validation, not a physical customer installation. FieldOS is not yet
+under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. The latest
+interactive customer ISO installation completed and the installed system
+passed service, inference, content, map, browser-render, and two-reboot checks
+with no virtual NIC. However, pressing Enter at the installer's remove-media
+prompt powered off the VM; a host-side start was needed to boot the installed
+disk. The interactive installer/handoff gate therefore remains PARTIAL. This
+is QEMU validation, not a physical customer installation. FieldOS is not yet
 recommended for physical customer installation because guest-to-guest LAN
 exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
+
+### Current customer installer rerun — R2, 2026-11-03
+
+- Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-sourceoffer-709c893.iso`,
+  SHA-256 `b3baf28dfb6be78f9f701fb53fd37e9cc083a205e05705da0bb2abfa123e7dc4`.
+- Fresh 80 GiB UEFI qcow2 guest, no virtual NIC. Interactive account entry
+  produced the intended `fieldos` user, `fieldos-r2` hostname, and selected
+  only disposable `vda`. The installer reached its remove-media prompt and
+  opened the virtual CD tray. Pressing Enter powered off the guest again;
+  `virsh start` was required to boot the installed disk. This repeats the
+  unresolved customer handoff issue. Do not count this as a clean unattended
+  installer PASS.
+- After the host start, firstboot completed. Seven containers ran; N.O.M.A.D.
+  health, local Qwen generation, 768-value embeddings, Kiwix search, real
+  PMTiles tile retrieval, regional map registration, and Firefox map rendering
+  passed. The installed guest had no external NIC or default route. The
+  repeated post-reboot run passed all essential checks after two changed boot
+  IDs. The earlier exact-marker inference check on reboot 2 failed because the
+  model paraphrased the prompt; the test now uses temperature zero and an
+  explicit exact-token request, which passed on retry. No guest repair was
+  performed between that failure and the passing retry.
+- Installed payload integrity check matched all 7 image digests, 1,174
+  candidate notice files, and 3 source-offer files by size and SHA-256.
+- Evidence, screenshots, logs, and retained VM disk:
+  `/mnt/shared/fieldos-e2e/customer-sourceoffer-709c893-r2/`. The VM is a
+  disposable test guest; no test credentials are retained. The candidate ISO
+  and guest disk are not published.
 
 ### Container notice and corresponding-source follow-up — 2026-11-03
 
