@@ -110,7 +110,7 @@ services:
     ports:
       - 127.0.0.1:8090:8080
     volumes:
-      - /var/lib/fieldos/storage/zim:/data
+      - /var/lib/fieldos/storage/zim:/data:ro
 
   dozzle:
     image: amir20/dozzle:v10.0@sha256:d383abf0fee72a8037d6ec6474424e56d752a52208e0ed70f4805e9d86a77830

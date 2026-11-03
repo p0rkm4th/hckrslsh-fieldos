@@ -132,6 +132,7 @@ still presents interactive disk and account setup.
 | Knowledge library and maps | PASS | Kiwix retrieval; PMTiles; real Firefox screenshot |
 | Reboot persistence | PASS | R3 plus current-source E2E: two reboots, hashes and service checks |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
+| Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
 | Public Git history | PASS | Gitleaks clean across reachable commits and tracked source; no private IPv4 matches or blobs over 1 MiB |
