@@ -59,6 +59,15 @@ partial.
 
 ## Operational checks
 
+For manually entered operator credentials, use a memorable passphrase made
+from at least five unrelated, lowercase words, separated with hyphens. The
+FieldOS Lab credential follows this pattern using EFF's short Diceware list;
+it is unique to the guest and is not the Kasm website password. Keep the value
+in a mode-`0600` private local credential file, never in Git, build output, or
+support logs. Do not reuse it for another account. See
+[EFF's passphrase guidance](https://www.eff.org/dice), which recommends four
+words for its short list and six words for its long list.
+
 After installation, verify listeners with `sudo ss -lntp` and inspect actual
 container settings with `sudo docker compose -f /opt/fieldos/services/compose.yaml
 --project-directory /opt/fieldos/services config` and `sudo docker inspect`.
