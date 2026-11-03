@@ -88,3 +88,14 @@ guest passed: seven containers, only N.O.M.A.D. and Dozzle using the Docker
 socket, loopback-only published ports, and root-only credentials. Evidence is
 `/mnt/shared/fieldos-e2e/security-runtime-followup-20261103.txt`. This does not
 replace a fresh current-source E2E run or a guest-to-guest LAN scan.
+
+The current Compose source was also rendered with synthetic credentials using
+`docker compose config` and checked for service count, published-port bindings,
+privileged mode, added capabilities, and Docker socket consumers. It rendered
+seven services; all five published ports bind to `127.0.0.1`, no service is
+privileged or requests added capabilities, and only N.O.M.A.D. and Dozzle
+mount the Docker socket (Dozzle's mount is marked read-only). The retained
+source-level result is
+`/mnt/shared/fieldos-e2e/compose-source-security-607a697.json`. This does not
+inspect a running current-source deployment or prove isolation from a LAN
+peer.
