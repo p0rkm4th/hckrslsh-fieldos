@@ -52,7 +52,10 @@ incomplete.
 
 At this checkpoint `/mnt/shared` has about 18 GiB available. Do not create
 another VM disk or ISO until capacity is increased or an evidence-retained,
-stopped disposable disk is deliberately retired.
+stopped disposable disk is deliberately retired. The 78 GiB in
+`<WORKSPACE>/build/out/` consists of the
+`fieldos-auto-test2`, `fieldos-auto-test3`, and `fieldos-auto-test4` disks;
+libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 81 commits through `0b2fd8c` found no
 credentials. The current documentation-only release update is pending commit.
