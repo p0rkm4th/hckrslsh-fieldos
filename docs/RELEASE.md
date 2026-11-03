@@ -37,7 +37,8 @@ Firefox regional-map rendering, and two guest-side reboots. Its full report
 and screenshots are retained at
 `/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/report.md`.
 That older candidate does not contain the latest atomic credential-file
-handling; its binary is superseded by the new candidate.
+handling; its binary was removed after supersession, while its checksum and
+interactive-install evidence were retained.
 
 The candidate is private test material, not a published or approved
 redistribution image. QEMU results do not establish physical hardware or GPU
