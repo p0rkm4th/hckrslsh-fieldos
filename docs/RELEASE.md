@@ -13,11 +13,11 @@ Current source is public at `origin/main` at commit
 Gitleaks scan of its complete Git history found no findings; redacted JSON is
 `/mnt/shared/fieldos-e2e/gitleaks-598746e.json` (SHA-256
 `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`). A
-current-tree search found no local usernames, HADES/Garuda host labels, or
-private-key headers. These source and history checks do not replace a fresh
-installation, third-party license review, or broader manual infrastructure
-review. Earlier firstboot permission-specific evidence on commit `670b1a3` is
-retained below.
+current-tree marker search found no local user-specific paths, private
+hostnames, or private-key headers. These source and history checks do not
+replace a fresh installation, third-party license review, or broader manual
+infrastructure review. Earlier firstboot permission-specific evidence on
+commit `670b1a3` is retained below.
 
 On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
 The captured log is
