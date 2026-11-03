@@ -25,6 +25,9 @@ power button once to start the installed system. Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
 FieldOS is not yet recommended for customer hardware.
+The latest 2026-11-03 no-network customer ISO attempt stopped at Disk Setup
+with Next disabled, before installation began. The ISO remains a local test
+candidate; see [`RELEASE.md`](RELEASE.md) for its report and current blockers.
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
