@@ -21,10 +21,10 @@ desktop credential in its server configuration; it is not published here.
 Access is mapped to a dedicated operator group containing only the owner's
 Kasm account. The workspace is not mapped to the default all-users group.
 Kasm proxies the browser session; the guest does not expose its application
-ports to Kasm users or the public network. RDP is configured for NLA
-(CredSSP-over-TLS), with a locally generated certificate whose identity Kasm
-is configured to ignore. Certificate validation is therefore not provided by
-the current connection record.
+ports to Kasm users or the public network. RDP is configured for automatic
+security negotiation (`security=any`), with a locally generated certificate
+whose identity Kasm is configured to ignore. Certificate validation is
+therefore not provided by the current connection record.
 
 The VM requires one management NIC for Kasm. This is not the no-NIC offline
 acceptance configuration: the NIC is attached to the existing hypervisor
@@ -81,27 +81,38 @@ It records both changed boot IDs and the checks above after each reboot.
 On 2026-11-03, Kasm authorized the owner's session, but the guest logged
 `HYBRID_REQUIRED_BY_SERVER` during RDP negotiation while the Kasm server
 record was set to `security=tls`. GNOME Remote Desktop requires NLA for this
-connection. The FieldOS Lab server record has been changed to `security=nla`;
-an existing Kasm session may continue using its old connection settings, so
-close that workspace session and launch it again. The guest desktop password
-was later shortened at the owner's request and synchronized across the Linux
-`labdesk` account, GNOME Remote Desktop, and Kasm's static server credential.
-Read-back confirmed the Kasm record uses NLA/static credentials, the guest
-account has a set password, and the RDP service is active. The Kasm website
-password was not changed. Neither password is recorded in this document.
+connection. The record was then changed to `security=nla`; that attempt
+selected NLA and reached GNOME's server-redirection handoff, but the transport
+closed before a signed-in desktop was verified. The record was changed to
+`security=any` so Guacamole can negotiate the mode across the initial endpoint
+and redirect. The owner then reported an authentication failure. Guacamole
+logged `STATUS_LOGON_FAILURE`, and GNOME logged a CredSSP NTLM MIC verification
+failure; no guest GDM/PAM account-password failure was logged for that attempt.
+The existing owner-approved desktop credential was resynchronized to the
+guest's `labdesk` account, GNOME Remote Desktop system credentials, and Kasm's
+static server credential. The helper reported success; API read-back confirmed
+automatic security negotiation and a static credential is configured, the
+guest account has a password set, and the RDP service is active. This does not
+prove a new login succeeded. A fresh owner launch is still required. The Kasm
+website password was not changed. Neither password is recorded in this
+document.
 
 There are two sign-in stages: the Kasm server credential authenticates the
 RDP connection; GNOME then presents its remote GDM greeter, where the operator
 must sign in to guest account `labdesk` with the desktop password. The latest
-retained diagnostic shows Guacamole selected NLA and GNOME sent its normal
-server-redirection handoff. The guest still had a remote GDM greeter session
-and no logged-in `labdesk` session at inspection; the handoff log also records
-a transport close immediately afterward. The owner has seen the login screen,
+retained diagnostic from the earlier `security=nla` attempt shows Guacamole
+selected NLA and GNOME sent its server-redirection handoff, followed by a
+transport close. A later `security=any` attempt logged an RDP authentication
+failure before guest login. Credentials have since been resynchronized; no
+fresh attempt has confirmed the result. The owner has seen the login screen,
 but a stable post-login desktop is not yet verified. Diagnostic record:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
 (SHA-256 `b0c08f5978be942021c087d2a194fdcecdd6187aaf5b10ff92594e953285cb47`).
 This two-stage flow is GNOME's documented [headless multi-user remote login
 mode](https://github.com/GNOME/gnome-remote-desktop/blob/main/docs/configuration.md#headless-multi-user-remote-login).
+Credential synchronization evidence:
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync.txt`
+(SHA-256 `8fc88a8385d9180e2c9119f5712a4b6a0ae1f0471b9531dfc5775c753eebd8b3`).
 
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
