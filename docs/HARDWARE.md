@@ -109,6 +109,7 @@ At source commit `d8fbc5588afcae3dec5db439059aa7424d5bd22b`, the detector used
 the workstation's Vulkan memory reports to identify a 15.57 GiB NVIDIA
 device-local budget and a 7.06 GiB Intel integrated-GPU budget. The CPU-only
 selector still chose the bundled chat and embedding models. Evidence is
-`/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`. This was a real host
-hardware detection run, not an inference test; the existing offline payload
-does not yet include the newly requested `vulkan-tools` package.
+`/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`. This was host hardware
+detection, not GPU inference. Later source revisions request `vulkan-tools` in
+the offline APT payload, and current-source E2E provisioning passed. No
+accelerated inference has been validated on a physical GPU.

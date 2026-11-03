@@ -2,16 +2,13 @@
 
 ## Customer installation
 
-**Current candidate status (2026-11-03):** The unpublished candidate
-`fieldos-test-customer-0b2fd8c.iso` passed a fresh interactive UEFI QEMU
-installation with an isolated disposable disk and no network adapter. Firstboot,
-all seven services, local AI, reference retrieval, Firefox regional-map
-rendering, and two reboots passed. At the end, Ubuntu showed its media-removal
-prompt and powered off the virtual machine; the ISO was ejected and the
-installed disk was started. This optical-media handoff required a host action.
-The separate unattended E2E flow completed its handoff automatically. Neither
-result establishes physical hardware compatibility. See [`RELEASE.md`](RELEASE.md)
-for hashes, detailed evidence, and remaining release gates.
+**Current candidate status (2026-11-03):** The customer-mode candidate
+`fieldos-customer-test-branded-8b0bda3.iso` was built from source `8b0bda3`
+and passed structural ISO verification. It has **not** passed a fresh
+interactive customer installation. Do not treat the current-source unattended
+E2E pass or the separate Kasm lab installation as evidence that the customer
+installer, disk handoff, or physical hardware works. See
+[`RELEASE.md`](RELEASE.md) for the exact SHA-256 and acceptance matrix.
 
 The customer facing ISO is built with:
 
@@ -26,46 +23,37 @@ entry is the upstream Ubuntu live installer and does not run FieldOS
 provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
-“Restart now.” For USB installation, remove the USB media when prompted so firmware can boot
-the installed disk. With the tested optical ISO, the VM powered off at the
-media prompt; the test ejected the ISO and started the installed disk. Follow
-the behavior shown by the installer and firmware on the target computer. The
-current candidate's post-boot services, local inference, retrieval, map, and
-two-reboot persistence were tested; the optical-media handoff and physical
-hardware were not validated on a physical device. See [`RELEASE.md`](RELEASE.md)
-for the separate unattended E2E result and limitations.
+“Restart now.” For USB installation, remove the USB media when prompted so
+firmware can boot the installed disk. This workflow is documented but has not
+passed a fresh install test with the current customer candidate. Use a
+disposable VM for validation until the customer-install gate in
+[`RELEASE.md`](RELEASE.md) passes.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
-FieldOS is not yet recommended for physical customer hardware. Earlier reports
-of a disabled installer Next button used incomplete QMP click events and are
-inconclusive. The current ISO remains a local test candidate; see
+FieldOS is not yet recommended for physical customer hardware. The current ISO
+remains a local test candidate; see
 [`RELEASE.md`](RELEASE.md) for release gates and current blockers.
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
-## Preparing test installation media
+## Verifying the candidate
 
 The retained ISO is an unpublished test candidate, not a customer release.
-Use only a disposable USB drive and a spare test computer; do not install it on
-customer hardware. Before writing media, compare the downloaded ISO's SHA-256
-with the candidate hash recorded in [`RELEASE.md`](RELEASE.md):
+Before testing it, compare its SHA-256 with the candidate hash recorded in
+[`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum fieldos-test-customer-0b2fd8c.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso
 ```
 
-On Ubuntu Desktop, open **Disks**, select the USB drive by its model and
-capacity, choose the menu, then **Restore Disk Image…** and select the
-verified ISO. This overwrites the selected USB drive. Check the selected device
-carefully before confirming. Boot the spare test computer from that USB and
-follow the interactive installer instructions above; select the intended
-installation disk in the installer and review its erase confirmation. Keep
-the USB attached until Ubuntu asks for installation media removal. Physical
-hardware behavior has not been validated, and the current ISO remains blocked
-from customer release by the gates in `RELEASE.md`.
+Use a disposable VM with a disposable virtual disk and no network adapter for
+the outstanding customer-mode install test. Do not write this candidate to a
+physical disk or install it on customer hardware until the release gates pass.
+The E2E command below uses a separate unattended test image and does not
+exercise the customer install workflow.
 
-After installation, firstboot may take several minutes while it checks and
+On an accepted installation, firstboot may take several minutes while it checks and
 unpacks the local payload, installs packages from the included APT repository,
 loads the container images, and starts the local models. Progress and failures
 are recorded in `/var/log/fieldos-firstboot.log` and
@@ -101,5 +89,6 @@ sudo /opt/fieldos/scripts/fieldos-diagnostics.sh
 
 The local web endpoints bind to loopback. Software updates and additional
 content downloads are explicit owner actions and may require a separate
-internet connected session; the bundled assistant, reference library, and
-world basemap are intended to work without one.
+internet-connected session. The bundled assistant and embedding model run
+locally; the included reference and map data are deliberately small test
+fixtures, not a complete field library or navigation-grade regional map.
