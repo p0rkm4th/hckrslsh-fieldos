@@ -477,9 +477,16 @@ autoinstall:
             "assert socket_users == {'nomad_admin', 'nomad_dozzle'}, 'unexpected Docker socket consumers: ' + repr(socket_users)\n"
             "env = os.stat('/opt/fieldos/services/.env')\n"
             "assert stat.S_IMODE(env.st_mode) == 0o600 and env.st_uid == 0 and env.st_gid == 0, 'Compose credentials must be root:root mode 0600'\n"
+            "state = os.stat('/var/lib/fieldos')\n"
+            "status = os.stat('/var/lib/fieldos/provisioning-status.json')\n"
+            "assert stat.S_IMODE(state.st_mode) == 0o710 and state.st_uid == 0 and state.st_gid == grp.getgrnam('adm').gr_gid, 'FieldOS state directory must be root:adm mode 0710'\n"
+            "assert stat.S_IMODE(status.st_mode) == 0o640 and status.st_uid == 0 and status.st_gid == grp.getgrnam('adm').gr_gid, 'provisioning status must be root:adm mode 0640'\n"
+            "subprocess.run(['runuser', '-u', 'fieldos', '--', 'test', '-r', '/var/lib/fieldos/provisioning-status.json'], check=True)\n"
+            "listing = subprocess.run(['runuser', '-u', 'fieldos', '--', 'ls', '-A', '/var/lib/fieldos'], capture_output=True, text=True)\n"
+            "assert listing.returncode != 0, 'desktop user must not list FieldOS state contents'\n"
             "log = os.stat('/var/log/fieldos-firstboot.log')\n"
             "assert stat.S_IMODE(log.st_mode) == 0o640 and log.st_uid == 0 and log.st_gid == grp.getgrnam('adm').gr_gid, 'firstboot log must be root:adm mode 0640'\n"
-            "print(json.dumps({'containers': len(items), 'docker_socket_consumers': sorted(socket_users), 'published_ports_loopback_only': True, 'env_mode': oct(stat.S_IMODE(env.st_mode)), 'firstboot_log_mode': oct(stat.S_IMODE(log.st_mode))}))\n"
+            "print(json.dumps({'containers': len(items), 'docker_socket_consumers': sorted(socket_users), 'published_ports_loopback_only': True, 'env_mode': oct(stat.S_IMODE(env.st_mode)), 'state_mode': oct(stat.S_IMODE(state.st_mode)), 'provisioning_status_mode': oct(stat.S_IMODE(status.st_mode)), 'firstboot_log_mode': oct(stat.S_IMODE(log.st_mode))}))\n"
             "PY",
             300,
         )
