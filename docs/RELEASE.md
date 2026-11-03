@@ -10,9 +10,11 @@ QEMU validation, not a physical customer installation. FieldOS is not yet
 recommended for physical customer installation because network-enabled LAN
 exposure, customer hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
-Customer installer completion, LAN peer scan, physical GPU validation,
-Canonical's modified Ubuntu trademark requirement, and exact third-party
-redistribution review remain open. Do not publish release binaries.
+Physical customer hardware coverage, guest-to-guest LAN peer scan, physical
+GPU validation, Canonical's modified Ubuntu trademark requirement, and exact
+third-party redistribution review remain open. The interactive install
+completed in QEMU, but that does not clear these release gates. Do not publish
+release binaries.
 
 ### Latest clean automated acceptance — 2026-11-03
 
