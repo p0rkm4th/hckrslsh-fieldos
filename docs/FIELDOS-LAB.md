@@ -14,9 +14,10 @@ autostarts. It runs a customer-mode test installation built from source
 existing **FieldOS Lab** Kasm Server/RDP entry uses the guest's private
 management address on TCP 3389. Its owner-only access group was retained.
 Kasm prompts for the guest RDP credentials and opens the `fieldos` desktop
-account. The rotated guest/RDP password is kept in the host-local,
-mode-0600 operations file, not in this repository. It is not the Kasm website
-password.
+account. The rotated guest/RDP password is a lowercase, hyphen-separated
+five-word passphrase for easier manual entry. It is kept in the host-local,
+mode-0600 operations file, not in this repository. It is unique to the guest
+and is not the Kasm website password. See [credential guidance](SECURITY.md).
 
 The guest's management NIC is on the existing hypervisor bridge. It has no
 default route, DNS, or IPv6. Guest UFW defaults to deny inbound, outbound, and
