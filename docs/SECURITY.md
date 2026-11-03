@@ -103,3 +103,18 @@ source-level result is
 `/mnt/shared/fieldos-e2e/compose-source-security-607a697.json`. This does not
 inspect a running current-source deployment or prove isolation from a LAN
 peer.
+
+## Live runtime recheck — 2026-11-03
+
+After two additional reboots of the retained no-NIC guest from the 10:23 E2E
+run, runtime inspection again found no privileged containers, added
+capabilities, host PID/network namespaces, or non-loopback published ports.
+Only N.O.M.A.D. and Dozzle mounted the Docker socket; Dozzle's mount was
+read-only. The root-owned `.env` was `0600`, Kiwix `/data` remained read-only,
+and a container egress attempt failed. The installed Compose file's SHA-256
+matched current `services/compose.yaml` at
+`d7ddb44c832263ff98f491a0f4aeebf84cfb2360d4eaca10ec0feb74773c09c3`.
+Evidence is `/mnt/shared/fieldos-e2e/live-security-102308.txt` (SHA-256
+`5c44f34eac4ae9b1de60896cc9794833c7a352d50dec6461dfd4748225ec7839`). This
+was a no-NIC guest, so it does not replace the earlier user-mode-network test
+or a guest-to-guest LAN scan, and it is not a fresh current-source installation.
