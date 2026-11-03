@@ -458,6 +458,16 @@ autoinstall:
             "PY",
             400,
         )
+        expected_odbl = hashlib.sha256((ROOT / "payload/licenses/ODbL-1.0.txt").read_bytes()).hexdigest()
+        odbl_files = self.check(
+            "ODbL license is bundled and installed",
+            "sha256sum /opt/fieldos/payload/licenses/ODbL-1.0.txt "
+            "/usr/share/doc/fieldos/ODbL-1.0.txt",
+        )
+        if len(odbl_files.splitlines()) != 2 or any(
+            line.split()[0] != expected_odbl for line in odbl_files.splitlines()
+        ):
+            raise TestFailure(f"Bundled and installed ODbL license text checksum mismatch: {odbl_files}")
         health = self.check("N.O.M.A.D. API", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8080/api/health")
         if not health:
             raise TestFailure("N.O.M.A.D. health endpoint returned no body")
