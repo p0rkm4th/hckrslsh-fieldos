@@ -6,17 +6,22 @@ ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
 The latest source is public at `origin/main`, commit
-`37c8c3f529aba007840970f66a9e4aef1e4b44da`. `make check` and `make test`
-passed all 50 tests; log:
-`/mnt/shared/fieldos-e2e/preflight-report-tests.log` (SHA-256
-`99701e649da7229d45b2e0002cedde7a4bf513f8e648d89998d14c8374f4a44d`). The
-administrator-readable status change is source commit `dc48319`; its tests and
-embedded acceptance assertion syntax are retained at
+`58c49041ea5a4a1bcf787c7a6eb4aca75a12aeb9`. `make check` and `make test`
+passed all 50 tests. `make verify` also passed on the retained customer ISO
+candidate, confirming its BIOS/UEFI boot entries, payload, and interactive
+identity/storage sections. Combined evidence is
+`/mnt/shared/fieldos-e2e/release-gates-58c4904.log` (SHA-256
+`9971dcb52f72f7b8af76f16292c506fd48ba15022d02249706fa5c163cee4fe9`). The
+candidate ISO remains from older source commit `0b2fd8c`; it was not rebuilt
+with this verifier change, and interactive optical-media handoff remains
+partial. The administrator-readable status change is source commit `dc48319`;
+its tests and embedded acceptance assertion syntax are retained at
 `/mnt/shared/fieldos-e2e/status-file-admin-readability-tests.log` and
-`/mnt/shared/fieldos-e2e/status-admin-readability-syntax.log`. A fresh Gitleaks
-scan through `37c8c3f` found no findings:
-`/mnt/shared/fieldos-e2e/gitleaks-37c8c3.json` (SHA-256
-`37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`).
+`/mnt/shared/fieldos-e2e/status-admin-readability-syntax.log`. The latest
+Gitleaks scan through source `58c4904` found no findings in 148 commits. A
+known-indicator review covered all 149 reachable revisions; details and
+limitations are at
+`/mnt/shared/fieldos-e2e/public-history-infrastructure-scan-58c4904.md`.
 
 `make test-e2e` was attempted and safely refused to build with 18 GiB free,
 below its 50 GiB preflight. It wrote the human-readable FAIL report
@@ -51,18 +56,6 @@ guest's failure and corroborates the existing topology fix, but it does not
 replace a fresh current-source acceptance. Full evidence, including recovered
 log/status hashes and the live external-snapshot disposition, is in
 `/mnt/shared/fieldos-e2e/auto-test4-root-cause-20261103.md`.
-
-On source commit `8b630ea`, `make check` and `make test` pass all 50 tests.
-Log: `/mnt/shared/fieldos-e2e/current-source-check-test-8b630ea.log` (SHA-256
-`fe4013c900d64683acca8dc588194fd6066349a92c10bc3ef3e76d2cb0179b70`).
-
-A fresh public-history scan at `565f623` found no Gitleaks findings in 146
-scanned commits. A known-indicator review covered all 147 reachable revisions:
-the only private-range address is the documented QEMU user-mode test address
-`10.0.2.15`; other IP literals are `127.0.0.1` loopback binds and `0.0.0.0`
-container listeners. No HADES host labels or local workstation paths were
-found. Evidence and limitations:
-`/mnt/shared/fieldos-e2e/public-history-infrastructure-scan-565f623.md`.
 
 I rechecked the retained prior clean E2E guest without adding a NIC. Its map
 route returned application HTML and all seven containers were running. A new
@@ -129,15 +122,20 @@ The temporary NIC was removed, and the guest returned to no external link or
 default route with all services running. Evidence and limitations are in
 [`docs/SECURITY.md`](SECURITY.md).
 
-The active `fieldos-auto-test4` guest is not accepted: its firstboot unit is
-failed with `ExecMainStatus=7`, Docker is active, and the N.O.M.A.D. endpoints
-on ports 8080 and 8090 refuse connections. The unprivileged test account can
-confirm the unit result but cannot read its root-only log, and no guest agent
-is available; the cause is therefore unresolved. No repair was attempted.
-The guest and its disk were preserved. Screenshot evidence of the unit status
-and exit code is `/mnt/shared/fieldos-e2e/auto-test4-exit-status.png` (SHA-256
-`d628b213c89f15a71481a2d89064d294a6ec46b73aa4230fd98f571bea5583a9`). This
-failed run must not be counted as an automated acceptance pass.
+The active `fieldos-auto-test4` guest remains failed with firstboot exit 7 and
+refused N.O.M.A.D./Kiwix probes; it is not accepted. At the time of the first
+recheck its root-only log was unavailable and the cause was unresolved. A
+later external disk snapshot allowed read-only recovery of the log, which
+identified the stale Compose network topology; no guest repair was made. The
+guest remains running with its original disk as the backing image and a
+4.7 MiB inspection overlay at
+`/mnt/shared/fieldos-e2e/fieldos-auto-test4-inspection.qcow2`. The recovered
+log, hashes, topology comparison, and disposition are in
+`/mnt/shared/fieldos-e2e/auto-test4-root-cause-20261103.md`. The failed run
+must not be counted as an automated acceptance pass. Earlier screen evidence
+of the unit status and exit code is
+`/mnt/shared/fieldos-e2e/auto-test4-exit-status.png` (SHA-256
+`d628b213c89f15a71481a2d89064d294a6ec46b73aa4230fd98f571bea5583a9`).
 
 At the time of this failed run `/mnt/shared` had 18 GiB free (99% used), below
 the 50-GiB clean-E2E preflight. No ISO or VM disk was created by the attempt.
