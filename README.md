@@ -13,11 +13,14 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The current-source unattended acceptance suite passed in a disposable UEFI
-QEMU/KVM guest with no network device, including Firefox map rendering and two
-service-verified reboots. The current customer ISO also completed interactive
-installation, clean media handoff, offline firstboot, service validation,
-knowledge retrieval, map-tile checks, and two reboots. Evidence is recorded in
+The unattended acceptance suite passed in a disposable UEFI QEMU/KVM guest
+with no network device, including Firefox map rendering and two
+service-verified reboots. That run had a local, harness-only Wayland readiness
+change which was committed immediately afterward. The current customer ISO
+completed interactive installation, offline firstboot, service validation,
+knowledge retrieval, browser map rendering, and two reboots. Ubuntu's optical
+media removal prompt powered off that test VM; ejecting the ISO and starting
+the installed disk required a host action. Evidence is recorded in
 [`docs/RELEASE.md`](docs/RELEASE.md) and under `/mnt/shared/fieldos-e2e/`.
 FieldOS is not yet ready for physical customer installation: a guest-to-guest
 LAN scan, physical GPU inference, broader hardware coverage, and distribution
