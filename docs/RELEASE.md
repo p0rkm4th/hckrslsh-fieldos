@@ -44,11 +44,13 @@ desktop was verified. The record is now configured for automatic security
 negotiation (`security=any`). The owner then reported an authentication
 failure. Guacamole logged `STATUS_LOGON_FAILURE`; GNOME logged a CredSSP NTLM
 MIC failure, with no guest GDM/PAM account-password failure logged. The
-existing desktop credential was resynchronized across the guest account,
-GNOME Remote Desktop, and Kasm's static credential; helper and API read-back
-passed, but a fresh session test is pending. The Kasm website password was
-not changed. Successful desktop login and application interaction still need
-owner confirmation. A headless Firefox capture showed a blank map canvas; map
+first credential-sync helper had a stdin/script collision, so its reported
+success was false evidence. The helper was corrected; its replacement confirmed
+the Kasm API update and guest credential command completion. Guest account and
+RDP service read-back passed. Logs inspected after that correction showed no
+new login attempt, so a fresh session test is still pending. The Kasm website
+password was not changed. Successful desktop login and application interaction
+still need owner confirmation. A headless Firefox capture showed a blank map canvas; map
 API and tile availability therefore remain verified, while
 visible rendering in this workspace is **PARTIAL**.
 Screenshot: `/mnt/shared/fieldos-lab/evidence/20261103/map-headless.png`
