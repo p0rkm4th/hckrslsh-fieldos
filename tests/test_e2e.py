@@ -460,7 +460,7 @@ autoinstall:
         tags = self.check("Ollama model inventory", "curl --fail --silent http://127.0.0.1:11434/api/tags")
         if "qwen3:0.6b-q4_K_M" not in tags or "nomic-embed-text:v1.5" not in tags:
             raise TestFailure("Bundled chat and embedding models are not both present in Ollama")
-        infer = self.check("local inference", "curl --fail --silent --max-time 180 http://127.0.0.1:11434/api/generate -H 'Content-Type: application/json' -d '{\"model\":\"qwen3:0.6b-q4_K_M\",\"prompt\":\"Reply exactly FIELDOS_ACCEPTANCE_OK\",\"stream\":false,\"think\":false}'", 500)
+        infer = self.check("local inference", "curl --fail --silent --max-time 180 http://127.0.0.1:11434/api/generate -H 'Content-Type: application/json' -d '{\"model\":\"qwen3:0.6b-q4_K_M\",\"prompt\":\"Output exactly the token FIELDOS_ACCEPTANCE_OK, with no explanation or extra text.\",\"stream\":false,\"think\":false,\"options\":{\"temperature\":0}}'", 500)
         infer_data = json.loads(infer)
         if "FIELDOS_ACCEPTANCE_OK" not in infer_data.get("response", ""):
             raise TestFailure(f"Model generation did not return the acceptance marker: {infer_data}")
