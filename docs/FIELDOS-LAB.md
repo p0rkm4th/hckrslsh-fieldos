@@ -145,8 +145,10 @@ Successful login and application interaction are still awaiting confirmation.
 
 1. Sign in to the existing Kasm deployment with the owner's account.
 2. Select **FieldOS Lab** from the workspace catalog and launch it.
-3. Use the desktop's **FieldOS** launcher to open N.O.M.A.D.; its local
-   reference and map services are available from that interface.
+3. Open **Applications** and search for **Project N.O.M.A.D.** The shortcut is
+   installed in the applications menu, not on the desktop. Alternatively,
+   open Firefox and go to `http://localhost:8080`. N.O.M.A.D. links to the
+   local reference and map services.
 4. The VM's application state is persistent across Kasm sessions and guest
    reboots. Keep test notes and disposable test datasets separate from release
    evidence.
