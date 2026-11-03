@@ -46,7 +46,11 @@ An outbound fetch from N.O.M.A.D. was blocked. This is not an inbound scan from
 a separate LAN peer; that remains unverified because this workstation's
 libvirt session cannot create a host bridge. Remote access is not configured.
 Do not change loopback binds to `0.0.0.0` without adding an explicit
-access-control and firewall plan.
+access-control and firewall plan. Detailed retained evidence for the user-mode
+network test is `/mnt/shared/fieldos-e2e/customer-correct-entry-20261102/`
+(`security-network-report.md` and `security-network-check.txt`). Its SLIRP
+network did not expose the guest to a LAN peer, so the customer-LAN gate remains
+partial.
 
 ## Operational checks
 
