@@ -58,9 +58,25 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials. A fresh scan of all 95 public-history commits through source
-commit `7d8b054` found no leaks; its redacted report is
-`/mnt/shared/fieldos-e2e/gitleaks-7d8b054.json`.
+credentials. A fresh scan of all 97 public-history commits through source
+commit `a76315a` found no leaks; its redacted report is
+`/mnt/shared/fieldos-e2e/gitleaks-a76315a.json`.
+
+### Redis license correction — 2026-11-03
+
+- The local image digest matches the pinned Redis digest and its image config
+  reports `REDIS_VERSION=7.4.12`. The official Redis licensing notice says
+  versions starting with 7.4 are RSALv2 or SSPLv1, not BSD-3-Clause. The
+  manifest and [`CONTAINER-IMAGES.md`](CONTAINER-IMAGES.md) now record that
+  version and license family. Read-only inspection evidence:
+  `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`.
+- A regression test guards the image version, digest, Compose reference, and
+  license metadata. `make check` and all 46 unit tests pass; output is at
+  `/mnt/shared/fieldos-e2e/redis-license-review-tests.log`.
+- The existing offline payload and customer ISO predate this correction and
+  still contain the earlier manifest. The ISO remains private test material.
+  Review RSALv2/SSPLv1 against the intended FieldOS distribution model or
+  select a compatible replacement, then rebuild and rerun offline acceptance.
 
 ### E2E security assertions added — 2026-11-03
 
@@ -81,7 +97,7 @@ commit `7d8b054` found no leaks; its redacted report is
 
 - Source HEAD `43a1620a6192080152d138f98d34aa06611ad680` adds independent
   content-pack archives and an installed-system verification/storage command.
-  All 45 unit tests and `make check` pass. The fixture suite exercises archive
+  All 46 unit tests and `make check` pass. The fixture suite exercises archive
   build, checksum and manifest validation, safe extraction, idempotent install,
   refusal to replace an existing version, symlink-path rejection, and exclusion
   of unlisted files from generated archives. Test
@@ -634,7 +650,7 @@ still presents interactive disk and account setup.
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
 | Public Git history | PASS (Gitleaks) | Full history scan covered 67 commits with zero findings; evidence: `/mnt/shared/fieldos-e2e/repository-review-customer-20261103/gitleaks-history.json`. Earlier private infrastructure indicator review: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
-| Content packs | PARTIAL | Independent archive builder and immutable verified storage command; 44 unit tests pass. Catalog empty; application activation, approved field content, and ISO-level test remain open |
+| Content packs | PARTIAL | Independent archive builder and immutable verified storage command; 46 unit tests pass. Catalog empty; application activation, approved field content, and ISO-level test remain open |
 
 ## Remaining release gates
 
