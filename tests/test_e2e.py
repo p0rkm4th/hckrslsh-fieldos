@@ -109,6 +109,7 @@ autoinstall:
   late-commands:
     - mkdir -p /target/opt/fieldos
     - mkdir -p /target/usr/share/applications
+    - mkdir -p /target/usr/share/doc/fieldos
     - mkdir -p /target/home/fieldos/.config
     - mkdir -p /target/home/fieldos/.config/gnome-initial-setup
     - touch /target/home/fieldos/.config/gnome-initial-setup-done
@@ -116,6 +117,7 @@ autoinstall:
     - chown -R 1000:1000 /target/home/fieldos/.config
     - cp -a /cdrom/fieldos/. /target/opt/fieldos/
     - cp /cdrom/fieldos/installer/provisioning/fieldos.desktop /target/usr/share/applications/fieldos-nomad.desktop
+    - cp /cdrom/fieldos/installer/provisioning/fieldos-sources.desktop /target/usr/share/applications/fieldos-sources.desktop
     - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/firstboot.sh
     - cp /target/opt/fieldos/installer/provisioning/fieldos-firstboot.service /target/etc/systemd/system/fieldos-firstboot.service
     - curtin in-target --target=/target -- systemctl enable fieldos-firstboot.service
@@ -426,6 +428,24 @@ autoinstall:
         )
         if kiwix_mount != "false":
             raise TestFailure(f"Kiwix content mount must be read-only; got {kiwix_mount!r}")
+        self.check(
+            "offline content attribution and archive integrity",
+            "python3 - <<'PY'\n"
+            "import hashlib, json\n"
+            "from pathlib import Path\n"
+            "doc = Path('/usr/share/doc/fieldos/CONTENT-SOURCES.md')\n"
+            "license_text = Path('/usr/share/doc/fieldos/CC-BY-SA-4.0.txt')\n"
+            "manifest_path = Path('/var/lib/fieldos/payload/manifests/references.json')\n"
+            "assert doc.is_file() and license_text.is_file(), 'user-facing source/license notes missing'\n"
+            "manifest = json.loads(manifest_path.read_text())\n"
+            "record = manifest['archives'][0]\n"
+            "archive = Path('/var/lib/fieldos/storage/zim') / Path(record['path']).name\n"
+            "assert archive.stat().st_size == record['size_bytes'], 'ZIM size differs from manifest'\n"
+            "assert hashlib.sha256(archive.read_bytes()).hexdigest() == record['sha256'], 'ZIM checksum differs from manifest'\n"
+            "print(json.dumps({'archive': archive.name, 'size_bytes': record['size_bytes'], 'sha256': record['sha256'], 'source': record['source']['url']}))\n"
+            "PY",
+            400,
+        )
         health = self.check("N.O.M.A.D. API", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8080/api/health")
         if not health:
             raise TestFailure("N.O.M.A.D. health endpoint returned no body")

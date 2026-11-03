@@ -52,7 +52,31 @@ echo "Fetching source-pinned Project N.O.M.A.D. reference and map styling..."
 git clone --depth 1 --branch v1.35.1 https://github.com/Crosstalk-Solutions/project-nomad.git "$STAGE/project-nomad"
 git clone https://github.com/Crosstalk-Solutions/project-nomad-maps.git "$STAGE/project-nomad-maps"
 git -C "$STAGE/project-nomad-maps" checkout --detach 5b444051914fbf4960be2e64c0fb11f507db7efd
+EXPECTED_NOMAD_COMMIT=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["archives"][0]["source"]["commit"])' \
+  "$ROOT/payload/manifests/references.json")
+ACTUAL_NOMAD_COMMIT=$(git -C "$STAGE/project-nomad" rev-parse HEAD)
+[[ "$ACTUAL_NOMAD_COMMIT" == "$EXPECTED_NOMAD_COMMIT" ]] || {
+  echo "Project N.O.M.A.D. source commit mismatch: expected $EXPECTED_NOMAD_COMMIT, got $ACTUAL_NOMAD_COMMIT" >&2
+  exit 1
+}
 cp "$STAGE/project-nomad/install/wikipedia_en_100_mini_2026-01.zim" "$STAGE/content/zim/"
+python3 - "$ROOT/payload/manifests/references.json" "$STAGE/content/zim/wikipedia_en_100_mini_2026-01.zim" \
+  > "$STAGE/manifests/references.json" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+
+manifest = json.loads(Path(sys.argv[1]).read_text())
+artifact = Path(sys.argv[2])
+record = manifest["archives"][0]
+digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
+size = artifact.stat().st_size
+if digest != record["sha256"] or size != record["size_bytes"]:
+    raise SystemExit(
+        f"Reference archive mismatch: expected {record['size_bytes']} bytes/{record['sha256']}, "
+        f"got {size} bytes/{digest}"
+    )
+print(json.dumps(manifest, indent=2) + "\n")
+PY
 cp "$STAGE/project-nomad-maps/nomad-base-styles.json" "$STAGE/content/maps/"
 cp -a "$STAGE/project-nomad-maps/basemaps-assets/." "$STAGE/content/maps/basemaps-assets/"
 mkdir -p "$STAGE/licenses/project-nomad" "$STAGE/licenses/project-nomad-maps"
@@ -71,6 +95,8 @@ printf '%s\n' \
   'The miniature ZIM comes from Project N.O.M.A.D. v1.35.1 source: install/wikipedia_en_100_mini_2026-01.zim.' \
   'Display attribution and the applicable license in the installed information library.' \
   > "$STAGE/licenses/wikipedia-zim-attribution.txt"
+cp "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$STAGE/licenses/"
+cp "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$STAGE/licenses/"
 
 echo "Resolving the current Protomaps build and extracting a low-zoom offline world map..."
 curl --fail --silent --show-error https://build-metadata.protomaps.dev/builds.json -o "$STAGE/manifests/protomaps-builds.json"

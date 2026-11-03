@@ -37,6 +37,16 @@ install -d -m 0750 "$STATE"
 install -d -m 0750 "$PAYLOAD"
 zstd --decompress --stdout "$PAYLOAD_ARCHIVE" | tar --extract --directory="$PAYLOAD" --no-same-owner
 
+echo "Installing offline content source and license notes for local users..."
+content_docs=/usr/share/doc/fieldos
+install -d -m 0755 "$content_docs"
+cp -an "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$content_docs/CONTENT-SOURCES.md"
+cp -an "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$content_docs/CC-BY-SA-4.0.txt"
+if [[ -d "$PAYLOAD/licenses" ]]; then
+  cp -an "$PAYLOAD/licenses/." "$content_docs/"
+fi
+chmod -R a+rX "$content_docs"
+
 echo "Installing bundled packages without network access..."
 python3 "$ROOT/installer/provisioning/build_local_apt_index.py" "$PAYLOAD/debs" "$PAYLOAD/Packages"
 printf 'deb [trusted=yes] file:%s ./\n' "$PAYLOAD" > /etc/apt/sources.list.d/fieldos-offline.list

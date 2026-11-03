@@ -34,6 +34,8 @@ loads the container images, and starts the local models. Progress and failures
 are recorded in `/var/log/fieldos-firstboot.log` and
 `/var/lib/fieldos/provisioning-status.json`. Do not interrupt power during
 firstboot. The desktop launcher opens N.O.M.A.D. at `http://localhost:8080`.
+The **FieldOS Content Sources and Limits** application entry opens the offline
+source, license, and safety notes.
 
 ## Development installation
 

@@ -19,6 +19,19 @@ may add openly licensed models, public-domain manuals, and user-selected
 geographic packs; it must not include proprietary manuals or restricted
 datasets.
 
+The exact Wikipedia fixture source revision, file size, checksum, and license
+scope note are declared in `payload/manifests/references.json`. The installed
+system exposes its source and limits guide from the Applications menu as
+**FieldOS Content Sources and Limits** and stores the guide and license notices
+under `/usr/share/doc/fieldos/`. The notice distinguishes archive-level
+Wikimedia terms from item-specific media licenses; the latter still require
+review before distribution.
+
+AI responses are generated text, not authoritative references. Open the source
+articles before relying on an answer. The test edition has no reviewed
+first-aid or emergency pack and must not be used as medical or emergency
+guidance.
+
 The current world map and sample regional map both top out at zoom level 5.
 They support broad orientation and acceptance testing, but do not provide
 detailed roads, trails, parcels, or field navigation. A higher resolution
