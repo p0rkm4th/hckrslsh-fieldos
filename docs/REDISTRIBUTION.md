@@ -30,8 +30,8 @@ report and ODbL guest verification are recorded in `docs/RELEASE.md` and
 The previous `f27305f` candidate's clean interactive-install, two-reboot, and
 browser-map evidence remains at
 `/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/report.md`.
-That ISO has been superseded and does not contain the latest provisioning
-hardening.
+That ISO binary has been removed after supersession and does not contain the
+latest provisioning hardening; its checksum record and test evidence remain.
 These checks establish technical operation and file integrity, not
 redistribution rights. The ISO retains Ubuntu branding and remains private
 test material, not an approved distribution image. The payload's license and
