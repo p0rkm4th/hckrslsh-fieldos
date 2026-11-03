@@ -48,6 +48,17 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertEqual(cpu_only["chat_backend"], "cpu")
         self.assertEqual(cuda_tested["chat_backend"], "cuda")
 
+    def test_validated_vulkan_can_use_reported_shared_memory_budget(self):
+        hw = {"memory_gib": 5.5, "gpus": [{
+            "vendor": "intel", "driver_available": True, "vram_gib": 0,
+            "vulkan_memory_budget_gib": 2.5,
+        }]}
+        not_validated = select(hw, MANIFEST, {SMALL}, {"cpu"})
+        validated = select(hw, MANIFEST, {SMALL}, {"cpu", "vulkan"})
+        self.assertIsNone(not_validated["chat_model"])
+        self.assertEqual(validated["chat_model"], SMALL)
+        self.assertEqual(validated["chat_backend"], "vulkan")
+
     def test_cpu_fallback_requires_cpu_support_in_manifest(self):
         gpu_only_manifest = dict(MANIFEST)
         gpu_only_manifest["chat_models"] = [

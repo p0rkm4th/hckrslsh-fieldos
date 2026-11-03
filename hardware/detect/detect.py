@@ -69,6 +69,47 @@ def cpu_facts() -> dict:
     }
 
 
+def vulkan_device_memory(text: str) -> list[dict]:
+    """Read per-device local-memory budgets from optional vulkaninfo output."""
+    devices = []
+    sections = re.split(r"(?m)^GPU\d+:\s*$", text)
+    for section in sections[1:]:
+        vendor = re.search(r"(?m)^\s*vendorID\s*=\s*(0x[0-9a-fA-F]+)", section)
+        device = re.search(r"(?m)^\s*deviceID\s*=\s*(0x[0-9a-fA-F]+)", section)
+        name = re.search(r"(?m)^\s*deviceName\s*=\s*(.+?)\s*$", section)
+        kind = re.search(r"(?m)^\s*deviceType\s*=\s*(PHYSICAL_DEVICE_TYPE_[A-Z_]+)", section)
+        driver = re.search(r"(?m)^\s*driverName\s*=\s*(.+?)\s*$", section)
+        if not vendor or (kind and kind.group(1) == "PHYSICAL_DEVICE_TYPE_CPU"):
+            continue
+        memory = section.split("VkPhysicalDeviceMemoryProperties:", 1)
+        if len(memory) != 2:
+            continue
+        heaps = re.split(r"memoryHeaps\[\d+\]:", memory[1])[1:]
+        budgets = []
+        usages = []
+        for heap in heaps:
+            if "MEMORY_HEAP_DEVICE_LOCAL_BIT" not in heap:
+                continue
+            budget = re.search(r"(?m)^\s*budget\s*=\s*(\d+)", heap)
+            usage = re.search(r"(?m)^\s*usage\s*=\s*(\d+)", heap)
+            if budget and int(budget.group(1)) > 0:
+                budgets.append(int(budget.group(1)))
+                usages.append(int(usage.group(1)) if usage else 0)
+        if not budgets:
+            continue
+        total_budget = sum(budgets)
+        devices.append({
+            "vendor_id": vendor.group(1).lower(),
+            "device_id": device.group(1).lower() if device else None,
+            "model": name.group(1) if name else None,
+            "device_type": kind.group(1).removeprefix("PHYSICAL_DEVICE_TYPE_").lower() if kind else None,
+            "driver": driver.group(1) if driver else None,
+            "memory_budget_gib": round(total_budget / 1024**3, 2),
+            "memory_usage_gib": round(sum(usages) / 1024**3, 2),
+        })
+    return devices
+
+
 def gpu_facts() -> list[dict]:
     gpus = []
     nvidia = run(["nvidia-smi", "--query-gpu=name,memory.total,memory.free", "--format=csv,noheader,nounits"])
@@ -106,6 +147,29 @@ def gpu_facts() -> list[dict]:
                      "model": model, "driver": driver or None, "driver_available": bool(driver),
                      "vram_gib": available, "vram_total_gib": total,
                      "cuda": False, "runtime_validated": False})
+
+    for device in vulkan_device_memory(run(["vulkaninfo"])):
+        vendor_id = device["vendor_id"]
+        matches = [gpu for gpu in gpus
+                   if gpu.get("vendor_id", "").lower() == vendor_id and
+                   (not gpu.get("device_id") or not device["device_id"] or
+                    gpu["device_id"].lower() == device["device_id"])]
+        if matches:
+            gpu = matches[0]
+            if not gpu.get("model") or re.fullmatch(r"0x[0-9a-fA-F]+", gpu["model"]):
+                gpu["model"] = device["model"]
+        else:
+            vendor_name = {"0x10de": "nvidia", "0x1002": "amd", "0x8086": "intel"}.get(vendor_id, "unknown")
+            gpu = {"vendor": vendor_name, "vendor_id": vendor_id,
+                   "device_id": device["device_id"], "model": device["model"],
+                   "vram_gib": 0.0, "vram_total_gib": 0.0, "cuda": False,
+                   "driver_available": bool(device["driver"]), "runtime_validated": False}
+            gpus.append(gpu)
+        gpu["vulkan_device_type"] = device["device_type"]
+        gpu["vulkan_driver"] = device["driver"]
+        gpu["vulkan_memory_budget_gib"] = device["memory_budget_gib"]
+        gpu["vulkan_memory_usage_gib"] = device["memory_usage_gib"]
+        gpu["driver_available"] = gpu.get("driver_available", False) or bool(device["driver"])
     return gpus
 
 
