@@ -33,6 +33,16 @@ compatible alternative and rebuild and retest the offline payload. The
 candidate ISO and payload predate this manifest correction and remain private
 test artifacts.
 
+Valkey is a possible replacement to evaluate. The [Valkey upstream project](https://github.com/valkey-io/valkey)
+is BSD-3-Clause, and its [migration guide](https://valkey.io/topics/migration/)
+describes Valkey 7.2+ as protocol, configuration, and persistence compatible
+with Redis OSS 7.2. This is a useful
+licensing and compatibility candidate, not a FieldOS validation result: the
+pinned Project N.O.M.A.D. image has not been acceptance-tested against Valkey,
+and the complete Valkey container image still needs its own layer and notice
+review. No service image has been changed pending an offline payload rebuild
+and fresh install acceptance.
+
 ## Scope of the direct-license table
 
 These references identify upstream projects and direct license information;
