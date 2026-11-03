@@ -40,6 +40,17 @@ artifacts, against the documented 50 GiB minimum. Report:
 confirms the same storage blocker remains; the failed legacy VM was not
 repaired or counted as acceptance.
 
+I rechecked the retained prior clean E2E guest without adding a NIC. Its map
+route returned application HTML and all seven containers were running. A new
+browser launch through the guest agent failed because Firefox Snap could not
+create its mount namespace; the VM display was inactive at the GDM screen, so
+this recheck is not a render PASS. The retained clean E2E report has the
+stronger real Firefox GUI result: 69,563 sampled water pixels and 3,993 colors
+in its screenshot at
+`/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/map-render.png`. The recheck
+and failure evidence are summarized at
+`/mnt/shared/fieldos-e2e/map-browser-recheck-20261103.md`.
+
 On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
 The captured log is
 `/mnt/shared/fieldos-e2e/firstboot-log-permissions-tests.log` (SHA-256
