@@ -90,13 +90,25 @@ Read-back confirmed the Kasm record uses NLA/static credentials, the guest
 account has a set password, and the RDP service is active. The Kasm website
 password was not changed. Neither password is recorded in this document.
 
+There are two sign-in stages: the Kasm server credential authenticates the
+RDP connection; GNOME then presents its remote GDM greeter, where the operator
+must sign in to guest account `labdesk` with the desktop password. The latest
+retained diagnostic shows Guacamole selected NLA and GNOME sent its normal
+server-redirection handoff. The guest still had a remote GDM greeter session
+and no logged-in `labdesk` session at inspection; the handoff log also records
+a transport close immediately afterward. The owner has seen the login screen,
+but a stable post-login desktop is not yet verified. Diagnostic record:
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
+(SHA-256 `b0c08f5978be942021c087d2a194fdcecdd6187aaf5b10ff92594e953285cb47`).
+
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
 `rdp_server_accept_nego`. Do not respond by resetting credentials unless the
 logs show an authentication failure after successful security negotiation.
-The owner reached a graphical login screen after the connection change and
-received the desktop credential separately. A fresh NLA stream through a new
-session and successful desktop login are still awaiting confirmation.
+If the stream has closed, end the stale Kasm workspace session and launch
+**FieldOS Lab** again; then enter `labdesk` and the desktop password at the
+guest's GDM screen. Successful login and application interaction are still
+awaiting confirmation.
 
 ## Launch and maintenance
 
