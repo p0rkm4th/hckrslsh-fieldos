@@ -29,7 +29,8 @@ rendered the bundled regional map. The ODbL license file in the payload and
 installed guest matched SHA-256
 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`.
 Evidence is in `docs/RELEASE.md` and
-`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/`.
+`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/report.md`
+and its adjacent logs/screenshots.
 
 These checks establish technical operation and file integrity, not
 redistribution rights. The ISO retains Ubuntu branding and remains private
