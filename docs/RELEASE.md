@@ -56,6 +56,14 @@ On source commit `8b630ea`, `make check` and `make test` pass all 50 tests.
 Log: `/mnt/shared/fieldos-e2e/current-source-check-test-8b630ea.log` (SHA-256
 `fe4013c900d64683acca8dc588194fd6066349a92c10bc3ef3e76d2cb0179b70`).
 
+A fresh public-history scan at `565f623` found no Gitleaks findings in 146
+scanned commits. A known-indicator review covered all 147 reachable revisions:
+the only private-range address is the documented QEMU user-mode test address
+`10.0.2.15`; other IP literals are `127.0.0.1` loopback binds and `0.0.0.0`
+container listeners. No HADES host labels or local workstation paths were
+found. Evidence and limitations:
+`/mnt/shared/fieldos-e2e/public-history-infrastructure-scan-565f623.md`.
+
 I rechecked the retained prior clean E2E guest without adding a NIC. Its map
 route returned application HTML and all seven containers were running. A new
 browser launch through the guest agent failed because Firefox Snap could not
