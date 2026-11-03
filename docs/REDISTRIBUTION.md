@@ -6,15 +6,26 @@
 This document records an engineering review of the current test payload; it is
 not a legal opinion or a substitute for counsel's review.
 
-The reviewed candidate is R3, SHA-256
-`e07f39a20e64fc1127086739afce39fbbffc12220f8cff126509072c32f7e899`.
-Its build modifies the Ubuntu desktop ISO by adding FieldOS payload,
-provisioning files, and a GRUB entry. It retains Ubuntu branding. Canonical's
-IP rights policy says redistribution of modified Ubuntu versions associated
-with Ubuntu trademarks must be approved/certified/provided by Canonical;
-otherwise the marks must be removed/replaced and source rebuilt. No such
-approval or debranding has been completed. This is a release blocker independent
-of the open-source licenses of individual Ubuntu packages.
+The current test candidate is R5:
+`/mnt/shared/fieldos-releases/fieldos-test-customer-r5.iso`, size
+11,956,518,912 bytes, SHA-256
+`8b121916cd13af315d268cae16643eab06244a5b3a256662767650cbf2b52ee2`.
+Its build input tree is source commit
+`fa0a2034044ac994fb2ea9663dc597da20aa2fa3`. The candidate modifies the Ubuntu
+Desktop ISO by adding FieldOS payload, provisioning files, and a GRUB entry; it
+retains Ubuntu branding. `make verify` and the sidecar checksum check passed,
+but this verifies the artifact structure and identity only. The R5 interactive
+test passed installation and service checks but did not establish a clean
+post-install reboot; see `docs/RELEASE.md` and
+`/mnt/shared/fieldos-e2e/customer-r5-20261103/report.md`.
+
+Canonical's [IP rights policy](https://ubuntu.com/legal/intellectual-property-policy)
+says modified Ubuntu versions associated with Ubuntu trademarks require
+Canonical approval/certification/provision, or the trademarks must be removed
+and the source rebuilt. No approval or debranding has been completed. This is a
+release blocker independent of the open-source licenses of individual Ubuntu
+packages. R3 (`e07f39a20e64fc1127086739afce39fbbffc12220f8cff126509072c32f7e899`)
+is a historical candidate; its binary has been removed.
 
 ## Current artifact inventory
 
