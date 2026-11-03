@@ -9,7 +9,7 @@ it does not clear every component in those bytes for redistribution.
 |---|---|---|
 | Project N.O.M.A.D. | `ghcr.io/crosstalk-solutions/project-nomad:v1.35.1` | [Upstream v1.35.1 source](https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1), Apache-2.0 |
 | MySQL | `mysql:8.0` | [MySQL Server license](https://github.com/mysql/mysql-server/blob/8.0/LICENSE), GPL-2.0 with additional permissions |
-| Redis | `redis:7-alpine`, digest in manifest | [Redis licensing change](https://redis.io/blog/redis-adopts-dual-source-available-licensing/): version 7.4.x is RSALv2 or SSPLv1 |
+| Redis | `redis:7-alpine`, digest in manifest | [Redis licensing overview](https://redis.io/legal/licenses/): Redis 7.4.x is RSALv2 or SSPLv1; see also the [licensing change announcement](https://redis.io/blog/redis-adopts-dual-source-available-licensing/) |
 | Dozzle | `amir20/dozzle:v10.0` | [Upstream source](https://github.com/amir20/dozzle), MIT |
 | Ollama | `ollama/ollama:0.33.3` | [Upstream source](https://github.com/ollama/ollama), MIT |
 | Qdrant | `qdrant/qdrant:v1.16` | [Upstream source](https://github.com/qdrant/qdrant), Apache-2.0 |
@@ -20,10 +20,13 @@ it does not clear every component in those bytes for redistribution.
 The locally cached image has image ID
 `sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f`,
 which matches the pinned digest, and its image configuration reports
-`REDIS_VERSION=7.4.12`. The Redis project states that its 7.4 releases use
-RSALv2 or SSPLv1 rather than BSD-3-Clause. The machine-readable image manifest
-and redistribution review record this corrected license family. The local
-read-only image inspection is retained at
+`REDIS_VERSION=7.4.12`. The Redis project's current [licensing overview](https://redis.io/legal/licenses/)
+states that version 7.4.x uses RSALv2 or SSPLv1 rather than BSD-3-Clause. It
+summarizes RSALv2 restrictions on commercializing Redis software and offering
+Redis functionality as a managed service; SSPLv1 includes source obligations
+for service providers. The machine-readable image manifest and redistribution
+review record the corrected license family and leave customer distribution
+clearance open. The local read-only image inspection is retained at
 `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`.
 
 RSALv2/SSPLv1 is a material release consideration for a FieldOS customer
