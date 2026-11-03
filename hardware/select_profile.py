@@ -60,7 +60,7 @@ def select(hardware: dict, manifest: dict, available_ids: set[str] | None = None
                                     (backend == "vulkan" or
                                      gpu.get("vendor") == {"cuda": "nvidia", "rocm": "amd"}.get(backend))
                                     for gpu in hardware.get("gpus", []))), None)
-        fits_cpu = usable_ram >= needs_ram
+        fits_cpu = "cpu" in model.get("backends", []) and usable_ram >= needs_ram
         backend_vram = usable_vram(hardware, gpu_backend) if gpu_backend else 0.0
         fits_gpu = gpu_backend is not None and backend_vram >= needs_vram and usable_ram >= min(needs_ram, 1.0)
         if fits_cpu or fits_gpu:

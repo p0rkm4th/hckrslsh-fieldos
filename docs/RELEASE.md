@@ -34,6 +34,13 @@ profiles, image-license metadata, and test-disk retirement safeguards. Log:
 `/mnt/shared/fieldos-e2e/source-bc47bb9-checks.log`. These checks do not build
 or install an ISO and do not establish runtime or physical hardware acceptance.
 
+At source commit `5c2349f4c65916d58b75ef113b28512c998dbbc4`, `make check` and
+`make test` passed after adding a guard that prevents CPU fallback for models
+whose manifest does not list CPU support. All 47 tests passed, including the
+new GPU-only-model fixture. Log:
+`/mnt/shared/fieldos-e2e/hardware-backend-compat-5c2349f.log`. This is simulated
+selector coverage; it does not validate GPU inference or install a new ISO.
+
 Latest verified gates (2026-11-03): a clean unattended offline acceptance run
 passed, followed by a separate fresh-disk interactive customer ISO test. Both
 UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
