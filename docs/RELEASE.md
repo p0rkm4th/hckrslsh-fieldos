@@ -22,6 +22,11 @@ is `/mnt/shared/fieldos-e2e/gitleaks-22ebcff.json`. This check covers detected
 credential patterns in Git history; it does not replace the separate review
 for private infrastructure details or licensing.
 
+That scan was refreshed through source commit
+`3e7e0574883e04efa200a010bf42aeccd043564a`: Gitleaks scanned 109 public
+commits and found no leaks. Redacted report:
+`/mnt/shared/fieldos-e2e/gitleaks-3e7e057.json`.
+
 At source commit `bc47bb968714a89bc65e67ece25b79f17534cb28`, `make check` and
 `make test` passed on the development workstation on 2026-11-03. The latter
 ran all 46 unit tests, including content-pack safety, simulated hardware
