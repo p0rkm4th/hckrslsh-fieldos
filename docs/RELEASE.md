@@ -5,11 +5,10 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-Current source is public at `origin/main`; the worktree was clean before this
-status update. `make check` and `make test` passed on code commit
-`de3db7b` with 49 tests. The captured log is
-`/mnt/shared/fieldos-e2e/current-tests-de3db7b.log` (SHA-256
-`23d79e2ac68bdbb2db8f410586224baf08272fef2af197f2180ec06f184b152a`). Hardware
+Current source is public at `origin/main`. `make check` and `make test` passed
+on rewritten source commit `d43ca99` with 49 tests. The captured log is
+`/mnt/shared/fieldos-e2e/current-tests-d43ca99.log` (SHA-256
+`14d13d32df2c1fb99af881876246039ab05ef14853855dd08760e5446ee8affd`). Hardware
 fixtures and workstation Vulkan detection are covered, but the existing
 offline payload predates `vulkan-tools`, so installed-system Vulkan reporting
 remains unverified. The earlier hardware evidence is in
@@ -24,11 +23,17 @@ preflight, so no current-source ISO or VM run was started. Existing VM disks
 were preserved. Historical passes remain evidence only for their tested
 source and environment; current-source release acceptance is open.
 
-Public-history review through current source `0b84f29d16fa9ac7d8f80430e04aed8cd77afb8b`
-scanned 119 commits with Gitleaks and found no leaks. Report:
-`/mnt/shared/fieldos-e2e/gitleaks-0b84f29.json`. This checks detected credential
-patterns in Git history; it does not replace the separate review for private
-infrastructure details or licensing.
+The public Git history was scrubbed because earlier release notes contained a
+local username path and unrelated infrastructure labels. The one published
+branch was rewritten with a lease; its tip tree is byte-for-byte unchanged.
+The audit of rewritten history found no remaining username or
+infrastructure-specific markers,
+no Gitleaks findings across 122 commits, no binary blobs, and no blobs larger
+than 10 MiB. Gitleaks report:
+`/mnt/shared/fieldos-e2e/gitleaks-history-clean.json`. Historical commit IDs in
+the dated records below refer to the pre-scrub graph and no longer resolve;
+their retained reports, artifact hashes, and test results remain the evidence
+for those historical runs. This scan does not substitute for licensing review.
 
 Public history review at source commit `22ebcff396d4aeb948797591cd0742dec1f0e156`
 scanned all 105 commits with Gitleaks and found no leaks. The redacted report
