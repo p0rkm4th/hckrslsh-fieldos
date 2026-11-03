@@ -33,6 +33,13 @@ remained healthy. Evidence is
 This does not verify a current-source installation or the full E2E security
 assertion.
 
+A fresh `make test-e2e` preflight at 23 GiB free again stopped before creating
+artifacts, against the documented 50 GiB minimum. Report:
+`/mnt/shared/fieldos-e2e/preflight-20261103T124445Z-2380881.md` (SHA-256
+`5b2a252b4e7afefbe351eaed9300c26b8d222f74c065f621cbe4be61597bd25f`). This
+confirms the same storage blocker remains; the failed legacy VM was not
+repaired or counted as acceptance.
+
 On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
 The captured log is
 `/mnt/shared/fieldos-e2e/firstboot-log-permissions-tests.log` (SHA-256
@@ -345,6 +352,13 @@ the provisioning cause remains undetermined and the guest was left unchanged.
 Captured display evidence is
 `/mnt/shared/fieldos-e2e/auto-test4-current-view.png` (PNG view) and
 `/mnt/shared/fieldos-e2e/auto-test4-current.ppm` (QEMU capture).
+A new capture on 2026-11-03 again shows the failed firstboot unit, active
+Docker, and refused local service probes. Its correctly typed evidence files
+are `/mnt/shared/fieldos-e2e/fieldos-auto-test4-followup-20261103-next.ppm`
+(raw QEMU capture, SHA-256
+`fc471e4077e73d17b57e3df7c424936cde9e227a8f988523caded0f97dcf31cb`) and
+`/mnt/shared/fieldos-e2e/fieldos-auto-test4-followup-20261103-next.png` (PNG,
+SHA-256 `113d562e5626f18b181e5e8c2e72ae5f533ab6932a60b3ec34f9ebe6173f068d`).
 
 ### Earlier clean E2E rerun — 2026-11-03
 
