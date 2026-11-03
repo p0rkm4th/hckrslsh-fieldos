@@ -53,6 +53,13 @@ from clean source commit `0b2fd8c5de4f80ebad144a55e5b06e142115059c`.
 account/disk setup, and payload. Fresh 80 GiB `vda`, ISO on `sda`, 8 GiB RAM,
 no NIC. Only the disposable qcow2 was selected for erase. Full evidence is at
 `/mnt/shared/fieldos-e2e/customer-interactive-0b2fd8c-20261103/`.
+On 2026-11-03, `make verify ISO=...` was rerun against this retained candidate;
+BIOS/UEFI entries, interactive installer defaults, offline APT settings, and
+required payload paths passed. Hash remained
+`5295eeee5ec93098b1b71274e79991e5aeae44b9672deda46441db4fe37c52b8`. Output:
+`/mnt/shared/fieldos-e2e/customer-iso-verify-0b2fd8c-20261103.txt`. This is a
+read-only structural check of the old candidate and is not current-source
+build or installation evidence.
 
 Interactive runtime results: firstboot and all seven services passed;
 N.O.M.A.D. health was `{"status":"ok"}`; Qwen returned
