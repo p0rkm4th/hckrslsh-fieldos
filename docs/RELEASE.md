@@ -503,7 +503,7 @@ still presents interactive disk and account setup.
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/report.md`, clean source commit `0eb3d24` |
-| Interactive customer installation | PARTIAL (QEMU) | Fresh ISO `fieldos-test-customer-280fda2.iso` installed to disposable `vda`; media-removal handoff powered off the VM. Report: `/mnt/shared/fieldos-e2e/customer-280fda2-20261103/report.md` |
+| Interactive customer installation | PARTIAL (QEMU) | Fresh ISO `fieldos-test-customer-280fda2.iso` installed to disposable `vda`; media-removal handoff powered off the VM. Report, logs, and screenshots remain at `/mnt/shared/fieldos-e2e/customer-280fda2-20261103/`; reviewed qcow2 removed for fresh-disk retest. |
 | Clean installer media/restart handoff | PARTIAL | Handoff still needs host-side VM start; this is not a clean installer PASS |
 | Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
 | Offline provisioning and services | PASS | Current interactive guest: firstboot complete; all seven pinned containers loaded locally and ran |
