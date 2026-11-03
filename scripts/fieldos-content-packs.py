@@ -173,6 +173,53 @@ def installed_pack_valid(path: Path, manifest: dict) -> bool:
     return True
 
 
+def activate_map_pack(pack_root: Path, manifest: dict, root: Path) -> str | None:
+    """Atomically publish a single PMTiles artifact to N.O.M.A.D.'s map inventory."""
+    target = manifest["installation"]["target"]
+    if target != "storage/maps/pmtiles":
+        return None
+    artifacts = manifest["artifacts"]
+    map_artifacts = [item for item in artifacts if Path(item["path"]).suffix.lower() == ".pmtiles"]
+    if len(map_artifacts) != 1:
+        raise InstallError("maps-pmtiles packs must contain exactly one .pmtiles artifact")
+    artifact = map_artifacts[0]
+
+    source = pack_root / artifact["path"]
+    if source.is_symlink() or not source.is_file():
+        raise InstallError("map artifact must be a regular file")
+    maps_root = root / "storage" / "maps"
+    target_root = maps_root / "pmtiles"
+    if maps_root.is_symlink() or target_root.is_symlink():
+        raise InstallError("map storage directories must not be symbolic links")
+    target_root.mkdir(mode=0o750, parents=True, exist_ok=True)
+    destination = target_root / source.name
+    if destination.exists():
+        if destination.is_file() and file_sha256(destination) == artifact["sha256"]:
+            return f"map already active: {destination}"
+        raise InstallError(f"refusing to replace existing map content: {destination}")
+
+    # Stage on the destination filesystem, then link into place without ever
+    # replacing a user's existing map. A crash leaves at most a hidden temp file.
+    fd, temporary_name = tempfile.mkstemp(prefix=".fieldos-map-", dir=target_root)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(fd, "wb") as output, source.open("rb") as input_stream:
+            shutil.copyfileobj(input_stream, output, length=1024 * 1024)
+            output.flush()
+            os.fsync(output.fileno())
+        if file_sha256(temporary) != artifact["sha256"]:
+            raise InstallError("map artifact changed while activating")
+        try:
+            os.link(temporary, destination)
+        except FileExistsError:
+            if destination.is_file() and file_sha256(destination) == artifact["sha256"]:
+                return f"map already active: {destination}"
+            raise InstallError(f"refusing to replace existing map content: {destination}")
+        return f"activated map: {destination}"
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
                    schema: Path = DEFAULT_SCHEMA, reserve_bytes: int = RESERVE_BYTES) -> str:
     if archive.is_symlink():
@@ -216,7 +263,9 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
             recorded_hash = final / ".bundle.sha256"
             if (recorded_hash.is_file() and recorded_hash.read_text(encoding="ascii").strip() == bundle_hash
                     and installed_pack_valid(final, manifest)):
-                return f"already installed: {pack_id} {version}"
+                activation = activate_map_pack(final, manifest, root)
+                suffix = f"; {activation}" if activation else ""
+                return f"already installed: {pack_id} {version}{suffix}"
             raise InstallError(f"refusing to replace existing pack data: {final}")
 
         (pack_root / ".bundle.sha256").write_text(bundle_hash + "\n", encoding="ascii")
@@ -226,7 +275,9 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
             os.rename(pack_root, final)
         except FileExistsError as exc:
             raise InstallError(f"refusing to replace concurrently installed pack: {final}") from exc
-        return f"installed: {pack_id} {version} at {final}"
+        activation = activate_map_pack(final, manifest, root)
+        suffix = f"; {activation}" if activation else ""
+        return f"installed: {pack_id} {version} at {final}{suffix}"
     finally:
         shutil.rmtree(stage_parent, ignore_errors=True)
 

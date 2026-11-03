@@ -45,17 +45,22 @@ articles before relying on an answer. The test edition has no reviewed
 first-aid or emergency pack and must not be used as medical or emergency
 guidance.
 
-The current world map and sample regional map both top out at zoom level 5.
+The bundled world map and sample regional map both top out at zoom level 5.
 They support broad orientation and acceptance testing, but do not provide
-detailed roads, trails, parcels, or field navigation. A higher resolution
-regional pack requires separate source and redistribution review, coverage
-and size metadata, and a real-device render test. GPS/GIS integration is not
+detailed roads, trails, parcels, or field navigation. A separate Middle
+Tennessee map candidate exists outside the ISO: 19.6 MB, zoom 0–13, coverage
+`-88.5,35.4,-85.7,36.7`, extracted from the 2026-11-02 Protomaps build. Its
+manifest and ODbL license text are included in the portable archive. It is a
+test candidate until the actual guest import, N.O.M.A.D. map UI, offline
+browser render, and reboot persistence checks pass. GPS/GIS integration is not
 part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 
 The extensible pack format and planned categories are documented in
-[`CONTENT-PACKS.md`](CONTENT-PACKS.md). No customer content packs have been
-selected or approved for redistribution.
+[`CONTENT-PACKS.md`](CONTENT-PACKS.md). No content pack is bundled in the
+customer ISO. The Middle Tennessee candidate remains a separate, unreleased
+artifact; agricultural, wildlife, water/food, emergency, and comprehensive
+reference packs still need requirements and licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

@@ -32,10 +32,11 @@ deterministic `.tar.zst` archive and SHA-256 sidecar per catalog entry under
 `FIELDOS_PAYLOAD_ROOT/content-packs/`, independently of the core installer.
 Archives contain the manifest and only the artifacts it declares, so stray
 or unreviewed files in a staging directory are excluded.
-`make payload` runs this builder after preparing the core payload. The current
-catalog is empty, so these commands produce no pack archives today. The core
-ISO includes the manifest schema and pack management command, but does not
-embed optional pack archives.
+`make payload` runs this builder after preparing the core payload. The public
+catalog remains empty so the customer ISO stays bounded; optional archives
+are built separately and are not embedded in the core image. An independently
+staged Middle Tennessee candidate is described below and stored outside Git
+pending the real offline import acceptance run.
 
 On an installed system, verify and add a bundle with:
 
@@ -48,14 +49,20 @@ Installation checks the sidecar checksum, rejects unsafe archive entries,
 validates the manifest and artifact hashes, checks available space, and stores
 each immutable version under `/var/lib/fieldos/content-packs/<id>/<version>`.
 Repeating the same install is safe; a different bundle cannot overwrite an
-existing version. It stages on the destination filesystem and atomically moves
-the verified version into place, so its free-space check accounts for one
-unpacked copy plus a 256 MiB reserve. The command does not erase existing user data. This first
-stage provides independent packaging, integrity checking, and local storage;
-it does not yet import or activate content in N.O.M.A.D., Kiwix, the map UI, or
-GIS applications. The manifest's `installation.target` and `requirements`
-describe intended integration and are not automatically executed. Consumer
-adapters and their end-to-end tests remain future work.
+existing version. For a map pack whose target is `storage/maps/pmtiles`, the
+installer additionally requires exactly one PMTiles archive and atomically
+publishes it in `/var/lib/fieldos/storage/maps/pmtiles/`. N.O.M.A.D. discovers
+that file in its region inventory and generates its map source automatically.
+Existing filenames are never replaced. Other targets currently remain
+storage-only. A failed validation or conflicting destination leaves existing
+application data untouched.
+
+The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
+It places that archive and checksum on a second, read-only ISO attached to the
+disposable no-NIC VM, imports it from inside the installed guest, then checks
+N.O.M.A.D.'s region and style APIs, PMTiles reads, browser map rendering, and
+persistence after reboots. This transfer medium is test-only and does not
+change the customer installer.
 
 ## Reference quality and retrieval
 
@@ -70,17 +77,22 @@ emergency library.
 
 ## Mapping and location
 
-The present world and sample U.S. PMTiles fixtures cover zoom levels 0 through
-5. They render in the acceptance VM but lack the detail required for
-turn-by-turn, trail, parcel, or field work. Higher-resolution regional maps,
-their storage budgets, source licenses, and update process need to be
-specified before expanding release scope. GPS/GIS support needs a defined
-hardware interface and offline behavior. The current detector only reports a
-likely GPS device node; it does not read coordinates or provide a navigation
-service. The pack schema already has geographic bounds and zoom metadata to
-support later work. Protomaps supports extracting bounded regional PMTiles
-archives and selecting a maximum zoom, so future regional packs can be built
-without changing the core image ([PMTiles CLI documentation](https://docs.protomaps.com/pmtiles/cli)).
+The bundled world and sample U.S. PMTiles fixtures cover zoom levels 0 through
+5 and remain suitable only for broad orientation. A separate test candidate
+covers Middle Tennessee around Nashville (bounding box `-88.5,35.4,-85.7,36.7`)
+at zoom levels 0–13. Its 19.6 MB PMTiles file was extracted from the 2026-11-02
+Protomaps build using bounded HTTP range requests and includes road and land-use
+detail. Its manifest records the source URL, date, size, SHA-256, ODbL Produced
+Work license, attribution, bounds, and zoom range. It is not currently bundled
+in the customer ISO or approved as a release artifact. The E2E import and
+browser checks must pass before describing it as accepted content.
+
+This map is a geographic reference, not turn-by-turn navigation, trail,
+parcel, or emergency guidance. GPS/GIS support needs a defined hardware
+interface and offline behavior. The current detector only reports a likely GPS
+device node; it does not read coordinates or provide a navigation service.
+Protomaps supports bounded regional extraction from its hosted archives
+([PMTiles CLI documentation](https://docs.protomaps.com/pmtiles/cli)).
 The current zoom-5 archives remain orientation fixtures; Protomaps documents
 zoom 15 as sufficient for street-level mapping
 ([PMTiles creation guide](https://docs.protomaps.com/pmtiles/create)). This is
