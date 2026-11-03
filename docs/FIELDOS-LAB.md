@@ -60,6 +60,8 @@ Evidence:
 - No-NIC E2E report: `/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/report.md`.
 - Customer install and staging evidence:
   `/mnt/shared/fieldos-e2e/customer-interactive-d9d459b-20261103/report.md`.
+- Post-passphrase reboot and VM 913 smoke checks:
+  `/mnt/shared/fieldos-lab/evidence/20261103/vm913-post-passphrase-reboot.md`.
 - Customer candidate SHA-256:
   `4e41822852d9e911f186ab1f3659a904eedddef48154c9ca6d955cd2de7ddcd2`.
 
