@@ -46,7 +46,7 @@ After installation, verify listeners with `sudo ss -lntp` and inspect actual
 container settings with `sudo docker compose -f /opt/fieldos/services/compose.yaml
 --project-directory /opt/fieldos/services config` and `sudo docker inspect`.
 The Compose source and acceptance report should agree before a release. Keep
-the generated `/etc/fieldos/services.env` readable only by root, and exclude
+the generated `/opt/fieldos/services/.env` readable only by root, and exclude
 its contents, SSH keys, VM credentials, and private machine identifiers from
 support bundles and Git history.
 
