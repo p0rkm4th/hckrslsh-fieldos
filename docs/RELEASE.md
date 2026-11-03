@@ -10,6 +10,23 @@ third-party redistribution review remain open. Do not publish release binaries.
 
 ## Acceptance evidence — 2026-11-02
 
+### Reproducibility and source hygiene update
+
+- Source commit `d8c50306af0c305403b08f100201800c743b74dd` pins the Protomaps
+  source build metadata and verifies both bundled Ollama manifests and exact
+  model-layer SHA-256/size before preparing a payload. The pins were checked
+  against `/mnt/shared/fieldos-payload/offline-payload.tar.zst`; no new payload
+  or ISO was built for this source-only change.
+- `make check` and all 13 unit tests passed after the change. Gitleaks scanned
+  all 17 reachable commits with no findings; the tree is clean and `main` is
+  synchronized with `origin/main`.
+- Offline APT archive inventory for payload SHA-256
+  `5927727201adcaa0da822975fa76d65f08046f3d0625b018a1c24e0689aae273` is at
+  `/mnt/shared/fieldos-e2e/package-license-audit-20261102/`. It covers 61
+  packages and 59 bundled copyright-notice paths, but is not a license/SBOM
+  clearance. The extracted package cache was removed after recording the JSON
+  inventory and report.
+
 ### Offline unattended installation
 
 - Prior passing report:
