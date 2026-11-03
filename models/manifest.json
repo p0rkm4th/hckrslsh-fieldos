@@ -15,6 +15,10 @@
       "backends": ["cpu", "cuda", "rocm", "vulkan"],
       "license": "Apache-2.0",
       "license_url": "https://ollama.com/library/qwen3:0.6b",
+      "payload_identity": "Ollama manifest and model layer pinned by SHA-256 below",
+      "ollama_manifest_sha256": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+      "model_blob_sha256": "7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+      "model_blob_bytes": 522640096,
       "quality_priority": 10,
       "bundled_in_test_iso": true
     },
@@ -59,6 +63,10 @@
       "ram_gib": 0.7,
       "license": "Apache-2.0",
       "license_url": "https://ollama.com/library/nomic-embed-text",
+      "payload_identity": "Ollama manifest and model layer pinned by SHA-256 below",
+      "ollama_manifest_sha256": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+      "model_blob_sha256": "970aa74c0a90ef7482477cf803618e776e173c007bf957f635f1015bfcfef0e6",
+      "model_blob_bytes": 274290656,
       "bundled_in_test_iso": true
     }
   ],

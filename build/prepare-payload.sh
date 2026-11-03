@@ -74,11 +74,18 @@ printf '%s\n' \
 
 echo "Resolving the current Protomaps build and extracting a low-zoom offline world map..."
 curl --fail --silent --show-error https://build-metadata.protomaps.dev/builds.json -o "$STAGE/manifests/protomaps-builds.json"
-python3 - "$STAGE/manifests/protomaps-builds.json" > "$STAGE/manifests/protomaps-build.json" <<'PY'
+python3 - "$STAGE/manifests/protomaps-builds.json" "$ROOT/payload/manifests/maps.json" > "$STAGE/manifests/protomaps-build.json" <<'PY'
 import json, sys
 items = json.load(open(sys.argv[1]))
-latest = max(items, key=lambda item: item["uploaded"])
-print(json.dumps(latest, indent=2))
+expected = json.load(open(sys.argv[2]))["source_build"]
+matches = [item for item in items if item.get("key") == expected["key"]]
+if len(matches) != 1:
+    raise SystemExit(f"Pinned Protomaps source build not found: {expected['key']}")
+actual = matches[0]
+for field in ("version", "size", "md5sum", "b3sum", "uploaded"):
+    if actual.get(field) != expected[field]:
+        raise SystemExit(f"Pinned Protomaps metadata changed for {field}: {actual.get(field)!r}")
+print(json.dumps(actual, indent=2))
 PY
 MAP_KEY=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["key"])' "$STAGE/manifests/protomaps-build.json")
 docker run --rm --network bridge \
@@ -154,6 +161,34 @@ done
 docker exec "$MODEL_CONTAINER" ollama pull qwen3:0.6b-q4_K_M
 docker exec "$MODEL_CONTAINER" ollama pull nomic-embed-text:v1.5
 docker exec "$MODEL_CONTAINER" ollama list > "$STAGE/manifests/ollama-models.txt"
+python3 - "$STAGE/content/ollama" "$ROOT/models/manifest.json" > "$STAGE/manifests/model-payload.json" <<'PY'
+import hashlib
+import json
+import pathlib
+import sys
+
+root = pathlib.Path(sys.argv[1])
+models = json.load(open(sys.argv[2]))
+records = []
+for item in models["chat_models"] + models["embedding_models"]:
+    if not item.get("bundled_in_test_iso"):
+        continue
+    model_name, model_tag = item["ollama_ref"].rsplit(":", 1)
+    model_path = root / "models/manifests/registry.ollama.ai/library" / model_name / model_tag
+    manifest_hash = hashlib.sha256(model_path.read_bytes()).hexdigest()
+    if manifest_hash != item["ollama_manifest_sha256"]:
+        raise SystemExit(f"Ollama manifest SHA-256 mismatch for {item['id']}: {manifest_hash}")
+    blob = root / "models/blobs" / f"sha256-{item['model_blob_sha256']}"
+    digest = hashlib.sha256()
+    with blob.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    if digest.hexdigest() != item["model_blob_sha256"] or blob.stat().st_size != item["model_blob_bytes"]:
+        raise SystemExit(f"Ollama model layer verification failed for {item['id']}")
+    records.append({"id": item["id"], "ollama_ref": item["ollama_ref"], "manifest_sha256": manifest_hash,
+                    "model_blob_sha256": digest.hexdigest(), "model_blob_bytes": blob.stat().st_size})
+print(json.dumps({"schema_version": 1, "models": records}, indent=2))
+PY
 docker exec "$MODEL_CONTAINER" ollama show qwen3:0.6b-q4_K_M --license > "$STAGE/licenses/models/qwen3/Ollama-LICENSE.txt"
 docker exec "$MODEL_CONTAINER" ollama show nomic-embed-text:v1.5 --license > "$STAGE/licenses/models/nomic-embed-text/Ollama-LICENSE.txt"
 docker rm -f "$MODEL_CONTAINER" >/dev/null
