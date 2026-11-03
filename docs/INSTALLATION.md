@@ -32,9 +32,12 @@ option if full disk encryption is required. After installation, choose
 firmware can boot the installed disk. This workflow passed in the disposable VM
 with the media-handoff caveat above. Review the release gates in
 [`RELEASE.md`](RELEASE.md) before installing on physical customer hardware.
-Ubuntu documents
-`shutdown: reboot` as the default autoinstall action in its
-[autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
+FieldOS leaves the customer identity and storage sections interactive. Ubuntu
+documents that an autoinstall `shutdown` action is ignored when interactive
+sections are configured, so FieldOS does not set one or treat it as a handoff
+mechanism. The prior QEMU run powered off after the media-removal prompt; the
+cause and behavior of the customer installer handoff remain under investigation.
+See Canonical's [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
 FieldOS is not yet recommended for physical customer hardware. The current ISO
 remains a local test candidate; see
 [`RELEASE.md`](RELEASE.md) for release gates and current blockers.
