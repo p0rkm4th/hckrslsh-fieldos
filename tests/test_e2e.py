@@ -393,10 +393,21 @@ autoinstall:
         # Launch the installed browser in the active user's Wayland session.
         # This avoids relying on version-specific GNOME search behavior.
         uid = self.guest("id -u fieldos")
+        wayland = self.guest(
+            f"runtime=/run/user/{uid}; "
+            "for i in $(seq 1 60); do "
+            "socket=$(find \"$runtime\" -maxdepth 1 -type s -name 'wayland-*' "
+            "-printf '%f\\n' | head -n 1); "
+            "if [ -n \"$socket\" ] && [ -S \"$runtime/$socket\" ]; then "
+            "printf '%s\\n' \"$socket\"; exit 0; fi; sleep 1; "
+            "done; echo 'Timed out waiting for the logged-in Wayland socket' >&2; exit 1",
+            timeout=75,
+        ).splitlines()[-1]
+        if not wayland.startswith("wayland-"):
+            raise TestFailure(f"Unexpected Wayland socket name: {wayland!r}")
         launch = (
-            f"uid={uid}; runtime=/run/user/$uid; "
-            "wayland=$(find \"$runtime\" -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1); "
-            "test -n \"$wayland\" && test -S \"$runtime/$wayland\"; "
+            f"uid={uid}; runtime=/run/user/$uid; wayland={wayland}; "
+            "test -S \"$runtime/$wayland\" || exit 1; "
             "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
             "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
             "GDK_BACKEND=wayland /usr/bin/firefox --new-window http://127.0.0.1:8080/maps "
