@@ -7,6 +7,14 @@ possible. The repository defines a versioned JSON manifest schema at
 the architecture is ready, but customer-specific pack content awaits source,
 requirements, licensing, and attribution review.
 
+Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
+with artifact paths relative to that pack. The catalog lists relative paths to
+those manifests. Run `make validate-content-packs` to check catalog references,
+required metadata, safe artifact paths, declared size and SHA-256, geographic
+bounds, and emergency-reference review fields. The validator does not decide
+whether a license permits redistribution; a human review is still required
+before adding a pack to a distributable build.
+
 Planned pack categories are:
 
 - Agriculture, farming, soils, and equipment reference
@@ -19,7 +27,7 @@ Each populated pack has its own stable ID and version. Its manifest records
 each source and URL, license and attribution, every artifact's size and
 SHA-256, and installation target and requirements. Geographic packs also
 declare bounds, coordinate reference system, and zoom range. Build tooling
-must verify sizes and checksums before installation; packs install into
+must validate sizes and checksums before installation; packs install into
 separate directories so optional content can be installed or removed without
 replacing application data. The core image may include a small fixture for
 acceptance, while larger customer packs remain separate payloads.

@@ -3,7 +3,7 @@
   "$id": "https://fieldos.invalid/schemas/content-pack.schema.json",
   "title": "FieldOS offline content pack manifest",
   "type": "object",
-  "required": ["schema_version", "id", "version", "title", "description", "category", "sources", "artifacts", "geographic_coverage", "installation"],
+  "required": ["schema_version", "id", "version", "title", "description", "category", "sources", "artifacts", "geographic_coverage", "installation", "authority"],
   "properties": {
     "schema_version": {"const": 1},
     "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
@@ -14,8 +14,9 @@
     "sources": {
       "type": "array", "minItems": 1,
       "items": {
-        "type": "object", "required": ["name", "url", "license", "attribution"],
+        "type": "object", "required": ["id", "name", "url", "license", "attribution"],
         "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
           "name": {"type": "string", "minLength": 1},
           "url": {"type": "string", "format": "uri"},
           "license": {"type": "string", "minLength": 1},
@@ -64,7 +65,17 @@
       },
       "additionalProperties": false
     },
-    "authority": {"enum": ["authoritative-reference", "community-reference", "ai-generated", "mixed"]}
+    "authority": {"enum": ["authoritative-reference", "community-reference", "ai-generated", "mixed"]},
+    "review": {
+      "type": "object",
+      "required": ["reviewer", "reviewed_at", "content_revision"],
+      "properties": {
+        "reviewer": {"type": "string", "minLength": 1},
+        "reviewed_at": {"type": "string", "format": "date"},
+        "content_revision": {"type": "string", "format": "date"}
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }

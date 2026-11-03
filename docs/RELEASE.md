@@ -12,6 +12,17 @@ third-party redistribution review remain open. Do not publish release binaries.
 
 ## Acceptance evidence
 
+### Modular content-pack validation — 2026-11-03
+
+- Added a standard-library validator for staged pack manifests, source IDs,
+  artifact path containment, exact sizes and SHA-256 values, geography bounds,
+  and emergency-reference review metadata. `make check` runs it against the
+  repository catalog; fixture tests also reject bad hashes, traversal paths,
+  undeclared sources, and unreviewed emergency packs.
+- `make check`, `make validate-content-packs`, and all 28 unit tests passed.
+  The catalog remains intentionally empty; no customer pack data or new runtime
+  dependencies were added.
+
 ### Current-source unattended acceptance — 2026-11-03
 
 - Run report: `/mnt/shared/fieldos-e2e/20261103T002115Z-2083709/report.md`.
@@ -183,7 +194,7 @@ still presents interactive disk and account setup.
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
 | Public Git history | PASS | Gitleaks clean across reachable commits and tracked source; no private IPv4 matches or blobs over 1 MiB |
-| Content packs | ARCHITECTURE READY | Manifest schema/catalog; no customer content packs approved |
+| Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
 
