@@ -2,8 +2,10 @@
 
 FieldOS has passed the unattended offline acceptance run against the current
 source and a separate interactive R4 customer installation in disposable
-QEMU/KVM guests. R4's default selection, full install, clean media handoff,
-firstboot, services, map rendering, and two reboots passed. It is not yet
+QEMU/KVM guests. R4's default selection, full install, firstboot, services,
+map rendering, and two reboots passed. Its interactive post-prompt handoff
+powered off the VM and required a host start; automatic reboot remains
+unverified. FieldOS is not yet
 recommended for physical customer installation. A LAN peer scan, physical GPU
 validation, Canonical's modified Ubuntu trademark requirement, and exact
 third-party redistribution review remain open. Do not publish release binaries.
@@ -148,7 +150,10 @@ still presents interactive disk and account setup.
   BIOS/UEFI boot record, interactive installer configuration, and payload
   checks.
 - A fresh 80 GiB no-NIC UEFI guest completed interactive target disk and
-  account setup, the remove-media handoff, offline firstboot, and boot to GDM.
+  account setup, offline firstboot, and boot to GDM. At the remove-media prompt
+  the virtual CD was already empty; pressing Enter powered off the guest, and
+  an explicit host start was needed to boot the installed disk. The R4
+  interactive automatic-reboot handoff is therefore partial.
   All seven services ran; N.O.M.A.D., Qwen inference, 768-dimensional
   embeddings, Kiwix retrieval, and Firefox rendering of the U.S. regional map
   passed. The same service, inference, retrieval, map-tile, and persistence
@@ -166,7 +171,7 @@ still presents interactive disk and account setup.
 |---|---|---|
 | Unattended offline OS installation | PASS | Current-source E2E report and test ISO hash |
 | Interactive customer installation | PASS | Current-source R4 report: interactive disk/account, firstboot, and service checks |
-| Clean installer media/restart handoff | PASS | R4 remove-media prompt and installed target boot |
+| Clean installer media/restart handoff | PARTIAL | R4 prompt reached and media empty; Enter powered off VM, host start booted target |
 | Customer ISO default selection | PASS | R4 no-input GRUB countdown selected FieldOS and reached interactive setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
@@ -187,13 +192,17 @@ still presents interactive disk and account setup.
    bindings and NIC-address refusal but is not a LAN peer scan. This host
    session cannot create a libvirt bridge; do not bridge it to any production
    network.
-2. Resolve and complete the itemized clearance work in
+2. Recheck the interactive R4 remove-media handoff. The installer reached the
+   prompt, but the VM powered off after Enter and required a host start to boot
+   the installed target. The unattended test harness does detect this state
+   and boots its installed disk automatically.
+3. Resolve and complete the itemized clearance work in
    [`REDISTRIBUTION.md`](REDISTRIBUTION.md), including Canonical's modified
    Ubuntu trademark requirement, exact package and image SBOMs, and content
    attribution/checksums.
-3. Document tested CPU, memory, storage, and unsupported accelerators. GPU
+4. Document tested CPU, memory, storage, and unsupported accelerators. GPU
    fixture tests do not establish physical driver/backend support.
-4. Synchronize installation, troubleshooting, and recovery instructions with
+5. Synchronize installation, troubleshooting, and recovery instructions with
    the final implementation. Preserve source revision, build inputs, test
    reports, checksums, and known limitations.
 
