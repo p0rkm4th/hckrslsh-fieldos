@@ -141,6 +141,6 @@ xorriso -indev "$SOURCE_ISO" -outdev "$OUTPUT" \
   -map "$WORK/grub-fieldos.cfg" /boot/grub/grub.cfg \
   -boot_image any replay -commit
 
-"$ROOT/build/verify-iso.sh" "$OUTPUT"
+"$ROOT/build/verify-iso.sh" "$OUTPUT" "$MODE"
 sha256sum "$OUTPUT" > "$OUTPUT.sha256"
 echo "Created $OUTPUT"
