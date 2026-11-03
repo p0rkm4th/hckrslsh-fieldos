@@ -58,17 +58,18 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials. A fresh scan of all 90 commits through current source HEAD
-`2cb291b` found no leaks; its redacted report is
-`/mnt/shared/fieldos-e2e/gitleaks-2cb291b.json`.
+credentials. A fresh scan of all 92 commits through current source HEAD
+`43a1620` found no leaks; its redacted report is
+`/mnt/shared/fieldos-e2e/gitleaks-43a1620.json`.
 
 ### Current source milestone — 2026-11-03
 
-- Source HEAD `2cb291b14fe6f2498d4a0a5f22bfd5045ffa30cf` adds independent
+- Source HEAD `43a1620a6192080152d138f98d34aa06611ad680` adds independent
   content-pack archives and an installed-system verification/storage command.
   All 45 unit tests and `make check` pass. The fixture suite exercises archive
   build, checksum and manifest validation, safe extraction, idempotent install,
-  refusal to replace an existing version, and symlink-path rejection. Test
+  refusal to replace an existing version, symlink-path rejection, and exclusion
+  of unlisted files from generated archives. Test
   output is retained at
   `/mnt/shared/fieldos-e2e/content-pack-tests-current.log`.
 - The content-pack catalog remains empty. No customer pack is built or
