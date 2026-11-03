@@ -625,9 +625,11 @@ recovered run is not counted as a clean PASS.
   synchronized with `origin/main` at test time).
 - Test report and retained evidence:
   `/mnt/shared/fieldos-e2e-sourceoffer-r2/20261103T044051Z-2183912/report.md`.
-  The 80 GiB sparse guest disk is preserved at `guest.qcow2`; the VM is shut
-  off. Logs and screenshots, including Firefox `map-render.png`, are in the
-  same directory. The ephemeral test ISO and temporary user-data were removed.
+  After review, the stopped 80 GiB qcow2 was removed on 2026-11-03 to reclaim
+  space; the report, logs, and Firefox `map-render.png` remain. Newer clean
+  E2E guest disks remain at `20261103T070244Z-2240395/` and
+  `20261103T074611Z-2255858/`. The ephemeral ISO and temporary user-data were
+  removed after the run.
 - The test-only ISO hash was
   `ffddec1fab1ba452684d1dca69eeb322bbe592320a397b09e8d8abaadad19b6d`.
   The installer powered off after unattended installation; the harness
