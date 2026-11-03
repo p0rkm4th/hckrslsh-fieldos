@@ -7,14 +7,11 @@ interactive installation of the current customer ISO also completed normally,
 booted the installed disk after the remove-media prompt, and passed service,
 inference, content, map-tile, and two-reboot checks with no virtual NIC. This is
 QEMU validation, not a physical customer installation. FieldOS is not yet
-recommended for physical customer installation because network-enabled LAN
-exposure, customer hardware coverage, Canonical's modified Ubuntu trademark
+recommended for physical customer installation because guest-to-guest LAN
+exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
-Physical customer hardware coverage, guest-to-guest LAN peer scan, physical
-GPU validation, Canonical's modified Ubuntu trademark requirement, and exact
-third-party redistribution review remain open. The interactive install
-completed in QEMU, but that does not clear these release gates. Do not publish
-release binaries.
+The interactive install completed in QEMU, but that does not clear these
+release gates. Do not publish release binaries.
 
 ### Latest clean automated acceptance — 2026-11-03
 
@@ -340,56 +337,44 @@ still presents interactive disk and account setup.
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/report.md`, clean source commit `4d4fccc` |
-| Interactive customer installation | PARTIAL | R2 installed to disposable `vda`; target reached GDM after host start; services unverified |
-| Clean installer media/restart handoff | BLOCKED | R2 powered off at remove-media/Enter; host start required |
+| Interactive customer installation | PASS (QEMU) | Current-source customer ISO installed to disposable `vda`; GDM and services verified, report under `/mnt/shared/fieldos-e2e/customer-iso-current-main-a4eebb8/report.md` |
+| Clean installer media/restart handoff | PASS (QEMU) | Ejected virtual media at prompt; Enter booted installed target without host-side VM start |
 | Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
-| Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
-| N.O.M.A.D. and inference | PASS | Health response and local generation markers |
-| Knowledge library and maps | PASS | R4 Kiwix retrieval; regional PMTiles; real Firefox screenshot |
-| Reboot persistence | PASS | Latest clean E2E: services, inference, retrieval, and map checks recovered after two in-guest reboots |
-| ISO release | BLOCKED | Customer handoff is partial; redistribution/attribution and other gates remain; binary unpublished |
+| Offline provisioning and services | PASS | Current interactive guest: firstboot complete; all seven pinned containers loaded locally and ran |
+| N.O.M.A.D. and inference | PASS | Current guest health response, chat generation marker, and 768-element embedding vector |
+| Knowledge library and maps | PASS | Current Kiwix retrieval and PMTiles tile/range checks; Firefox render in matching-code clean E2E report |
+| Reboot persistence | PASS | Current interactive guest passed service, inference, retrieval, and map checks after two reboots |
+| ISO release | BLOCKED | Test candidate verified; distribution/attribution, physical hardware coverage, and LAN peer review remain; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks clean across 43 commits through `27b6517`; report at `/mnt/shared/fieldos-e2e-4d4fccc/repository-review/gitleaks-final.json`; no Git blobs over 1 MiB; later changes are documentation only |
+| Public Git history | PASS | Gitleaks scanned 48 commits with no findings; `/mnt/shared/fieldos-e2e/repository-review-233b980/gitleaks.json`; no tracked Git blobs over 1 MiB |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
 
-1. Test inbound service reachability from a separate guest on an isolated
-   virtual network. Current user-mode networking evidence verifies loopback
-   bindings and NIC-address refusal but is not a LAN peer scan. This host
-   session cannot create a libvirt bridge; do not bridge it to any production
-   network.
-2. Resolve the interactive installer remove-media/Enter handoff. R2 completed
-   installation, but the VM powered off at the prompt and a host start was
-   required to boot the installed target. Earlier “disabled Next” reports used
-   incomplete QMP pointer events and are inconclusive. Demonstrate that a
-   normal install boots the target without host-side intervention.
-3. Resolve and complete the itemized clearance work in
+1. Resolve and complete the itemized clearance work in
    [`REDISTRIBUTION.md`](REDISTRIBUTION.md), including Canonical's modified
    Ubuntu trademark requirement, exact package and image SBOMs, and content
    attribution/checksums.
-4. Document tested CPU, memory, storage, and unsupported accelerators. GPU
-   fixture tests do not establish physical driver/backend support.
-5. Synchronize installation, troubleshooting, and recovery instructions with
-   the final implementation. Preserve source revision, build inputs, test
-   reports, checksums, and known limitations.
+2. Validate supported physical hardware and document incompatibilities. GPU
+   fixture tests and detector observations do not establish physical
+   acceleration; the verified acceptance backend is CPU.
+3. Complete guest-to-guest LAN reachability testing on an isolated virtual
+   network, and preserve the already completed no-NIC and user-mode-network
+   tests as distinct evidence.
+4. Continue documenting and testing customer-facing troubleshooting/recovery
+   instructions. Preserve source revision, build inputs, test reports,
+   checksums, and known limitations.
 
-The latest clean E2E report is
-`/mnt/shared/fieldos-e2e/20261103T013805Z-2111810/report.md`, from clean
-source commit `017987d99c4718ceb2a843030bc097546a354e52`. It records unattended
-installation, disconnected services, Firefox map rendering, local inference,
-reference retrieval, and two reboots. It does not include the content-attribution
-files or guest-side integrity check added in commit `34f9604`; rebuild and rerun
-that test before treating the latest source as operationally accepted. No new
-ISO was built for `34f9604`.
-
-At `34f9604`, `make check` and all 28 unit tests pass. Gitleaks scanned 37
-reachable commits with no findings; a Git object scan found no blobs over
-1 MiB. Reproducible audit output is preserved under
-`/mnt/shared/fieldos-e2e/repository-review-34f9604/`.
-
-The expanded/full ISO must wait until these release gates pass. Never commit
-ISOs, model weights, credentials, VM disks, or downloaded image archives.
+Latest current-source interactive customer ISO evidence is under
+`/mnt/shared/fieldos-e2e/customer-iso-current-main-a4eebb8/`; the matching
+unattended Firefox map screenshot and clean offline acceptance report remain
+under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. The candidate
+was built from `a4eebb8`; changes since that ISO are documentation-only. Its
+path and SHA-256 are recorded above. `make check` passed after the documentation
+updates, and Gitleaks scanned all 48 reachable commits with no findings. The
+expanded/full ISO must wait until these remaining release gates pass. Never
+commit ISOs, model weights, credentials, VM disks, or downloaded image
+archives.
