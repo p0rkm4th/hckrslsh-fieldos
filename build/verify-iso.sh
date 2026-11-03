@@ -35,6 +35,18 @@ grep -Eq '^    geoip: false$' "$TMP/nocloud-user-data" \
   || { echo "Installer geo-IP lookup must be disabled" >&2; exit 1; }
 grep -Eq '^    fallback: offline-install$' "$TMP/nocloud-user-data" \
   || { echo "Installer must fall back to the local offline source" >&2; exit 1; }
+grep -Eq '^  interactive-sections:$' "$TMP/nocloud-user-data" \
+  || { echo "Customer installer must leave identity and storage interactive" >&2; exit 1; }
+grep -Eq '^    - identity$' "$TMP/nocloud-user-data" \
+  || { echo "Customer installer identity configuration must remain interactive" >&2; exit 1; }
+grep -Eq '^    - storage$' "$TMP/nocloud-user-data" \
+  || { echo "Customer installer disk selection must remain interactive" >&2; exit 1; }
+grep -Eq '^  shutdown: reboot$' "$TMP/nocloud-user-data" \
+  || { echo "Installer must request reboot after installation" >&2; exit 1; }
+if grep -Eq '^  identity:|^    (username|password|hashed-password):' "$TMP/nocloud-user-data"; then
+  echo "Customer ISO must not configure user credentials unattended" >&2
+  exit 1
+fi
 
-echo "ISO structure, BIOS/UEFI boot records, installer config, and payload presence verified."
+echo "ISO structure, BIOS/UEFI boot records, interactive customer setup, offline APT, and payload presence verified."
 sha256sum "$ISO"
