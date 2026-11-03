@@ -37,8 +37,12 @@ boot IDs; the same essential checks passed after each reboot. Evidence:
 `67155ba0984e480f3ae3c7d78ab62798ab11936d60a2cd5a94d47a928625d084`). This is
 a follow-up on the prior installed guest from source `6c64ffd` with its
 harness-only dirty-tree fix. It is not a fresh install or current-source
-acceptance. Existing report `map-render.png` records the Firefox map render;
-the live follow-up itself did not capture a new browser render.
+acceptance. The retained screenshot
+`/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/map-render.png` (SHA-256
+`e17468e85fb8b98316205d34025183a8561213d54b1533adb6185360b9bcb83b`) was
+visually inspected: Firefox shows the U.S. regional map at
+`http://127.0.0.1:8080/maps`, with map controls, labels, and attribution. The
+live follow-up itself did not capture a new browser render.
 
 The public Git history was scrubbed because earlier release notes contained a
 local username path and unrelated infrastructure labels. The one published
