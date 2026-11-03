@@ -61,7 +61,7 @@ with its report updated to record the disposition.
 The test domain and disk are never reused or overwritten. To remove a completed
 test guest after reviewing its report, first shut it down, then remove only
 that exact libvirt domain and its matching run-directory `guest.qcow2`. Do not
-remove active production infrastructure domains, physical disks, or unrelated files. Old test logs
+remove active unrelated domains, physical disks, or unrelated files. Old test logs
 are useful evidence and should be retained with the release record.
 
 The test runner reports only checks actually executed. A successful ISO build

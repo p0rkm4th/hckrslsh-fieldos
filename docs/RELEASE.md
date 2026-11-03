@@ -1,12 +1,12 @@
 # Release status and process
 
 FieldOS has passed the unattended offline acceptance run against the current
-source and a separate interactive customer installation in disposable QEMU/KVM
-guests. It is not yet recommended for physical customer installation. The
-current R3 ISO's default entry reaches interactive disk setup without input;
-the full interactive installation was completed on R2. Network-enabled
-exposure tests and complete redistribution review remain open. Do not publish
-release binaries.
+source and a separate interactive R3 customer installation in disposable
+QEMU/KVM guests. R3's default selection, full install, clean media handoff,
+firstboot, services, map rendering, and two reboots passed. It is not yet
+recommended for physical customer installation. A LAN peer scan, physical GPU
+validation, Canonical's modified Ubuntu trademark requirement, and exact
+third-party redistribution review remain open. Do not publish release binaries.
 
 ## Acceptance evidence — 2026-11-02
 
@@ -92,7 +92,7 @@ still presents interactive disk and account setup.
 | Reboot persistence | PASS | R3 plus current-source E2E: two reboots, hashes and service checks |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
-| Redistribution and attribution | PENDING | Per-artifact legal/source review incomplete |
+| Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
 | Public Git history | PASS | Gitleaks found no secrets; tracked source scan is clean; no blobs over 1 MiB |
 | Content packs | ARCHITECTURE READY | Manifest schema/catalog; no customer content packs approved |
 
@@ -101,11 +101,12 @@ still presents interactive disk and account setup.
 1. Test inbound service reachability from a separate guest on an isolated
    virtual network. Current user-mode networking evidence verifies loopback
    bindings and NIC-address refusal but is not a LAN peer scan. This host
-   session cannot create a libvirt bridge; do not bridge it to production infrastructure or other
-   production networks.
-2. Review redistribution and attribution for each Ubuntu package, container,
-   model, map, and reference artifact in the candidate ISO. Record sources,
-   licenses, notices, versions, and checksums.
+   session cannot create a libvirt bridge; do not bridge it to any production
+   network.
+2. Resolve and complete the itemized clearance work in
+   [`REDISTRIBUTION.md`](REDISTRIBUTION.md), including Canonical's modified
+   Ubuntu trademark requirement, exact package and image SBOMs, and content
+   attribution/checksums.
 3. Document tested CPU, memory, storage, and unsupported accelerators. GPU
    fixture tests do not establish physical driver/backend support.
 4. Synchronize installation, troubleshooting, and recovery instructions with
