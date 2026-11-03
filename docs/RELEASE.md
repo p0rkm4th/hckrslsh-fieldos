@@ -58,7 +58,35 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials.
+credentials. A fresh scan of all 88 commits through current source HEAD
+`013324c` also found no leaks; its redacted report is
+`/mnt/shared/fieldos-e2e/gitleaks-013324c.json`.
+
+### Current source milestone — 2026-11-03
+
+- Source HEAD `013324c9e98b180c2ecee7ec008ead4a4638d82f` adds independent
+  content-pack archives and an installed-system verification/storage command.
+  All 44 unit tests and `make check` pass. The fixture suite exercises archive
+  build, checksum and manifest validation, safe extraction, idempotent install,
+  and refusal to replace an existing version. Test output is retained at
+  `/mnt/shared/fieldos-e2e/content-pack-tests-013324c.log`.
+- The content-pack catalog remains empty. No customer pack is built or
+  approved. The archive builder emits separate `.tar.zst` files under
+  `/mnt/shared/fieldos-payload/content-packs/`; the core ISO contains the schema
+  and command but not optional packs. Installed packs are stored immutably in
+  `/var/lib/fieldos/content-packs/<id>/<version>`. Import into N.O.M.A.D.,
+  Kiwix, maps, and GIS is not implemented, so this storage milestone does not
+  satisfy field-content readiness.
+- The existing customer ISO and its interactive acceptance predate this source
+  commit; no ISO was rebuilt or tested with the content-pack command. The last
+  clean unattended acceptance remains the earlier report at
+  `/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/report.md`, and the customer
+  optical-media handoff remains partial. Do not infer ISO-level acceptance
+  from unit tests.
+- No large artifact was created. `/mnt/shared` has 18 GiB free (99% used);
+  require the documented build headroom before rebuilding an ISO or starting a
+  fresh disposable installation. Current E2E report and customer candidate
+  paths and hashes are recorded above.
 
 The specifically named legacy `fieldos-auto-test4` guest was rechecked on
 2026-11-03 and is failed: `fieldos-firstboot.service` reports `failed`, Docker
@@ -589,7 +617,7 @@ still presents interactive disk and account setup.
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
 | Public Git history | PASS (Gitleaks) | Full history scan covered 67 commits with zero findings; evidence: `/mnt/shared/fieldos-e2e/repository-review-customer-20261103/gitleaks-history.json`. Earlier private infrastructure indicator review: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
-| Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
+| Content packs | PARTIAL | Independent archive builder and immutable verified storage command; 44 unit tests pass. Catalog empty; application activation, approved field content, and ISO-level test remain open |
 
 ## Remaining release gates
 
