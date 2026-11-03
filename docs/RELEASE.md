@@ -1,5 +1,10 @@
 # Release status and process
 
+The opening status and readiness table are the latest results. Dated entries
+later in this file are historical snapshots and may describe the then-current
+ISO or storage state; use the opening status and the latest dated sections for
+present decisions.
+
 The latest clean unattended offline acceptance run passed on source commit
 `ae1d18bb54974a4c949a046ed90fdf38a110ce4e`; report, screenshots, logs, and
 guest disk are under `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/`.
@@ -24,6 +29,12 @@ exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
+
+The source now bundles the full ODbL 1.0 text in the payload and installs it
+under `/usr/share/doc/fieldos/`. Its checksum matches the official Open Data
+Commons text. The existing customer ISO predates this source change; rebuilding
+the ISO and repeating its verification remains outstanding. Build storage had
+27 GiB free at this review, below the configured minimum for a new full build.
 
 ### Fresh clean E2E rerun — 2026-11-03
 
@@ -132,7 +143,7 @@ release gates. Do not publish release binaries.
   and temporary credentials were removed by the harness; the stopped 33 GiB
   disposable qcow2 and logs remain. No release binary was published.
 
-### Current customer installer rerun — R2, 2026-11-03
+### Earlier customer installer rerun — R2, 2026-11-03
 
 - Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-sourceoffer-709c893.iso`,
   SHA-256 `b3baf28dfb6be78f9f701fb53fd37e9cc083a205e05705da0bb2abfa123e7dc4`.
@@ -277,7 +288,7 @@ release gates. Do not publish release binaries.
   see R2 below. The candidate remains a local test artifact, not an approved
   distribution binary.
 
-### Current interactive customer ISO diagnostic — R2, 2026-11-03
+### Earlier interactive customer ISO diagnostic — R2, 2026-11-03
 
 - Candidate: `/mnt/shared/fieldos-releases-03b6552/fieldos-test-customer-offline-r1.iso`,
   SHA-256 `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
@@ -296,7 +307,10 @@ release gates. Do not publish release binaries.
 - The reason the remove-media/Enter step powers the guest off is unresolved.
   Treat eject timing only as a hypothesis; this run does not verify a fix.
 
-### Current artifacts and storage snapshot
+### Earlier artifacts and storage snapshot — 2026-11-03 (superseded)
+
+This snapshot predates the latest customer ISO, fresh-disk USB test, and clean
+E2E rerun documented at the top of this file.
 
 - Clean unattended E2E report and screenshots: `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/` (32 GiB sparse guest disk retained).
 - Interactive customer ISO evidence and recovered guest disk:
@@ -317,7 +331,7 @@ release gates. Do not publish release binaries.
 
 ## Acceptance evidence
 
-### Current-source R5 interactive installation — 2026-11-03
+### Earlier current-source R5 interactive installation — 2026-11-03
 
 - Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-r5.iso`;
   SHA-256 `8b121916cd13af315d268cae16643eab06244a5b3a256662767650cbf2b52ee2`.
@@ -356,7 +370,7 @@ release gates. Do not publish release binaries.
   The catalog remains intentionally empty; no customer pack data or new runtime
   dependencies were added.
 
-### Current-source unattended acceptance — 2026-11-03
+### Earlier current-source unattended acceptance — 2026-11-03
 
 - Run report: `/mnt/shared/fieldos-e2e/20261103T002115Z-2083709/report.md`.
 - Source: commit `945751325ab80b1acadb870f0754f3fc7a378fab`, clean worktree.
@@ -427,7 +441,7 @@ release gates. Do not publish release binaries.
   Kiwix, PMTiles serving, Firefox map render, blocked external egress, and two
   reboots passed.
 
-### Current-source unattended acceptance
+### Earlier current-source unattended acceptance
 
 - Run report: `/mnt/shared/fieldos-e2e/20261102T232645Z-2057919/report.md`.
 - Test ISO SHA-256:
@@ -484,7 +498,7 @@ still presents interactive disk and account setup.
   `/mnt/shared/fieldos-e2e/customer-r3-bootcheck-20261102/report.md`.
 - ISO and test evidence are local and unpublished.
 
-### Current-source interactive customer installation and R4
+### Earlier current-source interactive customer installation and R4
 
 - Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-r4.iso`.
 - Size: 11,956,518,912 bytes. SHA-256:
@@ -608,7 +622,10 @@ recovered run is not counted as a clean PASS.
   detect shutdown and boot the installed target. Customer-facing installation
   configuration is unchanged.
 
-### Current artifacts, storage, and release gates — 2026-11-03
+### Earlier current-artifact snapshot — 2026-11-03 (superseded)
+
+This snapshot predates the latest customer ISO, fresh-disk USB test, and clean
+E2E rerun documented at the top of this file.
 
 - Current unpublished test customer ISO (older payload; not cleared for
   distribution):

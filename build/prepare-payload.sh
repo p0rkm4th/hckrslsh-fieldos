@@ -127,6 +127,7 @@ printf '%s\n' \
   > "$STAGE/licenses/wikipedia-zim-attribution.txt"
 cp "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$STAGE/licenses/"
 cp "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$STAGE/licenses/"
+cp "$ROOT/payload/licenses/ODbL-1.0.txt" "$STAGE/licenses/"
 
 echo "Resolving the current Protomaps build and extracting a low-zoom offline world map..."
 curl --fail --silent --show-error https://build-metadata.protomaps.dev/builds.json -o "$STAGE/manifests/protomaps-builds.json"

@@ -42,6 +42,7 @@ content_docs=/usr/share/doc/fieldos
 install -d -m 0755 "$content_docs"
 cp -an "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$content_docs/CONTENT-SOURCES.md"
 cp -an "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$content_docs/CC-BY-SA-4.0.txt"
+cp -an "$ROOT/payload/licenses/ODbL-1.0.txt" "$content_docs/ODbL-1.0.txt"
 if [[ -d "$PAYLOAD/licenses" ]]; then
   cp -an "$PAYLOAD/licenses/." "$content_docs/"
 fi
