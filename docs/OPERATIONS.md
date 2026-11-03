@@ -42,11 +42,18 @@ starts skip provisioning. Review the log and status after any retry.
 
 ## Health checks
 
-Run the installed diagnostics script for hardware and provisioning summaries:
+Run the installed diagnostics script for hardware and provisioning summaries,
+firstboot failure details, container state, and storage capacity:
 
 ```sh
 sudo /opt/fieldos/scripts/fieldos-diagnostics.sh
 ```
+
+The script prints only the last 40 firstboot journal lines and last 80 lines
+from `/var/log/fieldos-firstboot.log`; it does not print the generated Compose
+credentials. Run it with `sudo` to read the root-owned status and logs. Review
+the output before sharing it because it may contain local file paths and
+hardware information.
 
 Inspect service state and the local application health endpoint:
 
