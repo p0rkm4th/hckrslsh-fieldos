@@ -1,19 +1,49 @@
 # Release status and process
 
 The latest clean unattended offline acceptance run passed on source commit
-`4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`; report and browser screenshot are
-under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. The latest
-interactive customer ISO installation completed and the installed system
-passed service, inference, content, map, browser-render, and two-reboot checks
-with no virtual NIC. However, pressing Enter at the installer's remove-media
-prompt powered off the VM; a host-side start was needed to boot the installed
-disk. The interactive installer/handoff gate therefore remains PARTIAL. This
-is QEMU validation, not a physical customer installation. FieldOS is not yet
+`0eb3d24e47dc156942396e9557a85ffc6840f78a`; report, screenshots, logs, and
+guest disk are under `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/`.
+The 80 GiB UEFI guest installed with 8 GiB RAM and no NIC; N.O.M.A.D., local
+inference, embeddings, source-verified reference retrieval, browser map
+rendering, and persistence after two reboots passed. The test ISO SHA-256 is
+`4113f9a5586be1f1ccb800409bc8df8fb9c59c3f6b60794e523c27b8167cd734`; the
+rebuilt offline payload SHA-256 is
+`1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
+
+The interactive customer ISO was tested separately. Installation completed
+and the installed system passed service, inference, content, map, browser
+render, and two-reboot checks with no virtual NIC. However, pressing Enter at
+the installer's remove-media prompt powered off the VM; a host-side start was
+needed to boot the installed disk. The interactive installer/handoff gate
+therefore remains PARTIAL. This is QEMU validation, not a physical customer
+installation. FieldOS is not yet
 recommended for physical customer installation because guest-to-guest LAN
 exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
+
+### Fresh clean E2E after payload manifest repair — 2026-11-03
+
+- The first rerun from the previously prepared payload failed because its
+  archive predated the reference manifest added to source; the installed
+  guest lacked `/var/lib/fieldos/payload/manifests/references.json`. That FAIL
+  report and guest disk are retained at
+  `/mnt/shared/fieldos-e2e/20261103T054638Z-2209484/`.
+- Rebuilt payload SHA-256:
+  `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
+  The prior stale payload and its matching hash are retained under
+  `20261103T054638Z-2209484/stale-payload/` for reproducibility. The rebuilt
+  archive includes and verifies `manifests/references.json`.
+- A new clean-source `make test-e2e` run passed all checks, including archive
+  size/SHA-256, N.O.M.A.D. health, Qwen generation, 768-dimension embeddings,
+  Kiwix retrieval, all 7 image digests, 1,174 image notice files, 3 source
+  offers, PMTiles, real Firefox map rendering, blocked container egress, and
+  service/model/content/map persistence after two reboots.
+- Report:
+  `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/report.md`. The test ISO
+  and temporary credentials were removed by the harness; the stopped 33 GiB
+  disposable qcow2 and logs remain. No release binary was published.
 
 ### Current customer installer rerun — R2, 2026-11-03
 
@@ -106,7 +136,7 @@ release gates. Do not publish release binaries.
 - Full report, installation/firstboot logs, screenshots, and stopped guest disk
   remain at `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`.
 
-### Latest current-source interactive customer ISO acceptance — 2026-11-03
+### Earlier current-source interactive customer ISO acceptance — 2026-11-03
 
 - Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-main-a4eebb8.iso`;
   SHA-256 `47fdf3f07773bb61f2bca321513f875ade39f6a01bf51afba98fb282529c3b28`.
@@ -411,9 +441,9 @@ still presents interactive disk and account setup.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/report.md`, clean source commit `4d4fccc` |
-| Interactive customer installation | PASS (QEMU) | Current-source customer ISO installed to disposable `vda`; GDM and services verified, report under `/mnt/shared/fieldos-e2e/customer-iso-current-main-a4eebb8/report.md` |
-| Clean installer media/restart handoff | PASS (QEMU) | Ejected virtual media at prompt; Enter booted installed target without host-side VM start |
+| Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/report.md`, clean source commit `0eb3d24` |
+| Interactive customer installation | PARTIAL (QEMU) | Interactive install reached media-removal prompt, but the VM powered off; latest report under `/mnt/shared/fieldos-e2e/customer-sourceoffer-709c893-r2/` |
+| Clean installer media/restart handoff | PARTIAL | Handoff still needs host-side VM start; this is not a clean installer PASS |
 | Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
 | Offline provisioning and services | PASS | Current interactive guest: firstboot complete; all seven pinned containers loaded locally and ran |
 | N.O.M.A.D. and inference | PASS | Current guest health response, chat generation marker, and 768-element embedding vector |
@@ -443,16 +473,11 @@ still presents interactive disk and account setup.
    instructions. Preserve source revision, build inputs, test reports,
    checksums, and known limitations.
 
-Latest current-source interactive customer ISO evidence is under
-`/mnt/shared/fieldos-e2e/customer-iso-current-main-a4eebb8/`; the matching
-unattended Firefox map screenshot and clean offline acceptance report remain
-under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. The candidate
-was built from `a4eebb8`; changes since that ISO are documentation-only. Its
-path and SHA-256 are recorded above. `make check` passed after the documentation
-updates, and Gitleaks scanned all 48 reachable commits with no findings. The
-expanded/full ISO must wait until these remaining release gates pass. Never
-commit ISOs, model weights, credentials, VM disks, or downloaded image
-archives.
+The latest customer installer run is the partial R2 attempt documented below.
+The current clean unattended acceptance and Firefox screenshot are under
+`/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/`. The expanded/full ISO must
+wait until the remaining release gates pass. Never commit ISOs, model weights,
+credentials, VM disks, or downloaded image archives.
 
 ### Latest clean automated acceptance and source-offer payload — 2026-11-03
 
@@ -580,3 +605,42 @@ recovered run is not counted as a clean PASS.
   starting another full-size guest. Build, payload, and evidence paths remain
   configurable through the `FIELDOS_*_ROOT` Make variables documented in
   `TESTING.md`.
+
+### Acceptance and release continuation — 2026-11-03
+
+- The clean unattended offline acceptance from source commit `0eb3d24`
+  passed. Full evidence and the stopped disposable VM disk are at
+  `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/`; the current payload is
+  `/mnt/shared/fieldos-payload/offline-payload.tar.zst` (5.2 GiB,
+  SHA-256 `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`).
+- The previous clean automated attempt failed on a stale payload without the
+  reference manifest. It remains recorded as FAIL at
+  `/mnt/shared/fieldos-e2e/20261103T054638Z-2209484/`. The payload was rebuilt
+  and the next fresh run passed; no manual guest repair occurred in the PASS
+  run. The test ISO and temporary credentials were removed automatically.
+- Customer-facing installer handoff remains PARTIAL: the latest interactive
+  attempt powered off at the media-removal prompt and required a host-side
+  start. The customer ISO has not yet been rebuilt with the current payload.
+- Offline service, AI generation, embedding, Kiwix retrieval, regional PMTiles,
+  and real Firefox map rendering passed in the clean acceptance guest. Two
+  guest reboots preserved essential services and data. A no-NIC guest check
+  passed. With networking enabled, QEMU user-mode testing confirmed guest
+  internet access and blocked N.O.M.A.D. container egress; no FieldOS service
+  bound to the guest NIC, but bridged guest-to-guest/LAN scanning remains
+  unverified because isolated bridge creation was denied by host permissions.
+- Hardware adaptation is CPU-validated; fixture profiles are simulated and
+  no physical GPU backend has been validated. Docker socket access in the
+  upstream N.O.M.A.D. architecture is privileged host access. LAN isolation,
+  redistribution clearance, modified-Ubuntu trademark review, and physical
+  hardware coverage remain release gates. Content-pack schema/validator is
+  present; no customer packs have been approved or populated. Zoom-5 world
+  maps and the miniature archive remain test fixtures.
+- No customer release candidate was rebuilt in this continuation. `/mnt/shared`
+  has 107 GiB free (1.2 TiB total); the E2E evidence directory occupies about
+  33 GiB, the prepared payload 5.2 GiB, and the releases directory 23 GiB.
+  Preserve this headroom and use `/mnt/shared` for additional large artifacts.
+- Documentation now describes the configurable acceptance VM memory, payload
+  staging free-space requirement, and the rule that manually recovered runs
+  are not clean automated passes. After the documentation update, `make check`,
+  `git diff --check`, and all 33 unit tests passed. The docs were committed and
+  pushed as `37433d8` to public `main`.
