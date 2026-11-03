@@ -83,10 +83,23 @@ after review, a stopped disposable guest disk may be removed to reclaim space,
 with its report updated to record the disposition.
 
 The test domain and disk are never reused or overwritten. To remove a completed
-test guest after reviewing its report, first shut it down, then remove only
-that exact libvirt domain and its matching run-directory `guest.qcow2`. Do not
-remove active unrelated domains, physical disks, or unrelated files. Old test logs
-are useful evidence and should be retained with the release record.
+test disk after reviewing its report, use the exact run-directory path. The
+cleanup command defaults to dry run and refuses disks attached to any domain,
+runs referenced by the release record, paths outside the E2E evidence root,
+non-qcow2 files, or disks without a retained report. It deletes only the qcow2
+and leaves screenshots, logs, `report.md`, and a retirement audit record:
+
+```sh
+make cleanup-test-disk DISK="/mnt/shared/fieldos-e2e/<run>/guest.qcow2"
+make cleanup-test-disk DISK="/mnt/shared/fieldos-e2e/<run>/guest.qcow2" \
+  DELETE=1 REASON="superseded stopped disposable run"
+```
+
+Review the dry-run result and report first. Never use this for physical disks,
+active guests, or unrelated files. The command does not stop guests or remove
+libvirt domains. Preserve current acceptance disks and any disk referenced by
+`docs/RELEASE.md`. Old test logs and screenshots are useful evidence and remain
+after disk retirement.
 
 The test runner reports only checks actually executed. A successful ISO build
 is not an installation or service acceptance result. Synthetic hardware
