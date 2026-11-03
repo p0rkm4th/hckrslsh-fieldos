@@ -1,18 +1,35 @@
 # Release status and process
 
-The clean unattended offline acceptance run passed on source commit
-`03b65524ff99b89c21374b4a6775c58a7da15333`; its report and browser screenshot
-are under `/mnt/shared/fieldos-e2e-03b6552/20261103T022031Z-2131949/`. It
-verified installation, provisioning, local AI, Kiwix retrieval, Firefox map
-rendering, and essential services after two reboots. A new customer ISO
+The latest clean unattended offline acceptance run passed on source commit
+`4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`; report and browser screenshot are
+under `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`. It verified
+installation, offline provisioning, local AI, reference retrieval, browser map
+rendering, and service persistence through two reboots. The latest customer ISO
 candidate was built locally with explicit offline APT settings, but its fresh
 no-NIC interactive install stopped at Disk Setup with Next disabled. That
-attempt failed before installation and is not an acceptance pass. The local
-source tree currently includes the offline APT setting change and is not yet
-committed. FieldOS is not recommended for physical customer installation.
+attempt failed before installation and is not an acceptance pass. FieldOS is
+not recommended for physical customer installation.
 Customer installer completion, LAN peer scan, physical GPU validation,
 Canonical's modified Ubuntu trademark requirement, and exact third-party
 redistribution review remain open. Do not publish release binaries.
+
+### Latest clean automated acceptance — 2026-11-03
+
+- Source: clean commit `4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`.
+- Test ISO SHA-256:
+  `6cf0086fb215989d7bf75caf7a4719fecfb3fa1ce62076df4e9a77a86b449526`.
+- Fresh 80 GiB UEFI qcow2 guest, no virtual NIC. Ubuntu installed
+  unattended and the installer powered off normally. Offline APT provisioning
+  loaded all declared local images; firstboot completed. N.O.M.A.D. returned
+  `{"status":"ok"}`; Qwen generated `FIELDOS_ACCEPTANCE_OK`; embeddings,
+  Kiwix library/search, source and archive checks, world and regional PMTiles,
+  blocked container egress, and CPU model selection passed.
+- Firefox rendered the bundled regional U.S. map in a 1280x800 screenshot
+  (`map-render.png`); 69,563 water pixels and 3,993 sampled colors passed the
+  viewport check. Essential service, inference, content, and tile checks passed
+  after two reboots with changed boot IDs.
+- Full report, installation/firstboot logs, screenshots, and stopped guest disk
+  remain at `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/`.
 
 ### Latest customer ISO attempt — offline R1, 2026-11-03
 
@@ -20,8 +37,9 @@ redistribution review remain open. Do not publish release binaries.
   (11,956,584,448 bytes), SHA-256
   `1bedf8286bfa825ddd5a35dba727a27b332beee2fad4e30d043f1fd90131f8cf`.
 - `make check`, 28 unit tests, ISO build, and ISO structure/BIOS/UEFI
-  verification passed. The candidate's NoCloud config sets `apt.geoip: false`
-  and `apt.fallback: offline-install`.
+  verification passed. The candidate contains the same installer config now
+  committed in `4d4fccc`, setting `apt.geoip: false` and
+  `apt.fallback: offline-install`; the current verifier confirms both keys.
 - A fresh 80 GiB UEFI qcow2 guest with no NIC booted the FieldOS GRUB entry
   and reached the real Ubuntu Disk Setup page. Next remained disabled after
   waiting. The VM was not installed or repaired. The previous attempt's live
@@ -235,8 +253,9 @@ still presents interactive disk and account setup.
   comparison against the pinned upstream N.O.M.A.D. v1.35.1 file passed; evidence
   is `/mnt/shared/fieldos-e2e/zim-provenance-review-20261103.md`.
 - The archive is still a test fixture. Per-entry and embedded-media license
-  clearance is open. R5 predates these changes; the E2E assertion for installed
-  documentation and archive integrity has not yet run against a rebuilt ISO.
+  clearance is open. The clean `4d4fccc` E2E run checked that the installed
+  source guide and bundled archive match their recorded checksum; it does not
+  establish redistribution clearance.
 - The working tree is clean and `main` is pushed to `origin/main`. The current
   repository audit is under `/mnt/shared/fieldos-e2e/repository-review-34f9604/`.
 
@@ -244,20 +263,20 @@ still presents interactive disk and account setup.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T013805Z-2111810/report.md`, built from `017987d99c4718ceb2a843030bc097546a354e52` |
+| Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e-4d4fccc/20261103T025413Z-2144474/report.md`, clean source commit `4d4fccc` |
 | Interactive customer installation | BLOCKED | Latest offline R1 candidate stops at Disk Setup with Next disabled; see customer-iso-offline-r1 report |
-| Clean installer media/restart handoff | PARTIAL | R5 with explicit `shutdown: reboot`: Enter powered off VM; host start reached GDM |
-| Customer ISO default selection | PASS | R4 no-input GRUB countdown selected FieldOS and reached interactive setup |
+| Clean installer media/restart handoff | BLOCKED | Latest customer attempt stopped before installation; prior R5 handoff required a host start |
+| Customer ISO default selection | PASS | Offline R1 GRUB default selected FieldOS and reached Disk Setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
 | Knowledge library and maps | PASS | R4 Kiwix retrieval; regional PMTiles; real Firefox screenshot |
-| Reboot persistence | PASS | Fresh E2E above: two in-guest reboots, services, inference, retrieval, and map checks recovered |
-| ISO release | BLOCKED | R5 verified and installed locally; interactive handoff and redistribution/attribution gates remain; binary unpublished |
+| Reboot persistence | PASS | Latest clean E2E: services, inference, retrieval, and map checks recovered after two in-guest reboots |
+| ISO release | BLOCKED | Offline R1 verified structurally but failed at Disk Setup; redistribution/attribution gates remain; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks clean across 37 reachable commits at `34f9604`; zero Git blobs over 1 MiB; evidence at `/mnt/shared/fieldos-e2e/repository-review-34f9604/` |
+| Public Git history | PASS | Gitleaks clean across 40 commits at `4d4fccc`; report at `/mnt/shared/fieldos-e2e-4d4fccc/repository-review/gitleaks.json` |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
