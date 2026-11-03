@@ -2,6 +2,16 @@
 
 ## Customer installation
 
+**Current candidate status (2026-11-03):** The source-offer candidate ISO
+`fieldos-test-customer-sourceoffer-709c893.iso` installed and its offline
+services passed in a disposable QEMU guest, but the guest powered off at the
+remove-media prompt and required a host-side start. Its QMP account-entry
+automation also produced unintended test identity values and needed a
+temporary password reset to reach the desktop. This is a partial candidate
+test, not a clean interactive-install or handoff PASS. The independent
+unattended acceptance run passed with its test-only handoff. See the exact
+evidence, checksums, and remaining release gates in [`RELEASE.md`](RELEASE.md).
+
 The customer facing ISO is built with:
 
 ```sh
