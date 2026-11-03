@@ -47,6 +47,26 @@ class TestFailure(RuntimeError):
     pass
 
 
+def write_preflight_report(evidence_root: Path, stamp: str, reason: str) -> Path:
+    """Record why an E2E run was refused before creating large artifacts."""
+    evidence_root.mkdir(parents=True, exist_ok=True)
+    report = evidence_root / f"preflight-{stamp}.md"
+    report.write_text(
+        "\n".join([
+            "# FieldOS E2E preflight",
+            "",
+            "Status: **FAIL**",
+            "",
+            f"Reason: {reason}",
+            "",
+            "No ISO, VM disk, or test credentials were created.",
+            "",
+        ]),
+        encoding="utf-8",
+    )
+    return report
+
+
 class AcceptanceRun:
     def __init__(self) -> None:
         self.stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -58,6 +78,9 @@ class AcceptanceRun:
         work_root.parent.mkdir(parents=True, exist_ok=True)
         if disk_usage(work_root.parent).free < 8 * 1024**3:
             raise TestFailure(f"Need at least 8 GiB free for temporary ISO build work on {work_root.parent}")
+        self.memory_mib = int(os.environ.get("FIELDOS_TEST_MEMORY_MIB", "12288"))
+        if self.memory_mib < 8192:
+            raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
         self.run_dir = evidence_root / f"{self.stamp}-{os.getpid()}"
         self.run_dir.mkdir(parents=True, exist_ok=False)
         self.vm_name = f"fieldos-e2e-{self.stamp.lower()}"
@@ -67,9 +90,6 @@ class AcceptanceRun:
         self.results: list[dict[str, str]] = []
         self.agent_ready = False
         self.temporary_password = ""
-        self.memory_mib = int(os.environ.get("FIELDOS_TEST_MEMORY_MIB", "12288"))
-        if self.memory_mib < 8192:
-            raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
         self.source_revision, self.source_dirty = git_source_state()
 
     def command(self, args: list[str], *, env: dict[str, str] | None = None,
@@ -701,4 +721,15 @@ autoinstall:
 
 
 if __name__ == "__main__":
-    raise SystemExit(AcceptanceRun().run())
+    try:
+        raise SystemExit(AcceptanceRun().run())
+    except TestFailure as exc:
+        evidence_root = Path(os.environ.get("FIELDOS_E2E_ROOT", ROOT / "build" / "e2e"))
+        stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        try:
+            report = write_preflight_report(evidence_root, f"{stamp}-{os.getpid()}", str(exc))
+            print(f"FAIL preflight: {exc}\nReport: {report}", file=sys.stderr, flush=True)
+        except OSError as report_error:
+            print(f"FAIL preflight: {exc}\nCould not write preflight report: {report_error}",
+                  file=sys.stderr, flush=True)
+        raise SystemExit(1)
