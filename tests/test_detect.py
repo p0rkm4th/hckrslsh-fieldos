@@ -10,6 +10,7 @@ from hardware.detect.detect import (
     memory_gib,
     root_storage_facts,
     storage_facts,
+    vulkan_device_memory,
 )
 
 
@@ -98,6 +99,45 @@ class DetectionTests(unittest.TestCase):
         self.assertFalse(result[0]["runtime_validated"])
         self.assertEqual(result[0]["vram_gib"], 10.0)
         self.assertEqual(result[1]["vram_gib"], 0.0)
+
+    def test_vulkan_budget_reports_shared_gpu_memory_and_skips_software_gpu(self):
+        output = """GPU0:
+        vendorID          = 0x8086
+        deviceID          = 0x46a6
+        deviceType        = PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU
+        deviceName        = Intel Integrated Graphics
+        driverName        = Intel open-source Mesa driver
+        VkPhysicalDeviceMemoryProperties:
+        ================================
+        memoryHeaps: count = 1
+        memoryHeaps[0]:
+                size   = 17179869184
+                budget = 2684354560
+                usage  = 536870912
+                flags: count = 1
+                        MEMORY_HEAP_DEVICE_LOCAL_BIT
+        memoryTypes: count = 1
+GPU1:
+        vendorID          = 0x10005
+        deviceID          = 0x0000
+        deviceType        = PHYSICAL_DEVICE_TYPE_CPU
+        deviceName        = llvmpipe
+        VkPhysicalDeviceMemoryProperties:
+        ================================
+        memoryHeaps: count = 1
+        memoryHeaps[0]:
+                size   = 8589934592
+                budget = 8589934592
+                flags: count = 1
+                        MEMORY_HEAP_DEVICE_LOCAL_BIT
+        memoryTypes: count = 1
+"""
+        result = vulkan_device_memory(output)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["vendor_id"], "0x8086")
+        self.assertEqual(result[0]["device_type"], "integrated_gpu")
+        self.assertEqual(result[0]["memory_budget_gib"], 2.5)
+        self.assertEqual(result[0]["memory_usage_gib"], 0.5)
 
 
 if __name__ == "__main__":

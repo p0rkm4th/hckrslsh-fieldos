@@ -23,7 +23,14 @@ def usable_vram(hardware: dict, backend: str | None = None) -> float:
     compatible = [gpu for gpu in hardware.get("gpus", [])
                   if (backend is None or gpu.get("driver_available"))
                   and (backend not in vendors or gpu.get("vendor") in vendors[backend])]
-    return max((float(gpu.get("vram_gib") or 0) for gpu in compatible), default=0.0)
+    if backend == "vulkan":
+        values = (gpu.get("vulkan_memory_budget_gib") or gpu.get("vram_gib", 0) for gpu in compatible)
+    elif backend is None:
+        values = (max(float(gpu.get("vram_gib") or 0),
+                      float(gpu.get("vulkan_memory_budget_gib") or 0)) for gpu in compatible)
+    else:
+        values = (gpu.get("vram_gib", 0) for gpu in compatible)
+    return max((float(value or 0) for value in values), default=0.0)
 
 
 def select(hardware: dict, manifest: dict, available_ids: set[str] | None = None,
