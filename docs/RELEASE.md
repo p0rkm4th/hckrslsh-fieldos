@@ -5,20 +5,19 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-The implementation state at source commit
-`598746e2ba63ff66b75986c8e7c161ef1205e494` is on public `origin/main`;
-subsequent commits update release documentation only. On this implementation
-state, `make check` and `make test` passed all 49 tests. The captured log is
-`/mnt/shared/fieldos-e2e/source-598746e-checks.log` (SHA-256
-`9fb3df49401d04187f60cd5362d2fa473430c84a2395e538ad4a89f024f37ba6`). A fresh
-Gitleaks scan of its complete Git history found no findings; redacted JSON is
-`/mnt/shared/fieldos-e2e/gitleaks-598746e.json` (SHA-256
-`37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`). A
-current-tree marker search found no local user-specific paths, private
-hostnames, or private-key headers. These source and history checks do not
-replace a fresh installation, third-party license review, or broader manual
-infrastructure review. Earlier firstboot permission-specific evidence on
-commit `670b1a3` is retained below.
+The latest validated implementation is public at `origin/main`, source commit
+`dc48319a4e29ea8a3c7412f113855f1b51734b1e`. `make check` and `make test`
+passed all 49 tests on this implementation; log:
+`/mnt/shared/fieldos-e2e/status-file-admin-readability-tests.log` (SHA-256
+`346d7fc272e54c4375ea64262a5539aeb1815d45703be4292cbe53f725c9376f`). Firstboot
+and embedded acceptance assertion syntax also passed; evidence:
+`/mnt/shared/fieldos-e2e/status-admin-readability-syntax.log` (SHA-256
+`e60e20ab5bb62b3cf5719e0ae4467b5dfb3552d6a79b82343d9f5840119860a3`). A fresh
+Gitleaks scan through this commit found no findings; report:
+`/mnt/shared/fieldos-e2e/gitleaks-dc48319.json` (SHA-256
+`37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`). These
+source checks do not establish installation behavior. A fresh ISO/guest
+acceptance is still required for the diagnostics permission change.
 
 On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
 The captured log is
@@ -30,12 +29,13 @@ remains unverified. The earlier hardware evidence is in
 `/mnt/shared/fieldos-e2e/vulkan-memory-d8fbc55-tests.log` and
 `/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`.
 
-The firstboot log is now created or retained as `root:adm` mode `0640` to make
-failure details available to local administrators; generated Compose
-credentials stay `root:root` mode `0600`. The E2E harness asserts these modes.
-The script, harness, and documentation pass source checks, but this permission
-change has not yet been built into an ISO or verified on a newly installed
-guest.
+Firstboot now writes the nonsecret provisioning status atomically as
+`root:adm` mode `0640`, and makes `/var/lib/fieldos` searchable by `adm` at
+mode `0710` without allowing directory listing. The acceptance check verifies
+that the desktop account can read the status but cannot list the state
+directory. The firstboot log remains `root:adm` mode `0640`; generated Compose
+credentials remain `root:root` mode `0600`. These changes are not yet built
+into an ISO or verified on a newly installed guest.
 
 The most recent clean unattended VM acceptance remains the report below at
 source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
