@@ -33,7 +33,7 @@ third-party redistribution review remain open. Do not publish release binaries.
   and reports `MemAvailable` separately from installed memory. Model-selection
   budgeting is unchanged: it reserves the configured amount from installed
   RAM; the added available-memory field is diagnostic.
-- `make check` and all 15 unit tests passed. A physical development-laptop
+- `make check` and all 19 unit tests passed after the follow-up updates. A physical development-laptop
   spot-check observed the NVIDIA driver and GPU, Intel integrated graphics,
   NVMe, battery, CPU, and RAM. The evidence is
   `/mnt/shared/fieldos-e2e/hardware-detection-20261102/`. The latest detector
@@ -46,6 +46,10 @@ third-party redistribution review remain open. Do not publish release binaries.
   a new full E2E install. The passing installation reports above remain
   evidence for their recorded ISO and source revisions, not for latest-source
   installation behavior.
+- The acceptance harness now records the source commit and dirty/clean
+  worktree state in new reports; unit tests cover both Git-query success and
+  unavailable-Git behavior. Existing reports were generated before that
+  reporting improvement.
 
 ### Offline unattended installation
 

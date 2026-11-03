@@ -49,6 +49,10 @@ checks blocked container egress and repeats service/model/reference/map-tile
 checks after two guest reboots. The guest has no external network interface;
 Docker's local UI bridge also disables masquerading.
 
+Each report records the source commit and whether the worktree had local
+changes, alongside the test ISO SHA-256, so a test result can be tied to the
+source used to build it.
+
 ## Outputs and cleanup
 
 Each run keeps `report.md`, installer/firstboot logs when available, service
