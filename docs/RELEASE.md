@@ -5,13 +5,14 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-Current source is public at `origin/main`, commit
-`0b84f29d16fa9ac7d8f80430e04aed8cd77afb8b`; the worktree was clean before this
+Current source is public at `origin/main`; the worktree was clean before this
 status update. `make check` and `make test` passed on code commit
-`d8fbc5588afcae3dec5db439059aa7424d5bd22b` with 49 tests; the current head adds
-documentation only. Hardware fixtures and workstation Vulkan detection are
-covered, but the existing offline payload predates `vulkan-tools`, so the
-installed-system Vulkan reporting path remains unverified. Logs are
+`de3db7b` with 49 tests. The captured log is
+`/mnt/shared/fieldos-e2e/current-tests-de3db7b.log` (SHA-256
+`23d79e2ac68bdbb2db8f410586224baf08272fef2af197f2180ec06f184b152a`). Hardware
+fixtures and workstation Vulkan detection are covered, but the existing
+offline payload predates `vulkan-tools`, so installed-system Vulkan reporting
+remains unverified. The earlier hardware evidence is in
 `/mnt/shared/fieldos-e2e/vulkan-memory-d8fbc55-tests.log` and
 `/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`.
 
