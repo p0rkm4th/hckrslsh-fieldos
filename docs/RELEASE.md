@@ -209,14 +209,14 @@ still presents interactive disk and account setup.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Unattended offline OS installation | PASS (prior revision) | `/mnt/shared/fieldos-e2e/20261103T002115Z-2083709/report.md`, built from `945751325ab80b1acadb870f0754f3fc7a378fab` |
+| Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T013805Z-2111810/report.md`, built from `017987d99c4718ceb2a843030bc097546a354e52` |
 | Interactive customer installation | PASS | R5 fresh no-NIC guest: interactive disk/account, firstboot, and service checks |
 | Clean installer media/restart handoff | PARTIAL | R5 with explicit `shutdown: reboot`: Enter powered off VM; host start reached GDM |
 | Customer ISO default selection | PASS | R4 no-input GRUB countdown selected FieldOS and reached interactive setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
 | Knowledge library and maps | PASS | R4 Kiwix retrieval; regional PMTiles; real Firefox screenshot |
-| Reboot persistence | PASS (prior revision) | R5 plus the E2E run above: two in-guest reboots, hashes and service checks |
+| Reboot persistence | PASS | Fresh E2E above: two in-guest reboots, services, inference, retrieval, and map checks recovered |
 | ISO release | BLOCKED | R5 verified and installed locally; interactive handoff and redistribution/attribution gates remain; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
@@ -249,13 +249,9 @@ still presents interactive disk and account setup.
    the final implementation. Preserve source revision, build inputs, test
    reports, checksums, and known limitations.
 
-The current checkout is `e7b85de9aebdac8adca7ecdb3ce32b4fc56c6f06`. Since the
-automated E2E run at `945751325ab80b1acadb870f0754f3fc7a378fab`, changes added
-the content-pack manifest validator and tests, build-path defaults, and the
-customer installer `shutdown: reboot` setting. `make check` and all 28 unit
-tests pass on the current checkout. The exact current checkout still needs a
-fresh E2E run before the release record can claim that source revision has
-passed operational acceptance.
+The fresh E2E run used clean source commit
+`017987d99c4718ceb2a843030bc097546a354e52`. This release-record update is
+documentation only. `make check` and all 28 unit tests pass on that source.
 
 The 2026-11-02 Git history review scanned all reachable commits with Gitleaks
 (no findings), scanned a snapshot of tracked source including current
