@@ -22,6 +22,13 @@ is `/mnt/shared/fieldos-e2e/gitleaks-22ebcff.json`. This check covers detected
 credential patterns in Git history; it does not replace the separate review
 for private infrastructure details or licensing.
 
+At source commit `bc47bb968714a89bc65e67ece25b79f17534cb28`, `make check` and
+`make test` passed on the development workstation on 2026-11-03. The latter
+ran all 46 unit tests, including content-pack safety, simulated hardware
+profiles, image-license metadata, and test-disk retirement safeguards. Log:
+`/mnt/shared/fieldos-e2e/source-bc47bb9-checks.log`. These checks do not build
+or install an ISO and do not establish runtime or physical hardware acceptance.
+
 Latest verified gates (2026-11-03): a clean unattended offline acceptance run
 passed, followed by a separate fresh-disk interactive customer ISO test. Both
 UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
