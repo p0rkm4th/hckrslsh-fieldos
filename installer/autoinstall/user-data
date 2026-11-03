@@ -1,6 +1,7 @@
 #cloud-config
 autoinstall:
   version: 1
+  shutdown: reboot
   interactive-sections:
     - identity
     - storage
