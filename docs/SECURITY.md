@@ -8,6 +8,10 @@ daemon, including starting privileged containers and mounting host files. The
 socket is required by the upstream N.O.M.A.D. container-management feature;
 removing it would break that feature. Treat the N.O.M.A.D. interface as a local
 host administrator interface and do not expose it to untrusted users.
+Upstream documents the Docker-outside-of-Docker management design and includes
+the socket bind in its pinned management Compose template:
+[v1.35.1 FAQ](https://github.com/Crosstalk-Solutions/project-nomad/blob/v1.35.1/FAQ.md),
+[v1.35.1 management Compose](https://github.com/Crosstalk-Solutions/project-nomad/blob/v1.35.1/install/management_compose.yaml).
 
 Dozzle also receives the Docker socket so it can display container logs. Its
 actions and shell are disabled. A read-only bind mount does not make Docker's
@@ -15,12 +19,16 @@ HTTP API read-only, so this is defense in depth, not a privilege boundary.
 Removing Dozzle or replacing its socket access with a narrowly allow-listed
 socket proxy would reduce exposure. A proxy is not currently included because
 it adds another service and has not been shown necessary for the default
-single-user field computer.
+single-user field computer. Upstream marks Dozzle optional and says its
+Service Logs & Metrics link will not work if Dozzle is omitted; see the
+[pinned v1.35.1 Compose template](https://github.com/Crosstalk-Solutions/project-nomad/blob/v1.35.1/install/management_compose.yaml).
 
 The Compose services do not request `privileged: true`, host networking, host
 PID, or added Linux capabilities. They use Docker's default capability set;
 future capability changes should be justified against upstream behavior and
-tested. Persistent host paths are limited to `/var/lib/fieldos/storage`,
+tested. Kiwix receives the reference directory read-only: the admin service
+retains the writable `/app/storage` mount required to manage content, while
+the serving container needs to read it only. Persistent host paths are limited to `/var/lib/fieldos/storage`,
 `mysql`, `redis`, and `qdrant`. Credentials are generated on first boot in the
 root-owned Compose environment file and are not part of the ISO payload.
 
@@ -55,3 +63,16 @@ with mode `0600` and root ownership. The N.O.M.A.D. Docker socket permission is
 the one known privilege that cannot reasonably be removed while retaining its
 upstream container-management feature. This is a single-user appliance
 assumption, not a multi-user security boundary.
+
+The runtime inspection from the offline, no-NIC acceptance guest is retained
+at `/mnt/shared/fieldos-e2e/security-runtime-20261102.txt`. It confirmed no
+container used `privileged`, `cap_add`, host PID, or host networking; all five
+published application ports bound to `127.0.0.1`; the generated `.env` was
+`0600 root:root`; and only N.O.M.A.D. and Dozzle mounted the Docker socket.
+Dozzle's bind was read-only, which does not itself restrict Docker API methods.
+The Kiwix content mount was tested read-only on that disposable guest. Kiwix
+search and N.O.M.A.D. health continued to work, and the guest was restored to
+its original mount after the experiment. Evidence:
+`/mnt/shared/fieldos-e2e/kiwix-readonly-experiment-20261102.md`. New automated
+acceptance runs also assert Kiwix's `/data` mount is read-only. A separate
+guest-to-guest LAN reachability scan remains pending.

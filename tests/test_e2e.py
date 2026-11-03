@@ -420,6 +420,12 @@ autoinstall:
                 raise TestFailure(f"Expected 7 running services; got {ps}")
         except json.JSONDecodeError as exc:
             raise TestFailure(f"Could not parse Compose service state: {exc}: {ps}")
+        kiwix_mount = self.check(
+            "Kiwix reference content is read-only",
+            "docker inspect --format '{{range .Mounts}}{{if eq .Destination \"/data\"}}{{.RW}}{{end}}{{end}}' nomad_kiwix_server",
+        )
+        if kiwix_mount != "false":
+            raise TestFailure(f"Kiwix content mount must be read-only; got {kiwix_mount!r}")
         health = self.check("N.O.M.A.D. API", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8080/api/health")
         if not health:
             raise TestFailure("N.O.M.A.D. health endpoint returned no body")
