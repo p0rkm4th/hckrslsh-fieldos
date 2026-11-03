@@ -13,17 +13,18 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The clean-source offline E2E acceptance passed on implementation revision
-`ec57fed731e915c4c0585dc1e6c648d71d338566`. It completed unattended
-Ubuntu installation with no virtual NIC, local package and image provisioning,
+The latest clean-source offline E2E acceptance passed on revision
+`43ec3f9faed73632c13a8113b546ade9b5bf488e`. It completed unattended Ubuntu
+installation with no virtual NIC, local package and image provisioning,
 N.O.M.A.D. health, a real Ollama response, embeddings, Kiwix retrieval, and
 browser rendering of the separately transferred Middle Tennessee map at zoom
-13. The map and services persisted across two guest reboots. Evidence is at
-`/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/`; its test ISO SHA-256 is
-`c775083ba8538dd282bc20efd82851ec2c2ddb747327f2fa5a1a33d7dc38ad42`, and the
-browser screenshot is `map-render.png`. The disposable 80 GiB disk was retired
-after the PASS; installer/firstboot logs, report, screenshot, and retirement
-audit remain. This does not certify the separate customer installer.
+13. It verified truthful information-library descriptions and passed two
+reboots with services and map content intact. Evidence is at
+`/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md`; the test ISO SHA-256
+is `c4fc27bc3722509d525049b5fe5b8e56396852854a49f9e65cafe1de8276b373`, and the
+browser screenshot is `map-render.png`. The 80 GiB disposable disk was retired
+after PASS; logs, report, screenshot, and retirement audit remain. This does
+not certify the separate customer installer.
 
 The current customer-mode engineering candidate is
 `/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso`, SHA-256
@@ -41,11 +42,11 @@ stages the branded system on VM 913, but owner-authenticated desktop launch is
 not yet verified. See
 [release evidence](docs/RELEASE.md) for the current gate matrix.
 
-The current source adds a guarded correction for N.O.M.A.D.'s information
-library descriptions: the home card and Easy Setup will describe only archives
-installed on the device. The `c744e52` customer ISO above predates this change
-and still contains the misleading upstream wording; the source correction must
-pass a fresh offline install before a replacement candidate is built.
+The current source has a guarded correction for N.O.M.A.D.'s information
+library descriptions: the home card and Easy Setup now describe only archives
+installed on the device. That correction passed the clean-source E2E above.
+The `c744e52` customer ISO above predates this change and still contains the
+misleading upstream wording; a new customer-mode ISO must be built and tested.
 
 ## Build and test
 

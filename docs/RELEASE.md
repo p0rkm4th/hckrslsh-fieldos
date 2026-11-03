@@ -1,7 +1,7 @@
 # Release readiness and evidence
 
 **Status: engineering test candidate; not approved for customer installation.**
-The clean offline E2E passed on its recorded revision. A fresh customer-mode
+The latest clean offline E2E passed on revision `43ec3f9`. A fresh customer-mode
 installation from `c744e52` also installed to the selected disposable disk and
 ran offline after a host start, with firstboot, local services, inference,
 references, maps, and two guest reboots checked. The installer powered off at
@@ -15,20 +15,21 @@ separate interactive environment and is not release acceptance.
 
 ## Current source and artifacts
 
-- Latest clean-source E2E implementation source: `ec57fed731e915c4c0585dc1e6c648d71d338566`.
+- Latest clean-source E2E implementation source:
+  `43ec3f9faed73632c13a8113b546ade9b5bf488e`.
+- Latest clean-source E2E run:
+  `/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md` (PASS). Test ISO
+  SHA-256: `c4fc27bc3722509d525049b5fe5b8e56396852854a49f9e65cafe1de8276b373`.
+  It verified offline provisioning, N.O.M.A.D. copy correction, local chat and
+  embeddings, Kiwix retrieval, Middle Tennessee pack activation and Firefox map
+  rendering, and two reboots. The disposable disk was retired after PASS; the
+  report, logs, screenshot, and disk-retirement audit remain.
 - Customer candidate source revision: `c744e5275ec2f5002244c92cef5101b603e53195`.
 - Current customer-mode test ISO:
   `/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso` (11.2 GiB).
   SHA-256: `c8b09f678351b87a2d3784c4bd91949b6add9a7bb6ad5a9a8a5401a059f762f7`.
-- E2E test ISO SHA-256: `c775083ba8538dd282bc20efd82851ec2c2ddb747327f2fa5a1a33d7dc38ad42`.
-- E2E report and retained logs/screenshots:
-  `/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/report.md`.
-  Browser screenshot: `map-render.png`; the map visibly renders Nashville roads,
-  labels, parks, and river at zoom 13.
-- The E2E guest had no virtual NIC. It installed the map pack from separate
-  read-only media, checked local chat and embeddings, reference retrieval, and
-  services, and passed checks after two reboots. The 80 GiB guest disk was
-  retired only after PASS; its retirement record is retained beside the report.
+- Earlier E2E results remain in their dated run directories; the current
+  authoritative E2E evidence is the `43ec3f9` run listed above.
 - The current customer-mode test ISO passed structural verification and keeps
   interactive identity and storage selection. In a fresh no-NIC UEFI QEMU
   install, the user-selected disposable `vda` disk was installed successfully.
@@ -57,9 +58,10 @@ E2E result is not customer installer acceptance.
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh Ubuntu installation, offline | PASS | ec57fed E2E report; no virtual NIC; installer log retained |
+| Fresh Ubuntu installation, offline | PASS | `43ec3f9` E2E report; no virtual NIC; install and firstboot logs retained |
 | Offline provisioning and local images | PASS | Firstboot complete; seven Compose services; external access blocked |
 | N.O.M.A.D. | PASS | `/api/health` returned `{"status":"ok"}` |
+| Truthful information-library UI copy | PASS | Current-source E2E confirmed home-card database text and Easy Setup bundle after install and both reboots; the retained `c744e52` ISO remains unchanged |
 | Local chat inference | PASS | Bundled `qwen3:0.6b-q4_K_M` generated `FIELDOS_ACCEPTANCE_OK` |
 | Embeddings | PASS | Bundled model returned a 768-element embedding |
 | Kiwix retrieval | PASS | Search/article retrieval recorded in E2E report |
@@ -67,7 +69,7 @@ E2E result is not customer installer acceptance.
 | Branded installed desktop | PASS | Fresh guest session checked wallpaper/theme and launchers |
 | Two-reboot persistence | PASS | Essential service checks repeated after both guest reboots |
 | Customer interactive installation | PARTIAL | `c744e52` interactive account/disk install completed. Enter at media prompt led to guest poweroff; host-start from disk was needed. Installed services and two guest reboots passed. See fresh customer-mode report. |
-| Prepper-oriented content and safety | FAIL | Current UI advertises medical references/how-to guides, but Kiwix contains only the 100-article fixture; practical water/first-aid searches were empty or irrelevant. Map detail is absent at local zoom, and chat answers are unsourced and may imply verification. |
+| Prepper-oriented content and safety | FAIL | The retained `c744e52` customer ISO advertised absent medical/how-to material; current source corrects the N.O.M.A.D. Information Library copy, but the core still has only a 100-article fixture and zoom-5 map. Practical water/first-aid searches were empty or irrelevant; AI answers are unsourced and may imply verification. |
 | Kasm FieldOS Lab replacement | PARTIAL | VM 913 is staged behind the retained owner-only workspace; guest services, inference, Kiwix, map endpoint, restricted RDP reachability, and blocked app ports checked. Owner-authenticated browser launch and desktop interaction remain unconfirmed |
 | Hardware adaptation | PARTIAL | Configuration/fixture tests exist; physical GPU acceleration and broad machine coverage unverified |
 | Security/network isolation | PARTIAL | E2E had no NIC; Lab has management NIC with no route/DNS and guest firewall. Shared-bridge peer isolation is unverified |
@@ -91,14 +93,15 @@ during acceptance.
 The bundled Wikipedia ZIM and zoom-5 map fixtures are test-sized. The separately tested Middle Tennessee pack provides roads through zoom 13, but is not included in the core ISO and is not a comprehensive field library or navigation-grade map. No broad medical,
 emergency, agricultural, or survival coverage is claimed. The upstream
 N.O.M.A.D. Command Center landing page advertises medical references and how-to
-guides that were not present in the current customer test ISO. The current
-source contains a guarded firstboot correction for the N.O.M.A.D. home-card
+guides that were not present in the retained `c744e52` customer test ISO. The
+current source contains a guarded firstboot correction for the N.O.M.A.D. home-card
 database description and pinned Easy Setup frontend strings. It preserves an
 operator-modified service description and fails if the pinned UI copy changes
-unexpectedly. The correction has passed an isolated fixture/idempotence check,
-but the existing `c744e52` candidate is unchanged; a fresh offline installation
-must verify the database update and bundled frontend before a replacement ISO
-is built or any UI-correction gate is marked passed.
+unexpectedly. The `43ec3f9` offline acceptance verified the corrected database
+description and frontend strings after install and after both reboots. The
+existing `c744e52` candidate is unchanged and still contains the misleading
+upstream wording; rebuild the customer ISO from validated source before a user
+installation test.
 An emergency-prompt UI test also showed generic, unsourced AI text marked as
 “Verified”; source-grounded emergency guidance remains unimplemented. One
 optional PMTiles map pack transfers, installs, registers, renders, and persists
