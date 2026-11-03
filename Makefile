@@ -8,11 +8,14 @@ FIELDOS_WORK_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-build
 FIELDOS_OUTPUT_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-releases
 export FIELDOS_E2E_ROOT FIELDOS_PAYLOAD_ROOT FIELDOS_WORK_ROOT FIELDOS_OUTPUT_ROOT
 
-.PHONY: check test test-e2e payload iso-test iso-full verify
+.PHONY: check test test-e2e payload iso-test iso-full verify validate-content-packs
 
-check:
-	$(PYTHON) -m compileall -q hardware installer/provisioning scripts tests
+check: validate-content-packs
+	$(PYTHON) -m compileall -q hardware installer/provisioning payload scripts tests
 	bash -n scripts/*.sh build/*.sh
+
+validate-content-packs:
+	$(PYTHON) payload/validate_content_packs.py
 
 test:
 	$(PYTHON) -m unittest discover -s tests -v
