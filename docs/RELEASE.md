@@ -5,23 +5,19 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-The latest source is public at `origin/main`, commit
-`58c49041ea5a4a1bcf787c7a6eb4aca75a12aeb9`. `make check` and `make test`
-passed all 50 tests. `make verify` also passed on the retained customer ISO
-candidate, confirming its BIOS/UEFI boot entries, payload, and interactive
-identity/storage sections. Combined evidence is
-`/mnt/shared/fieldos-e2e/release-gates-58c4904.log` (SHA-256
-`9971dcb52f72f7b8af76f16292c506fd48ba15022d02249706fa5c163cee4fe9`). The
-candidate ISO remains from older source commit `0b2fd8c`; it was not rebuilt
-with this verifier change, and interactive optical-media handoff remains
-partial. The administrator-readable status change is source commit `dc48319`;
-its tests and embedded acceptance assertion syntax are retained at
-`/mnt/shared/fieldos-e2e/status-file-admin-readability-tests.log` and
-`/mnt/shared/fieldos-e2e/status-admin-readability-syntax.log`. The latest
-Gitleaks scan through source `58c4904` found no findings in 148 commits. A
-known-indicator review covered all 149 reachable revisions; details and
-limitations are at
-`/mnt/shared/fieldos-e2e/public-history-infrastructure-scan-58c4904.md`.
+The latest implementation changes through `0436069e99f972f25ae424597fa00d7337de9c60`
+are public at `origin/main`. At that revision, `make check` and `make test`
+passed all 50 tests; the current captured log is
+`/mnt/shared/fieldos-e2e/source-check-test-0436069.log` (SHA-256
+`8937548671e5ece9d359f45cc95b2fab8b237b54d84ddbc71bcf38540e6427ac`). The
+retained customer ISO candidate is still from older source commit `0b2fd8c`;
+it was not rebuilt from current source, and its interactive optical-media
+handoff required host action. The historical `make verify` pass for that
+candidate validates structure and payload only, not current-source operation.
+Gitleaks scanned 149 commits through the public source and found no findings;
+the reachable object walk found no blob over 5 MiB. Review evidence and scope
+limitations are in
+`/mnt/shared/fieldos-e2e/public-history-review-0436069.md`.
 
 `make test-e2e` was attempted and safely refused to build with 18 GiB free,
 below its 50 GiB preflight. It wrote the human-readable FAIL report
@@ -88,9 +84,11 @@ into an ISO or verified on a newly installed guest.
 
 The most recent clean unattended VM acceptance remains the report below at
 source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
-fresh acceptance of current source. The interactive customer ISO likewise
-predates current source. `/mnt/shared` currently has 23 GiB free, still below
-the 50-GiB E2E preflight; existing VM disks were
+fresh acceptance of current source. `/mnt/shared` currently has 23 GiB free,
+still below the 50-GiB E2E preflight. A stopped interactive customer guest
+contains a successful install and two-reboot evidence, but its disk is retained
+because the release record references it; the guarded cleanup utility refuses
+to remove it. Running guests, current artifacts, and all test reports remain
 preserved. Historical passes remain evidence only for their tested source and
 environment; current-source release acceptance is open.
 
@@ -899,21 +897,21 @@ still presents interactive disk and account setup.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Unattended offline OS installation | PASS | Latest clean run `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/report.md`, source commit `ae1d18b` |
-| Interactive customer installation | PASS (QEMU, USB) | Fresh blank 80 GiB target; report and evidence: `/mnt/shared/fieldos-e2e/customer-usb-clean-20261103/report.md` |
-| Clean installer media/restart handoff | PASS (USB with prompted media removal) | Guest booted to GDM without host start after USB removal; CD-ROM handoff remains unresolved |
-| Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
-| Offline provisioning and services | PASS | Current interactive guest: firstboot complete; all seven pinned containers loaded locally and ran |
-| N.O.M.A.D. and inference | PASS | Current guest health response, chat generation marker, and 768-element embedding vector |
-| Knowledge library and maps | PASS | Current Kiwix retrieval and PMTiles tile/range checks; Firefox render in matching-code clean E2E report |
-| Reboot persistence | PASS | Fresh blank-disk customer USB guest passed the full service, inference, retrieval, and map API/tile checks after two consecutive reboots |
-| ISO release | BLOCKED | Test candidate verified; distribution/attribution, physical hardware coverage, and LAN peer review remain; binary unpublished |
-| Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
-| Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
-| Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
+| Unattended offline OS installation | PARTIAL | Historical clean E2E passed at source `6c64ffd` with a dirty harness; no clean install against current implementation commit `0436069` |
+| Interactive customer installation | PASS WITH OPERATOR ACTION | Candidate `0b2fd8c` installed to a fresh 80 GiB QEMU disk; Ubuntu's optical-media handoff required host eject/start. Evidence: `/mnt/shared/fieldos-e2e/customer-interactive-0b2fd8c-20261103/report.md` |
+| Unattended installer handoff | PASS (historical E2E) | Test harness observed installer poweroff, ejected ISO, and booted installed disk in `/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/report.md`; source is old and dirty |
+| Customer ISO default selection | PASS (historical candidate) | FieldOS interactive entry selected by default on candidate `0b2fd8c`; candidate predates current source |
+| Offline provisioning and services | PASS (retained guest) | Seven services were live during the recheck in `/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/live-recheck-20261103.md`; no current-source install |
+| N.O.M.A.D. and inference | PASS (retained guest) | Live health response and `FIELDOS_LIVE_OK`; embedding returned 768 numeric values in the retained guest recheck |
+| Knowledge library and maps | PASS (retained guest) | Kiwix HTTP 200 and PMTiles HTTP 206 in the live recheck; real Firefox screenshot shows the U.S. regional map. Map fixtures stop at zoom 5 |
+| Reboot persistence | PASS (historical guest) | Earlier clean E2E report records two reboots and post-reboot checks; not rerun against current source |
+| ISO release | BLOCKED | Existing candidate predates current source; current-source ISO rebuild, customer handoff retest, attribution clearance, and physical hardware coverage remain open; binary unpublished |
+| Hardware adaptation | PARTIAL | CPU inference and simulated hardware fixtures; no physical GPU validation |
+| Container privilege review | PARTIAL | Runtime checks cover non-privileged containers, loopback ports, and root-only secrets. N.O.M.A.D. Docker socket access remains host-root-equivalent |
+| Network-enabled exposure | PARTIAL | Historical user-mode NIC check verified local port binds and blocked container egress; LAN peer test and current-source run remain open |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS (Gitleaks) | Full history scan covered 67 commits with zero findings; evidence: `/mnt/shared/fieldos-e2e/repository-review-customer-20261103/gitleaks-history.json`. Earlier private infrastructure indicator review: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
-| Content packs | PARTIAL | Independent archive builder and immutable verified storage command; 46 unit tests pass. Catalog empty; application activation, approved field content, and ISO-level test remain open |
+| Public Git history | PASS (limited review) | Gitleaks scanned 149 commits with zero findings; 922 reachable Git objects had no blob over 5 MiB. Known infrastructure indicators reviewed at parent source `58c4904`; see `/mnt/shared/fieldos-e2e/public-history-review-0436069.md` |
+| Content packs | PARTIAL | Independent archive builder and immutable verified storage command; catalog intentionally empty. Pack activation, approved field content, and ISO-level test remain open |
 
 ## Remaining release gates
 
