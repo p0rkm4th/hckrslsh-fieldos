@@ -467,6 +467,40 @@ autoinstall:
         catalog = self.check("Kiwix library", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8090/catalog/v2/entries", 350)
         if "wikipedia" not in catalog.lower():
             raise TestFailure("Kiwix catalog does not list bundled Wikipedia")
+        notices = self.check(
+            "bundled container notices and corresponding sources",
+            "python3 - <<'PY'\n"
+            "import hashlib, json\n"
+            "from pathlib import Path\n"
+            "payload = Path('/var/lib/fieldos/payload')\n"
+            "docs = Path('/usr/share/doc/fieldos')\n"
+            "images = json.loads((payload / 'manifests/images.json').read_text())['images']\n"
+            "notice_files = 0\n"
+            "for image in images:\n"
+            "    index_path = docs / 'container-images' / image['name'] / 'index.json'\n"
+            "    index = json.loads(index_path.read_text())\n"
+            "    assert index['digest'] == image['digest'], image['name'] + ' digest mismatch'\n"
+            "    for notice in index['files']:\n"
+            "        path = docs / 'container-images' / image['name'] / 'files' / (notice['sha256'] + '.txt')\n"
+            "        data = path.read_bytes()\n"
+            "        assert len(data) == notice['bytes'] and hashlib.sha256(data).hexdigest() == notice['sha256'], str(path)\n"
+            "        notice_files += 1\n"
+            "offers = json.loads((payload / 'manifests/source-offers.json').read_text())\n"
+            "assert json.loads((docs / 'source-offers.json').read_text()) == offers\n"
+            "source_files = 0\n"
+            "for offer in offers['source_offers']:\n"
+            "    for item in offer['files']:\n"
+            "        path = docs / 'source-offers' / offer['name'] / item['name']\n"
+            "        data = path.read_bytes()\n"
+            "        assert len(data) == item['size_bytes'] and hashlib.sha256(data).hexdigest() == item['sha256'], str(path)\n"
+            "        source_files += 1\n"
+            "assert notice_files > 0 and source_files > 0\n"
+            "print(json.dumps({'images': len(images), 'candidate_notice_files': notice_files, 'source_offer_files': source_files}))\n"
+            "PY",
+            300,
+        )
+        if '"candidate_notice_files"' not in notices or '"source_offer_files"' not in notices:
+            raise TestFailure("Bundled image notice indexes or corresponding source files were not verified")
         search = self.check("reference search", "curl --fail --silent --show-error --max-time 15 --get --data-urlencode 'pattern=New York' --data-urlencode 'books=wikipedia_en_100_mini_2026-01' http://127.0.0.1:8090/search", 350)
         if 'href="/content/wikipedia_en_100_mini_2026-01/The_New_York_Times"' not in search:
             raise TestFailure("Kiwix search did not retrieve the bundled New York Times article")
