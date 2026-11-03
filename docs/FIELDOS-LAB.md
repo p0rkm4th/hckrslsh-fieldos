@@ -101,8 +101,10 @@ the Kasm server API masks stored passwords, the gateway's actual password could
 not be compared directly. Its static username/password fields are now blank;
 Kasm should prompt for RDP credentials at workspace launch. This supported
 prompt mode is documented by [Kasm](https://www.kasmweb.com/docs/1.17.0/how_to/fixed_infrastructure.html#forcing-login-on-connection).
-The Kasm website password was not changed. No workspace attempt has verified
-this new prompt mode yet. Neither password is recorded here.
+The Kasm website password was not changed. The latest authenticated Kasm
+session observed after this change belonged to a different existing workspace;
+there is still no FieldOS Lab attempt verifying prompt mode. Neither password
+is recorded here.
 
 There are two sign-in stages in the current prompt mode: Kasm asks for the RDP
 credential (`labdesk` and the desktop password), then GNOME presents its remote
@@ -127,14 +129,15 @@ credential checks are described above. Do not reset credentials again without
 new logs showing an authentication failure under the current prompt-mode
 configuration. The latest redacted diagnostic is
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-rdp-prompt-mode.txt`
-(SHA-256 `c6c1de8567fe93dd57b24022b4a44c03606fe03ce544fd7de9d307706077f80f`).
+(SHA-256 `d0affb68b3fa2459a1a2a8c4d4dbbd768822cb4df271857b0405c9d55999e77c`).
 
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
 `rdp_server_accept_nego`. Do not respond by resetting credentials unless the
 logs show an authentication failure after successful security negotiation.
 If the stream has closed, end the stale Kasm workspace session and launch
-**FieldOS Lab** again. Enter `labdesk` and the desktop password in Kasm's RDP
+**FieldOS Lab** by that exact name from the Kasm workspace catalog. Do not
+resume another existing workspace session. Enter `labdesk` and the desktop password in Kasm's RDP
 prompt, then enter the same guest account credentials at GNOME's GDM screen.
 Successful login and application interaction are still awaiting confirmation.
 
