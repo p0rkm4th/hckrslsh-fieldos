@@ -82,7 +82,7 @@ at zoom levels 0–13. Its 19.6 MB PMTiles file was extracted from the 2026-11-0
 Protomaps build using bounded HTTP range requests and includes road and land-use
 detail. Its manifest records the source URL, date, size, SHA-256, ODbL Produced
 Work license, attribution, bounds, and zoom range. It is not currently bundled
-in the customer ISO or approved as a release artifact. The E2E import and browser checks passed on source `ec57fed731e915c4c0585dc1e6c648d71d338566`; the retained report is `/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/report.md`, and `map-render.png` shows Nashville roads at zoom 13. The 19.6 MB archive (SHA-256 `9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`) is a test artifact only, not an approved public release pack.
+in the customer ISO or approved as a release artifact. The E2E import and browser checks passed on source `43ec3f9faed73632c13a8113b546ade9b5bf488e`; the retained report is `/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md`, and `map-render.png` shows Nashville roads at zoom 13. The 19.6 MB archive (SHA-256 `9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`) is a test artifact only, not an approved public release pack.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
 parcel, or emergency guidance. GPS/GIS support needs a defined hardware

@@ -27,26 +27,26 @@ after PASS; logs, report, screenshot, and retirement audit remain. This does
 not certify the separate customer installer.
 
 The current customer-mode engineering candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso`, SHA-256
-`c8b09f678351b87a2d3784c4bd91949b6add9a7bb6ad5a9a8a5401a059f762f7`, built
-from `c744e52`. A fresh interactive QEMU install selected identity and disk,
-but the guest powered off after Enter at the media-removal prompt. The host had
-to start the installed disk. The system then passed provisioning, local
-service, inference, and two-reboot checks. End-user testing also found that the
-one-book Wikipedia fixture and zoom-5 map are inadequate for field emergencies,
-and the local AI can label unsourced generic guidance “Verified.” FieldOS is
-not ready for customer or emergency use. Installer handoff, practical licensed
-content, LAN peer isolation, physical GPU inference, broader hardware coverage,
-and redistribution review remain open. The persistent owner-only Kasm lab now
-stages the branded system on VM 913, but owner-authenticated desktop launch is
-not yet verified. See
-[release evidence](docs/RELEASE.md) for the current gate matrix.
+`/mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso` (11.2 GiB),
+SHA-256 `a6af2e66c1042f517747b0ef02b07ef7f1bc9cfdfe93ea90bb55836c799246c1`,
+built from `b7f25b033fd7c7aabfd17fe686c303b4be0814b1` (documentation-only changes atop
+tested code revision `43ec3f9faed73632c13a8113b546ade9b5bf488e`). Its structure and offline payload verified. A fresh no-NIC
+interactive install completed to a disposable disk; firstboot, all seven
+services, local AI/embeddings, Kiwix retrieval, and two guest reboots passed.
+The guest reached the installer again after Restart because the USB media was
+not removed promptly in this run; a tester detached it and reset the VM to boot
+the installed disk. Thus the current image's automatic USB handoff remains
+unverified, and this was not a clean customer-install PASS. A browser test
+rendered the bundled U.S. overview, but it was blank at 10 km zoom. Kiwix
+contains one 100-article fixture, and an ice-storm chat answer was generic and
+not grounded in identifiable references. FieldOS is not ready for customer or
+emergency use. See [release evidence](docs/RELEASE.md) and the current run at
+`/mnt/shared/fieldos-e2e/customer-interactive-b7f25b0-20261103/report.md`.
 
 The current source has a guarded correction for N.O.M.A.D.'s information
-library descriptions: the home card and Easy Setup now describe only archives
-installed on the device. That correction passed the clean-source E2E above.
-The `c744e52` customer ISO above predates this change and still contains the
-misleading upstream wording; a new customer-mode ISO must be built and tested.
+library descriptions. That correction passed the clean-source E2E and was
+visually confirmed in this customer candidate's Command Center. The older `c744e52` ISO binary was retired after the replacement candidate
+was built; its checksum and historical test report remain for traceability.
 
 ## Build and test
 
@@ -60,7 +60,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
