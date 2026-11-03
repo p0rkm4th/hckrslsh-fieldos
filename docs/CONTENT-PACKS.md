@@ -3,9 +3,7 @@
 FieldOS keeps reference content independent from the core installer wherever
 possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-pack.schema.json` and a catalog at
-`payload/manifests/content-packs.json`. The catalog is intentionally empty:
-the architecture is ready, but customer-specific pack content awaits source,
-requirements, licensing, and attribution review.
+`payload/manifests/content-packs.json`. The catalog is intentionally empty: the architecture is ready, but customer-specific pack content awaits requirements and license/attribution review. One external Middle Tennessee map bundle has passed transfer, validation, activation, actual browser rendering, and two-reboot persistence checks; it remains a test artifact outside the catalog and core ISO.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -36,7 +34,7 @@ or unreviewed files in a staging directory are excluded.
 catalog remains empty so the customer ISO stays bounded; optional archives
 are built separately and are not embedded in the core image. An independently
 staged Middle Tennessee candidate is described below and stored outside Git
-pending the real offline import acceptance run.
+pending final customer content and redistribution review.
 
 On an installed system, verify and add a bundle with:
 
@@ -84,8 +82,7 @@ at zoom levels 0–13. Its 19.6 MB PMTiles file was extracted from the 2026-11-0
 Protomaps build using bounded HTTP range requests and includes road and land-use
 detail. Its manifest records the source URL, date, size, SHA-256, ODbL Produced
 Work license, attribution, bounds, and zoom range. It is not currently bundled
-in the customer ISO or approved as a release artifact. The E2E import and
-browser checks must pass before describing it as accepted content.
+in the customer ISO or approved as a release artifact. The E2E import and browser checks passed on source `ec57fed731e915c4c0585dc1e6c648d71d338566`; the retained report is `/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/report.md`, and `map-render.png` shows Nashville roads at zoom 13. The 19.6 MB archive (SHA-256 `9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`) is a test artifact only, not an approved public release pack.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
 parcel, or emergency guidance. GPS/GIS support needs a defined hardware

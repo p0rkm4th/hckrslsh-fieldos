@@ -13,33 +13,29 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest tested implementation revision is
-`8b0bda34f4dc3da993eed8663fffc15653d11679`. A fresh no-NIC unattended install
-from this revision passed the recorded E2E checks:
-firstboot, seven services, N.O.M.A.D. health, local chat generation, embeddings,
-Kiwix retrieval, an actual Firefox map render, branded desktop defaults, no
-virtual NIC, and persistence across two reboots. The report and screenshot are
-retained at `/mnt/shared/fieldos-e2e/20261103T174505Z-2544533/`. The separate
-persistent Kasm lab is installed from this source and passes service and
-two-reboot checks with a restricted management NIC. A fresh owner-authenticated
-Kasm launch and interaction with the replacement desktop remain to be
-confirmed. Neither result accepts the customer installer.
+The latest clean-source offline acceptance passed on revision
+`ec57fed731e915c4c0585dc1e6c648d71d338566`. The run completed unattended
+Ubuntu installation with no virtual NIC, local package and image provisioning,
+N.O.M.A.D. health, a real Ollama response, embeddings, Kiwix retrieval, and
+browser rendering of the separately transferred Middle Tennessee map at zoom
+13. The map and services persisted across two guest reboots. Evidence is at
+`/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/`; its test ISO SHA-256 is
+`c775083ba8538dd282bc20efd82851ec2c2ddb747327f2fa5a1a33d7dc38ad42`, and the
+browser screenshot is `map-render.png`. The disposable 80 GiB disk was retired
+after the PASS; installer/firstboot logs, report, screenshot, and retirement
+audit remain. This does not certify the separate customer installer.
 
-The current customer ISO candidate is
+The most recent previously tested customer ISO is
 `/mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso`,
 SHA-256 `fbec9104316cf0407acc7a5e218a26922ea1849dc3a97d52a45fef09da5db7b1`.
-It passed structural verification and a fresh interactive QEMU installation.
-The customer selected identity and target disk, the installed disk booted, and
-offline services passed over two reboots. The VM powered off after the media
-removal prompt, so the test runner had to start it from its installed disk;
-automatic handoff remains a caveat. FieldOS is not ready for physical
-customer installation: customer handoff, LAN peer isolation, physical GPU
-inference, broader hardware coverage, and redistribution review for the exact
-Ubuntu image and third-party payload remain open. The customer ISO retains
-interactive identity and disk selection in
-[`installer/autoinstall/user-data`](installer/autoinstall/user-data).
-See [release evidence](docs/RELEASE.md) before treating any image as ready to
-install on a physical computer.
+It is stale relative to the accepted source. Its interactive installation
+selected identity and disk, booted from installed storage and passed service
+checks across reboots, but the guest powered off at media handoff and required
+a host start from disk. A current-source customer ISO rebuild and separate
+interactive test remain required. FieldOS is not approved for physical customer
+installation. LAN peer isolation, physical GPU inference, broader hardware
+coverage, and redistribution review also remain open. See
+[release evidence](docs/RELEASE.md) for the current gate matrix.
 
 ## Build and test
 
