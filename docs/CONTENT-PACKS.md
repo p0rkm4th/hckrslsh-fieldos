@@ -30,6 +30,8 @@ declare bounds, coordinate reference system, and zoom range. Build tooling
 validates sizes and checksums before packaging. `make content-packs` builds one
 deterministic `.tar.zst` archive and SHA-256 sidecar per catalog entry under
 `FIELDOS_PAYLOAD_ROOT/content-packs/`, independently of the core installer.
+Archives contain the manifest and only the artifacts it declares, so stray
+or unreviewed files in a staging directory are excluded.
 `make payload` runs this builder after preparing the core payload. The current
 catalog is empty, so these commands produce no pack archives today. The core
 ISO includes the manifest schema and pack management command, but does not
