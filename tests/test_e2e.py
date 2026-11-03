@@ -451,6 +451,38 @@ autoinstall:
         )
         if kiwix_mount != "false":
             raise TestFailure(f"Kiwix content mount must be read-only; got {kiwix_mount!r}")
+        security = self.check(
+            "container security baseline",
+            "python3 - <<'PY'\n"
+            "import json, os, stat, subprocess\n"
+            "names = ['nomad_admin', 'nomad_mysql', 'nomad_redis', 'nomad_ollama', 'nomad_qdrant', 'nomad_kiwix_server', 'nomad_dozzle']\n"
+            "items = json.loads(subprocess.run(['docker', 'inspect', *names], check=True, capture_output=True, text=True).stdout)\n"
+            "assert len(items) == len(names), 'missing expected containers'\n"
+            "socket_users = set()\n"
+            "for item in items:\n"
+            "    name = item['Name'].lstrip('/')\n"
+            "    host = item['HostConfig']\n"
+            "    assert not host.get('Privileged'), name + ' runs privileged'\n"
+            "    assert not host.get('CapAdd'), name + ' adds Linux capabilities'\n"
+            "    assert host.get('NetworkMode') != 'host', name + ' uses host networking'\n"
+            "    assert not host.get('PidMode'), name + ' shares the host PID namespace'\n"
+            "    for container_port, bindings in (host.get('PortBindings') or {}).items():\n"
+            "        for binding in bindings or []:\n"
+            "            assert binding.get('HostIp') == '127.0.0.1', name + ' publishes ' + container_port + ' beyond loopback'\n"
+            "    for mount in item.get('Mounts', []):\n"
+            "        if mount.get('Source') == '/var/run/docker.sock':\n"
+            "            socket_users.add(name)\n"
+            "            if name == 'nomad_dozzle':\n"
+            "                assert mount.get('RW') is False, 'Dozzle Docker socket mount is writable'\n"
+            "assert socket_users == {'nomad_admin', 'nomad_dozzle'}, 'unexpected Docker socket consumers: ' + repr(socket_users)\n"
+            "env = os.stat('/opt/fieldos/services/.env')\n"
+            "assert stat.S_IMODE(env.st_mode) == 0o600 and env.st_uid == 0 and env.st_gid == 0, 'Compose credentials must be root:root mode 0600'\n"
+            "print(json.dumps({'containers': len(items), 'docker_socket_consumers': sorted(socket_users), 'published_ports_loopback_only': True, 'env_mode': oct(stat.S_IMODE(env.st_mode))}))\n"
+            "PY",
+            300,
+        )
+        if '"published_ports_loopback_only": true' not in security:
+            raise TestFailure(f"Runtime security baseline did not pass: {security}")
         self.check(
             "offline content attribution and archive integrity",
             "python3 - <<'PY'\n"
