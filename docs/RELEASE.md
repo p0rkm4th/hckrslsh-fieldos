@@ -1,8 +1,8 @@
 # Release status and process
 
 FieldOS has passed the unattended offline acceptance run against the current
-source and a separate interactive R3 customer installation in disposable
-QEMU/KVM guests. R3's default selection, full install, clean media handoff,
+source and a separate interactive R4 customer installation in disposable
+QEMU/KVM guests. R4's default selection, full install, clean media handoff,
 firstboot, services, map rendering, and two reboots passed. It is not yet
 recommended for physical customer installation. A LAN peer scan, physical GPU
 validation, Canonical's modified Ubuntu trademark requirement, and exact
@@ -138,18 +138,41 @@ still presents interactive disk and account setup.
   `/mnt/shared/fieldos-e2e/customer-r3-bootcheck-20261102/report.md`.
 - ISO and test evidence are local and unpublished.
 
+### Current-source interactive customer installation and R4
+
+- Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-r4.iso`.
+- Size: 11,956,518,912 bytes. SHA-256:
+  `89584420e6d8b78ff63db650bb9eca22cdfc61e19502c71b510e9f5a516036c1`.
+- Built from clean source commit
+  `fa972ec7ac6069069db9db24baba27efd5c9f79f`. ISO verification passed the
+  BIOS/UEFI boot record, interactive installer configuration, and payload
+  checks.
+- A fresh 80 GiB no-NIC UEFI guest completed interactive target disk and
+  account setup, the remove-media handoff, offline firstboot, and boot to GDM.
+  All seven services ran; N.O.M.A.D., Qwen inference, 768-dimensional
+  embeddings, Kiwix retrieval, and Firefox rendering of the U.S. regional map
+  passed. The same service, inference, retrieval, map-tile, and persistence
+  checks passed after two reboots; `.env`, ZIM, and regional-map hashes remained
+  unchanged.
+- Report and evidence: `/mnt/shared/fieldos-e2e/customer-r4-20261103/report.md`.
+  Browser screenshot: `/mnt/shared/fieldos-e2e/customer-r4-20261103/map-browser.png`.
+- The R4 binary is a local test candidate, not a distribution release. Older
+  R2/R3 and pre-R4 test ISO binaries were removed after R4 superseded them;
+  their historical checksums and test reports remain documented.
+
 ## Readiness
 
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | Current-source E2E report and test ISO hash |
-| Interactive customer installation | PASS | Full R3 install, firstboot, and service checks |
-| Clean installer media/restart handoff | PASS | R3 prompt, post-prompt eject, Enter, installed disk boot |
-| R3 default installer selection | PASS | No-input GRUB countdown selected FieldOS and reached setup |
+| Interactive customer installation | PASS | Current-source R4 report: interactive disk/account, firstboot, and service checks |
+| Clean installer media/restart handoff | PASS | R4 remove-media prompt and installed target boot |
+| Customer ISO default selection | PASS | R4 no-input GRUB countdown selected FieldOS and reached interactive setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
-| Knowledge library and maps | PASS | Kiwix retrieval; PMTiles; real Firefox screenshot |
-| Reboot persistence | PASS | R3 plus current-source E2E: two reboots, hashes and service checks |
+| Knowledge library and maps | PASS | R4 Kiwix retrieval; regional PMTiles; real Firefox screenshot |
+| Reboot persistence | PASS | R4 plus current-source E2E: two reboots, hashes and service checks |
+| ISO release | BLOCKED | R4 verified and installed locally; redistribution/attribution clearance incomplete; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
