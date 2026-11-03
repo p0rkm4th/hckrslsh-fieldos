@@ -29,10 +29,10 @@ class E2ESourceStateTests(unittest.TestCase):
 
         with TemporaryDirectory() as temp:
             root = Path(temp) / "e2e"
-            report = write_preflight_report(root, "fixed-stamp", "Need 50 GiB free")
+            report = write_preflight_report(root, "fixed-stamp", "Need 48 GiB free")
             self.assertEqual(report.read_text(encoding="utf-8"),
                              "# FieldOS E2E preflight\n\nStatus: **FAIL**\n\n"
-                             "Reason: Need 50 GiB free\n\n"
+                             "Reason: Need 48 GiB free\n\n"
                              "No ISO, VM disk, or test credentials were created.\n")
             self.assertEqual(sorted(item.name for item in root.iterdir()), [report.name])
 

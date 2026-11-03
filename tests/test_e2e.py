@@ -21,6 +21,7 @@ from shutil import disk_usage
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_UBUNTU_ISO = Path("/mnt/shared/ISO Library/ubuntu-26.04.1-desktop-amd64.iso")
+MIN_FREE_GIB = 48
 
 
 def git_source_state() -> tuple[str, bool | None]:
@@ -72,8 +73,11 @@ class AcceptanceRun:
         self.stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         evidence_root = Path(os.environ.get("FIELDOS_E2E_ROOT", ROOT / "build" / "e2e"))
         evidence_root.parent.mkdir(parents=True, exist_ok=True)
-        if disk_usage(evidence_root.parent).free < 50 * 1024**3:
-            raise TestFailure(f"Need at least 50 GiB free for isolated ISO and VM evidence on {evidence_root.parent}")
+        # The last real run's test ISO plus installed qcow2 peaked below 46 GiB
+        # of additional allocation; keep a small reserve while allowing a
+        # rerun when the prior failed guest disk is intentionally preserved.
+        if disk_usage(evidence_root.parent).free < MIN_FREE_GIB * 1024**3:
+            raise TestFailure(f"Need at least {MIN_FREE_GIB} GiB free for isolated ISO and VM evidence on {evidence_root.parent}")
         work_root = Path(os.environ.get("FIELDOS_WORK_ROOT", evidence_root))
         work_root.parent.mkdir(parents=True, exist_ok=True)
         if disk_usage(work_root.parent).free < 8 * 1024**3:
