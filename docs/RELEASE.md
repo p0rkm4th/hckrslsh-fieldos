@@ -13,6 +13,37 @@ requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
 
+### Container notice and corresponding-source follow-up — 2026-11-03
+
+- The seven pinned OCI images were exported from the local Docker daemon to
+  temporary archives under `/mnt/shared`, scanned layer by layer, and the
+  temporary image archives removed after collection. The retained candidate
+  index contains 1,174 unique filename-matched notice files across 2,367
+  image-layer/path occurrences (11,449,948 bytes). Redis, Dozzle, and Kiwix
+  produced zero filename matches; that does not clear their notice or source
+  obligations. SBOM and extracted notice evidence is at
+  `/mnt/shared/fieldos-e2e/repository-review-233b980/`.
+- The exact pinned Project N.O.M.A.D. image contains Debian Ghostscript,
+  libgs10, and libgs10-common `10.0.0~dfsg-11+deb12u8`; its bundled copyright
+  text identifies AGPL-3+. The exact Debian source descriptor and source
+  archives were downloaded, signature-checked as cryptographically good, and
+  matched against the descriptor's archive sizes and hashes. Local trust-chain
+  validation for that signing key remains open; evidence is under
+  `sources/ghostscript/` in the repository-review directory.
+- Source now pins those three source-package files by HTTPS URL, size, and
+  SHA-256 and bundles them in future payload builds. The all-layer notice
+  collector also adds path/hash indexes to future payloads. These changes are
+  source-only: no new ISO or payload was built, and the existing ISO does not
+  contain the new source offer or indexes.
+- `make check`, `make test` (33 tests), JSON manifest parsing, and
+  `git diff --check` passed. Gitleaks scanned the 52-commit public Git history
+  through source commit `f9f4200` with zero findings; the only later change in
+  this follow-up is this release-note entry. No ISO or payload was published.
+- `/mnt/shared` had 69 GiB available after the temporary image archives were
+  removed. The current test ISO remains
+  `/mnt/shared/fieldos-releases/fieldos-test-customer-main-a4eebb8.iso`; no new
+  release candidate was created.
+
 ### Latest clean automated acceptance — 2026-11-03
 
 - Source: clean commit `4d4fccc76ac8fd1f559374694a38a2c682c2dc5a`.
