@@ -23,6 +23,26 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_UBUNTU_ISO = Path("/mnt/shared/ISO Library/ubuntu-26.04.1-desktop-amd64.iso")
 
 
+def git_source_state() -> tuple[str, bool | None]:
+    """Return the checked-out commit and whether local source changes exist."""
+    try:
+        revision = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=False,
+        )
+        if revision.returncode:
+            return "unknown", None
+        status = subprocess.run(
+            ["git", "-C", str(ROOT), "status", "--porcelain"],
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=False,
+        )
+        if status.returncode:
+            return revision.stdout.strip(), None
+        return revision.stdout.strip(), bool(status.stdout.strip())
+    except OSError:
+        return "unknown", None
+
+
 class TestFailure(RuntimeError):
     pass
 
@@ -47,6 +67,7 @@ class AcceptanceRun:
         self.results: list[dict[str, str]] = []
         self.agent_ready = False
         self.temporary_password = ""
+        self.source_revision, self.source_dirty = git_source_state()
 
     def command(self, args: list[str], *, env: dict[str, str] | None = None,
                 check: bool = True, timeout: int = 120) -> subprocess.CompletedProcess[str]:
@@ -494,6 +515,8 @@ autoinstall:
             self.record("acceptance run", "FAIL", failed)
         lines = ["# FieldOS automated acceptance report", "",
                  f"Run: {self.stamp}", f"VM: {self.vm_name}",
+                 f"Source commit: {self.source_revision}",
+                 f"Source worktree dirty: {'unknown' if self.source_dirty is None else str(self.source_dirty).lower()}",
                  f"Guest disk: {self.disk}", f"ISO SHA-256: {self.sha256(self.iso) if self.iso.exists() else 'removed after test'}", "",
                  "| Component | Status | Evidence |", "|---|---|---|"]
         for result in self.results:
