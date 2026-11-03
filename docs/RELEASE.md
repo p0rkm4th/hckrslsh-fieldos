@@ -6,14 +6,21 @@ ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
 Current source is public at `origin/main`. `make check` and `make test` passed
-on rewritten source commit `1dcc3b1` with 49 tests. The captured log is
-`/mnt/shared/fieldos-e2e/current-tests-1dcc3b1.log` (SHA-256
-`87e93b242552d5b1b31052df6a23156dbc9d7da50e06dfe23ff7dfa5679ac027`). Hardware
+on source commit `670b1a3` with 49 tests. The captured log is
+`/mnt/shared/fieldos-e2e/firstboot-log-permissions-tests.log` (SHA-256
+`50048dfea09c614251a3f34479e5650c10ba320c11be2d994a5c6d169c4d3fe2`). Hardware
 fixtures and workstation Vulkan detection are covered, but the existing
 offline payload predates `vulkan-tools`, so installed-system Vulkan reporting
 remains unverified. The earlier hardware evidence is in
 `/mnt/shared/fieldos-e2e/vulkan-memory-d8fbc55-tests.log` and
 `/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`.
+
+The firstboot log is now created or retained as `root:adm` mode `0640` to make
+failure details available to local administrators; generated Compose
+credentials stay `root:root` mode `0600`. The E2E harness asserts these modes.
+The script, harness, and documentation pass source checks, but this permission
+change has not yet been built into an ISO or verified on a newly installed
+guest.
 
 The most recent clean unattended VM acceptance remains the report below at
 source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
