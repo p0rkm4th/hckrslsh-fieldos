@@ -91,7 +91,14 @@ during acceptance.
 The bundled Wikipedia ZIM and zoom-5 map fixtures are test-sized. The separately tested Middle Tennessee pack provides roads through zoom 13, but is not included in the core ISO and is not a comprehensive field library or navigation-grade map. No broad medical,
 emergency, agricultural, or survival coverage is claimed. The upstream
 N.O.M.A.D. Command Center landing page advertises medical references and how-to
-guides that were not present in this test image; correct this before release.
+guides that were not present in the current customer test ISO. The current
+source contains a guarded firstboot correction for the N.O.M.A.D. home-card
+database description and pinned Easy Setup frontend strings. It preserves an
+operator-modified service description and fails if the pinned UI copy changes
+unexpectedly. The correction has passed an isolated fixture/idempotence check,
+but the existing `c744e52` candidate is unchanged; a fresh offline installation
+must verify the database update and bundled frontend before a replacement ISO
+is built or any UI-correction gate is marked passed.
 An emergency-prompt UI test also showed generic, unsourced AI text marked as
 “Verified”; source-grounded emergency guidance remains unimplemented. One
 optional PMTiles map pack transfers, installs, registers, renders, and persists

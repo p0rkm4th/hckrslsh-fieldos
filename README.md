@@ -41,6 +41,12 @@ stages the branded system on VM 913, but owner-authenticated desktop launch is
 not yet verified. See
 [release evidence](docs/RELEASE.md) for the current gate matrix.
 
+The current source adds a guarded correction for N.O.M.A.D.'s information
+library descriptions: the home card and Easy Setup will describe only archives
+installed on the device. The `c744e52` customer ISO above predates this change
+and still contains the misleading upstream wording; the source correction must
+pass a fresh offline install before a replacement candidate is built.
+
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,
