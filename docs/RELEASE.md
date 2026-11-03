@@ -130,7 +130,11 @@ the root-only firstboot log cannot be read from its unprivileged terminal. Its
 guest agent is unresponsive and an ACPI shutdown request did not stop it. The
 VM and disk were left intact. This failed legacy run is not counted as the
 separate clean E2E acceptance PASS. Diagnostic screenshots and limitations are
-recorded in `/mnt/shared/fieldos-e2e/fieldos-auto-test4-diagnostic.md`.
+recorded in `/mnt/shared/fieldos-e2e/fieldos-auto-test4-diagnostic.md`. A
+read-only follow-up screenshot on 2026-11-03 again showed the failed unit,
+active Docker, unavailable service endpoints, and denied Docker socket access
+for the guest user; evidence is
+`/mnt/shared/fieldos-e2e/fieldos-auto-test4-followup-20261103.png`.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
