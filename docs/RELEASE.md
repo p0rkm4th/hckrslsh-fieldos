@@ -16,6 +16,12 @@ so no current-source ISO or VM run was started. Existing VM disks were
 preserved. The historical passes remain useful evidence for the tested source
 and environment, but current-source release acceptance is open.
 
+Public history review at source commit `22ebcff396d4aeb948797591cd0742dec1f0e156`
+scanned all 105 commits with Gitleaks and found no leaks. The redacted report
+is `/mnt/shared/fieldos-e2e/gitleaks-22ebcff.json`. This check covers detected
+credential patterns in Git history; it does not replace the separate review
+for private infrastructure details or licensing.
+
 Latest verified gates (2026-11-03): a clean unattended offline acceptance run
 passed, followed by a separate fresh-disk interactive customer ISO test. Both
 UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
