@@ -5,16 +5,29 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-Before this documentation update (2026-11-03), public `origin` was
-`git@github.com:p0rkm4th/hckrslsh-fieldos.git`; latest pushed commit is
-`14796afb0047c2133a7c61ee76a6b786a98986e0` and the working tree was clean.
-The latest clean unattended VM acceptance remains the report below at source
-`6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a fresh
-acceptance of the current head. The interactive customer ISO likewise predates
-current source. `/mnt/shared` has 18 GiB free, below the 50 GiB E2E preflight,
-so no current-source ISO or VM run was started. Existing VM disks were
-preserved. The historical passes remain useful evidence for the tested source
-and environment, but current-source release acceptance is open.
+Current source is public at `origin/main`, commit
+`0b84f29d16fa9ac7d8f80430e04aed8cd77afb8b`; the worktree was clean before this
+status update. `make check` and `make test` passed on code commit
+`d8fbc5588afcae3dec5db439059aa7424d5bd22b` with 49 tests; the current head adds
+documentation only. Hardware fixtures and workstation Vulkan detection are
+covered, but the existing offline payload predates `vulkan-tools`, so the
+installed-system Vulkan reporting path remains unverified. Logs are
+`/mnt/shared/fieldos-e2e/vulkan-memory-d8fbc55-tests.log` and
+`/mnt/shared/fieldos-e2e/hardware-vulkan-d8fbc55.json`.
+
+The most recent clean unattended VM acceptance remains the report below at
+source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
+fresh acceptance of current source. The interactive customer ISO likewise
+predates current source. `/mnt/shared` has 18 GiB free, below the 50 GiB E2E
+preflight, so no current-source ISO or VM run was started. Existing VM disks
+were preserved. Historical passes remain evidence only for their tested
+source and environment; current-source release acceptance is open.
+
+Public-history review through current source `0b84f29d16fa9ac7d8f80430e04aed8cd77afb8b`
+scanned 119 commits with Gitleaks and found no leaks. Report:
+`/mnt/shared/fieldos-e2e/gitleaks-0b84f29.json`. This checks detected credential
+patterns in Git history; it does not replace the separate review for private
+infrastructure details or licensing.
 
 Public history review at source commit `22ebcff396d4aeb948797591cd0742dec1f0e156`
 scanned all 105 commits with Gitleaks and found no leaks. The redacted report
