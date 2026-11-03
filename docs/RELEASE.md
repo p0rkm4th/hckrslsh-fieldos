@@ -58,13 +58,13 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials. A fresh scan of all 88 commits through current source HEAD
-`013324c` also found no leaks; its redacted report is
-`/mnt/shared/fieldos-e2e/gitleaks-013324c.json`.
+credentials. A fresh scan of all 90 commits through current source HEAD
+`2cb291b` found no leaks; its redacted report is
+`/mnt/shared/fieldos-e2e/gitleaks-2cb291b.json`.
 
 ### Current source milestone — 2026-11-03
 
-- Source HEAD `013324c9e98b180c2ecee7ec008ead4a4638d82f` adds independent
+- Source HEAD `2cb291b14fe6f2498d4a0a5f22bfd5045ffa30cf` adds independent
   content-pack archives and an installed-system verification/storage command.
   All 45 unit tests and `make check` pass. The fixture suite exercises archive
   build, checksum and manifest validation, safe extraction, idempotent install,
