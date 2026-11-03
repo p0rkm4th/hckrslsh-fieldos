@@ -8,6 +8,16 @@ ARCHIVE="$OUT/offline-payload.tar.zst"
 mkdir -p "$OUT"
 WORK_ROOT=${FIELDOS_WORK_ROOT:-"$ROOT/build"}
 mkdir -p "$WORK_ROOT"
+require_free_space() {
+  local path="$1" available_kib
+  available_kib=$(df -Pk "$path" | awk 'NR == 2 { print $4 }')
+  if [[ -z "$available_kib" ]] || (( available_kib < 50 * 1024 * 1024 )); then
+    echo "Need at least 50 GiB free for payload staging and archive output on $path" >&2
+    exit 1
+  fi
+}
+require_free_space "$OUT"
+require_free_space "$WORK_ROOT"
 STAGE=$(mktemp -d "$WORK_ROOT/work-payload.XXXXXX")
 trap 'docker rm -f "$MODEL_CONTAINER" >/dev/null 2>&1 || true; rm -rf "$STAGE"' EXIT
 MODEL_CONTAINER="fieldos-model-seed-$$"
