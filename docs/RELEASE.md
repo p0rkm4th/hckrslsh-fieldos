@@ -20,33 +20,24 @@ texts both matched SHA-256
 The generated Compose environment file was verified as `600 root:root` in the
 installed guest.
 
-The current interactive customer candidate `fieldos-test-customer-f27305f.iso`
-(SHA-256 `aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`)
-was built from source commit `f27305fe5c086f7fd39af55c293cc61a4c99f8e9`.
-ISO structure, BIOS/UEFI boot records, interactive installer configuration,
-payload contents, and payload checksums passed `make iso-test`. A fresh blank
-80 GiB qcow2 installation in UEFI QEMU used 8 GiB RAM, no virtual NIC, and a
-temporary account password that was not retained. Only the target disk was
-selected for erasure. The installed disk was first in firmware boot order, so
-“Restart now” handed off to the installed Ubuntu desktop while the USB ISO
-remained attached; no host-side start, reset, media detachment, or installer
-repair was needed.
+The current interactive customer candidate is
+`/mnt/shared/fieldos-releases/fieldos-test-customer-47d128e.iso` (SHA-256
+`d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`), built
+from source commit `47d128e79f3b53fed8f5e954b866ceb5e32b20e4`. `make iso-test`
+passed ISO structure, BIOS/UEFI boot records, interactive installer
+configuration, and payload checks. The separate customer installation test
+is currently being run in a fresh no-NIC UEFI guest at
+`/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`; it is not
+recorded as a pass until service, browser, and persistence checks finish.
 
-After firstboot and each of two guest-side reboots, all seven services,
-N.O.M.A.D. health, local Qwen generation (`FIELDOS_CUSTOMER_INSTALL_OK`),
-768-value embedding output, Kiwix retrieval, world/regional PMTiles checks, and
-no-NIC/no-default-route checks passed. The installed regional map rendered in
-Firefox at `http://127.0.0.1:8080/maps`; screenshot:
-`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/map-browser.png`.
-The boot IDs and complete per-boot logs are in that directory's
-`reboot-acceptance.txt`, `acceptance-after-install.txt`,
-`acceptance-reboot-1.txt`, and `acceptance-reboot-2.txt`; its consolidated
-record is `report.md` in the same directory. The desktop's active
-power inhibitor rejected the normal libvirt guest reboot request; the two
-recorded test reboots used `systemctl reboot -i` inside the guest and each boot
-ID changed before the full suite was repeated. This did not require host-side
-recovery or alter application data. The guest was disconnected from external
-networking throughout.
+The preceding `f27305f` candidate (SHA-256
+`aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`) did pass
+a fresh interactive QEMU installation, local AI/reference/map acceptance,
+Firefox regional-map rendering, and two guest-side reboots. Its full report
+and screenshots are retained at
+`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/report.md`.
+That older candidate does not contain the latest atomic credential-file
+handling; its binary is superseded by the new candidate.
 
 The candidate is private test material, not a published or approved
 redistribution image. QEMU results do not establish physical hardware or GPU
@@ -55,19 +46,13 @@ Canonical trademark/redistribution, exact third-party license review, LAN
 reachability, and physical hardware coverage remain open. Do not publish
 release binaries.
 
-Current candidate path: `/mnt/shared/fieldos-releases/fieldos-test-customer-f27305f.iso`.
-Its payload SHA-256 is
-`1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
-The bundled and installed ODbL license text both match SHA-256
-`607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`.
-ISO build verification passed, and the clean interactive installation and
-reboot tests are recorded above. Free space on `/mnt/shared` after the run was
-50 GiB; no further large build should start until storage is reviewed.
-
-The latest E2E run exercises the atomic credential creation and build-space
-preflight changes from current source. The interactive ISO and clean customer
-installation above still refer to the earlier `f27305f` candidate. Building
-and testing a customer candidate from the current source remains outstanding.
+Current candidate path: `/mnt/shared/fieldos-releases/fieldos-test-customer-47d128e.iso`.
+ISO SHA-256 is
+`d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`; payload
+SHA-256 is `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
+The payload and installed ODbL texts were checksum-verified in the current
+source unattended E2E guest. The customer ISO structural verifier passed. Its
+separate interactive installation test is still in progress.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
