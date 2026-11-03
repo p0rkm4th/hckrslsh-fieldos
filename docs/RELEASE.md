@@ -46,7 +46,8 @@ into an ISO or verified on a newly installed guest.
 The most recent clean unattended VM acceptance remains the report below at
 source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
 fresh acceptance of current source. The interactive customer ISO likewise
-predates current source. `/mnt/shared` has 18 GiB free; existing VM disks were
+predates current source. `/mnt/shared` currently has 23 GiB free, still below
+the 50-GiB E2E preflight; existing VM disks were
 preserved. Historical passes remain evidence only for their tested source and
 environment; current-source release acceptance is open.
 
@@ -88,9 +89,9 @@ and exit code is `/mnt/shared/fieldos-e2e/auto-test4-exit-status.png` (SHA-256
 `d628b213c89f15a71481a2d89064d294a6ec46b73aa4230fd98f571bea5583a9`). This
 failed run must not be counted as an automated acceptance pass.
 
-At this checkpoint `/mnt/shared` has 18 GiB free (99% used), below the
-50-GiB clean-E2E preflight. No additional ISO or VM disk was created. Existing
-active VM disks were retained.
+At the time of this failed run `/mnt/shared` had 18 GiB free (99% used), below
+the 50-GiB clean-E2E preflight. No ISO or VM disk was created by the attempt.
+Existing active VM disks were retained.
 
 ### Blank diagnostic disk retirement — 2026-11-03
 
@@ -100,7 +101,21 @@ diagnostics: `customer-iso-03b6552` and `customer-iso-offline-r1`. The tool
 confirmed neither disk was attached and neither run was referenced by current
 release documentation. Both reports, screenshots, and per-run
 `disk-retirement.txt` audits remain. The cleanup recovered less than 1 MiB and
-does not change the 18-GiB storage constraint.
+did not materially change storage headroom.
+
+### Superseded payload archive retirement — 2026-11-03
+
+Retired the unreferenced 5,474,502,428-byte
+`/mnt/shared/fieldos-offline-payload-with-region.tar.zst` duplicate. Its image
+and model manifests plus sample/world PMTiles and ZIM hashes matched the
+active, checksum-verified `/mnt/shared/fieldos-payload/offline-payload.tar.zst`;
+the active payload also contains newer map provenance, reference, and source-
+offer manifests. No process used the old archive. Comparison details and the
+old archive hash are recorded in
+`/mnt/shared/fieldos-e2e/payload-retirement-offline-payload-with-region-20261103.md`
+(SHA-256 `91aac0ed436d6df94b2dba4bc63d2c0702272abdfb5a1a9caf9a216c11ff1ceb`).
+This recovered about 5.1 GiB, leaving 23 GiB free; the E2E test still fails its
+50-GiB storage preflight.
 
 The public Git history was scrubbed because earlier release notes contained a
 local username path and unrelated infrastructure labels. The one published
