@@ -13,8 +13,9 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest clean-source offline acceptance passed on revision
-`ec57fed731e915c4c0585dc1e6c648d71d338566`. The run completed unattended
+The latest clean-source offline acceptance passed on implementation revision
+`ec57fed731e915c4c0585dc1e6c648d71d338566` (later changes are documentation
+only). The run completed unattended
 Ubuntu installation with no virtual NIC, local package and image provisioning,
 N.O.M.A.D. health, a real Ollama response, embeddings, Kiwix retrieval, and
 browser rendering of the separately transferred Middle Tennessee map at zoom
@@ -25,16 +26,18 @@ browser screenshot is `map-render.png`. The disposable 80 GiB disk was retired
 after the PASS; installer/firstboot logs, report, screenshot, and retirement
 audit remain. This does not certify the separate customer installer.
 
-The most recent previously tested customer ISO is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-branded-8b0bda3.iso`,
-SHA-256 `fbec9104316cf0407acc7a5e218a26922ea1849dc3a97d52a45fef09da5db7b1`.
-It is stale relative to the accepted source. Its interactive installation
-selected identity and disk, booted from installed storage and passed service
-checks across reboots, but the guest powered off at media handoff and required
-a host start from disk. A current-source customer ISO rebuild and separate
-interactive test remain required. FieldOS is not approved for physical customer
+The current customer-mode test candidate is
+`/mnt/shared/fieldos-releases/fieldos-test.iso`, SHA-256
+`4e41822852d9e911f186ab1f3659a904eedddef48154c9ca6d955cd2de7ddcd2`. Its fresh
+interactive QEMU install selected identity and disk and installed to the
+virtual disk, but the guest powered off at the media-removal prompt. A host
+start from disk then completed provisioning and passed local service, chat,
+embedding, Kiwix, map, and two-reboot checks. Automatic installer handoff is
+still a release blocker; FieldOS is not approved for physical customer
 installation. LAN peer isolation, physical GPU inference, broader hardware
-coverage, and redistribution review also remain open. See
+coverage, and redistribution review also remain open. The persistent owner-only
+Kasm lab now stages the branded system on VM 913, but owner-authenticated
+desktop launch is not yet verified. See
 [release evidence](docs/RELEASE.md) for the current gate matrix.
 
 ## Build and test
