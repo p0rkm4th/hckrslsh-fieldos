@@ -3,19 +3,27 @@
 ## Customer installation
 
 **Current candidate status (2026-11-03):**
-`/mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso`, built from
-`c744e5275ec2f5002244c92cef5101b603e53195`, SHA-256
-`c8b09f678351b87a2d3784c4bd91949b6add9a7bb6ad5a9a8a5401a059f762f7`. A fresh
-no-NIC interactive UEFI QEMU install accepted an identity and disposable target
-disk and installed Ubuntu. After “Restart now,” the guest powered off at the
-media-removal prompt after Enter; a host start was required to boot the disk.
-The installed system then passed offline provisioning and service checks,
-including two guest reboots. A prepper-oriented UI review found that the bundled
-reference and map content are inadequate for emergencies and that the AI can
-present unsourced generic advice as verified. This remains an engineering test
-candidate, not a customer-ready appliance. Physical hardware is untested. See
-[`RELEASE.md`](RELEASE.md) and the detailed report at
-`/mnt/shared/fieldos-e2e/customer-interactive-c744e52-20261103/report.md`.
+`/mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso`, built from
+`b7f25b033fd7c7aabfd17fe686c303b4be0814b1`, SHA-256
+`a6af2e66c1042f517747b0ef02b07ef7f1bc9cfdfe93ea90bb55836c799246c1`. Structure
+and payload checks passed. A fresh no-NIC UEFI QEMU install accepted interactive
+identity and disk selection and installed Ubuntu. Firstboot, local service
+checks, chat and embeddings, Kiwix retrieval, map API/tile delivery, and two
+reboots passed. Firefox visibly rendered the bundled U.S. overview, but the
+bundled map was blank at 10 km zoom; Kiwix contained only a 100-article
+Wikipedia fixture. The tested ice-storm response was generic and did not provide
+identifiable source citations.
+
+This run did not verify a clean installer handoff: after “Restart now,” the VM
+booted back to the USB installer because the test did not remove virtual media
+promptly. The tester detached the USB device, reset the VM, and then confirmed
+the installed disk reached GDM. Treat customer installation as **PARTIAL**, not
+PASS, until the current image passes a fresh handoff test with media removed at
+the expected prompt and no recovery reset. Evidence is at
+`/mnt/shared/fieldos-e2e/customer-interactive-b7f25b0-20261103/report.md`.
+This is a test candidate, not a customer-ready appliance. Physical hardware,
+customer content adequacy, and redistribution remain unverified. See
+[`RELEASE.md`](RELEASE.md).
 
 The customer facing ISO is built with:
 
@@ -53,12 +61,12 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 [`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-handoff-c744e52.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso
 ```
 
 Use a disposable VM with a disposable virtual disk and no network adapter to
-investigate the customer-mode handoff failure. Do not write this candidate to a
-physical disk or install it on customer hardware until the release gates pass.
+retest the USB media handoff. Do not write this candidate to a physical disk or
+install it on customer hardware until the release gates pass.
 The E2E command below uses a separate unattended test image and does not
 exercise the customer install workflow.
 
