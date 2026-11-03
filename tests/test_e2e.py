@@ -16,6 +16,7 @@ import sys
 import time
 import zlib
 from pathlib import Path
+import shutil
 from shutil import disk_usage
 
 
@@ -85,11 +86,19 @@ class AcceptanceRun:
         self.memory_mib = int(os.environ.get("FIELDOS_TEST_MEMORY_MIB", "12288"))
         if self.memory_mib < 8192:
             raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
+        self.pack_archive = Path(os.environ["FIELDOS_TEST_CONTENT_PACK"]).expanduser() if os.environ.get("FIELDOS_TEST_CONTENT_PACK") else None
+        if self.pack_archive:
+            self.pack_archive = self.pack_archive.resolve(strict=True)
+            if not self.pack_archive.is_file() or not Path(f"{self.pack_archive}.sha256").is_file():
+                raise TestFailure("FIELDOS_TEST_CONTENT_PACK must name a bundle with its .sha256 sidecar")
+            if not shutil.which("xorriso"):
+                raise TestFailure("xorriso is required to create offline content-transfer media")
         self.run_dir = evidence_root / f"{self.stamp}-{os.getpid()}"
         self.run_dir.mkdir(parents=True, exist_ok=False)
         self.vm_name = f"fieldos-e2e-{self.stamp.lower()}"
         self.disk = self.run_dir / "guest.qcow2"
         self.iso = self.run_dir / "test.iso"
+        self.pack_iso = self.run_dir / "content-pack-transfer.iso"
         self.user_data = self.run_dir / "user-data"
         self.results: list[dict[str, str]] = []
         self.agent_ready = False
@@ -168,12 +177,24 @@ autoinstall:
         self.command(["bash", str(ROOT / "build/build-iso.sh"), "test", str(ubuntu_iso)],
                      env=build_env, timeout=1800)
         self.record("test ISO build", "PASS", f"{self.iso.name}: {self.sha256(self.iso)}")
+        if self.pack_archive:
+            archive = self.pack_archive.resolve(strict=True)
+            if not archive.is_file() or not Path(f"{archive}.sha256").is_file():
+                raise TestFailure("FIELDOS_TEST_CONTENT_PACK must name a bundle with its .sha256 sidecar")
+            media = self.run_dir / "pack-media"
+            media.mkdir()
+            shutil.copy2(archive, media / archive.name)
+            shutil.copy2(Path(f"{archive}.sha256"), media / f"{archive.name}.sha256")
+            self.command(["xorriso", "-as", "mkisofs", "-iso-level", "3", "-J", "-R",
+                          "-V", "FIELDOSPACK", "-o", str(self.pack_iso), str(media)], timeout=120)
+            self.record("optional content transfer media", "PASS",
+                        f"offline ISO containing {archive.name}; SHA-256 {self.sha256(archive)}")
 
     def create_vm(self) -> None:
         if self.disk.exists():
             raise TestFailure(f"Refusing to overwrite VM disk: {self.disk}")
         self.command(["qemu-img", "create", "-f", "qcow2", str(self.disk), "80G"])
-        self.command([
+        vm_args = [
             "virt-install", "--name", self.vm_name, "--memory", str(self.memory_mib), "--vcpus", "6",
             "--disk", f"path={self.disk},format=qcow2,bus=virtio",
             "--cdrom", str(self.iso), "--network", "none", "--boot", "uefi",
@@ -181,7 +202,10 @@ autoinstall:
             "--graphics", "vnc,listen=127.0.0.1", "--video", "virtio",
             "--channel", "unix,target.type=virtio,target.name=org.qemu.guest_agent.0",
             "--noautoconsole", "--wait", "0",
-        ], timeout=180)
+        ]
+        if self.pack_iso.exists():
+            vm_args.extend(["--disk", f"path={self.pack_iso},device=cdrom,readonly=on,bus=sata"])
+        self.command(vm_args, timeout=180)
         self.record("disposable VM", "PASS",
                     f"{self.vm_name}; 80 GiB qcow2; {self.memory_mib} MiB RAM; no virtual NIC")
 
@@ -205,11 +229,52 @@ autoinstall:
         xml = self.command(["virsh", "dumpxml", self.vm_name]).stdout
         import xml.etree.ElementTree as ET
         root = ET.fromstring(xml)
-        for target in root.findall("./devices/disk[@device='cdrom']/target"):
-            dev = target.get("dev")
-            if dev:
+        for disk in root.findall("./devices/disk[@device='cdrom']"):
+            source = disk.find("source")
+            target = disk.find("target")
+            dev = target.get("dev") if target is not None else None
+            path = source.get("file") if source is not None else None
+            if dev and path == str(self.iso):
                 self.command(["virsh", "change-media", self.vm_name, dev,
                               "--eject", "--config"], check=False)
+
+    def install_test_content_pack(self) -> None:
+        if not self.pack_archive:
+            self.record("offline optional content pack", "SKIP", "FIELDOS_TEST_CONTENT_PACK was not supplied")
+            return
+        installed = self.check(
+            "offline content pack transfer and activation",
+            "set -euo pipefail; device=$(blkid -t LABEL=FIELDOSPACK -o device); "
+            "test -n \"$device\"; mkdir -p /mnt/fieldos-pack-test; "
+            "mount -o ro \"$device\" /mnt/fieldos-pack-test; "
+            "archive=$(find /mnt/fieldos-pack-test -maxdepth 1 -type f -name '*.tar.zst' -print -quit); "
+            "test -n \"$archive\"; /opt/fieldos/scripts/fieldos-content-packs.py install \"$archive\"; "
+            "test -f /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles",
+            350,
+        )
+        if "activated map:" not in installed:
+            raise TestFailure(f"Optional map bundle was not activated from removable media: {installed}")
+        regions = self.check(
+            "N.O.M.A.D. discovers the imported regional map",
+            "curl --fail --silent --show-error http://127.0.0.1:8080/api/maps/regions",
+        )
+        region_data = json.loads(regions)
+        filename = "middle-tennessee-20261102-z13.pmtiles"
+        if not any(row.get("name") == filename for row in region_data.get("files", [])):
+            raise TestFailure(f"N.O.M.A.D. did not discover imported map {filename}: {regions}")
+        styles = self.check(
+            "imported regional map is registered in the map style",
+            "curl --fail --silent --show-error http://127.0.0.1:8080/api/maps/styles",
+        )
+        if "middle-tennessee-20261102-z13" not in json.loads(styles).get("sources", {}):
+            raise TestFailure("N.O.M.A.D. map style does not include the imported regional map")
+        tile = self.check(
+            "imported regional map tile is readable offline",
+            "docker exec nomad_admin /usr/local/bin/pmtiles tile "
+            "/app/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles 13 2121 3212 2>/dev/null | wc -c",
+        )
+        if not tile.isdigit() or int(tile) <= 0:
+            raise TestFailure(f"Imported regional map did not yield a vector tile: {tile!r}")
 
     def boot_guest(self) -> None:
         self.eject_installer()
@@ -663,6 +728,24 @@ autoinstall:
         assets = self.check("map renderer assets", "curl --fail --silent --show-error --max-time 10 -o /dev/null -w 'HTTP=%{http_code} BYTES=%{size_download}' http://127.0.0.1:8080/basemaps-assets/sprites/v4/light.json", 160)
         if "HTTP=200" not in assets:
             raise TestFailure("N.O.M.A.D. did not serve the bundled map renderer assets")
+        if self.pack_archive:
+            map_pack = self.check(
+                "optional regional map survives reboot",
+                "test -s /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles "
+                "&& curl --fail --silent --show-error -o /dev/null -r 0-126 "
+                "-w 'HTTP=%{http_code} BYTES=%{size_download}' "
+                "http://127.0.0.1:8080/pmtiles/middle-tennessee-20261102-z13.pmtiles",
+                160,
+            )
+            if "HTTP=206" not in map_pack or "BYTES=127" not in map_pack:
+                raise TestFailure(f"Imported regional map failed its persistent range probe: {map_pack}")
+            tile = self.check(
+                "optional regional detail tile survives reboot",
+                "docker exec nomad_admin /usr/local/bin/pmtiles tile "
+                "/app/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles 13 2121 3212 2>/dev/null | wc -c",
+            )
+            if not tile.isdigit() or int(tile) <= 0:
+                raise TestFailure(f"Imported regional vector tile unavailable after reboot: {tile!r}")
         net = self.check("container egress disabled", "docker network inspect fieldos-internal fieldos-local-ui --format '{{.Name}} internal={{.Internal}} masquerade={{index .Options \"com.docker.network.bridge.enable_ip_masquerade\"}}' && docker exec nomad_admin node -e 'fetch(\"https://example.com\",{signal:AbortSignal.timeout(5000)}).then(()=>process.exit(3)).catch(()=>process.exit(0))' && echo EXTERNAL_EGRESS_BLOCKED", 350)
         if "EXTERNAL_EGRESS_BLOCKED" not in net:
             raise TestFailure("N.O.M.A.D. container could reach an external URL")
@@ -747,11 +830,12 @@ autoinstall:
                 raise TestFailure(f"Provisioning did not complete: {status}")
             self.capture_guest_logs()
             self.record("offline provisioning", "PASS", "Local packages and all declared firstboot smoke checks completed")
+            self.install_test_content_pack()
             self.run_checks()
             self.verify_map_render()
             self.do_reboot(1)
             self.do_reboot(2)
-            self.record("acceptance run", "PASS", "Installation, offline services, inference, retrieval, map tile, and two reboots passed")
+            self.record("acceptance run", "PASS", "Installation, offline services, inference, reference retrieval, maps, and two reboots passed")
         except Exception as exc:
             failed = str(exc)
             try:
@@ -764,9 +848,13 @@ autoinstall:
                 self.report(failed)
             except Exception as exc:
                 print(f"Could not write report: {exc}", file=sys.stderr)
-            for path in (self.iso, self.iso.with_suffix(self.iso.suffix + ".sha256"), self.user_data):
+            for path in (self.iso, self.iso.with_suffix(self.iso.suffix + ".sha256"),
+                         self.pack_iso, self.user_data):
                 if path.exists():
                     path.unlink()
+            media = self.run_dir / "pack-media"
+            if media.exists():
+                shutil.rmtree(media)
         print(f"Report: {self.run_dir / 'report.md'}")
         return 1 if failed else 0
 

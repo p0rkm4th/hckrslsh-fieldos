@@ -126,6 +126,57 @@ class ContentPackBundleTests(unittest.TestCase):
             CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
         self.assertEqual(list(outside.iterdir()), [])
 
+    def test_map_pack_is_activated_atomically_for_nomad_inventory(self):
+        artifact = self.pack / "middle-tennessee.pmtiles"
+        artifact.write_bytes(b"PMTiles test fixture")
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["title"] = "Test map fixture"
+        manifest["description"] = "Synthetic PMTiles activation test; not geographic data."
+        manifest["category"] = "maps-gis"
+        manifest["geographic_coverage"] = {
+            "name": "Middle Tennessee (synthetic fixture)",
+            "bbox": [-87.5, 35.5, -85.5, 36.5], "minzoom": 5, "maxzoom": 12,
+        }
+        manifest["installation"]["target"] = "storage/maps/pmtiles"
+        manifest["artifacts"] = [{
+            "path": artifact.name, "size_bytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "source": "fixture-source", "license": "CC0-1.0",
+        }]
+        manifest_path.write_text(json.dumps(manifest))
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+
+        first = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        published = self.install_root / "storage/maps/pmtiles/middle-tennessee.pmtiles"
+        self.assertIn("activated map:", first)
+        self.assertEqual(published.read_bytes(), artifact.read_bytes())
+        second = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertIn("map already active:", second)
+        self.assertEqual(published.read_bytes(), artifact.read_bytes())
+
+    def test_map_activation_refuses_to_replace_existing_map(self):
+        artifact = self.pack / "existing.pmtiles"
+        artifact.write_bytes(b"new map")
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["installation"]["target"] = "storage/maps/pmtiles"
+        manifest["artifacts"] = [{
+            "path": artifact.name, "size_bytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "source": "fixture-source", "license": "CC0-1.0",
+        }]
+        manifest_path.write_text(json.dumps(manifest))
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+        maps = self.install_root / "storage/maps/pmtiles"
+        maps.mkdir(parents=True)
+        existing = maps / artifact.name
+        existing.write_bytes(b"keep the user's data")
+
+        with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "refusing to replace existing map content"):
+            CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertEqual(existing.read_bytes(), b"keep the user's data")
+
 
 if __name__ == "__main__":
     unittest.main()
