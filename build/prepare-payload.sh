@@ -27,6 +27,10 @@ for tool in docker git curl python3 zstd sha256sum tar; do
 done
 
 mkdir -p "$STAGE"/{debs,oci,content/zim,content/maps/pmtiles,content/maps/basemaps-assets,content/ollama,licenses,manifests}
+install -m 0644 "$ROOT/payload/manifests/content-pack.schema.json" \
+  "$STAGE/manifests/content-pack.schema.json"
+python3 "$ROOT/build/build_content_packs.py" \
+  --catalog "$ROOT/payload/manifests/content-packs.json" --output-root "$OUT"
 
 echo "Fetching checksum-pinned corresponding source for identified AGPL components..."
 python3 - "$ROOT/payload/manifests/source-offers.json" "$STAGE/licenses/source-offers" <<'PY'

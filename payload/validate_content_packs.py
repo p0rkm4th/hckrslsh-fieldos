@@ -21,6 +21,7 @@ CATEGORIES = {
 }
 AUTHORITIES = {"authoritative-reference", "community-reference", "ai-generated", "mixed"}
 PACK_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+PACK_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
 
 
@@ -56,6 +57,8 @@ def date_value(value: object, label: str) -> None:
         raise PackError(f"{label} must be an ISO date (YYYY-MM-DD)")
     try:
         dt.date.fromisoformat(text)
+    except PackError:
+        raise
     except ValueError as exc:
         raise PackError(f"{label} must be an ISO date (YYYY-MM-DD)") from exc
 
@@ -70,8 +73,16 @@ def sha256_file(path: Path) -> str:
 
 def within(path: Path, root: Path, label: str) -> Path:
     try:
+        base = root.resolve(strict=True)
+        unresolved = path.absolute()
+        unresolved.relative_to(base)
+        cursor = base
+        for part in unresolved.relative_to(base).parts:
+            cursor = cursor / part
+            if cursor.is_symlink():
+                raise PackError(f"{label} must not use symbolic links: {path}")
         resolved = path.resolve(strict=True)
-        resolved.relative_to(root.resolve(strict=True))
+        resolved.relative_to(base)
     except ValueError as exc:
         raise PackError(f"{label} escapes its allowed directory: {path}") from exc
     except OSError as exc:
@@ -95,7 +106,9 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
     pack_id = nonempty(manifest["id"], "pack id")
     if not PACK_ID.fullmatch(pack_id) or pack_id != pack_root.name:
         raise PackError(f"pack id must be a lowercase slug matching directory {pack_root.name!r}")
-    nonempty(manifest["version"], "pack version")
+    version = nonempty(manifest["version"], "pack version")
+    if not PACK_VERSION.fullmatch(version):
+        raise PackError(f"pack version must be a safe filename component in {manifest_path}")
     nonempty(manifest["title"], "pack title")
     nonempty(manifest["description"], "pack description")
     category = manifest["category"]

@@ -8,7 +8,7 @@ FIELDOS_WORK_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-build
 FIELDOS_OUTPUT_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-releases
 export FIELDOS_E2E_ROOT FIELDOS_PAYLOAD_ROOT FIELDOS_WORK_ROOT FIELDOS_OUTPUT_ROOT
 
-.PHONY: check test test-e2e cleanup-test-disk payload iso-test iso-full verify validate-content-packs
+.PHONY: check test test-e2e cleanup-test-disk payload content-packs iso-test iso-full verify validate-content-packs
 
 check: validate-content-packs
 	$(PYTHON) -m compileall -q build hardware installer/provisioning payload scripts tests
@@ -29,6 +29,10 @@ cleanup-test-disk:
 
 payload:
 	./build/prepare-payload.sh
+
+content-packs:
+	$(PYTHON) build/build_content_packs.py --catalog payload/manifests/content-packs.json \
+	  --output-root "$(FIELDOS_PAYLOAD_ROOT)"
 
 iso-test:
 	@test -n "$(UBUNTU_ISO)" || (echo 'Set UBUNTU_ISO to the verified Ubuntu 26.04.1 Desktop ISO' >&2; exit 2)
