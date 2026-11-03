@@ -3,13 +3,12 @@
 ## Customer installation
 
 **Current candidate status (2026-11-03):** Interactive installation and
-post-install service acceptance passed in disposable QEMU guests. The USB
-media test reached GDM after the virtual USB installer was detached during
-restart, then passed offline service checks and two-reboot persistence. That
-handoff test followed an erase-and-reinstall on the same disposable disk, so
-the clean fresh-disk customer handoff gate remains PARTIAL. The CD-ROM media
-variant powered off at the remove-media prompt and needed a host-side start.
-See the evidence, checksums, and release gates in [`RELEASE.md`](RELEASE.md).
+post-install service acceptance passed in a fresh-disk QEMU test. After the
+operator media-removal step, the USB path booted the installed target to GDM
+without a host-side start; services, local AI, retrieval, and map API/tile
+checks passed after two reboots. CD-ROM handoff remains unresolved. Browser map
+rendering passed separately in the clean unattended E2E run. See exact results,
+checksums, and evidence in [`RELEASE.md`](RELEASE.md).
 
 The customer facing ISO is built with:
 
@@ -25,14 +24,12 @@ provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” For USB installation, remove the USB media when prompted so
-firmware can boot the installed disk. In the latest USB QEMU run, removing the
-virtual USB device during restart led to GDM without a host-side VM start. The
-earlier virtual CD-ROM run powered off at the remove-media prompt and needed a
-host-side start. The USB success followed an erase-and-reinstall on the same
-disposable target, not a new blank disk, so it does not establish a clean
-fresh-disk handoff pass. Post-boot services, local inference, reference
-retrieval, map APIs/tiles, and two-reboot persistence passed. Physical hardware
-and network-enabled LAN exposure are unverified. See [`RELEASE.md`](RELEASE.md)
+firmware can boot the installed disk. In the fresh-disk USB QEMU acceptance,
+removing the virtual USB device during restart led to GDM without a host-side
+VM start. Post-boot services, local inference, reference retrieval, map
+API/tiles, and two-reboot persistence passed. A separate clean E2E run rendered
+the offline map in Firefox. CD-ROM media handoff, physical hardware, and
+network-enabled LAN exposure remain unverified. See [`RELEASE.md`](RELEASE.md)
 for hashes, evidence locations, and limitations.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
