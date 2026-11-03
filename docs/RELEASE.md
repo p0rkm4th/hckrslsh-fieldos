@@ -58,9 +58,24 @@ stopped disposable disk is deliberately retired. The 78 GiB in
 libvirt reports all three domains running, so they were preserved.
 
 A public-history Gitleaks scan of all 85 commits through `42b6b8e` found no
-credentials. A fresh scan of all 92 public-history commits through source
-commit `43a1620` found no leaks; its redacted report is
-`/mnt/shared/fieldos-e2e/gitleaks-43a1620.json`.
+credentials. A fresh scan of all 95 public-history commits through source
+commit `7d8b054` found no leaks; its redacted report is
+`/mnt/shared/fieldos-e2e/gitleaks-7d8b054.json`.
+
+### E2E security assertions added — 2026-11-03
+
+- Source commit `7d8b054576f9fdd53bbd26f15d4b68342391c757` extends each
+  installed-guest acceptance run to reject privileged containers, added Linux
+  capabilities, host networking/PID, non-loopback published ports, unexpected
+  Docker socket consumers, a writable Dozzle socket mount, or credentials
+  outside `0600 root:root`.
+- The embedded guest-side Python was parsed and `make check` plus all 45 unit
+  tests passed. This updated security check has **not** run inside a fresh VM;
+  the previous runtime report remains the latest guest-level evidence.
+- `/mnt/shared` has 18.6 GB free, below the 50 GiB clean-E2E preflight. All
+  large test disks are active or retained by acceptance records; no candidate
+  disk or release ISO was removed. A current-source ISO/VM acceptance run is
+  still required.
 
 ### Current source milestone — 2026-11-03
 
