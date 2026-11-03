@@ -142,7 +142,6 @@ autoinstall:
   shutdown: poweroff
   late-commands:
     - mkdir -p /target/opt/fieldos
-    - mkdir -p /target/usr/share/applications
     - mkdir -p /target/usr/share/doc/fieldos
     - mkdir -p /target/home/fieldos/.config
     - mkdir -p /target/home/fieldos/.config/gnome-initial-setup
@@ -150,8 +149,8 @@ autoinstall:
     - touch /target/home/fieldos/.config/gnome-initial-setup/upgrade-26.04-done
     - chown -R 1000:1000 /target/home/fieldos/.config
     - cp -a /cdrom/fieldos/. /target/opt/fieldos/
-    - cp /cdrom/fieldos/installer/provisioning/fieldos.desktop /target/usr/share/applications/fieldos-nomad.desktop
-    - cp /cdrom/fieldos/installer/provisioning/fieldos-sources.desktop /target/usr/share/applications/fieldos-sources.desktop
+    - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/install-branding.sh
+    - curtin in-target --target=/target -- /opt/fieldos/installer/provisioning/install-branding.sh
     - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/firstboot.sh
     - cp /target/opt/fieldos/installer/provisioning/fieldos-firstboot.service /target/etc/systemd/system/fieldos-firstboot.service
     - curtin in-target --target=/target -- systemctl enable fieldos-firstboot.service
@@ -461,6 +460,26 @@ autoinstall:
                     f"Firefox rendered PMTiles tiles in {width}x{height} VNC screenshot; "
                     f"{water_pixels} sampled water pixels, {colors} colors; {screenshot.name}")
 
+        settings = self.guest(
+            f"runtime=/run/user/{uid}; "
+            f"runuser -u fieldos -- env XDG_RUNTIME_DIR=$runtime "
+            "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus "
+            "gsettings get org.gnome.desktop.background picture-uri; "
+            f"runuser -u fieldos -- env XDG_RUNTIME_DIR=$runtime "
+            "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus "
+            "gsettings get org.gnome.desktop.interface color-scheme; "
+            f"runuser -u fieldos -- env XDG_RUNTIME_DIR=$runtime "
+            "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus "
+            "gsettings get org.gnome.shell favorite-apps",
+            timeout=30,
+        )
+        if ("fieldos-wallpaper.svg" not in settings or "prefer-dark" not in settings
+                or "fieldos-start-here.desktop" not in settings
+                or "fieldos-nomad.desktop" not in settings):
+            raise TestFailure(f"GNOME did not load the FieldOS wallpaper/dock defaults: {settings}")
+        self.record("FieldOS desktop defaults", "PASS",
+                    "effective GNOME session uses the FieldOS wallpaper, dark palette, and both FieldOS dock shortcuts")
+
     def run_checks(self, reboot: bool = False) -> None:
         self.check("disconnected guest", "test -z \"$(ip -4 route show default)\" && ip -brief link")
         ps = self.check("container set", "docker compose --project-directory /opt/fieldos/services -f /opt/fieldos/services/compose.yaml ps --format json", 500)
@@ -518,6 +537,32 @@ autoinstall:
         )
         if '"published_ports_loopback_only": true' not in security:
             raise TestFailure(f"Runtime security baseline did not pass: {security}")
+        branding = self.check(
+            "FieldOS offline desktop bundle",
+            "python3 - <<'PY'\n"
+            "from pathlib import Path\n"
+            "paths = [\n"
+            "    Path('/usr/share/backgrounds/fieldos/fieldos-wallpaper.svg'),\n"
+            "    Path('/usr/share/icons/hicolor/scalable/apps/fieldos.svg'),\n"
+            "    Path('/usr/share/applications/fieldos-nomad.desktop'),\n"
+            "    Path('/usr/share/applications/fieldos-start-here.desktop'),\n"
+            "    Path('/usr/share/applications/fieldos-sources.desktop'),\n"
+            "    Path('/usr/share/doc/fieldos/START-HERE.html'),\n"
+            "]\n"
+            "assert all(path.is_file() and path.stat().st_size for path in paths), 'FieldOS desktop branding files are missing'\n"
+            "profile = Path('/etc/dconf/profile/user').read_text()\n"
+            "db = Path('/etc/dconf/db/local')\n"
+            "defaults = Path('/etc/dconf/db/local.d/00-fieldos').read_text()\n"
+            "assert 'user-db:user' in profile and 'system-db:local' in profile, 'GNOME user profile does not include FieldOS defaults'\n"
+            "assert db.is_file() and db.stat().st_size, 'compiled FieldOS dconf database is missing'\n"
+            "assert 'fieldos-wallpaper.svg' in defaults and 'fieldos-start-here.desktop' in defaults and 'fieldos-nomad.desktop' in defaults, 'GNOME defaults omit FieldOS wallpaper or dock entries'\n"
+            "guide = Path('/usr/share/doc/fieldos/START-HERE.html').read_text()\n"
+            "assert 'Ready offline in this test edition' in guide and 'separate internet-connected update session' in guide, 'offline guide does not explain bundled features and updates'\n"
+            "print({'branding_files': len(paths), 'dconf_profile': True, 'compiled_defaults': True, 'offline_guide': True})\n"
+            "PY",
+        )
+        if "'offline_guide': True" not in branding:
+            raise TestFailure(f"FieldOS offline desktop bundle did not pass: {branding}")
         self.check(
             "offline content attribution and archive integrity",
             "python3 - <<'PY'\n"

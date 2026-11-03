@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=FieldOS Start Here
+Comment=See what is ready offline and where to find it
+Exec=xdg-open /usr/share/doc/fieldos/START-HERE.html
+Icon=fieldos
+Terminal=false
+Categories=Education;Utility;

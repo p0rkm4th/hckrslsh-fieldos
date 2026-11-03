@@ -15,11 +15,10 @@ autoinstall:
       name: lvm
   late-commands:
     - mkdir -p /target/opt/fieldos
-    - mkdir -p /target/usr/share/applications
     - mkdir -p /target/usr/share/doc/fieldos
     - cp -a /cdrom/fieldos/. /target/opt/fieldos/
-    - cp /cdrom/fieldos/installer/provisioning/fieldos.desktop /target/usr/share/applications/fieldos-nomad.desktop
-    - cp /cdrom/fieldos/installer/provisioning/fieldos-sources.desktop /target/usr/share/applications/fieldos-sources.desktop
+    - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/install-branding.sh
+    - curtin in-target --target=/target -- /opt/fieldos/installer/provisioning/install-branding.sh
     - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/firstboot.sh
     - cp /target/opt/fieldos/installer/provisioning/fieldos-firstboot.service /target/etc/systemd/system/fieldos-firstboot.service
     - curtin in-target --target=/target -- systemctl enable fieldos-firstboot.service

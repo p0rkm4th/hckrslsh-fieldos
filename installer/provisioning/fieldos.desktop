@@ -1,9 +1,11 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Project N.O.M.A.D.
-Comment=Offline field knowledge, maps, and local AI
+Name=FieldOS Command Center
+GenericName=Project N.O.M.A.D.
+Comment=Open offline maps, local AI, and reference tools
 Exec=xdg-open http://localhost:8080
-Icon=applications-internet
+Icon=fieldos
 Terminal=false
 Categories=Education;Utility;
+Keywords=FieldOS;Project;N.O.M.A.D.;NOMAD;offline;maps;reference;AI;

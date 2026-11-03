@@ -18,6 +18,11 @@ TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zst \
   /fieldos/installer/provisioning/fieldos-sources.desktop \
+  /fieldos/installer/provisioning/fieldos-start-here.desktop \
+  /fieldos/installer/provisioning/fieldos-start-here.html \
+  /fieldos/installer/provisioning/install-branding.sh \
+  /fieldos/installer/provisioning/assets/fieldos-wallpaper.svg \
+  /fieldos/installer/provisioning/assets/fieldos.svg \
   /fieldos/payload/licenses/CONTENT-SOURCES.md \
   /fieldos/payload/licenses/CC-BY-SA-4.0.txt \
   /fieldos/payload/licenses/ODbL-1.0.txt \
@@ -26,6 +31,29 @@ for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zs
   xorriso -osirrox on -indev "$ISO" -extract "$path" "$dest" >/dev/null 2>&1
   [[ -s "$dest" ]] || { echo "Missing required ISO path: $path" >&2; exit 1; }
 done
+python3 - "$TMP/fieldos-build-manifest.json" "$MODE" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+manifest = json.loads(Path(sys.argv[1]).read_text())
+if not re.fullmatch(r"[0-9a-f]{40,64}", manifest.get("source_revision", "")):
+    raise SystemExit("ISO manifest is missing a valid Git source revision")
+if not isinstance(manifest.get("source_dirty"), bool):
+    raise SystemExit("ISO manifest is missing the source cleanliness flag")
+if sys.argv[2] == "customer" and manifest["source_dirty"]:
+    raise SystemExit("Customer candidate was built from uncommitted or untracked source")
+PY
+grep -q 'START-HERE.html' "$TMP/provisioning-fieldos-start-here.desktop" \
+  || { echo "FieldOS offline welcome launcher is incomplete" >&2; exit 1; }
+grep -q 'Ready offline in this test edition' "$TMP/provisioning-fieldos-start-here.html" \
+  || { echo "FieldOS offline content guide is missing its bundled-content section" >&2; exit 1; }
+grep -q 'separate internet-connected update session' "$TMP/provisioning-fieldos-start-here.html" \
+  || { echo "FieldOS offline content guide is missing its update boundary" >&2; exit 1; }
+grep -q "picture-uri='file:///usr/share/backgrounds/fieldos/fieldos-wallpaper.svg'" \
+  "$TMP/provisioning-install-branding.sh" \
+  || { echo "FieldOS wallpaper defaults are missing" >&2; exit 1; }
 xorriso -osirrox on -indev "$ISO" -extract /boot/grub/grub.cfg "$TMP/grub.cfg" >/dev/null 2>&1
 grep -q 'Install Hckrslsh FieldOS (interactive)' "$TMP/grub.cfg" \
   || { echo "FieldOS installer boot entry is missing" >&2; exit 1; }
