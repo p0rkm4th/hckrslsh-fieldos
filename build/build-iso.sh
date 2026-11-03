@@ -61,7 +61,7 @@ WORK=$(mktemp -d "$WORK_ROOT/work-${MODE}.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/hardware/detect" \
   "$WORK/fieldos/models" "$WORK/fieldos/services" "$WORK/fieldos/payload/licenses" \
-  "$WORK/fieldos/scripts" \
+  "$WORK/fieldos/payload/manifests" "$WORK/fieldos/scripts" \
   "$WORK/nocloud"
 
 install -m 0644 "$ROOT/installer/provisioning/firstboot.sh" "$WORK/fieldos/installer/provisioning/firstboot.sh"
@@ -77,6 +77,10 @@ install -m 0644 "$ROOT/hardware/select_profile.py" "$WORK/fieldos/hardware/selec
 install -m 0644 "$ROOT/models/manifest.json" "$WORK/fieldos/models/manifest.json"
 install -m 0644 "$ROOT/services/compose.yaml" "$WORK/fieldos/services/compose.yaml"
 install -m 0755 "$ROOT/scripts/fieldos-diagnostics.sh" "$WORK/fieldos/scripts/fieldos-diagnostics.sh"
+install -m 0755 "$ROOT/scripts/fieldos-content-packs.py" "$WORK/fieldos/scripts/fieldos-content-packs.py"
+install -m 0644 "$ROOT/payload/validate_content_packs.py" "$WORK/fieldos/scripts/validate_content_packs.py"
+install -m 0644 "$ROOT/payload/manifests/content-pack.schema.json" \
+  "$WORK/fieldos/payload/manifests/content-pack.schema.json"
 install -m 0644 "$PAYLOAD" "$WORK/fieldos/payload/offline-payload.tar.zst"
 install -m 0644 "$PAYLOAD.sha256" "$WORK/fieldos/payload/offline-payload.tar.zst.sha256"
 if [[ -n "$AUTOINSTALL_FILE" ]]; then

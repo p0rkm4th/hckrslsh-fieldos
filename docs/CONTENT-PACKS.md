@@ -27,10 +27,31 @@ Each populated pack has its own stable ID and version. Its manifest records
 each source and URL, license and attribution, every artifact's size and
 SHA-256, and installation target and requirements. Geographic packs also
 declare bounds, coordinate reference system, and zoom range. Build tooling
-must validate sizes and checksums before installation; packs install into
-separate directories so optional content can be installed or removed without
-replacing application data. The core image may include a small fixture for
-acceptance, while larger customer packs remain separate payloads.
+validates sizes and checksums before packaging. `make content-packs` builds one
+deterministic `.tar.zst` archive and SHA-256 sidecar per catalog entry under
+`FIELDOS_PAYLOAD_ROOT/content-packs/`, independently of the core installer.
+`make payload` runs this builder after preparing the core payload. The current
+catalog is empty, so these commands produce no pack archives today. The core
+ISO includes the manifest schema and pack management command, but does not
+embed optional pack archives.
+
+On an installed system, verify and add a bundle with:
+
+```sh
+sudo /opt/fieldos/scripts/fieldos-content-packs.py install /path/to/pack-1.0.tar.zst
+/opt/fieldos/scripts/fieldos-content-packs.py list
+```
+
+Installation checks the sidecar checksum, rejects unsafe archive entries,
+validates the manifest and artifact hashes, checks available space, and stores
+each immutable version under `/var/lib/fieldos/content-packs/<id>/<version>`.
+Repeating the same install is safe; a different bundle cannot overwrite an
+existing version. The command does not erase existing user data. This first
+stage provides independent packaging, integrity checking, and local storage;
+it does not yet import or activate content in N.O.M.A.D., Kiwix, the map UI, or
+GIS applications. The manifest's `installation.target` and `requirements`
+describe intended integration and are not automatically executed. Consumer
+adapters and their end-to-end tests remain future work.
 
 ## Reference quality and retrieval
 
