@@ -48,6 +48,14 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertEqual(cpu_only["chat_backend"], "cpu")
         self.assertEqual(cuda_tested["chat_backend"], "cuda")
 
+    def test_cpu_fallback_requires_cpu_support_in_manifest(self):
+        gpu_only_manifest = dict(MANIFEST)
+        gpu_only_manifest["chat_models"] = [
+            dict(MANIFEST["chat_models"][0], backends=["cuda"])
+        ]
+        result = select({"memory_gib": 16, "gpus": []}, gpu_only_manifest, {SMALL}, {"cpu"})
+        self.assertIsNone(result["chat_model"])
+
     def test_backend_uses_its_own_driver_and_vram(self):
         hw = {"memory_gib": 16, "gpus": [
             {"vendor": "amd", "vram_gib": 24, "driver_available": True},

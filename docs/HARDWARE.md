@@ -22,6 +22,12 @@ dedicated VRAM. It reports GPU/driver facts without treating them as proof
 that inference acceleration works. Available RAM is diagnostic; current model
 selection still uses installed RAM minus its configured system reserve.
 
+The selector requires the chosen backend to appear in each model's manifest.
+That includes CPU fallback: a model that only lists GPU backends is not
+selected for CPU even if its memory estimate fits. At startup, firstboot
+validates the selected bundled model with a short generation request and tries
+smaller compatible bundled models if loading or generation fails.
+
 The selector reserves memory for the OS, only considers model IDs present in
 the offline payload, and checks model memory requirements. It requires an
 explicitly runtime-validated backend plus a matching available driver before
