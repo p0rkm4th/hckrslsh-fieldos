@@ -42,6 +42,21 @@ release gates. Do not publish release binaries.
   disposable test guest; no test credentials are retained. The candidate ISO
   and guest disk are not published.
 
+### Network-enabled service boundary check — 2026-11-03
+
+- A QEMU user-network clone of the shut-off customer guest received DHCP and
+  a default route. Guest HTTPS egress worked; N.O.M.A.D. container egress to
+  the same public endpoint remained blocked.
+- `8080`, `9999`, `6333`, `8090`, and `11434` were published only on guest
+  loopback. Requests to those ports through the guest NIC address failed,
+  while local N.O.M.A.D. health succeeded. The captured socket inventory had
+  no FieldOS service listener on `0.0.0.0` or the guest NIC.
+- This is a guest self-address test under QEMU user networking, not a bridged
+  LAN or guest-to-guest scan. Creating a temporary libvirt bridge was denied
+  by host permissions (`Operation not permitted`), so actual LAN reachability
+  remains open. Evidence: `/mnt/shared/fieldos-e2e/customer-sourceoffer-709c893-r2/network-review.md`
+  and `network-review.txt`.
+
 ### Container notice and corresponding-source follow-up — 2026-11-03
 
 - The seven pinned OCI images were exported from the local Docker daemon to
