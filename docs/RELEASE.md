@@ -20,7 +20,7 @@ texts both matched SHA-256
 The generated Compose environment file was verified as `600 root:root` in the
 installed guest.
 
-The current interactive customer candidate is
+The latest interactive customer ISO test artifact (now removed) was
 `/mnt/shared/fieldos-releases/fieldos-test-customer-47d128e.iso` (SHA-256
 `d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`), built
 from source commit `47d128e79f3b53fed8f5e954b866ceb5e32b20e4`. `make iso-test`
@@ -40,7 +40,9 @@ a repaired diagnostic result, not a customer acceptance pass: a test password
 was reset and source was copied in after installation. Full evidence is at
 `/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`. The ISO
 does not contain the source fix; rebuild and repeat the clean install before
-customer acceptance.
+customer acceptance. After detaching it from the shut-down diagnostic guest,
+the ISO binary was removed to recover storage; its `.sha256` sidecar and all
+test evidence remain. The guest qcow2 is preserved.
 
 The preceding `f27305f` candidate (SHA-256
 `aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`) did pass
@@ -52,20 +54,23 @@ That older candidate does not contain the latest atomic credential-file
 handling; its binary was removed after supersession, while its checksum and
 interactive-install evidence were retained.
 
-The candidate is private test material, not a published or approved
-redistribution image. QEMU results do not establish physical hardware or GPU
-support. FieldOS is not recommended for physical customer installation yet:
+No release ISO is currently built or published. QEMU results do not establish
+physical hardware or GPU support. FieldOS is not recommended for physical
+customer installation yet:
 Canonical trademark/redistribution, exact third-party license review, LAN
 reachability, and physical hardware coverage remain open. Do not publish
 release binaries.
 
-Current candidate path: `/mnt/shared/fieldos-releases/fieldos-test-customer-47d128e.iso`.
-ISO SHA-256 is
+The removed ISO checksum sidecar records SHA-256
 `d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`; payload
 SHA-256 is `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
-The payload and installed ODbL texts were checksum-verified in the current
-source unattended E2E guest. The customer ISO structural verifier passed. Its
-separate interactive installation test is still in progress.
+The current source unattended E2E run checksum-verified the installed ODbL
+copy against the bundled source copy. The customer ISO structural verifier
+passed.
+The current source fix is commit `ea18d86`; build and clean E2E rerun require
+more free space. The E2E harness requires 50 GiB free and `/mnt/shared` is
+below that threshold; no new ISO or VM disk should be created until storage is
+available.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
