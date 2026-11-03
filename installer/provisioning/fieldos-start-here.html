@@ -51,6 +51,16 @@
     <p>Project N.O.M.A.D. can offer additional archives, detailed map regions, software updates, and other optional downloads. Those items are not part of this test payload; downloading them requires a separate internet-connected update session. The installed chat model, archive, and map data remain usable offline.</p>
     <p>This test edition contains no reviewed first-aid or emergency guidance. Do not use generated answers as a substitute for authoritative medical or safety references.</p>
   </section>
+  <section>
+    <h2>Add an optional regional map without internet</h2>
+    <p>Map packs are separate files and are not included in this test edition. Obtain the archive and its matching <code>.sha256</code> file from a source you trust on another computer, then copy both to a USB drive.</p>
+    <ol>
+      <li>Open the USB drive in Files and note its name.</li>
+      <li>Open Terminal and install the pack. Replace <code>USB-NAME</code> and the archive filename with the names shown on your drive:<br><code>sudo /opt/fieldos/scripts/fieldos-content-packs.py install "/media/$USER/USB-NAME/map-pack.tar.zst"</code></li>
+      <li>Wait for the command to report <code>activated map</code>, then open or reload Maps in the Command Center. The imported region appears there without a service restart.</li>
+    </ol>
+    <p>The installer checks the bundle checksum, manifest, and artifact hashes before storing it. A checksum does not establish that a publisher or license is trustworthy; review the pack's source and attribution. PMTiles packs activate in Maps. Other pack types remain stored but may not yet integrate with an application.</p>
+  </section>
   <footer>FieldOS test edition · Content sources and license notices: <code>/usr/share/doc/fieldos/CONTENT-SOURCES.md</code></footer>
 </main>
 </body>

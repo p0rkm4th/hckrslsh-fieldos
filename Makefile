@@ -7,6 +7,7 @@ FIELDOS_PAYLOAD_ROOT ?= $(if $(wildcard /mnt/shared),/mnt/shared/fieldos-payload
 FIELDOS_WORK_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-build
 FIELDOS_OUTPUT_ROOT ?= $(FIELDOS_STORAGE_ROOT)/fieldos-releases
 export FIELDOS_E2E_ROOT FIELDOS_PAYLOAD_ROOT FIELDOS_WORK_ROOT FIELDOS_OUTPUT_ROOT
+export UBUNTU_ISO FIELDOS_TEST_CONTENT_PACK
 
 .PHONY: check test test-e2e cleanup-test-disk payload content-packs iso-test iso-full verify validate-content-packs
 
