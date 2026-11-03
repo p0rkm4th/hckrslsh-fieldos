@@ -442,7 +442,7 @@ still presents interactive disk and account setup.
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/report.md`, clean source commit `0eb3d24` |
-| Interactive customer installation | PARTIAL (QEMU) | Interactive install reached media-removal prompt, but the VM powered off; latest report under `/mnt/shared/fieldos-e2e/customer-sourceoffer-709c893-r2/` |
+| Interactive customer installation | PARTIAL (QEMU) | Fresh ISO `fieldos-test-customer-280fda2.iso` installed to disposable `vda`; media-removal handoff powered off the VM. Report: `/mnt/shared/fieldos-e2e/customer-280fda2-20261103/report.md` |
 | Clean installer media/restart handoff | PARTIAL | Handoff still needs host-side VM start; this is not a clean installer PASS |
 | Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
 | Offline provisioning and services | PASS | Current interactive guest: firstboot complete; all seven pinned containers loaded locally and ran |
@@ -454,7 +454,7 @@ still presents interactive disk and account setup.
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS (indicator review through `d2d6ca0`) | Gitleaks scanned 50 commits with no findings; private IPv4/host-specific/workstation-name pattern scan had no matches; no tracked Git blobs over 1 MiB. Evidence: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
+| Public Git history | PASS (Gitleaks) | Latest full history scan covered 61 commits with zero findings; evidence: `/mnt/shared/fieldos-e2e/repository-review-280fda2/gitleaks-history.json`. Earlier private infrastructure indicator review: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
@@ -635,10 +635,27 @@ recovered run is not counted as a clean PASS.
   hardware coverage remain release gates. Content-pack schema/validator is
   present; no customer packs have been approved or populated. Zoom-5 world
   maps and the miniature archive remain test fixtures.
-- No customer release candidate was rebuilt in this continuation. `/mnt/shared`
-  has 107 GiB free (1.2 TiB total); the E2E evidence directory occupies about
-  33 GiB, the prepared payload 5.2 GiB, and the releases directory 23 GiB.
-  Preserve this headroom and use `/mnt/shared` for additional large artifacts.
+- A refreshed, unpublished interactive customer test ISO was built from the
+  repaired payload and verified. ISO:
+  `/mnt/shared/fieldos-releases/fieldos-test-customer-280fda2.iso`, 11,983,912,960
+  bytes, SHA-256
+  `f3b8f5c2ff5cb9bf98e3e07c98b1fce219195d7bb4fe4490a38351cb145c751d`.
+  Its test report and screenshots are at
+  `/mnt/shared/fieldos-e2e/customer-280fda2-20261103/report.md`. Interactive
+  installation reached completion, but media removal and Enter again shut
+  down the VM; target boot required host recovery. Runtime and two reboots
+  passed after that recovery, so installer handoff remains PARTIAL. This
+  candidate has not been released.
+- `/mnt/shared` has 64 GiB free (1.2 TiB total); the new customer test evidence
+  directory occupies about 33 GiB, the prepared payload 5.2 GiB, and the
+  releases directory 34 GiB. Preserve this headroom and use `/mnt/shared` for
+  additional large artifacts.
+- Gitleaks scanned the complete public Git history through commit `280fda2`
+  (61 commits) with zero findings. This is a secret-pattern scan; the separate
+  infrastructure-indicator review remains the evidence linked in the table.
+- `make check`, all 33 unit tests, and `git diff --check` passed after the
+  release documentation update. The latest source/docs commit and push status
+  are recorded after that commit is created.
 - Documentation now describes the configurable acceptance VM memory, payload
   staging free-space requirement, and the rule that manually recovered runs
   are not clean automated passes. After the documentation update, `make check`,
