@@ -44,6 +44,27 @@ inconclusive. The current ISO remains a local test candidate; see
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
+## Preparing test installation media
+
+The retained ISO is an unpublished test candidate, not a customer release.
+Use only a disposable USB drive and a spare test computer; do not install it on
+customer hardware. Before writing media, compare the downloaded ISO's SHA-256
+with the candidate hash recorded in [`RELEASE.md`](RELEASE.md):
+
+```sh
+sha256sum fieldos-test-customer-0b2fd8c.iso
+```
+
+On Ubuntu Desktop, open **Disks**, select the USB drive by its model and
+capacity, choose the menu, then **Restore Disk Image…** and select the
+verified ISO. This overwrites the selected USB drive. Check the selected device
+carefully before confirming. Boot the spare test computer from that USB and
+follow the interactive installer instructions above; select the intended
+installation disk in the installer and review its erase confirmation. Keep
+the USB attached until Ubuntu asks for installation media removal. Physical
+hardware behavior has not been validated, and the current ISO remains blocked
+from customer release by the gates in `RELEASE.md`.
+
 After installation, firstboot may take several minutes while it checks and
 unpacks the local payload, installs packages from the included APT repository,
 loads the container images, and starts the local models. Progress and failures
