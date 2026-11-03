@@ -86,8 +86,10 @@ commit `a76315a` found no leaks; its redacted report is
   Docker socket consumers, a writable Dozzle socket mount, or credentials
   outside `0600 root:root`.
 - The embedded guest-side Python was parsed and `make check` plus all 45 unit
-  tests passed. This updated security check has **not** run inside a fresh VM;
-  the previous runtime report remains the latest guest-level evidence.
+  tests passed. A read-only execution of those assertions against the existing
+  accepted E2E guest passed; evidence is
+  `/mnt/shared/fieldos-e2e/security-runtime-followup-20261103.txt`. This is not
+  a fresh current-source E2E run and does not cover a LAN peer scan.
 - `/mnt/shared` has 18.6 GB free, below the 50 GiB clean-E2E preflight. All
   large test disks are active or retained by acceptance records; no candidate
   disk or release ISO was removed. A current-source ISO/VM acceptance run is

@@ -82,6 +82,9 @@ the installed guest: no privileged mode, added capabilities, host networking,
 or host PID namespace; only N.O.M.A.D. and Dozzle mount the Docker socket;
 Dozzle's socket mount remains read-only; every published port binds to
 `127.0.0.1`; and the generated Compose credential file remains `0600 root:root`.
-The source check was syntax-validated and the repository unit suite passed,
-but this updated harness has not yet run in a fresh VM. The previous guest
-inspection evidence above remains the latest runtime evidence.
+The source check was syntax-validated and the repository unit suite passed. A
+read-only execution of the same assertions against the existing accepted E2E
+guest passed: seven containers, only N.O.M.A.D. and Dozzle using the Docker
+socket, loopback-only published ports, and root-only credentials. Evidence is
+`/mnt/shared/fieldos-e2e/security-runtime-followup-20261103.txt`. This does not
+replace a fresh current-source E2E run or a guest-to-guest LAN scan.
