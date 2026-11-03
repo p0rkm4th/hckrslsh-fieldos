@@ -70,7 +70,7 @@ else
 fi
 WORK=$(mktemp -d "$WORK_ROOT/work-${MODE}.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
-mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/hardware/detect" \
+mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/installer/provisioning/assets" "$WORK/fieldos/hardware/detect" \
   "$WORK/fieldos/models" "$WORK/fieldos/services" "$WORK/fieldos/payload/licenses" \
   "$WORK/fieldos/payload/manifests" "$WORK/fieldos/scripts" \
   "$WORK/nocloud"
@@ -79,7 +79,12 @@ install -m 0644 "$ROOT/installer/provisioning/firstboot.sh" "$WORK/fieldos/insta
 install -m 0644 "$ROOT/installer/provisioning/build_local_apt_index.py" "$WORK/fieldos/installer/provisioning/build_local_apt_index.py"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-firstboot.service" "$WORK/fieldos/installer/provisioning/fieldos-firstboot.service"
 install -m 0644 "$ROOT/installer/provisioning/fieldos.desktop" "$WORK/fieldos/installer/provisioning/fieldos.desktop"
+install -m 0644 "$ROOT/installer/provisioning/fieldos-start-here.desktop" "$WORK/fieldos/installer/provisioning/fieldos-start-here.desktop"
+install -m 0644 "$ROOT/installer/provisioning/fieldos-start-here.html" "$WORK/fieldos/installer/provisioning/fieldos-start-here.html"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-sources.desktop" "$WORK/fieldos/installer/provisioning/fieldos-sources.desktop"
+install -m 0755 "$ROOT/installer/provisioning/install-branding.sh" "$WORK/fieldos/installer/provisioning/install-branding.sh"
+install -m 0644 "$ROOT/installer/provisioning/assets/fieldos-wallpaper.svg" "$WORK/fieldos/installer/provisioning/assets/fieldos-wallpaper.svg"
+install -m 0644 "$ROOT/installer/provisioning/assets/fieldos.svg" "$WORK/fieldos/installer/provisioning/assets/fieldos.svg"
 install -m 0644 "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$WORK/fieldos/payload/licenses/CONTENT-SOURCES.md"
 install -m 0644 "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$WORK/fieldos/payload/licenses/CC-BY-SA-4.0.txt"
 install -m 0644 "$ROOT/payload/licenses/ODbL-1.0.txt" "$WORK/fieldos/payload/licenses/ODbL-1.0.txt"
@@ -106,10 +111,18 @@ fi
 install -m 0644 "$AUTOINSTALL_FILE" "$WORK/nocloud/user-data"
 install -m 0644 "$ROOT/installer/autoinstall/meta-data" "$WORK/nocloud/meta-data"
 
+SOURCE_REVISION=$(git -C "$ROOT" rev-parse HEAD)
+SOURCE_DIRTY=false
+if [[ -n "$(git -C "$ROOT" status --porcelain --untracked-files=all)" ]]; then
+  SOURCE_DIRTY=true
+fi
+
 cat > "$WORK/fieldos/build-manifest.json" <<EOF
 {
   "product": "Hckrslsh FieldOS",
   "edition": "$MODE",
+  "source_revision": "$SOURCE_REVISION",
+  "source_dirty": $SOURCE_DIRTY,
   "ubuntu_source_sha256": "$ACTUAL",
   "project_nomad": "v1.35.1",
   "payload_sha256": "$(awk '{print $1}' "$PAYLOAD.sha256")",

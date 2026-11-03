@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#0b1d25"/>
+      <stop offset=".58" stop-color="#17362f"/>
+      <stop offset="1" stop-color="#526b4c"/>
+    </linearGradient>
+    <linearGradient id="ground" x2="0" y2="1">
+      <stop stop-color="#65764e"/>
+      <stop offset="1" stop-color="#182e29"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#e8b66a" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#e8b66a" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="contours" width="360" height="250" patternUnits="userSpaceOnUse">
+      <path d="M-50 190C20 130 105 135 165 175s125 40 235-25M-50 215c80-65 145-67 210-28s120 38 240-27M-40 242c85-68 158-70 225-31s119 33 225-30M-40 165c80-52 130-49 190-14s113 44 207-10M-40 139c75-45 130-45 185-12s112 42 207-5" fill="none" stroke="#d6d7b0" stroke-opacity=".13" stroke-width="1.4"/>
+      <path d="M40 78c38-28 74-30 108-10s56 18 86-2 62-24 98-3" fill="none" stroke="#d6d7b0" stroke-opacity=".09" stroke-width="1.2"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <ellipse cx="1485" cy="285" rx="500" ry="390" fill="url(#glow)"/>
+  <circle cx="1480" cy="286" r="74" fill="#e4b46c" fill-opacity=".9"/>
+  <path d="M0 720 280 505l180 136 246-294 250 309 211-218 260 251 191-175 302 242v324H0Z" fill="#243d35"/>
+  <path d="m645 347 66 82-57-24-43 22Zm522 91 61 71-57-23-44 20Zm558-17 66 59-61-13-34 19Z" fill="#d2d5bc" fill-opacity=".68"/>
+  <path d="M0 752c250-96 402-76 628-18s366 52 606-24 421-79 686 7v363H0Z" fill="url(#ground)"/>
+  <path d="M0 752c250-96 402-76 628-18s366 52 606-24 421-79 686 7" fill="none" stroke="#d9c68e" stroke-opacity=".7" stroke-width="3"/>
+  <rect width="1920" height="1080" fill="url(#contours)"/>
+  <g transform="translate(1350 690)" fill="none" stroke="#e6bf75" stroke-width="3" opacity=".85">
+    <circle r="50"/><circle r="30"/><circle r="10" fill="#e6bf75"/>
+    <path d="M0-69v-28m0 194v-28m-69-69h-28m194 0h-28M-49-49l-20-20m138 138-20-20m0-98 20-20M-69 69l20-20"/>
+  </g>
+  <g font-family="sans-serif" fill="#f3f0df">
+    <text x="142" y="184" font-size="20" letter-spacing="7" fill="#e5bd73">Hckrslsh  /  FIELD SYSTEMS</text>
+    <text x="132" y="402" font-size="132" font-weight="700" letter-spacing="3">FIELDOS</text>
+    <path d="M142 441h304" stroke="#e5bd73" stroke-width="5"/>
+    <text x="144" y="493" font-size="27" letter-spacing="5" fill="#d6d7b0">OFFLINE FIELD COMPUTER</text>
+    <text x="144" y="554" font-size="22" fill="#d6d7b0" opacity=".92">Local knowledge. Local tools. Ready beyond signal.</text>
+  </g>
+  <g font-family="sans-serif" fill="#f3f0df" opacity=".7">
+    <text x="144" y="1000" font-size="16" letter-spacing="3">AI  /  REFERENCE  /  MAPS</text>
+    <text x="1777" y="1000" font-size="15" text-anchor="end" letter-spacing="2">READY BEYOND SIGNAL</text>
+  </g>
+</svg>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>FieldOS — Start Here</title>
+  <style>
+    :root { color-scheme: dark; --ink:#f3f0df; --muted:#c2cbb9; --accent:#e8bd6f; --panel:#162e2e; --line:#49645a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(145deg,#0b1d25,#183a33 68%,#253e32); color:var(--ink); font:16px/1.55 system-ui,sans-serif; }
+    main { max-width:1040px; margin:auto; padding:48px 24px 64px; }
+    header { padding:16px 0 32px; border-bottom:1px solid var(--line); }
+    .eyebrow { color:var(--accent); font-size:.78rem; letter-spacing:.2em; text-transform:uppercase; }
+    h1 { margin:.25em 0; font-size:clamp(2.5rem,7vw,5rem); line-height:1; letter-spacing:.04em; }
+    h2 { font-size:1.25rem; margin:0 0 12px; }
+    p { margin:.5em 0; }
+    .lead { color:var(--muted); font-size:1.18rem; max-width:65ch; }
+    .actions,.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-top:24px; }
+    a.card { color:var(--ink); text-decoration:none; }
+    .card { display:block; padding:20px; border:1px solid var(--line); border-radius:16px; background:#102729cc; }
+    a.card:hover, a.card:focus-visible { border-color:var(--accent); outline:2px solid var(--accent); outline-offset:2px; }
+    .tag { color:var(--accent); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; }
+    ul { padding-left:1.2rem; color:var(--muted); }
+    .notice { margin-top:24px; padding:18px 20px; border-left:4px solid var(--accent); background:#102729cc; border-radius:0 12px 12px 0; }
+    code { color:#f2d69a; }
+    footer { margin-top:32px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Hckrslsh Field Systems</div>
+    <h1>FIELDOS</h1>
+    <p class="lead">Local knowledge, local tools, ready beyond signal. This edition is designed to use its installed content without internet.</p>
+    <div class="actions">
+      <a class="card" href="http://localhost:8080"><span class="tag">Open</span><h2>FieldOS Command Center</h2><p>Project N.O.M.A.D. brings together local AI, the information library, and maps.</p></a>
+      <a class="card" href="http://localhost:8090"><span class="tag">Browse locally</span><h2>Offline reference</h2><p>Open the Kiwix library directly. It only lists archives included on this computer.</p></a>
+    </div>
+  </header>
+  <section>
+    <h2>Ready offline in this test edition</h2>
+    <div class="cards">
+      <article class="card"><span class="tag">Local AI</span><p>Project N.O.M.A.D. uses the bundled Ollama chat model and embedding model. AI answers are generated text; check cited source material before relying on them.</p></article>
+      <article class="card"><span class="tag">Reference</span><p>A small English Wikipedia archive is included for testing. It is not a comprehensive repair, medical, or emergency library.</p></article>
+      <article class="card"><span class="tag">Maps</span><p>Low-zoom world and sample U.S. map data is included for orientation and testing. It is not suitable for street, trail, parcel, or navigation decisions.</p></article>
+    </div>
+  </section>
+  <section class="notice">
+    <h2>Why some catalog items are missing</h2>
+    <p>Project N.O.M.A.D. can offer additional archives, detailed map regions, software updates, and other optional downloads. Those items are not part of this test payload; downloading them requires a separate internet-connected update session. The installed chat model, archive, and map data remain usable offline.</p>
+    <p>This test edition contains no reviewed first-aid or emergency guidance. Do not use generated answers as a substitute for authoritative medical or safety references.</p>
+  </section>
+  <footer>FieldOS test edition · Content sources and license notices: <code>/usr/share/doc/fieldos/CONTENT-SOURCES.md</code></footer>
+</main>
+</body>
+</html>
