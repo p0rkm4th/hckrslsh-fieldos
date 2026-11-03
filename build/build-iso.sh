@@ -38,7 +38,7 @@ mkdir -p "$WORK_ROOT"
 WORK=$(mktemp -d "$WORK_ROOT/work-${MODE}.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/hardware/detect" \
-  "$WORK/fieldos/models" "$WORK/fieldos/services" "$WORK/fieldos/payload" \
+  "$WORK/fieldos/models" "$WORK/fieldos/services" "$WORK/fieldos/payload/licenses" \
   "$WORK/fieldos/scripts" \
   "$WORK/nocloud"
 
@@ -46,6 +46,9 @@ install -m 0644 "$ROOT/installer/provisioning/firstboot.sh" "$WORK/fieldos/insta
 install -m 0644 "$ROOT/installer/provisioning/build_local_apt_index.py" "$WORK/fieldos/installer/provisioning/build_local_apt_index.py"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-firstboot.service" "$WORK/fieldos/installer/provisioning/fieldos-firstboot.service"
 install -m 0644 "$ROOT/installer/provisioning/fieldos.desktop" "$WORK/fieldos/installer/provisioning/fieldos.desktop"
+install -m 0644 "$ROOT/installer/provisioning/fieldos-sources.desktop" "$WORK/fieldos/installer/provisioning/fieldos-sources.desktop"
+install -m 0644 "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$WORK/fieldos/payload/licenses/CONTENT-SOURCES.md"
+install -m 0644 "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$WORK/fieldos/payload/licenses/CC-BY-SA-4.0.txt"
 install -m 0644 "$ROOT/hardware/detect/detect.py" "$WORK/fieldos/hardware/detect/detect.py"
 install -m 0644 "$ROOT/hardware/select_profile.py" "$WORK/fieldos/hardware/select_profile.py"
 install -m 0644 "$ROOT/models/manifest.json" "$WORK/fieldos/models/manifest.json"

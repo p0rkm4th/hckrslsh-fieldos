@@ -15,6 +15,9 @@ grep -q 'UEFI' <<<"$REPORT" || { echo "ISO has no UEFI El Torito boot entry" >&2
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zst \
+  /fieldos/installer/provisioning/fieldos-sources.desktop \
+  /fieldos/payload/licenses/CONTENT-SOURCES.md \
+  /fieldos/payload/licenses/CC-BY-SA-4.0.txt \
   /nocloud/user-data /nocloud/meta-data; do
   dest="$TMP/$(basename "$(dirname "$path")")-$(basename "$path")"
   xorriso -osirrox on -indev "$ISO" -extract "$path" "$dest" >/dev/null 2>&1
