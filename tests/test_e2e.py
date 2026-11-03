@@ -67,6 +67,9 @@ class AcceptanceRun:
         self.results: list[dict[str, str]] = []
         self.agent_ready = False
         self.temporary_password = ""
+        self.memory_mib = int(os.environ.get("FIELDOS_TEST_MEMORY_MIB", "12288"))
+        if self.memory_mib < 8192:
+            raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
         self.source_revision, self.source_dirty = git_source_state()
 
     def command(self, args: list[str], *, env: dict[str, str] | None = None,
@@ -147,7 +150,7 @@ autoinstall:
             raise TestFailure(f"Refusing to overwrite VM disk: {self.disk}")
         self.command(["qemu-img", "create", "-f", "qcow2", str(self.disk), "80G"])
         self.command([
-            "virt-install", "--name", self.vm_name, "--memory", "12288", "--vcpus", "6",
+            "virt-install", "--name", self.vm_name, "--memory", str(self.memory_mib), "--vcpus", "6",
             "--disk", f"path={self.disk},format=qcow2,bus=virtio",
             "--cdrom", str(self.iso), "--network", "none", "--boot", "uefi",
             "--osinfo", "ubuntu26.04",
@@ -155,7 +158,8 @@ autoinstall:
             "--channel", "unix,target.type=virtio,target.name=org.qemu.guest_agent.0",
             "--noautoconsole", "--wait", "0",
         ], timeout=180)
-        self.record("disposable VM", "PASS", f"{self.vm_name}; 80 GiB qcow2; no virtual NIC")
+        self.record("disposable VM", "PASS",
+                    f"{self.vm_name}; 80 GiB qcow2; {self.memory_mib} MiB RAM; no virtual NIC")
 
     def wait_for_install_shutdown(self, timeout: int = 2400) -> None:
         deadline = time.monotonic() + timeout
