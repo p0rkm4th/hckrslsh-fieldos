@@ -27,6 +27,12 @@ That scan was refreshed through source commit
 commits and found no leaks. Redacted report:
 `/mnt/shared/fieldos-e2e/gitleaks-3e7e057.json`.
 
+The public-history scan was refreshed through source commit
+`9b6c6b3a9e157d1cf44d888243b999ad046e6dcd`. Gitleaks scanned 113 commits and
+found no leaks. Redacted report:
+`/mnt/shared/fieldos-e2e/gitleaks-9b6c6b3.json`. `git ls-remote` confirmed this
+was the public `main` head at scan time.
+
 At source commit `bc47bb968714a89bc65e67ece25b79f17534cb28`, `make check` and
 `make test` passed on the development workstation on 2026-11-03. The latter
 ran all 46 unit tests, including content-pack safety, simulated hardware
