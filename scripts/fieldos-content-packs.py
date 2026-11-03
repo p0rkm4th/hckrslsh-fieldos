@@ -194,13 +194,14 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
         raise InstallError("pack ID storage path must not be a symlink")
     id_root.mkdir(mode=0o755, exist_ok=True)
     free = shutil.disk_usage(id_root).free
+    # The pack is extracted on this filesystem and then atomically renamed
+    # into place, so only one unpacked copy is needed at peak.
     if free < unpacked_bytes + reserve_bytes:
         raise InstallError(
             f"insufficient free space: need {unpacked_bytes + reserve_bytes} bytes, have {free}"
         )
 
-    stage_parent = Path(tempfile.mkdtemp(prefix="fieldos-pack-verify-"))
-    install_stage: Path | None = None
+    stage_parent = Path(tempfile.mkdtemp(prefix=".fieldos-pack-verify-", dir=id_root))
     try:
         (stage_parent / "content-packs").mkdir()
         extract_bundle(archive, stage_parent, pack_id)
@@ -209,6 +210,8 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
         if manifest["id"] != pack_id:
             raise InstallError("pack directory and manifest IDs do not match")
         final = id_root / version
+        if final.is_symlink():
+            raise InstallError(f"refusing to use a symlink as installed pack data: {final}")
         if final.exists():
             recorded_hash = final / ".bundle.sha256"
             if (recorded_hash.is_file() and recorded_hash.read_text(encoding="ascii").strip() == bundle_hash
@@ -216,31 +219,16 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
                 return f"already installed: {pack_id} {version}"
             raise InstallError(f"refusing to replace existing pack data: {final}")
 
-        install_stage = Path(tempfile.mkdtemp(prefix=f".{version}.", dir=id_root))
-        for source in pack_root.rglob("*"):
-            relative = source.relative_to(pack_root)
-            target = install_stage / relative
-            if source.is_dir():
-                target.mkdir(parents=True, exist_ok=True, mode=0o755)
-            elif source.is_file() and not source.is_symlink():
-                target.parent.mkdir(parents=True, exist_ok=True, mode=0o755)
-                shutil.copyfile(source, target)
-                target.chmod(0o644)
-            else:
-                raise InstallError(f"pack contains unsupported filesystem entry: {source}")
-        (install_stage / ".bundle.sha256").write_text(bundle_hash + "\n", encoding="ascii")
-        if not installed_pack_valid(install_stage, manifest):
+        (pack_root / ".bundle.sha256").write_text(bundle_hash + "\n", encoding="ascii")
+        if not installed_pack_valid(pack_root, manifest):
             raise InstallError("staged pack integrity check failed")
         try:
-            os.rename(install_stage, final)
+            os.rename(pack_root, final)
         except FileExistsError as exc:
             raise InstallError(f"refusing to replace concurrently installed pack: {final}") from exc
-        install_stage = None
         return f"installed: {pack_id} {version} at {final}"
     finally:
         shutil.rmtree(stage_parent, ignore_errors=True)
-        if install_stage is not None:
-            shutil.rmtree(install_stage, ignore_errors=True)
 
 
 def list_packs(root: Path = DEFAULT_ROOT) -> list[tuple[str, str, Path]]:
