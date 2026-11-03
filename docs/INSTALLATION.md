@@ -3,12 +3,16 @@
 ## Customer installation
 
 **Current candidate status (2026-11-03):** The customer-mode candidate
-`fieldos-customer-test-branded-8b0bda3.iso` was built from source `8b0bda3`
-and passed structural ISO verification. It has **not** passed a fresh
-interactive customer installation. Do not treat the current-source unattended
-E2E pass or the separate Kasm lab installation as evidence that the customer
-installer, disk handoff, or physical hardware works. See
-[`RELEASE.md`](RELEASE.md) for the exact SHA-256 and acceptance matrix.
+`fieldos-customer-test-branded-8b0bda3.iso` was built from implementation
+revision `8b0bda3` and passed a fresh no-NIC interactive UEFI QEMU installation.
+The customer selected identity and target disk; firstboot, offline services,
+local inference, Kiwix article retrieval, visible map rendering, and two
+reboots passed. After the media-removal prompt, the VM powered off and the test
+runner started it from the installed disk. The disk boot succeeded without
+guest repair, but automatic power-on after media removal remains a handoff
+caveat. Physical hardware is untested. See [`RELEASE.md`](RELEASE.md) and the
+detailed report at
+`/mnt/shared/fieldos-e2e/customer-interactive-branded-8b0bda3-20261103/report.md`.
 
 The customer facing ISO is built with:
 
@@ -24,10 +28,9 @@ provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” For USB installation, remove the USB media when prompted so
-firmware can boot the installed disk. This workflow is documented but has not
-passed a fresh install test with the current customer candidate. Use a
-disposable VM for validation until the customer-install gate in
-[`RELEASE.md`](RELEASE.md) passes.
+firmware can boot the installed disk. This workflow passed in the disposable VM
+with the media-handoff caveat above. Review the release gates in
+[`RELEASE.md`](RELEASE.md) before installing on physical customer hardware.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).

@@ -18,6 +18,8 @@ interactive test environment and is not release acceptance.
 - E2E evidence:
   `/mnt/shared/fieldos-e2e/20261103T174505Z-2544533/report.md`, with logs
   and `map-render.png` in the same directory.
+- Fresh customer-mode evidence:
+  `/mnt/shared/fieldos-e2e/customer-interactive-branded-8b0bda3-20261103/report.md`.
 - Persistent Kasm test guest: see [FieldOS Lab operations](FIELDOS-LAB.md).
 
 These images and evidence are local test artifacts, not public release assets.
@@ -37,7 +39,7 @@ pass.
 | Offline map | PASS for test fixture | Firefox rendered the map in the no-NIC E2E guest; regional coverage and zoom remain limited |
 | Branded installed desktop | PASS | Fresh guest session checked wallpaper/theme and launchers |
 | Two-reboot persistence | PASS | Essential service checks repeated after both guest reboots |
-| Customer interactive installation | PARTIAL | Candidate structure verified; fresh interactive disk/account selection, handoff, and boot still need testing |
+| Customer interactive installation | PARTIAL | Fresh install with interactive identity/disk selection booted from installed disk and passed services plus two reboots. After media eject, the VM powered off and required a host start from disk; automatic handoff and physical behavior remain unverified. See the customer-mode report. |
 | Kasm FieldOS Lab replacement | PARTIAL | Replacement VM passes service/reboot checks; owner-authenticated browser launch and interaction remain unconfirmed |
 | Hardware adaptation | PARTIAL | Configuration/fixture tests exist; physical GPU acceleration and broad machine coverage unverified |
 | Security/network isolation | PARTIAL | E2E had no NIC; Lab has management NIC with no route/DNS and guest firewall. Shared-bridge peer isolation is unverified |
@@ -47,9 +49,12 @@ pass.
 
 A customer release requires a separate fresh install from the customer-mode ISO
 with interactive identity and disk selection, no network, successful installed
-disk boot without manual repair, firstboot completion, branded desktop, and
-service/persistence checks. The unattended E2E does not satisfy this gate.
-The current candidate has not passed that test. Test only on a disposable VM
+disk boot without guest repair, firstboot completion, branded desktop, and
+service/persistence checks. The unattended E2E does not satisfy this gate. The
+current candidate completed these checks in QEMU, but the VM powered off after
+the media-removal prompt and was explicitly started from its installed disk.
+Automatic handoff and physical-media behavior remain unverified, so this gate
+is PARTIAL. Test only on a disposable VM
 with a virtual disk; never target a physical or production disk during
 acceptance.
 
@@ -57,8 +62,12 @@ acceptance.
 
 The bundled Wikipedia ZIM and low-zoom map are test-sized fixtures, not a
 comprehensive field library or navigation-grade regional map. No broad medical,
-emergency, agricultural, or survival coverage is claimed. Optional N.O.M.A.D.
-content acquisition and activation workflow remains incomplete. Before
+emergency, agricultural, or survival coverage is claimed. The upstream
+N.O.M.A.D. Command Center landing page uses generic copy that overstates the
+reference packs present in this image; the FieldOS Start Here guide describes
+the actual fixture limits, but the discrepancy should be corrected before
+public release. Optional N.O.M.A.D. content acquisition and activation workflow
+remains incomplete. Before
 redistribution, review the exact content sources, licenses, attribution, and
 Ubuntu image terms in `docs/REDISTRIBUTION.md` and `docs/OFFLINE-CONTENT.md`.
 
