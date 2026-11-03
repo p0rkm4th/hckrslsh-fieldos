@@ -90,20 +90,22 @@ logged `STATUS_LOGON_FAILURE`, and GNOME logged a CredSSP NTLM MIC verification
 failure; no guest GDM/PAM account-password failure was logged for that attempt.
 The existing owner-approved desktop credential was resynchronized to the
 guest's `labdesk` account, GNOME Remote Desktop system credentials, and Kasm's
-static server credential. The helper reported success; API read-back confirmed
-automatic security negotiation and a static credential is configured, the
-guest account has a password set, and the RDP service is active. This does not
-prove a new login succeeded. A fresh owner launch is still required. The Kasm
-website password was not changed. Neither password is recorded in this
-document.
+static server credential. The first resynchronization helper had a stdin/script
+collision: it reported success without reliably passing the intended password
+to the guest command. That success is invalid evidence and is superseded. The
+helper was corrected to pass the script as a command argument and the password
+on stdin; the corrected run confirmed both Kasm API read-back and guest command
+completion. Guest account and RDP service read-back also passed. There has been
+no post-correction owner login attempt yet, so access remains unverified. The
+Kasm website password was not changed. Neither password is recorded here.
 
 There are two sign-in stages: the Kasm server credential authenticates the
 RDP connection; GNOME then presents its remote GDM greeter, where the operator
-must sign in to guest account `labdesk` with the desktop password. The latest
-retained diagnostic from the earlier `security=nla` attempt shows Guacamole
+must sign in to guest account `labdesk` with the desktop password. The retained
+diagnostics from before the corrected sync show Guacamole
 selected NLA and GNOME sent its server-redirection handoff, followed by a
 transport close. A later `security=any` attempt logged an RDP authentication
-failure before guest login. Credentials have since been resynchronized; no
+failure before guest login. Credentials were corrected after those attempts; no
 fresh attempt has confirmed the result. The owner has seen the login screen,
 but a stable post-login desktop is not yet verified. Diagnostic record:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
@@ -112,7 +114,11 @@ This two-stage flow is GNOME's documented [headless multi-user remote login
 mode](https://github.com/GNOME/gnome-remote-desktop/blob/main/docs/configuration.md#headless-multi-user-remote-login).
 Credential synchronization evidence:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync.txt`
-(SHA-256 `8fc88a8385d9180e2c9119f5712a4b6a0ae1f0471b9531dfc5775c753eebd8b3`).
+(SHA-256 `8fc88a8385d9180e2c9119f5712a4b6a0ae1f0471b9531dfc5775c753eebd8b3`)
+records the superseded attempt and must not be used as proof. The corrected
+sync's API/guest command result was observed on 2026-11-03; the following guest
+log and Kasm Guacamole log reads contained no later login attempt. Do not
+change credentials again absent a new failure after this corrected sync.
 
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
