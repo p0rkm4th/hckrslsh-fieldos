@@ -50,8 +50,11 @@ the Kasm API update and guest credential command completion. Guest account and
 RDP service read-back passed. Logs inspected after that correction showed no
 new login attempt, so a fresh session test is still pending. The Kasm website
 password was not changed. Successful desktop login and application interaction
-still need owner confirmation. A headless Firefox capture showed a blank map canvas; map
-API and tile availability therefore remain verified, while
+still need owner confirmation. Redacted corrected-sync evidence is at
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync-corrected.txt`
+(SHA-256 `00621e1bf57ea9a6d6c5cc11a15e7f10a17f34cdc695aeac322be395880992a8`).
+A headless Firefox capture showed a blank map canvas; map API and tile
+availability therefore remain verified, while
 visible rendering in this workspace is **PARTIAL**.
 Screenshot: `/mnt/shared/fieldos-lab/evidence/20261103/map-headless.png`
 (SHA-256 `8406e948d273201648f5372c785402f641cdc25f121d09795c2b0134d081afea`).
