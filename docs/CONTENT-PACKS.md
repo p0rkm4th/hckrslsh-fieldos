@@ -41,7 +41,7 @@ On an installed system, verify and add a bundle with:
 
 ```sh
 sudo /opt/fieldos/scripts/fieldos-content-packs.py install /path/to/pack-1.0.tar.zst
-/opt/fieldos/scripts/fieldos-content-packs.py list
+sudo /opt/fieldos/scripts/fieldos-content-packs.py list
 ```
 
 Installation checks the sidecar checksum, rejects unsafe archive entries,

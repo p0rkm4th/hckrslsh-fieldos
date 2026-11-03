@@ -18,8 +18,8 @@ mode `0600` on the existing `.env` file without replacing its contents.
 
 ```sh
 systemctl status fieldos-firstboot.service --no-pager
-sudo cat /var/lib/fieldos/provisioning-status.json
-sudo tail -n 150 /var/log/fieldos-firstboot.log
+cat /var/lib/fieldos/provisioning-status.json
+tail -n 150 /var/log/fieldos-firstboot.log
 ```
 
 If it failed, the status file records the exit code and log location. Correct
@@ -51,11 +51,13 @@ sudo /opt/fieldos/scripts/fieldos-diagnostics.sh
 
 The script prints only the last 40 firstboot journal lines and last 80 lines
 from `/var/log/fieldos-firstboot.log`; it does not print the generated Compose
-credentials. The log is `root:adm` mode `0640` so the local administrator
-group can read diagnostics; `/opt/fieldos/services/.env` remains `root:root`
-mode `0600`. Run the script with `sudo` to read the root-only provisioning
-status. Review output before sharing because it may contain local file paths
-and hardware information.
+credentials. The log and nonsecret provisioning status are `root:adm` mode
+`0640`, and `/var/lib/fieldos` is `root:adm` mode `0710`, allowing local admins
+to read the status and log without listing persistent application data.
+`/opt/fieldos/services/.env` remains `root:root` mode `0600`. Run the script
+with `sudo` to access the full journal and container inspection. Review output
+before sharing because it may contain local file paths and hardware
+information.
 
 Inspect service state and the local application health endpoint:
 

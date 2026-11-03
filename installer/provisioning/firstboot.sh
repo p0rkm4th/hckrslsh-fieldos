@@ -15,15 +15,27 @@ chown root:adm "$LOG"
 chmod 0640 "$LOG"
 exec > >(tee -a "$LOG") 2>&1
 
+prepare_status_path() {
+  install -d -o root -g adm -m 0710 "$STATE"
+  # Admins can traverse to the status file without listing the data directory.
+  chown root:adm "$STATE"
+  chmod 0710 "$STATE"
+}
+
+write_status() {
+  local contents=$1
+  local status_tmp
+  prepare_status_path
+  status_tmp=$(mktemp "$STATE/provisioning-status.json.XXXXXX")
+  printf '%s\n' "$contents" > "$status_tmp"
+  chown root:adm "$status_tmp"
+  chmod 0640 "$status_tmp"
+  mv -f "$status_tmp" "$STATE/provisioning-status.json"
+}
+
 record_failure() {
   local rc=$1
-  local status_tmp
-  install -d -m 0755 "$STATE"
-  status_tmp=$(mktemp "$STATE/provisioning-status.json.XXXXXX")
-  printf '{"status":"failed","exit_code":%s,"log":"%s"}\n' "$rc" "$LOG" > "$status_tmp"
-  chown root:root "$status_tmp"
-  chmod 0600 "$status_tmp"
-  mv -f "$status_tmp" "$STATE/provisioning-status.json"
+  write_status "{\"status\":\"failed\",\"exit_code\":$rc,\"log\":\"$LOG\"}"
 }
 
 fail() {
@@ -44,6 +56,9 @@ trap fail ERR
 trap '[[ -z "${env_tmp:-}" ]] || rm -f -- "$env_tmp"' EXIT
 
 if [[ -e "$STATE/provisioning-status.json" ]] && grep -q '"status":"complete"' "$STATE/provisioning-status.json"; then
+  prepare_status_path
+  chown root:adm "$STATE/provisioning-status.json"
+  chmod 0640 "$STATE/provisioning-status.json"
   echo "FieldOS provisioning is already complete."
   exit 0
 fi
@@ -248,5 +263,5 @@ curl --fail --silent http://127.0.0.1:11434/api/embed \
   > "$STATE/embedding-smoke.json"
 grep -q 'embeddings' "$STATE/embedding-smoke.json"
 
-printf '{"status":"complete","completed_at":"%s"}\n' "$(date --iso-8601=seconds)" > "$STATE/provisioning-status.json"
+write_status "{\"status\":\"complete\",\"completed_at\":\"$(date --iso-8601=seconds)\"}"
 echo "FieldOS services are available at http://localhost:8080."
