@@ -161,6 +161,7 @@ autoinstall:
         build_env = os.environ.copy()
         build_env.update({
             "FIELDOS_AUTOINSTALL_FILE": str(self.user_data),
+            "FIELDOS_VERIFY_MODE": "test",
             "FIELDOS_OUTPUT_PATH": str(self.iso),
             "FIELDOS_WORK_ROOT": os.environ.get("FIELDOS_WORK_ROOT", str(self.run_dir)),
             "FIELDOS_TEST_AUTOBOOT": "1",
