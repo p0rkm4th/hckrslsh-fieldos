@@ -6,14 +6,17 @@ ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
 The latest clean unattended offline acceptance run passed on source commit
-`ae1d18bb54974a4c949a046ed90fdf38a110ce4e`; report, screenshots, logs, and
-guest disk are under `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/`.
-The 80 GiB UEFI guest installed with 12 GiB RAM and no NIC; N.O.M.A.D., local
-inference, embeddings, source-verified reference retrieval, browser map
-rendering, and persistence after two reboots passed. The test ISO SHA-256 is
-`5c123c4ef136f7f44ff4bcc7866e361bb51b72a5cca4318773fdbec0cd5a273a`; the
-rebuilt offline payload SHA-256 is
-`1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
+`fa94b5761d40175e81919c4259ddf76f45785532`. The test ISO SHA-256 was
+`1751ea31326b8e7ab526470e49365f367ffb3a39a5d9b4876f172bafa2dda7f0` (temporary
+ISO removed by the harness after testing). Report, guest disk, installer and
+firstboot logs, Firefox screenshot, and checks are under
+`/mnt/shared/fieldos-e2e/20261103T074611Z-2255858/`. The no-NIC, 80 GiB UEFI
+guest with 12 GiB RAM installed unattended and passed offline provisioning,
+N.O.M.A.D., Qwen CPU inference, embeddings, Kiwix reference search, regional map
+tile/range serving, Firefox map rendering, and two consecutive reboots. The
+bundled and installed ODbL text both matched SHA-256
+`607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5` in the
+read-only guest validation at `odbl-install-validation.txt`.
 
 The interactive customer ISO passed a fresh blank-disk USB installation and
 offline runtime checks in QEMU. After the expected USB media removal at
@@ -30,13 +33,13 @@ requirement, and detailed third-party redistribution review remain open.
 The interactive install completed in QEMU, but that does not clear these
 release gates. Do not publish release binaries.
 
-The source now bundles the full ODbL 1.0 text in the payload and installs it
-under `/usr/share/doc/fieldos/`. Its checksum matches the official Open Data
-Commons text. The existing customer ISO predates this source change; rebuilding
-the ISO and repeating its verification remains outstanding. Build storage had
-27 GiB free at this review, below the configured minimum for a new full build.
+The current customer ISO remains the older unpublished candidate at
+`/mnt/shared/fieldos-releases/fieldos-test-customer-280fda2.iso`; it predates
+the ODbL addition. The temporary unattended test ISO built from updated source
+passed the E2E run above. Building and validating a new interactive customer
+candidate remains outstanding. Free build storage after the run was 83 GiB.
 
-### Fresh clean E2E rerun — 2026-11-03
+### Earlier clean E2E rerun — 2026-11-03
 
 - `make test-e2e` built test ISO SHA-256
   `5c123c4ef136f7f44ff4bcc7866e361bb51b72a5cca4318773fdbec0cd5a273a`, then
