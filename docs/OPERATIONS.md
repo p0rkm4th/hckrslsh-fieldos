@@ -12,6 +12,10 @@ seeds runtime files, selects and validates a model, and starts the Compose
 services. Firstboot is guarded by a lock and a completion marker. Check its
 result before retrying:
 
+The generated Compose credentials are written to a temporary file and
+renamed atomically. Each provisioning attempt enforces root ownership and
+mode `0600` on the existing `.env` file without replacing its contents.
+
 ```sh
 systemctl status fieldos-firstboot.service --no-pager
 sudo cat /var/lib/fieldos/provisioning-status.json

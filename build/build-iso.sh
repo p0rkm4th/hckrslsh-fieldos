@@ -35,6 +35,28 @@ if [[ -e "$OUTPUT" ]]; then
 fi
 WORK_ROOT=${FIELDOS_WORK_ROOT:-"$ROOT/build"}
 mkdir -p "$WORK_ROOT"
+require_free_bytes() {
+  local path="$1" needed="$2" available
+  available=$(df -Pk "$path" | awk 'NR == 2 { print $4 * 1024 }')
+  if [[ -z "$available" ]] || (( available < needed )); then
+    echo "Insufficient free space at $path: need $needed bytes, have ${available:-unknown}" >&2
+    exit 1
+  fi
+}
+source_bytes=$(stat -c %s "$SOURCE_ISO")
+payload_bytes=$(stat -c %s "$PAYLOAD")
+# xorriso writes a complete new ISO; staging also copies the compressed payload.
+output_dir=$(dirname "$OUTPUT")
+output_need=$((source_bytes + 1024 * 1024 * 1024))
+work_need=$((payload_bytes + 1024 * 1024 * 1024))
+output_device=$(df -P "$output_dir" | awk 'NR == 2 { print $1 }')
+work_device=$(df -P "$WORK_ROOT" | awk 'NR == 2 { print $1 }')
+if [[ -n "$output_device" && "$output_device" == "$work_device" ]]; then
+  require_free_bytes "$output_dir" "$((output_need + work_need))"
+else
+  require_free_bytes "$output_dir" "$output_need"
+  require_free_bytes "$WORK_ROOT" "$work_need"
+fi
 WORK=$(mktemp -d "$WORK_ROOT/work-${MODE}.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/hardware/detect" \
