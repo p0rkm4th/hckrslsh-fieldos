@@ -21,7 +21,7 @@ from shutil import disk_usage
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_UBUNTU_ISO = Path("/mnt/shared/ISO Library/ubuntu-26.04.1-desktop-amd64.iso")
+DEFAULT_UBUNTU_ISO = Path("/mnt/shared/ISO Library/Linux Distributions/ubuntu-26.04.1-desktop-amd64.iso")
 MIN_FREE_GIB = 48
 
 
@@ -625,6 +625,7 @@ autoinstall:
             "assert 'fieldos-wallpaper.svg' in defaults and 'fieldos-start-here.desktop' in defaults and 'fieldos-nomad.desktop' in defaults, 'GNOME defaults omit FieldOS wallpaper or dock entries'\n"
             "guide = Path('/usr/share/doc/fieldos/START-HERE.html').read_text()\n"
             "assert 'Ready offline in this test edition' in guide and 'separate internet-connected update session' in guide, 'offline guide does not explain bundled features and updates'\n"
+            "assert 'fieldos-content-packs.py install' in guide and 'USB-NAME' in guide, 'Start Here does not explain offline map-pack import'\n"
             "print({'branding_files': len(paths), 'dconf_profile': True, 'compiled_defaults': True, 'offline_guide': True})\n"
             "PY",
         )
