@@ -48,18 +48,22 @@ def build_archives(catalog_path: Path, output_root: Path) -> list[Path]:
     output.mkdir(parents=True, exist_ok=True)
     built: list[Path] = []
     for pack_id, version, pack_dir in entries:
+        manifest = json.loads((pack_dir / "manifest.json").read_text(encoding="utf-8"))
+        relative_pack = pack_dir.relative_to(payload_root)
+        members = [relative_pack / "manifest.json"] + [
+            relative_pack / Path(artifact["path"]) for artifact in manifest["artifacts"]
+        ]
         archive = output / f"{pack_id}-{version}.tar.zst"
         checksum = Path(f"{archive}.sha256")
         if archive.exists() or checksum.exists():
             raise FileExistsError(f"refusing to overwrite existing content pack output: {archive}")
-        source_bytes = sum(path.stat().st_size for path in pack_dir.rglob("*") if path.is_file())
+        source_bytes = sum((payload_root / member).stat().st_size for member in members)
         free_bytes = shutil.disk_usage(output).free
         required_bytes = source_bytes + 256 * 1024 * 1024
         if free_bytes < required_bytes:
             raise OSError(
                 f"insufficient space for {pack_id}: need up to {required_bytes} bytes, have {free_bytes}"
             )
-        relative_pack = pack_dir.relative_to(payload_root)
         temp_fd, temp_name = tempfile.mkstemp(prefix=f".{archive.name}.", suffix=".tmp", dir=output)
         os.close(temp_fd)
         temp = Path(temp_name)
@@ -67,7 +71,8 @@ def build_archives(catalog_path: Path, output_root: Path) -> list[Path]:
         try:
             tar = subprocess.Popen(
                 ["tar", "--sort=name", "--mtime=UTC 1970-01-01", "--owner=0", "--group=0",
-                 "--numeric-owner", "-C", str(payload_root), "-cf", "-", str(relative_pack)],
+                 "--numeric-owner", "-C", str(payload_root), "-cf", "-", "--",
+                 *[member.as_posix() for member in members]],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             )
             assert tar.stdout is not None

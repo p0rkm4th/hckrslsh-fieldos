@@ -1,7 +1,10 @@
 import hashlib
 import importlib.util
+import io
 import json
 import shutil
+import subprocess
+import tarfile
 import tempfile
 import unittest
 from pathlib import Path
@@ -54,6 +57,7 @@ class ContentPackBundleTests(unittest.TestCase):
             "authority": "community-reference",
         }
         (self.pack / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+        (self.pack / "unlisted-private.txt").write_text("must not ship\n", encoding="utf-8")
         (manifests / "content-packs.json").write_text(json.dumps({
             "schema_version": 1,
             "manifest_schema": "content-pack.schema.json",
@@ -72,6 +76,15 @@ class ContentPackBundleTests(unittest.TestCase):
         archive = archives[0]
         self.assertEqual(archive.name, "fixture-reference-1.0.0.tar.zst")
         self.assertTrue(Path(f"{archive}.sha256").is_file())
+        listing = subprocess.run(
+            ["zstd", "--decompress", "--stdout", str(archive)],
+            capture_output=True, check=True,
+        ).stdout
+        with tarfile.open(fileobj=io.BytesIO(listing), mode="r:") as tar:
+            members = tar.getnames()
+        self.assertIn("content-packs/fixture-reference/manifest.json", members)
+        self.assertIn("content-packs/fixture-reference/guide.txt", members)
+        self.assertNotIn("content-packs/fixture-reference/unlisted-private.txt", members)
 
         first = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
         self.assertIn("installed:", first)
