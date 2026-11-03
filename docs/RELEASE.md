@@ -1,7 +1,11 @@
 # Release status and process
 
-FieldOS has passed unattended offline acceptance and separate interactive R4
-and R5 installations in disposable QEMU/KVM guests. R5's installation,
+The clean unattended offline acceptance run passed on source commit
+`017987d99c4718ceb2a843030bc097546a354e52`. The latest source is `34f9604`;
+that commit adds installed content provenance notes and an archive integrity
+check, but has not yet been rebuilt or rerun through E2E. Earlier separate
+interactive R4 and R5 installations were also performed in disposable
+QEMU/KVM guests. R5's installation,
 firstboot, services, local inference, reference retrieval, map endpoints, and
 two reboots passed. Both R4 and R5 powered off after the remove-media prompt
 and required a host start to boot the installed target; automatic interactive
@@ -205,6 +209,19 @@ still presents interactive disk and account setup.
   remain documented. R5 is the only current ISO candidate, and it is not a
   distribution release.
 
+### Latest source-only content provenance update — 2026-11-03
+
+- Commit `34f96042e2b7ac3a59c5642f8574402a9f9a70c8` adds a pinned ZIM source,
+  size and SHA-256 manifest, a user-visible offline source/limits guide, the
+  CC BY-SA 4.0 text, and firstboot installation of those notices. A byte-for-byte
+  comparison against the pinned upstream N.O.M.A.D. v1.35.1 file passed; evidence
+  is `/mnt/shared/fieldos-e2e/zim-provenance-review-20261103.md`.
+- The archive is still a test fixture. Per-entry and embedded-media license
+  clearance is open. R5 predates these changes; the E2E assertion for installed
+  documentation and archive integrity has not yet run against a rebuilt ISO.
+- The working tree is clean and `main` is pushed to `origin/main`. The current
+  repository audit is under `/mnt/shared/fieldos-e2e/repository-review-34f9604/`.
+
 ## Readiness
 
 | Component | Status | Evidence |
@@ -222,7 +239,7 @@ still presents interactive disk and account setup.
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks clean across all 34 reachable commits and tracked source as of `afe6b57`; zero Git blobs over 1 MiB; evidence at `/mnt/shared/fieldos-e2e/repository-review-afe6b57/` |
+| Public Git history | PASS | Gitleaks clean across 37 reachable commits at `34f9604`; zero Git blobs over 1 MiB; evidence at `/mnt/shared/fieldos-e2e/repository-review-34f9604/` |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
@@ -249,15 +266,19 @@ still presents interactive disk and account setup.
    the final implementation. Preserve source revision, build inputs, test
    reports, checksums, and known limitations.
 
-The fresh E2E run used clean source commit
-`017987d99c4718ceb2a843030bc097546a354e52`. This release-record update is
-documentation only. `make check` and all 28 unit tests pass on that source.
+The latest clean E2E report is
+`/mnt/shared/fieldos-e2e/20261103T013805Z-2111810/report.md`, from clean
+source commit `017987d99c4718ceb2a843030bc097546a354e52`. It records unattended
+installation, disconnected services, Firefox map rendering, local inference,
+reference retrieval, and two reboots. It does not include the content-attribution
+files or guest-side integrity check added in commit `34f9604`; rebuild and rerun
+that test before treating the latest source as operationally accepted. No new
+ISO was built for `34f9604`.
 
-The 2026-11-03 Git history review scanned all 34 reachable commits with
-Gitleaks (no findings), scanned a snapshot of tracked source including current
-documentation (no findings), and found no Git blobs over 1 MiB. Reports and
-the snapshot are preserved under
-`/mnt/shared/fieldos-e2e/repository-review-afe6b57/`.
+At `34f9604`, `make check` and all 28 unit tests pass. Gitleaks scanned 37
+reachable commits with no findings; a Git object scan found no blobs over
+1 MiB. Reproducible audit output is preserved under
+`/mnt/shared/fieldos-e2e/repository-review-34f9604/`.
 
 The expanded/full ISO must wait until these release gates pass. Never commit
 ISOs, model weights, credentials, VM disks, or downloaded image archives.
