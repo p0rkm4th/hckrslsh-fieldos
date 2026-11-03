@@ -100,6 +100,8 @@ a transport close immediately afterward. The owner has seen the login screen,
 but a stable post-login desktop is not yet verified. Diagnostic record:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
 (SHA-256 `b0c08f5978be942021c087d2a194fdcecdd6187aaf5b10ff92594e953285cb47`).
+This two-stage flow is GNOME's documented [headless multi-user remote login
+mode](https://github.com/GNOME/gnome-remote-desktop/blob/main/docs/configuration.md#headless-multi-user-remote-login).
 
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
