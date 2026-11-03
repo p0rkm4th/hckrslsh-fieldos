@@ -4,7 +4,9 @@ set -Eeuo pipefail
 MODE=${1:?usage: build-iso.sh test|full UBUNTU_ISO [AUTOINSTALL_FILE]}
 SOURCE_ISO=${2:?usage: build-iso.sh test|full UBUNTU_ISO [AUTOINSTALL_FILE]}
 AUTOINSTALL_FILE=${3:-${FIELDOS_AUTOINSTALL_FILE:-}}
+VERIFY_MODE=${FIELDOS_VERIFY_MODE:-customer}
 case "$MODE" in test|full) ;; *) echo "Unknown image mode: $MODE" >&2; exit 2 ;; esac
+case "$VERIFY_MODE" in customer|test) ;; *) echo "Unknown ISO verification mode: $VERIFY_MODE" >&2; exit 2 ;; esac
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 SOURCE_ISO=$(realpath "$SOURCE_ISO")
@@ -45,10 +47,19 @@ require_free_bytes() {
 }
 source_bytes=$(stat -c %s "$SOURCE_ISO")
 payload_bytes=$(stat -c %s "$PAYLOAD")
+payload_link_possible=0
+if [[ "$(stat -c %d "$PAYLOAD")" == "$(stat -c %d "$WORK_ROOT")" && \
+      "$(stat -c %a "$PAYLOAD")" == 644 ]]; then
+  payload_link_possible=1
+fi
 # xorriso writes a complete new ISO; staging also copies the compressed payload.
 output_dir=$(dirname "$OUTPUT")
 output_need=$((source_bytes + 1024 * 1024 * 1024))
-work_need=$((payload_bytes + 1024 * 1024 * 1024))
+if (( payload_link_possible )); then
+  work_need=$((1024 * 1024 * 1024))
+else
+  work_need=$((payload_bytes + 1024 * 1024 * 1024))
+fi
 output_device=$(df -P "$output_dir" | awk 'NR == 2 { print $1 }')
 work_device=$(df -P "$WORK_ROOT" | awk 'NR == 2 { print $1 }')
 if [[ -n "$output_device" && "$output_device" == "$work_device" ]]; then
@@ -81,7 +92,11 @@ install -m 0755 "$ROOT/scripts/fieldos-content-packs.py" "$WORK/fieldos/scripts/
 install -m 0644 "$ROOT/payload/validate_content_packs.py" "$WORK/fieldos/scripts/validate_content_packs.py"
 install -m 0644 "$ROOT/payload/manifests/content-pack.schema.json" \
   "$WORK/fieldos/payload/manifests/content-pack.schema.json"
-install -m 0644 "$PAYLOAD" "$WORK/fieldos/payload/offline-payload.tar.zst"
+if (( payload_link_possible )); then
+  ln "$PAYLOAD" "$WORK/fieldos/payload/offline-payload.tar.zst"
+else
+  install -m 0644 "$PAYLOAD" "$WORK/fieldos/payload/offline-payload.tar.zst"
+fi
 install -m 0644 "$PAYLOAD.sha256" "$WORK/fieldos/payload/offline-payload.tar.zst.sha256"
 if [[ -n "$AUTOINSTALL_FILE" ]]; then
   AUTOINSTALL_FILE=$(realpath "$AUTOINSTALL_FILE")
@@ -141,6 +156,6 @@ xorriso -indev "$SOURCE_ISO" -outdev "$OUTPUT" \
   -map "$WORK/grub-fieldos.cfg" /boot/grub/grub.cfg \
   -boot_image any replay -commit
 
-"$ROOT/build/verify-iso.sh" "$OUTPUT" "$MODE"
+"$ROOT/build/verify-iso.sh" "$OUTPUT" "$VERIFY_MODE"
 sha256sum "$OUTPUT" > "$OUTPUT.sha256"
 echo "Created $OUTPUT"
