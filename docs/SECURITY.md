@@ -118,3 +118,21 @@ Evidence is `/mnt/shared/fieldos-e2e/live-security-102308.txt` (SHA-256
 `5c44f34eac4ae9b1de60896cc9794833c7a352d50dec6461dfd4748225ec7839`). This
 was a no-NIC guest, so it does not replace the earlier user-mode-network test
 or a guest-to-guest LAN scan, and it is not a fresh current-source installation.
+
+## Temporary network-enabled check — 2026-11-03
+
+A QEMU user-mode SLIRP NIC was temporarily hot-plugged into the same existing
+installed guest; it received `10.0.2.15/24` and a default route, and the guest
+could reach `https://example.com` (HTTP 200). N.O.M.A.D. remained healthy.
+Connections to all five published service ports (`8080`, `8090`, `9999`,
+`11434`, `6333`) were refused on the guest NIC address, while an egress
+attempt from N.O.M.A.D. was blocked. The temporary NIC was removed; QMP
+reported it absent, libvirt showed no interface, the guest had no external
+link/default route, and N.O.M.A.D. plus all seven containers remained running.
+The installed Compose file hash matched current source. Evidence:
+`/mnt/shared/fieldos-e2e/network-enabled-live-102308.txt` (SHA-256
+`71432edc42a786cc9b1a6d0a0aaa6d8e619a0f487cebbec622b86249f025ffdc`) and
+`/mnt/shared/fieldos-e2e/network-detach-live-102308.txt` (SHA-256
+`6d2b529f73c90cce058668994b3e123c98ada20b1ec22d349542831728acf53e`). This
+uses QEMU user networking, not a physical LAN or guest-to-guest peer scan; it
+is also not a fresh install of current source.
