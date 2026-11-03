@@ -40,6 +40,22 @@ artifacts, against the documented 50 GiB minimum. Report:
 confirms the same storage blocker remains; the failed legacy VM was not
 repaired or counted as acceptance.
 
+The root-only `auto-test4` firstboot log has now been recovered without
+stopping or repairing the VM. It shows all seven images loaded and containers
+started, followed by curl exit 7 in the local endpoint wait. The old guest's
+Compose file attached the published services only to `fieldos-internal`, and
+its saved Docker network state has no active host-port mappings. Current source
+adds a separate `fieldos-local-ui` bridge; the later clean no-NIC guest confirms
+loopback port mappings and HTTP 200 responses. This explains the legacy
+guest's failure and corroborates the existing topology fix, but it does not
+replace a fresh current-source acceptance. Full evidence, including recovered
+log/status hashes and the live external-snapshot disposition, is in
+`/mnt/shared/fieldos-e2e/auto-test4-root-cause-20261103.md`.
+
+On source commit `8b630ea`, `make check` and `make test` pass all 50 tests.
+Log: `/mnt/shared/fieldos-e2e/current-source-check-test-8b630ea.log` (SHA-256
+`fe4013c900d64683acca8dc588194fd6066349a92c10bc3ef3e76d2cb0179b70`).
+
 I rechecked the retained prior clean E2E guest without adding a NIC. Its map
 route returned application HTML and all seven containers were running. A new
 browser launch through the guest agent failed because Firefox Snap could not
