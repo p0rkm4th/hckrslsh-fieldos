@@ -5,72 +5,57 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-The latest clean unattended offline acceptance run passed on source commit
-`465dab341fca80cdde3a32a4e61d70c0318ab90a`. Its test ISO SHA-256 was
-`34a8c6884c65c9dad55eb65d27d2c4e3a501eb60249cdb7d19ccff66b4fc75c1`; the
-harness removed the temporary ISO and credentials after the run. The report,
-guest disk, installer/firstboot logs, and Firefox screenshot are under
-`/mnt/shared/fieldos-e2e/20261103T090118Z-2284309/`. A fresh 80 GiB UEFI guest
-with 12 GiB RAM and no virtual NIC installed unattended. Offline provisioning,
-all seven pinned services, N.O.M.A.D., Qwen CPU inference, embeddings, Kiwix
-reference search, map tile/range serving, browser rendering, blocked container
-egress, and two consecutive reboots passed. The bundled and installed ODbL
-texts both matched SHA-256
-`607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`.
-The generated Compose environment file was verified as `600 root:root` in the
-installed guest.
+Latest verified gates (2026-11-03): a clean unattended offline acceptance run
+passed, followed by a separate fresh-disk interactive customer ISO test. Both
+UEFI QEMU guests had no virtual NIC and passed service, inference, retrieval,
+map, and two-reboot checks. The interactive guest also rendered the regional
+map in Firefox. Its installer displayed Ubuntu's media-removal prompt and
+powered off; the test ejected the ISO and started the installed disk. This
+interactive media handoff is an operator action. The automated installer
+handoff is handled by `make test-e2e` and passed without manual guest input.
 
-The latest interactive customer ISO test artifact (now removed) was
-`/mnt/shared/fieldos-releases/fieldos-test-customer-47d128e.iso` (SHA-256
-`d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`), built
-from source commit `47d128e79f3b53fed8f5e954b866ceb5e32b20e4`. `make iso-test`
-passed ISO structure, BIOS/UEFI boot records, interactive installer
-configuration, and payload checks. A fresh no-NIC UEFI interactive install
-completed and booted its installed target, but provisioning did not reach its
-completion marker: its 6 GiB VM had 5.22 GiB detected RAM, leaving too little
-for the configured reserve plus the model estimate. Diagnostic checks after a
-temporary test-account credential reset found all seven containers running,
-N.O.M.A.D. healthy, successful Qwen generation and embedding, Kiwix search,
-and regional/world map API and tile delivery. After manually injecting the
-subsequent source fix into the installed guest, firstboot completed in
-reference-only mode; all seven services, N.O.M.A.D., Kiwix, embeddings, map
-registration, and `.env` permissions survived two guest reboots. Firefox in
-the guest rendered the regional US map (`map-browser-check.png`). This remains
-a repaired diagnostic result, not a customer acceptance pass: a test password
-was reset and source was copied in after installation. Full evidence is at
-`/mnt/shared/fieldos-e2e/customer-interactive-47d128e-r2-20261103/`. The ISO
-does not contain the source fix; rebuild and repeat the clean install before
-customer acceptance. After detaching it from the shut-down diagnostic guest,
-the ISO binary was removed to recover storage; its `.sha256` sidecar and all
-test evidence remain. The guest qcow2 is preserved.
+Unattended report, retained test guest, logs, and Firefox screenshot:
+`/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/`. Test ISO SHA-256 was
+`c9f27ff1316bc5ca26a77eedb32053ebc14de694e744216897ed717fc6c4cfd7`. That run
+used source commit `6c64ffd` with a dirty harness-only Wayland readiness fix;
+the fix was committed in `0b2fd8c` immediately afterward. The harness removed
+its temporary ISO and credentials.
 
-The preceding `f27305f` candidate (SHA-256
-`aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`) did pass
-a fresh interactive QEMU installation, local AI/reference/map acceptance,
-Firefox regional-map rendering, and two guest-side reboots. Its full report
-and screenshots are retained at
-`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/report.md`.
-That older candidate does not contain the latest atomic credential-file
-handling; its binary was removed after supersession, while its checksum and
-interactive-install evidence were retained.
+The interactive customer candidate is
+`/mnt/shared/fieldos-releases/fieldos-test-customer-0b2fd8c.iso`, SHA-256
+`5295eeee5ec93098b1b71274e79991e5aeae44b9672deda46441db4fe37c52b8`, built
+from clean source commit `0b2fd8c5de4f80ebad144a55e5b06e142115059c`.
+`make iso-test` verified structure, BIOS/UEFI boot records, interactive
+account/disk setup, and payload. Fresh 80 GiB `vda`, ISO on `sda`, 8 GiB RAM,
+no NIC. Only the disposable qcow2 was selected for erase. Full evidence is at
+`/mnt/shared/fieldos-e2e/customer-interactive-0b2fd8c-20261103/`.
 
-No release ISO is currently built or published. QEMU results do not establish
-physical hardware or GPU support. FieldOS is not recommended for physical
-customer installation yet:
-Canonical trademark/redistribution, exact third-party license review, LAN
-reachability, and physical hardware coverage remain open. Do not publish
-release binaries.
+Interactive runtime results: firstboot and all seven services passed;
+N.O.M.A.D. health was `{"status":"ok"}`; Qwen returned
+`FIELDOS_CUSTOMER_INSTALL_OK`; embedding output was 768 dimensions; Kiwix
+retrieved the bundled New York reference; regional map registration, PMTiles
+tile and HTTP range checks passed. Firefox rendered the regional United States
+map in `map-render.png`. The service `.env` was `600 root:root`, Kiwix's
+`/data` mount was read-only, and the desktop user was outside the Docker group.
+Both `acceptance-reboot-*.txt` reports show the full checks passed after
+changed boot IDs. No guest repair or password reset occurred; the ephemeral
+test password was removed after validation.
 
-The removed ISO checksum sidecar records SHA-256
-`d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`; payload
-SHA-256 is `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
-The current source unattended E2E run checksum-verified the installed ODbL
-copy against the bundled source copy. The customer ISO structural verifier
-passed.
-The current source fix is commit `ea18d86`; build and clean E2E rerun require
-more free space. The E2E harness requires 50 GiB free and `/mnt/shared` is
-below that threshold; no new ISO or VM disk should be created until storage is
-available.
+The candidate is not a release binary and no ISO is published. QEMU results do
+not establish physical hardware or GPU support. Physical customer installation
+is not yet recommended. Open gates include complete Canonical and third-party
+redistribution review, bridged-LAN reachability, physical hardware coverage,
+content-pack licensing/attribution, and field recovery documentation. The map
+fixture is a regional sample plus a world pack limited to zoom 5, not complete
+customer cartography. Hardware support and expanded field content are
+incomplete.
+
+At this checkpoint `/mnt/shared` has about 18 GiB available. Do not create
+another VM disk or ISO until capacity is increased or an evidence-retained,
+stopped disposable disk is deliberately retired.
+
+A public-history Gitleaks scan of all 81 commits through `0b2fd8c` found no
+credentials. The current documentation-only release update is pending commit.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
