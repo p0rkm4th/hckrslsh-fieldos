@@ -18,26 +18,48 @@ bundled and installed ODbL text both matched SHA-256
 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5` in the
 read-only guest validation at `odbl-install-validation.txt`.
 
-The interactive customer ISO passed a fresh blank-disk USB installation and
-offline runtime checks in QEMU. After the expected USB media removal at
-restart, the same guest booted to GDM without host-side recovery; all services,
-local inference, retrieval, and map API/tile checks passed after two reboots.
-The virtual CD-ROM path still powered off at the remove-media prompt, and the
-interactive customer guest did not repeat the browser screenshot check. The
-clean unattended E2E run above rendered the browser map using the same
-application and payload code. These are QEMU results, not physical customer
-hardware validation. FieldOS is not yet
-recommended for physical customer installation because guest-to-guest LAN
-exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
-requirement, and detailed third-party redistribution review remain open.
-The interactive install completed in QEMU, but that does not clear these
-release gates. Do not publish release binaries.
+The current interactive customer candidate `fieldos-test-customer-f27305f.iso`
+(SHA-256 `aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`)
+was built from source commit `f27305fe5c086f7fd39af55c293cc61a4c99f8e9`.
+ISO structure, BIOS/UEFI boot records, interactive installer configuration,
+payload contents, and payload checksums passed `make iso-test`. A fresh blank
+80 GiB qcow2 installation in UEFI QEMU used 8 GiB RAM, no virtual NIC, and a
+temporary account password that was not retained. Only the target disk was
+selected for erasure. The installed disk was first in firmware boot order, so
+“Restart now” handed off to the installed Ubuntu desktop while the USB ISO
+remained attached; no host-side start, reset, media detachment, or installer
+repair was needed.
 
-The current customer ISO remains the older unpublished candidate at
-`/mnt/shared/fieldos-releases/fieldos-test-customer-280fda2.iso`; it predates
-the ODbL addition. The temporary unattended test ISO built from updated source
-passed the E2E run above. Building and validating a new interactive customer
-candidate remains outstanding. Free build storage after the run was 83 GiB.
+After firstboot and each of two guest-side reboots, all seven services,
+N.O.M.A.D. health, local Qwen generation (`FIELDOS_CUSTOMER_INSTALL_OK`),
+768-value embedding output, Kiwix retrieval, world/regional PMTiles checks, and
+no-NIC/no-default-route checks passed. The installed regional map rendered in
+Firefox at `http://127.0.0.1:8080/maps`; screenshot:
+`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/map-browser.png`.
+The boot IDs and complete per-boot logs are in that directory's
+`reboot-acceptance.txt`, `acceptance-after-install.txt`,
+`acceptance-reboot-1.txt`, and `acceptance-reboot-2.txt`. The desktop's active
+power inhibitor rejected the normal libvirt guest reboot request; the two
+recorded test reboots used `systemctl reboot -i` inside the guest and each boot
+ID changed before the full suite was repeated. This did not require host-side
+recovery or alter application data. The guest was disconnected from external
+networking throughout.
+
+The candidate is private test material, not a published or approved
+redistribution image. QEMU results do not establish physical hardware or GPU
+support. FieldOS is not recommended for physical customer installation yet:
+Canonical trademark/redistribution, exact third-party license review, LAN
+reachability, and physical hardware coverage remain open. Do not publish
+release binaries.
+
+Current candidate path: `/mnt/shared/fieldos-releases/fieldos-test-customer-f27305f.iso`.
+Its payload SHA-256 is
+`1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
+The bundled and installed ODbL license text both match SHA-256
+`607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`.
+ISO build verification passed, and the clean interactive installation and
+reboot tests are recorded above. Free space on `/mnt/shared` after the run was
+50 GiB; no further large build should start until storage is reviewed.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
