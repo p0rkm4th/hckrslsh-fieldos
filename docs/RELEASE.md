@@ -5,8 +5,22 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-Current source is public at `origin/main`. `make check` and `make test` passed
-on source commit `670b1a3` with 49 tests. The captured log is
+Current source is public at `origin/main` at commit
+`598746e2ba63ff66b75986c8e7c161ef1205e494`. On this commit, `make check` and
+`make test` passed all 49 tests. The captured log is
+`/mnt/shared/fieldos-e2e/source-598746e-checks.log` (SHA-256
+`9fb3df49401d04187f60cd5362d2fa473430c84a2395e538ad4a89f024f37ba6`). A fresh
+Gitleaks scan of its complete Git history found no findings; redacted JSON is
+`/mnt/shared/fieldos-e2e/gitleaks-598746e.json` (SHA-256
+`37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`). A
+current-tree search found no local usernames, HADES/Garuda host labels, or
+private-key headers. These source and history checks do not replace a fresh
+installation, third-party license review, or broader manual infrastructure
+review. Earlier firstboot permission-specific evidence on commit `670b1a3` is
+retained below.
+
+On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
+The captured log is
 `/mnt/shared/fieldos-e2e/firstboot-log-permissions-tests.log` (SHA-256
 `50048dfea09c614251a3f34479e5650c10ba320c11be2d994a5c6d169c4d3fe2`). Hardware
 fixtures and workstation Vulkan detection are covered, but the existing
