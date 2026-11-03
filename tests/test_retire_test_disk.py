@@ -51,9 +51,16 @@ class TestDiskRetirementTests(unittest.TestCase):
             self.validate(self.runner(str(self.disk)))
         self.assertTrue(self.disk.exists())
 
-    def test_refuses_release_referenced_run(self):
-        self.release_doc.write_text(str(self.run_dir), encoding="utf-8")
-        with self.assertRaisesRegex(RetirementError, "referenced by docs/RELEASE.md"):
+    def test_report_reference_does_not_require_preserving_guest_disk(self):
+        self.release_doc.write_text(str(self.report), encoding="utf-8")
+        disk, report = self.validate()
+        self.assertEqual(disk, self.disk.resolve())
+        self.assertEqual(report, self.report)
+        self.assertTrue(disk.exists())
+
+    def test_refuses_release_referenced_disk(self):
+        self.release_doc.write_text(str(self.disk), encoding="utf-8")
+        with self.assertRaisesRegex(RetirementError, "disk is referenced by docs/RELEASE.md"):
             self.validate()
         self.assertTrue(self.disk.exists())
 

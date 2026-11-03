@@ -70,8 +70,8 @@ def validate_candidate(
     if not release_doc.is_file():
         raise RetirementError(f"release record is unavailable: {release_doc}")
     release_text = release_doc.read_text(encoding="utf-8", errors="replace")
-    if str(disk.parent) in release_text or disk.parent.name in release_text:
-        raise RetirementError("run is referenced by docs/RELEASE.md; preserve its disk")
+    if str(disk) in release_text:
+        raise RetirementError("disk is referenced by docs/RELEASE.md; preserve it")
 
     if disk in attached_file_disks(runner):
         raise RetirementError("disk is attached to a libvirt domain; preserve it")
