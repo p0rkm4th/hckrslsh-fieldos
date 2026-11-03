@@ -73,6 +73,49 @@ The global basemap and sample region are copied from the bundled payload into
 The test edition's sample region is a low-zoom United States extract; see
 [offline content](OFFLINE-CONTENT.md) for coverage and attribution details.
 
+## Backup and recovery
+
+The following procedure makes a consistent backup of FieldOS application
+state. Use an external drive with enough free space, formatted to preserve
+Linux ownership and permissions. The archive includes `/opt/fieldos/services/.env`,
+which contains live service credentials. Write it only to encrypted removable
+storage, keep that storage physically secure, and do not attach the archive to
+a support ticket or commit it to Git.
+
+Stop the Compose services before copying databases and indexes. Replace the
+example backup path with the mounted encrypted drive:
+
+```sh
+BACKUP=/media/fieldos-backup/fieldos-backup.tar
+cd /opt/fieldos/services
+sudo docker compose stop
+sudo tar --numeric-owner --acls --xattrs -cpf "$BACKUP" \
+  /var/lib/fieldos /opt/fieldos/services/.env
+sync
+sudo docker compose start
+```
+
+For recovery, install the same FieldOS version on a replacement disk and let
+firstboot complete once. Connect the encrypted backup, stop the services, and
+restore the archive as root. Use a matching Compose/image version because
+database formats may change between releases:
+
+```sh
+cd /opt/fieldos/services
+sudo docker compose stop
+sudo tar --numeric-owner --same-owner --acls --xattrs -xpf \
+  /media/fieldos-backup/fieldos-backup.tar -C /
+sudo chown root:root /opt/fieldos/services/.env
+sudo chmod 600 /opt/fieldos/services/.env
+sudo docker compose up --detach --pull never
+```
+
+Do not erase or reformat the original disk until the restored machine has
+passed the health, reference, model, and map checks in this guide. This backup
+and restore procedure is documented but has not yet been exercised on a
+physical FieldOS computer; test it on a spare system before relying on it for
+field recovery.
+
 ## Offline behavior
 
 The initial system is designed for operation without a network interface.
