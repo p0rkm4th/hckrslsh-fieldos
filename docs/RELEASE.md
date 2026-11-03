@@ -1,16 +1,44 @@
 # Release status and process
 
-FieldOS has passed the unattended offline acceptance run against the current
-source and a separate interactive R4 customer installation in disposable
-QEMU/KVM guests. R4's default selection, full install, firstboot, services,
-map rendering, and two reboots passed. Its interactive post-prompt handoff
-powered off the VM and required a host start; automatic reboot remains
-unverified. FieldOS is not yet
+FieldOS has passed unattended offline acceptance and separate interactive R4
+and R5 installations in disposable QEMU/KVM guests. R5's installation,
+firstboot, services, local inference, reference retrieval, map endpoints, and
+two reboots passed. Both R4 and R5 powered off after the remove-media prompt
+and required a host start to boot the installed target; automatic interactive
+restart remains a release blocker. FieldOS is not yet
 recommended for physical customer installation. A LAN peer scan, physical GPU
 validation, Canonical's modified Ubuntu trademark requirement, and exact
 third-party redistribution review remain open. Do not publish release binaries.
 
 ## Acceptance evidence
+
+### Current-source R5 interactive installation — 2026-11-03
+
+- Candidate ISO: `/mnt/shared/fieldos-releases/fieldos-test-customer-r5.iso`;
+  SHA-256 `8b121916cd13af315d268cae16643eab06244a5b3a256662767650cbf2b52ee2`.
+  `make verify` confirmed ISO structure, BIOS/UEFI boot records, installer
+  configuration, and bundled payload. Extracted NoCloud data contains
+  `shutdown: reboot` and keeps identity/storage interactive.
+- Fresh 80 GiB UEFI QEMU guest, no network adapter. The installer review
+  identified only disposable target `vda`; interactive user and disk setup
+  completed. Firstboot reached `status=complete`; all seven Compose services
+  ran; N.O.M.A.D. health returned `{"status":"ok"}`; Qwen generated
+  `FIELDOS_R5_OK`; embeddings returned 768 values; Kiwix retrieved the bundled
+  New York article; the regional map API listed the U.S. PMTiles pack and the
+  world PMTiles archive returned a 66,795-byte tile. No default route existed.
+- Two in-guest reboots changed the boot ID. After each, all seven containers,
+  N.O.M.A.D. health, and local inference recovered; `.env`, bundled ZIM, and
+  regional map SHA-256 values were unchanged. See `service-checks.txt` and
+  `reboot-checks.txt` in `/mnt/shared/fieldos-e2e/customer-r5-20261103/`.
+- Handoff remains PARTIAL: “Restart now” reached the remove-media prompt;
+  after the medium was absent and Enter was pressed, the VM powered off despite
+  the explicit reboot setting. A host start booted the installed target to
+  GDM. This is an interrupted handoff and is not a clean automated installer
+  PASS. R5's map was checked at the service/API layer; the actual browser render
+  evidence remains the R4 Firefox screenshot below.
+- Test screenshots and reports are retained under
+  `/mnt/shared/fieldos-e2e/customer-r5-20261103/`. The test account password
+  was generated temporarily and was not saved in the evidence directory.
 
 ### Modular content-pack validation — 2026-11-03
 
@@ -172,23 +200,24 @@ still presents interactive disk and account setup.
   unchanged.
 - Report and evidence: `/mnt/shared/fieldos-e2e/customer-r4-20261103/report.md`.
   Browser screenshot: `/mnt/shared/fieldos-e2e/customer-r4-20261103/map-browser.png`.
-- The R4 binary is a local test candidate, not a distribution release. Older
-  R2/R3 and pre-R4 test ISO binaries were removed after R4 superseded them;
-  their historical checksums and test reports remain documented.
+- R4's binary was removed after R5 superseded it. Older R2/R3 and pre-R4 test
+  ISO binaries were also removed; their historical checksums and test reports
+  remain documented. R5 is the only current ISO candidate, and it is not a
+  distribution release.
 
 ## Readiness
 
 | Component | Status | Evidence |
 |---|---|---|
 | Unattended offline OS installation | PASS | Current-source E2E report and test ISO hash |
-| Interactive customer installation | PASS | Current-source R4 report: interactive disk/account, firstboot, and service checks |
-| Clean installer media/restart handoff | PARTIAL | R4 prompt reached and media empty; Enter powered off VM, host start booted target |
+| Interactive customer installation | PASS | R5 fresh no-NIC guest: interactive disk/account, firstboot, and service checks |
+| Clean installer media/restart handoff | PARTIAL | R5 with explicit `shutdown: reboot`: Enter powered off VM; host start reached GDM |
 | Customer ISO default selection | PASS | R4 no-input GRUB countdown selected FieldOS and reached interactive setup |
 | Offline provisioning and services | PASS | Firstboot complete; seven containers; local service tests |
 | N.O.M.A.D. and inference | PASS | Health response and local generation markers |
 | Knowledge library and maps | PASS | R4 Kiwix retrieval; regional PMTiles; real Firefox screenshot |
-| Reboot persistence | PASS | R4 plus current-source E2E: two reboots, hashes and service checks |
-| ISO release | BLOCKED | R4 verified and installed locally; redistribution/attribution clearance incomplete; binary unpublished |
+| Reboot persistence | PASS | R5 plus current-source E2E: two in-guest reboots, hashes and service checks |
+| ISO release | BLOCKED | R5 verified and installed locally; interactive handoff and redistribution/attribution gates remain; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
@@ -203,10 +232,11 @@ still presents interactive disk and account setup.
    bindings and NIC-address refusal but is not a LAN peer scan. This host
    session cannot create a libvirt bridge; do not bridge it to any production
    network.
-2. Recheck the interactive R4 remove-media handoff. The installer reached the
-   prompt, but the VM powered off after Enter and required a host start to boot
-   the installed target. The unattended test harness does detect this state
-   and boots its installed disk automatically.
+2. Resolve the interactive remove-media handoff. R5 explicitly requests
+   `shutdown: reboot`, but Enter at the remove-media prompt still powered off
+   the VM; a host start was required to boot the installed target. Determine
+   the Ubuntu Desktop behavior and demonstrate a normal install boots the
+   target without host-side repair.
 3. Resolve and complete the itemized clearance work in
    [`REDISTRIBUTION.md`](REDISTRIBUTION.md), including Canonical's modified
    Ubuntu trademark requirement, exact package and image SBOMs, and content

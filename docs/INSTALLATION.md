@@ -14,7 +14,11 @@ leaving identity and storage interactive. The ordinary `Try or Install Ubuntu`
 entry is the upstream Ubuntu live installer and does not run FieldOS
 provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
-option if full disk encryption is required.
+option if full disk encryption is required. After installation, choose
+“Restart now,” remove the USB installation media when prompted, and press
+ENTER. On the tested R4 and R5 candidates, Ubuntu powered off at this point;
+the installed system booted after powering the machine on. This handoff remains
+under investigation and FieldOS is not yet recommended for customer hardware.
 The unattended identity and storage settings in `make test-e2e` are not part
 of the customer ISO.
 
