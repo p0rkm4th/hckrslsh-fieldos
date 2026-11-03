@@ -14,38 +14,22 @@ still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
 The current unpublished customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-test-customer-47d128e.iso`,
-11,983,978,496 bytes, SHA-256
-`d422a2a0867e63a13e8abb9507e244ef31f4533c30e6e49ccd9b2d6ba1d983a4`. Its
-payload SHA-256 is
-`1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`; the
-payload hash matches the ISO build manifest. It was built from source commit
-`47d128e79f3b53fed8f5e954b866ceb5e32b20e4`. `make iso-test` passed ISO
-structure, BIOS/UEFI boot records, interactive installer configuration, and
-payload checks. The new candidate's interactive customer installation is
-under test; its result is not yet claimed. The current-source unattended E2E
-report and ODbL guest verification are recorded in `docs/RELEASE.md` and
-`/mnt/shared/fieldos-e2e/20261103T090118Z-2284309/report.md`.
-
-The previous `f27305f` candidate's clean interactive-install, two-reboot, and
-browser-map evidence remains at
-`/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/report.md`.
-That ISO binary has been removed after supersession and does not contain the
-latest provisioning hardening; its checksum record and test evidence remain.
+`/mnt/shared/fieldos-releases/fieldos-test-customer-0b2fd8c.iso`, 11,983,978,496
+bytes, SHA-256
+`5295eeee5ec93098b1b71274e79991e5aeae44b9672deda46441db4fe37c52b8`. It was
+built from source commit `0b2fd8c5de4f80ebad144a55e5b06e142115059c`. ISO
+structure, BIOS/UEFI boot records, interactive account/disk setup, and payload
+checks passed. A separate fresh-disk interactive QEMU install passed firstboot,
+service, local inference, reference, browser-map, and two-reboot checks. The
+installer's optical-media prompt required ISO ejection and host-side VM start;
+that limitation is recorded in `docs/RELEASE.md`. The exact unattended E2E
+report is `/mnt/shared/fieldos-e2e/20261103T102308Z-2314063/report.md`; the
+interactive install report is
+`/mnt/shared/fieldos-e2e/customer-interactive-0b2fd8c-20261103/report.md`.
 These checks establish technical operation and file integrity, not
-redistribution rights. The ISO retains Ubuntu branding and remains private
-test material, not an approved distribution image. The payload's license and
+redistribution rights. The ISO retains Ubuntu branding, is not approved for
+distribution, and remains private test material. The payload's license and
 source review is incomplete. Do not distribute the ISO or payload.
-Canonical's [IP rights policy](https://ubuntu.com/legal/intellectual-property-policy)
-says modified Ubuntu versions associated with Ubuntu trademarks require
-Canonical approval, certification, or provision; otherwise the trademarks
-must be removed/replaced and source recompiled. The policy also allows Ubuntu
-modification for personal or internal use. No Canonical approval or complete
-debranding has been completed. The candidate contains Ubuntu marks in the base
-installer/desktop and is not approved for distribution. This is a release
-blocker independent of the open-source licenses of individual Ubuntu packages.
-R3 (`e07f39a20e64fc1127086739afce39fbbffc12220f8cff126509072c32f7e899`) is a
-historical candidate; its binary has been removed.
 
 ## Current artifact inventory
 
@@ -60,7 +44,7 @@ historical candidate; its binary has been removed.
 | Qwen3 0.6B chat model | Apache-2.0 model page: <https://huggingface.co/Qwen/Qwen3-0.6B> | `models/manifest.json` pins the Ollama manifest SHA-256 and quantized model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Nomic Embed Text v1.5 | Apache-2.0 model page: <https://huggingface.co/nomic-ai/nomic-embed-text-v1.5> | `models/manifest.json` pins the Ollama manifest SHA-256 and model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes. Current guest's source/license documents match the repo checksums. | Archive-level provenance and attribution are present; article/media-level license review remains open. |
-| Protomaps world and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | Source and current candidate include the official ODbL text at `payload/licenses/ODbL-1.0.txt` (SHA-256 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`) and install it under `/usr/share/doc/fieldos/`; the payload and installed copies were verified in the current guest. Map build key, bounds, zoom, size/checksum and UI attribution are also recorded. | Rebuild and verify the candidate with the license text, then confirm exact-build attribution and derivative database obligations before distribution. |
+| Protomaps world and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | Source and current candidate include the official ODbL text at `payload/licenses/ODbL-1.0.txt` (SHA-256 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`) and install it under `/usr/share/doc/fieldos/`; the payload and installed copies were verified in the current guest. Map build key, bounds, zoom, size/checksum and UI attribution are also recorded. | The current unattended guest compared bundled and installed ODbL text hashes; the interactive candidate uses the same pinned payload. Repeat exact-image verification and review the derivative database and displayed attribution before any distribution. |
 | Project N.O.M.A.D. Maps assets | Upstream source README and license/OFL notices are carried in the generated payload | Source commit pinned during build | Confirm notices cover every bundled sprite/font/asset and their exact source revisions. |
 
 ## Required actions before a public/customer release

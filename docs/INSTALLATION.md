@@ -2,13 +2,16 @@
 
 ## Customer installation
 
-**Current candidate status (2026-11-03):** Interactive installation and
-post-install service acceptance passed in a fresh-disk QEMU test. After the
-operator media-removal step, the USB path booted the installed target to GDM
-without a host-side start; services, local AI, retrieval, and map API/tile
-checks passed after two reboots. CD-ROM handoff remains unresolved. Browser map
-rendering passed separately in the clean unattended E2E run. See exact results,
-checksums, and evidence in [`RELEASE.md`](RELEASE.md).
+**Current candidate status (2026-11-03):** The unpublished candidate
+`fieldos-test-customer-0b2fd8c.iso` passed a fresh interactive UEFI QEMU
+installation with an isolated disposable disk and no network adapter. Firstboot,
+all seven services, local AI, reference retrieval, Firefox regional-map
+rendering, and two reboots passed. At the end, Ubuntu showed its media-removal
+prompt and powered off the virtual machine; the ISO was ejected and the
+installed disk was started. This optical-media handoff required a host action.
+The separate unattended E2E flow completed its handoff automatically. Neither
+result establishes physical hardware compatibility. See [`RELEASE.md`](RELEASE.md)
+for hashes, detailed evidence, and remaining release gates.
 
 The customer facing ISO is built with:
 
@@ -23,14 +26,14 @@ entry is the upstream Ubuntu live installer and does not run FieldOS
 provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
-“Restart now.” For USB installation, remove the USB media when prompted so
-firmware can boot the installed disk. In the fresh-disk USB QEMU acceptance,
-removing the virtual USB device during restart led to GDM without a host-side
-VM start. Post-boot services, local inference, reference retrieval, map
-API/tiles, and two-reboot persistence passed. A separate clean E2E run rendered
-the offline map in Firefox. CD-ROM media handoff, physical hardware, and
-network-enabled LAN exposure remain unverified. See [`RELEASE.md`](RELEASE.md)
-for hashes, evidence locations, and limitations.
+“Restart now.” For USB installation, remove the USB media when prompted so firmware can boot
+the installed disk. With the tested optical ISO, the VM powered off at the
+media prompt; the test ejected the ISO and started the installed disk. Follow
+the behavior shown by the installer and firmware on the target computer. The
+current candidate's post-boot services, local inference, retrieval, map, and
+two-reboot persistence were tested; the optical-media handoff and physical
+hardware were not validated on a physical device. See [`RELEASE.md`](RELEASE.md)
+for the separate unattended E2E result and limitations.
 Ubuntu documents
 `shutdown: reboot` as the default autoinstall action in its
 [autoinstall reference](https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#shutdown).
