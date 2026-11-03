@@ -23,6 +23,23 @@ preflight, so no current-source ISO or VM run was started. Existing VM disks
 were preserved. Historical passes remain evidence only for their tested
 source and environment; current-source release acceptance is open.
 
+### Existing installed guest live recheck — 2026-11-03
+
+The retained `20261103T102308Z` guest was started from its existing qcow2 and
+rechecked through QEMU Guest Agent; no new disk or ISO was created. The guest
+has no virtual NIC or default route. Provisioning status remained `complete`,
+Docker and all seven Compose services were active, and checks passed for the
+N.O.M.A.D. health endpoint, a generated Ollama response, a 768-dimensional
+embedding, Kiwix catalog and search retrieval, regional-map registration, and
+a 127-byte HTTP 206 map-tile range. Two further guest reboots produced changed
+boot IDs; the same essential checks passed after each reboot. Evidence:
+`/mnt/shared/fieldos-e2e/live-reboots-102308.txt` (SHA-256
+`67155ba0984e480f3ae3c7d78ab62798ab11936d60a2cd5a94d47a928625d084`). This is
+a follow-up on the prior installed guest from source `6c64ffd` with its
+harness-only dirty-tree fix. It is not a fresh install or current-source
+acceptance. Existing report `map-render.png` records the Firefox map render;
+the live follow-up itself did not capture a new browser render.
+
 The public Git history was scrubbed because earlier release notes contained a
 local username path and unrelated infrastructure labels. The one published
 branch was rewritten with a lease; its tip tree is byte-for-byte unchanged.
