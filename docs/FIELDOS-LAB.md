@@ -60,9 +60,15 @@ reboot reported:
 These checks prove the map service and tile data are available, not that the
 map rendered visibly in the Kasm browser. A diagnostic headless Firefox
 capture at `/mnt/shared/fieldos-lab/evidence/20261103/map-headless.png` showed
-the map page chrome with a blank canvas. The owner reached the guest login
-screen through Kasm, but successful desktop login and visible map interaction
-remain **PARTIAL / unverified**.
+the map page chrome with a blank canvas. On 2026-11-03 at 17:32 UTC, a
+read-only Kasm API query showed the owner's `scotty` account with a running
+**FieldOS Lab** session. The guest reported `labdesk` user sessions and a
+Firefox process launched with `http://localhost:8080`. This confirms the
+workspace reached the guest desktop and launched the N.O.M.A.D. URL. It does
+not confirm the rendered browser view or functional interaction with chat,
+Kiwix, or maps. Evidence:
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-owner-fieldos-session.txt`
+(SHA-256 `392c998fe9a73eb97c2c74714b5bcc9f58ab2a3148851f0334e7d445adcbec47`).
 Earlier Firefox map rendering in a separate E2E guest is not evidence for this
 Kasm session.
 
@@ -101,18 +107,19 @@ the Kasm server API masks stored passwords, the gateway's actual password could
 not be compared directly. Its static username/password fields are now blank;
 Kasm should prompt for RDP credentials at workspace launch. This supported
 prompt mode is documented by [Kasm](https://www.kasmweb.com/docs/1.17.0/how_to/fixed_infrastructure.html#forcing-login-on-connection).
-The Kasm website password was not changed. The latest authenticated Kasm
-session observed after this change belonged to a different existing workspace;
-there is still no FieldOS Lab attempt verifying prompt mode. Neither password
-is recorded here.
+The Kasm website password was not changed. At 17:32 UTC, Kasm reported a
+running FieldOS Lab session for the owner, and the guest showed a `labdesk`
+desktop session with Firefox launched at the local N.O.M.A.D. URL. This is
+evidence the prompt-mode connection reached the desktop. Neither password is
+recorded here.
 
 There are two sign-in stages in the current prompt mode: Kasm asks for the RDP
 credential (`labdesk` and the desktop password), then GNOME presents its remote
 GDM greeter, where the operator signs in to `labdesk` again. The owner previously
 reached the greeter, but repeated RDP authentication failures occurred after
-the static credential update. A fresh attempt using Kasm's prompt mode is
-pending. Stable post-login desktop and application interaction are not
-verified. Diagnostic record:
+the static credential update. The later prompt-mode desktop connection is
+confirmed at the Kasm session and guest-process level; rendered content and
+application interaction remain unverified. Diagnostic record:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
 (SHA-256 `b0c08f5978be942021c087d2a194fdcecdd6187aaf5b10ff92594e953285cb47`).
 This two-stage flow is GNOME's documented [headless multi-user remote login
@@ -196,9 +203,9 @@ the existing VM or move the snapshot until the new VM has passed its own checks.
 - The current lab image is test-only and unattended; it is not a customer ISO.
 - The interactive customer install and media handoff remain separate release
   acceptance gates.
-- The owner reached a graphical login screen, but successful desktop login
-  and interaction with N.O.M.A.D., Kiwix, and rendered maps have not yet been
-  confirmed; do not report those checks as PASS.
+- A running owner FieldOS Lab session and guest Firefox launch are confirmed.
+  Rendered desktop content, local inference through the browser, Kiwix
+  retrieval, and visible map rendering still need direct interactive checks.
 - The current management NIC shares a hypervisor bridge. The guest firewall
   restricts traffic, but a dedicated isolated bridge and peer-scan evidence
   are still needed for stronger isolation claims.
