@@ -6,17 +6,19 @@ ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
 The latest clean unattended offline acceptance run passed on source commit
-`fa94b5761d40175e81919c4259ddf76f45785532`. The test ISO SHA-256 was
-`1751ea31326b8e7ab526470e49365f367ffb3a39a5d9b4876f172bafa2dda7f0` (temporary
-ISO removed by the harness after testing). Report, guest disk, installer and
-firstboot logs, Firefox screenshot, and checks are under
-`/mnt/shared/fieldos-e2e/20261103T074611Z-2255858/`. The no-NIC, 80 GiB UEFI
-guest with 12 GiB RAM installed unattended and passed offline provisioning,
-N.O.M.A.D., Qwen CPU inference, embeddings, Kiwix reference search, regional map
-tile/range serving, Firefox map rendering, and two consecutive reboots. The
-bundled and installed ODbL text both matched SHA-256
-`607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5` in the
-read-only guest validation at `odbl-install-validation.txt`.
+`465dab341fca80cdde3a32a4e61d70c0318ab90a`. Its test ISO SHA-256 was
+`34a8c6884c65c9dad55eb65d27d2c4e3a501eb60249cdb7d19ccff66b4fc75c1`; the
+harness removed the temporary ISO and credentials after the run. The report,
+guest disk, installer/firstboot logs, and Firefox screenshot are under
+`/mnt/shared/fieldos-e2e/20261103T090118Z-2284309/`. A fresh 80 GiB UEFI guest
+with 12 GiB RAM and no virtual NIC installed unattended. Offline provisioning,
+all seven pinned services, N.O.M.A.D., Qwen CPU inference, embeddings, Kiwix
+reference search, map tile/range serving, browser rendering, blocked container
+egress, and two consecutive reboots passed. The bundled and installed ODbL
+texts both matched SHA-256
+`607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`.
+The generated Compose environment file was verified as `600 root:root` in the
+installed guest.
 
 The current interactive customer candidate `fieldos-test-customer-f27305f.iso`
 (SHA-256 `aad3ca85b783609af06f657e3ddc5a65e24cf00ad6059a459073aa415c0b9566`)
@@ -62,14 +64,10 @@ ISO build verification passed, and the clean interactive installation and
 reboot tests are recorded above. Free space on `/mnt/shared` after the run was
 50 GiB; no further large build should start until storage is reviewed.
 
-The source now includes additional credential-file atomicity/permission
-handling and ISO-build free-space preflight checks. These source changes have
-passed `make check`, `make test`, shell syntax checks, and a public-history
-gitleaks scan, but are not included in the candidate ISO above and have not
-yet passed a fresh install. Treat that ISO as tested evidence for its recorded
-source, not as a build of the current checkout. A new candidate and clean E2E
-run require adequate free space; no new ISO was built while `/mnt/shared` had
-50 GiB free and active VM evidence remained in use.
+The latest E2E run exercises the atomic credential creation and build-space
+preflight changes from current source. The interactive ISO and clean customer
+installation above still refer to the earlier `f27305f` candidate. Building
+and testing a customer candidate from the current source remains outstanding.
 
 ### Earlier clean E2E rerun — 2026-11-03
 
