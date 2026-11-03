@@ -222,7 +222,7 @@ still presents interactive disk and account setup.
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS | Gitleaks clean across 29 commits and tracked source as of `fa0a203`; zero Git blobs over 1 MiB; see `/mnt/shared/fieldos-e2e/repository-review-r5-20261103/` |
+| Public Git history | PASS | Gitleaks clean across all 33 reachable commits and current tracked source as of `faa1269`; zero Git blobs over 1 MiB; evidence at `/mnt/shared/fieldos-e2e/repository-review-faa1269/` |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
@@ -253,10 +253,11 @@ The fresh E2E run used clean source commit
 `017987d99c4718ceb2a843030bc097546a354e52`. This release-record update is
 documentation only. `make check` and all 28 unit tests pass on that source.
 
-The 2026-11-02 Git history review scanned all reachable commits with Gitleaks
-(no findings), scanned a snapshot of tracked source including current
-documentation (no findings), and found no Git blobs over 1 MiB. Scan reports
-are preserved under `/mnt/shared/fieldos-e2e/`.
+The 2026-11-03 Git history review scanned all 33 reachable commits with
+Gitleaks (no findings), scanned a snapshot of tracked source including current
+documentation (no findings), and found no Git blobs over 1 MiB. Reports and
+the snapshot are preserved under
+`/mnt/shared/fieldos-e2e/repository-review-faa1269/`.
 
 The expanded/full ISO must wait until these release gates pass. Never commit
 ISOs, model weights, credentials, VM disks, or downloaded image archives.
