@@ -13,15 +13,16 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The unattended offline installation and service acceptance suite passed in a
-disposable UEFI QEMU/KVM guest with no network device, including Firefox map
-rendering and two service-verified reboots. The report, screenshots, and logs
-are retained at
-`/mnt/shared/fieldos-e2e/20261102T214900Z-2020461/report.md`. A separate current
-customer ISO still needs to be built and installed through its interactive
-flow. Network-enabled exposure, physical GPU inference, supported hardware
-limits, and third-party redistribution review remain outstanding. The
-customer ISO uses the interactive identity and disk selection flow in
+The current-source unattended acceptance suite passed in a disposable UEFI
+QEMU/KVM guest with no network device, including Firefox map rendering and two
+service-verified reboots. The R3 customer ISO also completed an interactive
+installation, clean media handoff, offline firstboot, service validation, map
+rendering, and two reboots. Evidence is recorded in
+[`docs/RELEASE.md`](docs/RELEASE.md) and under `/mnt/shared/fieldos-e2e/`.
+FieldOS is not yet ready for physical customer installation: LAN peer exposure,
+physical GPU inference, and distribution rights for the modified Ubuntu image
+and exact third-party payload remain unresolved. The customer ISO retains
+interactive identity and disk selection in
 [`installer/autoinstall/user-data`](installer/autoinstall/user-data).
 See [release evidence](docs/RELEASE.md) before treating any image as ready to
 install on a physical computer.
@@ -81,8 +82,10 @@ the interactive installer before confirming erase. Do not enable remote
 service access without an explicit owner decision. Keep test credentials,
 private runtime keys, model files, downloaded archives, and VM disks out of
 Git and public release artifacts. Third party software and content retain
-their own license terms; see `payload/licenses/` and
-[`docs/OFFLINE-CONTENT.md`](docs/OFFLINE-CONTENT.md).
+their own license terms; see `payload/licenses/`,
+[`docs/OFFLINE-CONTENT.md`](docs/OFFLINE-CONTENT.md), and the artifact-level
+[`docs/REDISTRIBUTION.md`](docs/REDISTRIBUTION.md). R3 remains an unpublished
+test candidate until those checks pass.
 
 ## License
 
