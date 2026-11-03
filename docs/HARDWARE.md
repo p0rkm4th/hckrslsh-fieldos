@@ -72,3 +72,17 @@ Toolkit is absent, so Ollama container inference on this physical GPU was not
 validated. This proves the host detector can observe this hardware; it does
 not establish FieldOS GPU acceleration support or change the CPU-only firstboot
 selection policy.
+
+## Hardware and runtime recheck — 2026-11-03
+
+A fresh read-only detector run again found the i9-12900H, 62.46 GiB RAM,
+NVIDIA RTX 3080 Ti Laptop GPU (16 GiB total, 15.57 GiB available), Intel
+integrated graphics, NVMe storage, and battery. `nvidia-smi` reported driver
+615.78.08. Docker lists only its standard `runc` runtimes; neither
+`nvidia-container-runtime`, `nvidia-container-cli`, nor the NVIDIA Container
+Toolkit package is installed. The selector therefore ran with only the CPU
+backend marked validated and chose the bundled Qwen 0.6B model on CPU. No
+FieldOS Ollama inference was run on the physical GPU. Evidence:
+`/mnt/shared/fieldos-e2e/hardware-detection-20261103.json`,
+`hardware-runtime-check-20261103.txt`, and
+`hardware-selection-cpu-20261103.json`.
