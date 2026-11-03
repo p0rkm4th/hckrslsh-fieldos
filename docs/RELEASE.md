@@ -24,9 +24,10 @@ third-party redistribution review remain open. Do not publish release binaries.
   `5927727201adcaa0da822975fa76d65f08046f3d0625b018a1c24e0689aae273` is at
   `/mnt/shared/fieldos-e2e/package-license-audit-20261102/`. It covers 61
   packages and includes 59 extracted notice texts with per-file hashes. Two
-  packages contain no bundled copyright file. This is not a license/SBOM
-  clearance. The extracted package cache was removed after recording the
-  inventory and notice bundle.
+  packages contain no bundled copyright file; same-source notice tracing is
+  recorded separately, with the GCC descriptor signature explicitly unverified.
+  This is not a license/SBOM clearance. The extracted package cache was removed
+  after recording the inventory and notice bundle.
 
 ### Hardware inventory update
 
