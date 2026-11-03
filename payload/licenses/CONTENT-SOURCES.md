@@ -32,8 +32,10 @@ The test payload includes a global Protomaps basemap and a small United States
 sample extracted from it. The data is limited to zoom levels 0–5 and is for
 broad orientation and software testing; it does not provide detailed roads,
 trails, parcels, or field navigation. The map interface attributes
-OpenStreetMap contributors and Protomaps. The attribution and ODbL 1.0 notice
-are in `/usr/share/doc/fieldos/` and in the map interface.
+OpenStreetMap contributors and Protomaps. The full ODbL 1.0 text is at
+`/usr/share/doc/fieldos/ODbL-1.0.txt`; the attribution notice and source-build
+details are alongside it and in the map interface. The ODbL applies to the
+database rights; individual content may have additional rights.
 
 ## Local AI models and generated answers
 

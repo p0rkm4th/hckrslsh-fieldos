@@ -49,6 +49,7 @@ install -m 0644 "$ROOT/installer/provisioning/fieldos.desktop" "$WORK/fieldos/in
 install -m 0644 "$ROOT/installer/provisioning/fieldos-sources.desktop" "$WORK/fieldos/installer/provisioning/fieldos-sources.desktop"
 install -m 0644 "$ROOT/payload/licenses/CONTENT-SOURCES.md" "$WORK/fieldos/payload/licenses/CONTENT-SOURCES.md"
 install -m 0644 "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$WORK/fieldos/payload/licenses/CC-BY-SA-4.0.txt"
+install -m 0644 "$ROOT/payload/licenses/ODbL-1.0.txt" "$WORK/fieldos/payload/licenses/ODbL-1.0.txt"
 install -m 0644 "$ROOT/hardware/detect/detect.py" "$WORK/fieldos/hardware/detect/detect.py"
 install -m 0644 "$ROOT/hardware/select_profile.py" "$WORK/fieldos/hardware/select_profile.py"
 install -m 0644 "$ROOT/models/manifest.json" "$WORK/fieldos/models/manifest.json"

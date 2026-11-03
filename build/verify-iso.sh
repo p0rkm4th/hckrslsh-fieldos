@@ -18,6 +18,7 @@ for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zs
   /fieldos/installer/provisioning/fieldos-sources.desktop \
   /fieldos/payload/licenses/CONTENT-SOURCES.md \
   /fieldos/payload/licenses/CC-BY-SA-4.0.txt \
+  /fieldos/payload/licenses/ODbL-1.0.txt \
   /nocloud/user-data /nocloud/meta-data; do
   dest="$TMP/$(basename "$(dirname "$path")")-$(basename "$path")"
   xorriso -osirrox on -indev "$ISO" -extract "$path" "$dest" >/dev/null 2>&1
