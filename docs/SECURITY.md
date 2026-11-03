@@ -76,3 +76,12 @@ its original mount after the experiment. Evidence:
 `/mnt/shared/fieldos-e2e/kiwix-readonly-experiment-20261102.md`. New automated
 acceptance runs also assert Kiwix's `/data` mount is read-only. A separate
 guest-to-guest LAN reachability scan remains pending.
+
+The automated E2E harness now checks these host-side container boundaries on
+the installed guest: no privileged mode, added capabilities, host networking,
+or host PID namespace; only N.O.M.A.D. and Dozzle mount the Docker socket;
+Dozzle's socket mount remains read-only; every published port binds to
+`127.0.0.1`; and the generated Compose credential file remains `0600 root:root`.
+The source check was syntax-validated and the repository unit suite passed,
+but this updated harness has not yet run in a fresh VM. The previous guest
+inspection evidence above remains the latest runtime evidence.
