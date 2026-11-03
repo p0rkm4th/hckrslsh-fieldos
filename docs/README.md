@@ -15,6 +15,7 @@ Use this page to find the right FieldOS documentation for each task.
 | [Security](SECURITY.md) | Docker privileges, local ports, secrets, and network boundaries |
 | [Testing](TESTING.md) | Unit and disposable VM acceptance tests, artifacts, cleanup |
 | [Release](RELEASE.md) | Measured release status, evidence, and release gates |
+| [FieldOS Lab](FIELDOS-LAB.md) | Kasm workspace operation, network boundary, snapshot recovery, and current verification limits |
 
 The repository root README is the project overview and command entry point.
 Release readiness is determined by the evidence in `RELEASE.md`, not by the

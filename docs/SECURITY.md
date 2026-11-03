@@ -44,7 +44,12 @@ address, N.O.M.A.D. remained healthy, all five published ports were bound to
 `127.0.0.1`, and the same ports refused connections on the guest's NIC address.
 An outbound fetch from N.O.M.A.D. was blocked. This is not an inbound scan from
 a separate LAN peer; that remains unverified because this workstation's
-libvirt session cannot create a host bridge. Remote access is not configured.
+libvirt session cannot create a host bridge. Remote access is not configured
+in the customer FieldOS installation. The separate owner-only Kasm staging VM
+uses a management NIC and GNOME Remote Desktop behind Kasm; its RDP and
+firewall settings are documented in [`FIELDOS-LAB.md`](FIELDOS-LAB.md). That
+staging exception is not enabled by the customer installer and is not a
+layer-2 isolated network.
 Do not change loopback binds to `0.0.0.0` without adding an explicit
 access-control and firewall plan. Detailed retained evidence for the user-mode
 network test is `/mnt/shared/fieldos-e2e/customer-correct-entry-20261102/`

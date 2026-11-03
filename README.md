@@ -13,19 +13,21 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The unattended acceptance suite passed in a disposable UEFI QEMU/KVM guest
-with no network device, including Firefox map rendering and two
-service-verified reboots. That run had a local, harness-only Wayland readiness
-change which was committed immediately afterward. The current customer ISO
-completed interactive installation, offline firstboot, service validation,
-knowledge retrieval, browser map rendering, and two reboots. Ubuntu's optical
-media removal prompt powered off that test VM; ejecting the ISO and starting
-the installed disk required a host action. Evidence is recorded in
-[`docs/RELEASE.md`](docs/RELEASE.md) and under `/mnt/shared/fieldos-e2e/`.
-FieldOS is not yet ready for physical customer installation: a guest-to-guest
-LAN scan, physical GPU inference, broader hardware coverage, and distribution
-rights for the modified Ubuntu image and exact third-party payload remain
-unresolved. The customer ISO retains interactive identity and disk selection in
+FieldOS Lab was installed from the test-only unattended ISO built from source
+`c61b553` and passed service, inference, reference retrieval, map data, and
+network-restriction checks across two consecutive reboots. It uses a restricted
+management NIC for Kasm and is not the no-NIC offline acceptance configuration.
+The owner reached the guest login screen through Kasm, but desktop login,
+application interaction, and visible map rendering in that workspace remain
+unverified. The customer interactive installer is a separate release gate and
+is not accepted by the FieldOS Lab result. See
+[`docs/FIELDOS-LAB.md`](docs/FIELDOS-LAB.md) and
+[`docs/RELEASE.md`](docs/RELEASE.md) for evidence and current limitations.
+FieldOS is not ready for physical customer installation: current-source clean
+customer installation/handoff, guest-to-guest LAN isolation, physical GPU
+inference, broader hardware coverage, and distribution rights for the modified
+Ubuntu image and exact third-party payload remain unresolved. The customer ISO
+retains interactive identity and disk selection in
 [`installer/autoinstall/user-data`](installer/autoinstall/user-data).
 See [release evidence](docs/RELEASE.md) before treating any image as ready to
 install on a physical computer.
