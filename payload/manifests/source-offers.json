@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "source_offers": [
+    {
+      "name": "ghostscript",
+      "version": "10.0.0~dfsg-11+deb12u8",
+      "source": "https://packages.debian.org/source/bookworm/amd64/ghostscript",
+      "license": "AGPL-3+",
+      "files": [
+        {
+          "name": "ghostscript_10.0.0~dfsg.orig.tar.xz",
+          "url": "https://deb.debian.org/debian/pool/main/g/ghostscript/ghostscript_10.0.0~dfsg.orig.tar.xz",
+          "size_bytes": 26688456,
+          "sha256": "67a288151fd88f0d44e165429c48cc85d69b3e4d3765c95e60839a094bfb8df3"
+        },
+        {
+          "name": "ghostscript_10.0.0~dfsg-11+deb12u8.debian.tar.xz",
+          "url": "https://deb.debian.org/debian/pool/main/g/ghostscript/ghostscript_10.0.0~dfsg-11+deb12u8.debian.tar.xz",
+          "size_bytes": 110332,
+          "sha256": "94f131ca44c0c0a9379cb8ad2841b98e15f0bf2a0c157b1fd11f8dbefefe6399"
+        },
+        {
+          "name": "ghostscript_10.0.0~dfsg-11+deb12u8.dsc",
+          "url": "https://deb.debian.org/debian/pool/main/g/ghostscript/ghostscript_10.0.0~dfsg-11+deb12u8.dsc",
+          "size_bytes": 3022,
+          "sha256": "8cb8f619dffe09825e56014b9fc34381ba9fa75048b11b00a275abeaf9785cd4"
+        }
+      ]
+    }
+  ]
+}
