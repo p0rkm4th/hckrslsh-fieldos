@@ -116,9 +116,12 @@ Credential synchronization evidence:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync.txt`
 (SHA-256 `8fc88a8385d9180e2c9119f5712a4b6a0ae1f0471b9531dfc5775c753eebd8b3`)
 records the superseded attempt and must not be used as proof. The corrected
-sync's API/guest command result was observed on 2026-11-03; the following guest
-log and Kasm Guacamole log reads contained no later login attempt. Do not
-change credentials again absent a new failure after this corrected sync.
+sync's redacted result is recorded at
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync-corrected.txt`
+(SHA-256 `00621e1bf57ea9a6d6c5cc11a15e7f10a17f34cdc695aeac322be395880992a8`).
+The following guest log and Kasm Guacamole log reads contained no later login
+attempt. Do not change credentials again absent a new failure after this
+corrected sync.
 
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
