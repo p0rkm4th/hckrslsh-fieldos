@@ -5,9 +5,10 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-Current source is public at `origin/main` at commit
-`598746e2ba63ff66b75986c8e7c161ef1205e494`. On this commit, `make check` and
-`make test` passed all 49 tests. The captured log is
+The implementation state at source commit
+`598746e2ba63ff66b75986c8e7c161ef1205e494` is on public `origin/main`;
+subsequent commits update release documentation only. On this implementation
+state, `make check` and `make test` passed all 49 tests. The captured log is
 `/mnt/shared/fieldos-e2e/source-598746e-checks.log` (SHA-256
 `9fb3df49401d04187f60cd5362d2fa473430c84a2395e538ad4a89f024f37ba6`). A fresh
 Gitleaks scan of its complete Git history found no findings; redacted JSON is
