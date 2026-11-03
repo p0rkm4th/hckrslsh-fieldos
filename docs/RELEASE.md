@@ -38,7 +38,8 @@ Firefox at `http://127.0.0.1:8080/maps`; screenshot:
 `/mnt/shared/fieldos-e2e/customer-interactive-f27305f-r3-20261103/map-browser.png`.
 The boot IDs and complete per-boot logs are in that directory's
 `reboot-acceptance.txt`, `acceptance-after-install.txt`,
-`acceptance-reboot-1.txt`, and `acceptance-reboot-2.txt`. The desktop's active
+`acceptance-reboot-1.txt`, and `acceptance-reboot-2.txt`; its consolidated
+record is `report.md` in the same directory. The desktop's active
 power inhibitor rejected the normal libvirt guest reboot request; the two
 recorded test reboots used `systemctl reboot -i` inside the guest and each boot
 ID changed before the full suite was repeated. This did not require host-side
