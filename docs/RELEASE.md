@@ -3,22 +3,22 @@
 The latest clean unattended offline acceptance run passed on source commit
 `ae1d18bb54974a4c949a046ed90fdf38a110ce4e`; report, screenshots, logs, and
 guest disk are under `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/`.
-The 80 GiB UEFI guest installed with 8 GiB RAM and no NIC; N.O.M.A.D., local
+The 80 GiB UEFI guest installed with 12 GiB RAM and no NIC; N.O.M.A.D., local
 inference, embeddings, source-verified reference retrieval, browser map
 rendering, and persistence after two reboots passed. The test ISO SHA-256 is
-`4113f9a5586be1f1ccb800409bc8df8fb9c59c3f6b60794e523c27b8167cd734`; the
+`5c123c4ef136f7f44ff4bcc7866e361bb51b72a5cca4318773fdbec0cd5a273a`; the
 rebuilt offline payload SHA-256 is
 `1ff46b13ae6fb2beefa039f69ba6f7852d17bfcd7d87b1e83b650c891c76a8ce`.
 
-The interactive customer ISO was tested separately. Installation completed
-and the installed system passed service, inference, content, map, browser
-render, and two-reboot checks with no virtual NIC. A later USB-media run
-reached GDM after the virtual USB device was detached during restart, without a
-host-side VM start. However, this handoff followed an erase-and-reinstall on
-the same disposable disk after an earlier install, so a clean blank-disk
-customer handoff remains PARTIAL. The virtual CD-ROM path still powered off at
-the remove-media prompt. These are QEMU results, not a physical customer
-installation. FieldOS is not yet
+The interactive customer ISO passed a fresh blank-disk USB installation and
+offline runtime checks in QEMU. After the expected USB media removal at
+restart, the same guest booted to GDM without host-side recovery; all services,
+local inference, retrieval, and map API/tile checks passed after two reboots.
+The virtual CD-ROM path still powered off at the remove-media prompt, and the
+interactive customer guest did not repeat the browser screenshot check. The
+clean unattended E2E run above rendered the browser map using the same
+application and payload code. These are QEMU results, not physical customer
+hardware validation. FieldOS is not yet
 recommended for physical customer installation because guest-to-guest LAN
 exposure, physical hardware coverage, Canonical's modified Ubuntu trademark
 requirement, and detailed third-party redistribution review remain open.
@@ -44,8 +44,8 @@ release gates. Do not publish release binaries.
 - Report, installer/firstboot logs, screenshot, and retained test guest disk:
   `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/`. The temporary ISO and
   test credentials were removed by the harness. This is a clean unattended
-  QEMU acceptance pass; the separate interactive customer handoff remains
-  PARTIAL as documented below.
+  QEMU acceptance pass. The separate fresh-disk interactive USB customer test
+  is recorded below; CD-ROM behavior remains unresolved.
 
 ### USB customer handoff and persistence follow-up — 2026-11-03
 
@@ -81,6 +81,32 @@ release gates. Do not publish release binaries.
   `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/map-render.png`; this USB
   guest verified map APIs and tile delivery but did not independently repeat
   the browser screenshot test.
+
+### Fresh blank-disk customer USB installation — 2026-11-03
+
+- The same unpublished customer ISO was installed to a newly created blank
+  80 GiB qcow2 target (`vda`) in UEFI QEMU with 8 GiB RAM and no virtual NIC.
+  Interactive account configuration used an ephemeral test credential; the
+  password was never retained. Installer review showed only `vda` would be
+  erased and both USB-media partitions on `sda` would remain unchanged.
+- After “Restart now,” the USB installer media was removed at the prompted
+  media-removal stage. The VM stayed running and booted the installed target
+  to GDM; no host start or guest repair was required. This passes the fresh
+  blank-disk USB customer install/handoff gate with the expected operator
+  media-removal action. It does not establish CD-ROM handoff behavior.
+- Firstboot completed; all seven containers ran. N.O.M.A.D. returned
+  `{"status":"ok"}`; Qwen generated `FIELDOS_CUSTOMER_INSTALL_OK`; embeddings
+  returned 768 values; Kiwix search retrieved the bundled New York reference;
+  world and regional PMTiles API/tile/range checks passed. The guest had no
+  external NIC/default route. After two consecutive reboots, the same full
+  checks passed with changed boot IDs. Browser map rendering passed in the
+  clean E2E run above, not in this interactive guest.
+- Full test report, screenshots, firstboot/runtime logs, scripts, QEMU records,
+  and guest disk: `/mnt/shared/fieldos-e2e/customer-usb-clean-20261103/`.
+  Candidate ISO SHA-256 remains
+  `f3b8f5c2ff5cb9bf98e3e07c98b1fce219195d7bb4fe4490a38351cb145c751d`.
+- This is a QEMU customer-install test, not physical hardware validation.
+  No release binary was published.
 
 ### Fresh clean E2E after payload manifest repair — 2026-11-03
 
@@ -502,14 +528,14 @@ still presents interactive disk and account setup.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Unattended offline OS installation | PASS | `/mnt/shared/fieldos-e2e/20261103T060129Z-2217020/report.md`, clean source commit `0eb3d24` |
-| Interactive customer installation | PARTIAL (QEMU) | Fresh ISO `fieldos-test-customer-280fda2.iso` installed to disposable `vda`; media-removal handoff powered off the VM. Report, logs, and screenshots remain at `/mnt/shared/fieldos-e2e/customer-280fda2-20261103/`; reviewed qcow2 removed for fresh-disk retest. |
-| Clean installer media/restart handoff | PARTIAL | Handoff still needs host-side VM start; this is not a clean installer PASS |
+| Unattended offline OS installation | PASS | Latest clean run `/mnt/shared/fieldos-e2e/20261103T070244Z-2240395/report.md`, source commit `ae1d18b` |
+| Interactive customer installation | PASS (QEMU, USB) | Fresh blank 80 GiB target; report and evidence: `/mnt/shared/fieldos-e2e/customer-usb-clean-20261103/report.md` |
+| Clean installer media/restart handoff | PASS (USB with prompted media removal) | Guest booted to GDM without host start after USB removal; CD-ROM handoff remains unresolved |
 | Customer ISO default selection | PASS | FieldOS default selected; corrected QMP press/release input navigated UI |
 | Offline provisioning and services | PASS | Current interactive guest: firstboot complete; all seven pinned containers loaded locally and ran |
 | N.O.M.A.D. and inference | PASS | Current guest health response, chat generation marker, and 768-element embedding vector |
 | Knowledge library and maps | PASS | Current Kiwix retrieval and PMTiles tile/range checks; Firefox render in matching-code clean E2E report |
-| Reboot persistence | PASS | Current interactive guest passed service, inference, retrieval, and map checks after two reboots |
+| Reboot persistence | PASS | Fresh blank-disk customer USB guest passed the full service, inference, retrieval, and map API/tile checks after two consecutive reboots |
 | ISO release | BLOCKED | Test candidate verified; distribution/attribution, physical hardware coverage, and LAN peer review remain; binary unpublished |
 | Hardware adaptation | PARTIAL | CPU validation; fixtures simulated; no physical GPU test |
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
@@ -667,7 +693,10 @@ recovered run is not counted as a clean PASS.
   configurable through the `FIELDOS_*_ROOT` Make variables documented in
   `TESTING.md`.
 
-### Acceptance and release continuation — 2026-11-03
+### Acceptance and release continuation — 2026-11-03 (historical snapshot)
+
+The status and storage figures in this snapshot predate the current acceptance
+results at the top of this document and in the readiness table below.
 
 - The clean unattended offline acceptance from source commit `0eb3d24`
   passed. Full evidence and the stopped disposable VM disk are at
