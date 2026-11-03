@@ -61,6 +61,15 @@ ISO build verification passed, and the clean interactive installation and
 reboot tests are recorded above. Free space on `/mnt/shared` after the run was
 50 GiB; no further large build should start until storage is reviewed.
 
+The source now includes additional credential-file atomicity/permission
+handling and ISO-build free-space preflight checks. These source changes have
+passed `make check`, `make test`, shell syntax checks, and a public-history
+gitleaks scan, but are not included in the candidate ISO above and have not
+yet passed a fresh install. Treat that ISO as tested evidence for its recorded
+source, not as a build of the current checkout. A new candidate and clean E2E
+run require adequate free space; no new ISO was built while `/mnt/shared` had
+50 GiB free and active VM evidence remained in use.
+
 ### Earlier clean E2E rerun — 2026-11-03
 
 - `make test-e2e` built test ISO SHA-256

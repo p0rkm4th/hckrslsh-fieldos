@@ -14,7 +14,9 @@ and release outputs to `/mnt/shared/fieldos-releases`. Override
 `FIELDOS_E2E_ROOT`, `FIELDOS_WORK_ROOT`, `FIELDOS_PAYLOAD_ROOT`, or
 `FIELDOS_OUTPUT_ROOT` to use other storage. Before creating artifacts, the
 test requires at least 50 GiB free on the evidence volume and 8 GiB free for
-temporary build work.
+temporary build work. `build/build-iso.sh` also estimates complete output ISO
+and payload staging space before creating a work directory; when output and
+work share a filesystem, it checks their combined requirement.
 
 `make payload` also requires at least 50 GiB free on both the payload output
 and staging volumes. It refuses to overwrite an existing payload archive;

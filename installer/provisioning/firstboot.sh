@@ -17,6 +17,7 @@ fail() {
   exit "$rc"
 }
 trap fail ERR
+trap '[[ -z "${env_tmp:-}" ]] || rm -f -- "$env_tmp"' EXIT
 
 if [[ -e "$STATE/provisioning-status.json" ]] && grep -q '"status":"complete"' "$STATE/provisioning-status.json"; then
   echo "FieldOS provisioning is already complete."
@@ -128,13 +129,18 @@ fi
 echo "Generating per-install credentials..."
 cd /opt/fieldos/services
 if [[ ! -s .env ]]; then
+  env_tmp=$(mktemp .env.XXXXXX)
   {
     printf 'APP_KEY=%s\n' "$(openssl rand -hex 32)"
     printf 'DB_PASSWORD=%s\n' "$(openssl rand -hex 32)"
     printf 'DB_ROOT_PASSWORD=%s\n' "$(openssl rand -hex 32)"
-  } > .env
-  chmod 0600 .env
+  } > "$env_tmp"
+  chmod 0600 "$env_tmp"
+  mv "$env_tmp" .env
+  env_tmp=
 fi
+chown root:root .env
+chmod 0600 .env
 
 echo "Starting the local N.O.M.A.D. service set without pulling images..."
 docker compose --project-directory /opt/fieldos/services -f compose.yaml up --detach --pull never
