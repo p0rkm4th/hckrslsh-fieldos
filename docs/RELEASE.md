@@ -45,14 +45,19 @@ negotiation (`security=any`). The owner then reported an authentication
 failure. Guacamole logged `STATUS_LOGON_FAILURE`; GNOME logged a CredSSP NTLM
 MIC failure, with no guest GDM/PAM account-password failure logged. The
 first credential-sync helper had a stdin/script collision, so its reported
-success was false evidence. The helper was corrected; its replacement confirmed
-the Kasm API update and guest credential command completion. Guest account and
-RDP service read-back passed. Logs inspected after that correction showed no
-new login attempt, so a fresh session test is still pending. The Kasm website
-password was not changed. Successful desktop login and application interaction
-still need owner confirmation. Redacted corrected-sync evidence is at
+success was false evidence. The replacement updated Kasm and guest credentials,
+and read-back confirmed the guest account and GNOME RDP credentials match the
+intended password. Later Kasm attempts still failed CredSSP. The guest RDP
+service was restarted to reload credentials; the Kasm server is now configured
+to prompt for the RDP credential instead of using a static secret. This
+diagnostic mode has not yet been tested through a fresh workspace launch. The
+Kasm website password was not changed. Successful desktop login and application
+interaction still need owner confirmation. Redacted corrected-sync evidence is at
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync-corrected.txt`
 (SHA-256 `00621e1bf57ea9a6d6c5cc11a15e7f10a17f34cdc695aeac322be395880992a8`).
+Latest prompt-mode evidence is at
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-rdp-prompt-mode.txt`
+(SHA-256 `c6c1de8567fe93dd57b24022b4a44c03606fe03ce544fd7de9d307706077f80f`).
 A headless Firefox capture showed a blank map canvas; map API and tile
 availability therefore remain verified, while
 visible rendering in this workspace is **PARTIAL**.
@@ -67,7 +72,7 @@ remain outside the public repository.
 | Lab VM installed and bootable | PASS | Live Proxmox config selects the installed disk, test ISO is detached; snapshot created and VM restarted |
 | FieldOS services functional | PASS | Two-reboot checks: firstboot complete, seven containers, N.O.M.A.D. health, chat generation, 768-value embedding, Kiwix retrieval |
 | Kasm workspace configured | PASS | `FieldOS Lab` Server/RDP workspace, dedicated group mapping; not mapped to all users |
-| Owner desktop accessible | PARTIAL | Owner reached the login screen; RDP auth failure was logged, credentials resynchronized, and a fresh session/login check is pending |
+| Owner desktop accessible | PARTIAL | Owner reached the GNOME login screen previously; RDP auth still failed after sync. Kasm is now set to prompt for RDP credentials; fresh launch and login check pending |
 | Offline isolation preserved | PARTIAL | No route/DNS, outbound default-deny and blocked external request; management NIC remains on shared bridge, no peer scan |
 | Snapshot/recovery established | PASS | `fieldos-lab-known-good-20261103`; exact VM ID remains in the private operations record |
 | Map API/data available | PASS | Region/style endpoints and PMTiles HTTP 206 range; visible map canvas in this Kasm desktop remains unverified |

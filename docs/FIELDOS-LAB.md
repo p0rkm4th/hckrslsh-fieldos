@@ -16,8 +16,10 @@ management addresses, VM identifier, and account identifiers are kept in the
 private local operations record, not in this public repository.
 
 The Kasm entry is named **FieldOS Lab** and is a **Server** workspace using an
-RDP connection to the guest's GNOME Remote Desktop service. Kasm stores the
-desktop credential in its server configuration; it is not published here.
+RDP connection to the guest's GNOME Remote Desktop service. Kasm is currently
+configured to prompt for RDP credentials at launch; no static RDP password is
+stored in the Kasm server record. This is a diagnostic/workaround state after
+the static credential produced repeated NLA failures.
 Access is mapped to a dedicated operator group containing only the owner's
 Kasm account. The workspace is not mapped to the default all-users group.
 Kasm proxies the browser session; the guest does not expose its application
@@ -87,27 +89,28 @@ closed before a signed-in desktop was verified. The record was changed to
 `security=any` so Guacamole can negotiate the mode across the initial endpoint
 and redirect. The owner then reported an authentication failure. Guacamole
 logged `STATUS_LOGON_FAILURE`, and GNOME logged a CredSSP NTLM MIC verification
-failure; no guest GDM/PAM account-password failure was logged for that attempt.
-The existing owner-approved desktop credential was resynchronized to the
-guest's `labdesk` account, GNOME Remote Desktop system credentials, and Kasm's
-static server credential. The first resynchronization helper had a stdin/script
-collision: it reported success without reliably passing the intended password
-to the guest command. That success is invalid evidence and is superseded. The
-helper was corrected to pass the script as a command argument and the password
-on stdin; the corrected run confirmed both Kasm API read-back and guest command
-completion. Guest account and RDP service read-back also passed. There has been
-no post-correction owner login attempt yet, so access remains unverified. The
-Kasm website password was not changed. Neither password is recorded here.
+failure; no guest GDM/PAM account-password failure was logged. The first
+resynchronization helper had a stdin/script collision and is invalid evidence.
+Its replacement updated Kasm and GNOME credentials. Later failures at
+17:11:57, 17:12:02, and 17:13:06 UTC still reached GNOME NLA and failed CredSSP.
+The guest Linux password hash was verified against the intended credential, and
+`grdctl --system status --show-credentials` confirmed the GNOME RDP credential
+username and password match without exposing either value. GNOME Remote
+Desktop was restarted at 17:16:47 UTC to reload the saved credential. Because
+the Kasm server API masks stored passwords, the gateway's actual password could
+not be compared directly. Its static username/password fields are now blank;
+Kasm should prompt for RDP credentials at workspace launch. This supported
+prompt mode is documented by [Kasm](https://www.kasmweb.com/docs/1.17.0/how_to/fixed_infrastructure.html#forcing-login-on-connection).
+The Kasm website password was not changed. No workspace attempt has verified
+this new prompt mode yet. Neither password is recorded here.
 
-There are two sign-in stages: the Kasm server credential authenticates the
-RDP connection; GNOME then presents its remote GDM greeter, where the operator
-must sign in to guest account `labdesk` with the desktop password. The retained
-diagnostics from before the corrected sync show Guacamole
-selected NLA and GNOME sent its server-redirection handoff, followed by a
-transport close. A later `security=any` attempt logged an RDP authentication
-failure before guest login. Credentials were corrected after those attempts; no
-fresh attempt has confirmed the result. The owner has seen the login screen,
-but a stable post-login desktop is not yet verified. Diagnostic record:
+There are two sign-in stages in the current prompt mode: Kasm asks for the RDP
+credential (`labdesk` and the desktop password), then GNOME presents its remote
+GDM greeter, where the operator signs in to `labdesk` again. The owner previously
+reached the greeter, but repeated RDP authentication failures occurred after
+the static credential update. A fresh attempt using Kasm's prompt mode is
+pending. Stable post-login desktop and application interaction are not
+verified. Diagnostic record:
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-nla-greeter-check.txt`
 (SHA-256 `b0c08f5978be942021c087d2a194fdcecdd6187aaf5b10ff92594e953285cb47`).
 This two-stage flow is GNOME's documented [headless multi-user remote login
@@ -119,18 +122,21 @@ records the superseded attempt and must not be used as proof. The corrected
 sync's redacted result is recorded at
 `/mnt/shared/fieldos-lab/evidence/20261103/kasm-credential-resync-corrected.txt`
 (SHA-256 `00621e1bf57ea9a6d6c5cc11a15e7f10a17f34cdc695aeac322be395880992a8`).
-The following guest log and Kasm Guacamole log reads contained no later login
-attempt. Do not change credentials again absent a new failure after this
-corrected sync.
+This earlier record describes the superseded sync; the corrected sync and later
+credential checks are described above. Do not reset credentials again without
+new logs showing an authentication failure under the current prompt-mode
+configuration. The latest redacted diagnostic is
+`/mnt/shared/fieldos-lab/evidence/20261103/kasm-rdp-prompt-mode.txt`
+(SHA-256 `c6c1de8567fe93dd57b24022b4a44c03606fe03ce544fd7de9d307706077f80f`).
 
 If the issue returns, inspect the Kasm Guacamole log and the guest's
 `gnome-remote-desktop.service` journal for `HYBRID_REQUIRED_BY_SERVER` or
 `rdp_server_accept_nego`. Do not respond by resetting credentials unless the
 logs show an authentication failure after successful security negotiation.
 If the stream has closed, end the stale Kasm workspace session and launch
-**FieldOS Lab** again; then enter `labdesk` and the desktop password at the
-guest's GDM screen. Successful login and application interaction are still
-awaiting confirmation.
+**FieldOS Lab** again. Enter `labdesk` and the desktop password in Kasm's RDP
+prompt, then enter the same guest account credentials at GNOME's GDM screen.
+Successful login and application interaction are still awaiting confirmation.
 
 ## Launch and maintenance
 
