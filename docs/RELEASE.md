@@ -5,15 +5,86 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-The latest implementation changes through `0436069e99f972f25ae424597fa00d7337de9c60`
-are public at `origin/main`. At that revision, `make check` and `make test`
-passed all 50 tests; the current captured log is
+## FieldOS Lab update — 2026-11-03
+
+The persistent FieldOS Lab VM was verified from test-only unattended ISO
+`/mnt/shared/fieldos-e2e/lab-installer/20261103T155125Z-2510072/test.iso`,
+built from source `c61b553`. Its SHA-256 is
+`b245f6654cf84fedd86b2f14ca16b5414ca5e358cacec30d490ae5267d298339`. Proxmox
+lab VM has 4 vCPU, 8 GiB RAM, and a 120 GiB disk; the installer ISO is
+detached and disk boot is selected. After two guest reboots, provisioning
+remained complete, all seven containers were running, N.O.M.A.D. health
+returned `{"status":"ok"}`, Ollama generated `FIELDOS_LAB_REBOOT_OK`, the
+embedding model returned 768 values, Kiwix retrieved a bundled New York
+reference, and the regional map service returned its sample pack, style, and
+an HTTP 206 PMTiles range. No default route or DNS was present and the tested
+external request was blocked. The guest's desktop persistence marker survived
+both reboots.
+
+The preserved post-snapshot transcript is
+`/mnt/shared/fieldos-lab/evidence/20261103/post-snapshot-two-reboots.txt`
+(SHA-256 `a7ef7817ec9f4be12b2c1af1fa0889d9b3d218f13646b86943448574e6451cd4`).
+
+After those checks, the lab VM was gracefully stopped, snapshot
+`fieldos-lab-known-good-20261103` was created, and the guest was restarted.
+The snapshot is on the hypervisor's local thin-provisioned storage. The VM is
+attached to the existing shared Proxmox bridge
+for Kasm RDP. Guest firewall policy allows only the Kasm host's RDP connection
+and DHCP, denies outbound and routed traffic by default, and disables automatic
+routes, DNS, and IPv6. This is a restricted management path, not a dedicated
+VLAN or layer-2 isolation. No peer scan has been run.
+
+The Kasm `FieldOS Lab` Server workspace and owner-only group mapping were
+configured. The Kasm account was enabled and unlocked, and Kasm authorized the
+owner's session. Its RDP connection then failed negotiation with
+`HYBRID_REQUIRED_BY_SERVER` because the server record used TLS-only security
+while GNOME Remote Desktop requires NLA. The FieldOS record is now configured
+for NLA. A temporary second session probe could not start because the owner's
+existing FieldOS session occupied the single allowed session slot. The owner
+then reported reaching a graphical login screen. The guest desktop credential
+was shortened and synchronized between the Linux account, GNOME Remote
+Desktop, and Kasm's static server record; the Kasm website password was not
+changed. Successful desktop login and application interaction still need
+owner confirmation. A headless Firefox capture showed a blank map canvas; map
+API and tile availability therefore remain verified, while
+visible rendering in this workspace is **PARTIAL**.
+Screenshot: `/mnt/shared/fieldos-lab/evidence/20261103/map-headless.png`
+(SHA-256 `8406e948d273201648f5372c785402f641cdc25f121d09795c2b0134d081afea`).
+The full connection and recovery runbook is
+[`FIELDOS-LAB.md`](FIELDOS-LAB.md); private hypervisor and account details
+remain outside the public repository.
+
+| Component | Status | Evidence |
+|---|---|---|
+| Lab VM installed and bootable | PASS | Live Proxmox config selects the installed disk, test ISO is detached; snapshot created and VM restarted |
+| FieldOS services functional | PASS | Two-reboot checks: firstboot complete, seven containers, N.O.M.A.D. health, chat generation, 768-value embedding, Kiwix retrieval |
+| Kasm workspace configured | PASS | `FieldOS Lab` Server/RDP workspace, dedicated group mapping; not mapped to all users |
+| Owner desktop accessible | PARTIAL | Kasm authorized the owner session and the owner reached a graphical login screen; NLA and desktop credential were corrected; successful desktop login/application checks need confirmation |
+| Offline isolation preserved | PARTIAL | No route/DNS, outbound default-deny and blocked external request; management NIC remains on shared bridge, no peer scan |
+| Snapshot/recovery established | PASS | `fieldos-lab-known-good-20261103`; exact VM ID remains in the private operations record |
+| Map API/data available | PASS | Region/style endpoints and PMTiles HTTP 206 range; visible map canvas in this Kasm desktop remains unverified |
+| Customer installer | PARTIAL | Separate interactive ISO handoff remains a release blocker; unattended lab image does not satisfy it |
+| Public source | PASS | Current source revision `c61b553` at `origin/main` before this documentation update |
+
+`/mnt/shared` had 598 GiB free when this record was updated. The test ISO,
+evidence, and VM disk remain outside Git. No customer release ISO is declared
+from this lab run.
+
+The latest source revision is `c61b5534550e2d58116b21eb7a7a12cdceb3d266` at
+`origin/main`; the FieldOS Lab test ISO and installed VM use this revision.
+`make check` and `make test` passed all 50 tests on this source tree. The
+captured log is `/mnt/shared/fieldos-lab/evidence/20261103/source-check-test-c61b553.log`
+(SHA-256 `dbb4f4655a765d39d341768383276a64a89c1148cf63ccf239f16ba56a3ff50a`).
+The earlier run at parent revision `0436069e99f972f25ae424597fa00d7337de9c60`
+also passed all 50 tests; its historical log is
 `/mnt/shared/fieldos-e2e/source-check-test-0436069.log` (SHA-256
 `8937548671e5ece9d359f45cc95b2fab8b237b54d84ddbc71bcf38540e6427ac`). The
 retained customer ISO candidate is still from older source commit `0b2fd8c`;
 it was not rebuilt from current source, and its interactive optical-media
 handoff required host action. The historical `make verify` pass for that
-candidate validates structure and payload only, not current-source operation.
+candidate validates structure and payload only, not current-source customer
+installation. The current-source FieldOS Lab test ISO did install and pass
+guest service checks, but it is unattended and not a customer installer.
 Gitleaks scanned 149 commits through the public source and found no findings;
 the reachable object walk found no blob over 5 MiB. Review evidence and scope
 limitations are in
