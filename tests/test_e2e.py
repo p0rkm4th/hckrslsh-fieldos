@@ -556,25 +556,11 @@ autoinstall:
                 raise TestFailure(f"Expected 7 running services; got {ps}")
         except json.JSONDecodeError as exc:
             raise TestFailure(f"Could not parse Compose service state: {exc}: {ps}")
-        copy_command = """python3 - <<'PY'
-import subprocess
-cmd = [
-    'docker', 'exec', 'nomad_mysql', 'sh', '-lc',
-    "MYSQL_PWD=\"$MYSQL_ROOT_PASSWORD\" mysql --user=root --database=nomad --batch --skip-column-names "
-    "--execute 'SELECT description FROM services WHERE service_name=\"nomad_kiwix_server\" LIMIT 1;'",
-]
-description = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip()
-expected = 'Search installed offline archives. Coverage depends on the content packs installed on this system.'
-assert description == expected, 'Command Center still advertises reference material that is not bundled'
-asset_check = (
-    'const fs=require("fs"),s=fs.readFileSync("/app/public/assets/index-vzjZVwxe.js","utf8");'
-    'for(const t of ["Search the offline archives installed on this system",'
-    '"Medical and first-aid coverage depends on installed archives; check sources"])'
-    '{if(!s.includes(t))throw Error("missing FieldOS copy: "+t)}'
-)
-subprocess.run(['docker', 'exec', 'nomad_admin', 'node', '-e', asset_check], check=True)
-print('home-card database description and Easy Setup text are truthful')
-PY"""
+        copy_command = """set -euo pipefail
+description=$(docker exec nomad_mysql sh -lc 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql --user=root --database=nomad --batch --skip-column-names --execute "SELECT description FROM services WHERE service_name=0x6e6f6d61645f6b697769785f736572766572 LIMIT 1;"')
+[[ "$description" == 'Search installed offline archives. Coverage depends on the content packs installed on this system.' ]]
+docker exec nomad_admin node -e 'const fs=require("fs"),s=fs.readFileSync("/app/public/assets/index-vzjZVwxe.js","utf8");for(const t of ["Search the offline archives installed on this system","Medical and first-aid coverage depends on installed archives; check sources"]){if(!s.includes(t))throw Error("missing copy: "+t)}'
+printf 'home-card database description and Easy Setup text are truthful\\n'"""
         copy = self.check(
             "FieldOS reference-library copy matches installed content",
             copy_command,
