@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-ISO=${1:?usage: verify-iso.sh image.iso}
+ISO=${1:?usage: verify-iso.sh image.iso [customer|test]}
+MODE=${2:-customer}
+case "$MODE" in customer|test) ;; *) echo "Unknown ISO verification mode: $MODE" >&2; exit 2 ;; esac
 ISO=$(realpath "$ISO")
 for tool in xorriso sha256sum; do
   command -v "$tool" >/dev/null || { echo "Missing required tool: $tool" >&2; exit 2; }
@@ -35,18 +37,27 @@ grep -Eq '^    geoip: false$' "$TMP/nocloud-user-data" \
   || { echo "Installer geo-IP lookup must be disabled" >&2; exit 1; }
 grep -Eq '^    fallback: offline-install$' "$TMP/nocloud-user-data" \
   || { echo "Installer must fall back to the local offline source" >&2; exit 1; }
-grep -Eq '^  interactive-sections:$' "$TMP/nocloud-user-data" \
-  || { echo "Customer installer must leave identity and storage interactive" >&2; exit 1; }
-grep -Eq '^    - identity$' "$TMP/nocloud-user-data" \
-  || { echo "Customer installer identity configuration must remain interactive" >&2; exit 1; }
-grep -Eq '^    - storage$' "$TMP/nocloud-user-data" \
-  || { echo "Customer installer disk selection must remain interactive" >&2; exit 1; }
-grep -Eq '^  shutdown: reboot$' "$TMP/nocloud-user-data" \
-  || { echo "Installer must request reboot after installation" >&2; exit 1; }
-if grep -Eq '^  identity:|^    (username|password|hashed-password):' "$TMP/nocloud-user-data"; then
-  echo "Customer ISO must not configure user credentials unattended" >&2
-  exit 1
+if [[ "$MODE" == customer ]]; then
+  grep -Eq '^  shutdown: reboot$' "$TMP/nocloud-user-data" \
+    || { echo "Customer installer must request reboot after installation" >&2; exit 1; }
+  grep -Eq '^  interactive-sections:$' "$TMP/nocloud-user-data" \
+    || { echo "Customer installer must leave identity and storage interactive" >&2; exit 1; }
+  grep -Eq '^    - identity$' "$TMP/nocloud-user-data" \
+    || { echo "Customer installer identity configuration must remain interactive" >&2; exit 1; }
+  grep -Eq '^    - storage$' "$TMP/nocloud-user-data" \
+    || { echo "Customer installer disk selection must remain interactive" >&2; exit 1; }
+  if grep -Eq '^  identity:|^    (username|password|hashed-password):' "$TMP/nocloud-user-data"; then
+    echo "Customer ISO must not configure user credentials unattended" >&2
+    exit 1
+  fi
+else
+  grep -Eq '^  shutdown: poweroff$' "$TMP/nocloud-user-data" \
+    || { echo "Test installer must power off for deterministic media handoff" >&2; exit 1; }
+  grep -Eq '^  identity:$' "$TMP/nocloud-user-data" \
+    || { echo "Test ISO must configure its disposable test identity" >&2; exit 1; }
+  grep -Eq '^    username: fieldos$' "$TMP/nocloud-user-data" \
+    || { echo "Test ISO identity must use the isolated acceptance account" >&2; exit 1; }
 fi
 
-echo "ISO structure, BIOS/UEFI boot records, interactive customer setup, offline APT, and payload presence verified."
+echo "ISO structure, BIOS/UEFI boot records, $MODE setup, offline APT, and payload presence verified."
 sha256sum "$ISO"
