@@ -51,6 +51,13 @@ visually inspected: Firefox shows the U.S. regional map at
 `http://127.0.0.1:8080/maps`, with map controls, labels, and attribution. The
 live follow-up itself did not capture a new browser render.
 
+A separate, reversible QEMU SLIRP check on that guest confirmed the guest
+could access the internet while the five published service ports refused
+connections on its `10.0.2.15` interface and container egress remained blocked.
+The temporary NIC was removed, and the guest returned to no external link or
+default route with all services running. Evidence and limitations are in
+[`docs/SECURITY.md`](SECURITY.md).
+
 The public Git history was scrubbed because earlier release notes contained a
 local username path and unrelated infrastructure labels. The one published
 branch was rewritten with a lease; its tip tree is byte-for-byte unchanged.
