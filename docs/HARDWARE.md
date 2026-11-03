@@ -92,3 +92,13 @@ FieldOS Ollama inference was run on the physical GPU. Evidence:
 `/mnt/shared/fieldos-e2e/hardware-detection-20261103.json`,
 `hardware-runtime-check-20261103.txt`, and
 `hardware-selection-cpu-20261103.json`.
+
+At source commit `6f11170b1334eb8339ea53f644480a912e0e5f1f`, the selector was
+also run against IDs streamed from the actual prepared offline payload archive.
+It found only the bundled Qwen 0.6B chat and Nomic Embed v1.5 models and chose
+both with CPU when only CPU was marked validated, despite detecting the host's
+NVIDIA and Intel GPUs. Evidence, including the hardware inventory, payload IDs,
+and selection result:
+`/mnt/shared/fieldos-e2e/hardware-selection-actual-payload-6f11170.json`. This
+confirms inventory-based selection on this workstation; it does not load a
+model, run inference, or validate GPU acceleration.
