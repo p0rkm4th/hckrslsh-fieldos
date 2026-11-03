@@ -5,19 +5,25 @@ later in this file are historical snapshots and may describe the then-current
 ISO or storage state; use the opening status and the latest dated sections for
 present decisions.
 
-The latest validated implementation is public at `origin/main`, source commit
-`dc48319a4e29ea8a3c7412f113855f1b51734b1e`. `make check` and `make test`
-passed all 49 tests on this implementation; log:
-`/mnt/shared/fieldos-e2e/status-file-admin-readability-tests.log` (SHA-256
-`346d7fc272e54c4375ea64262a5539aeb1815d45703be4292cbe53f725c9376f`). Firstboot
-and embedded acceptance assertion syntax also passed; evidence:
-`/mnt/shared/fieldos-e2e/status-admin-readability-syntax.log` (SHA-256
-`e60e20ab5bb62b3cf5719e0ae4467b5dfb3552d6a79b82343d9f5840119860a3`). A fresh
-Gitleaks scan through this commit found no findings; report:
-`/mnt/shared/fieldos-e2e/gitleaks-dc48319.json` (SHA-256
-`37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`). These
-source checks do not establish installation behavior. A fresh ISO/guest
-acceptance is still required for the diagnostics permission change.
+The latest source is public at `origin/main`, commit
+`37c8c3f529aba007840970f66a9e4aef1e4b44da`. `make check` and `make test`
+passed all 50 tests; log:
+`/mnt/shared/fieldos-e2e/preflight-report-tests.log` (SHA-256
+`99701e649da7229d45b2e0002cedde7a4bf513f8e648d89998d14c8374f4a44d`). The
+administrator-readable status change is source commit `dc48319`; its tests and
+embedded acceptance assertion syntax are retained at
+`/mnt/shared/fieldos-e2e/status-file-admin-readability-tests.log` and
+`/mnt/shared/fieldos-e2e/status-admin-readability-syntax.log`. A fresh Gitleaks
+scan through `37c8c3f` found no findings:
+`/mnt/shared/fieldos-e2e/gitleaks-37c8c3.json` (SHA-256
+`37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`).
+
+`make test-e2e` was attempted and safely refused to build with 18 GiB free,
+below its 50 GiB preflight. It wrote the human-readable FAIL report
+`/mnt/shared/fieldos-e2e/preflight-20261103T123146Z-2375961.md` (SHA-256
+`5b2a252b4e7afefbe351eaed9300c26b8d222f74c065f621cbe4be61597bd25f`). No ISO,
+VM disk, or test credentials were created. The new guest permission assertions
+remain unverified until a fresh installation can run.
 
 On source commit `670b1a3`, `make check` and `make test` passed with 49 tests.
 The captured log is
@@ -40,10 +46,9 @@ into an ISO or verified on a newly installed guest.
 The most recent clean unattended VM acceptance remains the report below at
 source `6c64ffd` plus a harness-only fix committed as `0b2fd8c`; it is not a
 fresh acceptance of current source. The interactive customer ISO likewise
-predates current source. `/mnt/shared` has 18 GiB free, below the 50 GiB E2E
-preflight, so no current-source ISO or VM run was started. Existing VM disks
-were preserved. Historical passes remain evidence only for their tested
-source and environment; current-source release acceptance is open.
+predates current source. `/mnt/shared` has 18 GiB free; existing VM disks were
+preserved. Historical passes remain evidence only for their tested source and
+environment; current-source release acceptance is open.
 
 ### Existing installed guest live recheck — 2026-11-03
 
