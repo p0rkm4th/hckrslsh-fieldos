@@ -58,6 +58,20 @@ The temporary NIC was removed, and the guest returned to no external link or
 default route with all services running. Evidence and limitations are in
 [`docs/SECURITY.md`](SECURITY.md).
 
+The active `fieldos-auto-test4` guest is not accepted: its firstboot unit is
+failed with `ExecMainStatus=7`, Docker is active, and the N.O.M.A.D. endpoints
+on ports 8080 and 8090 refuse connections. The unprivileged test account can
+confirm the unit result but cannot read its root-only log, and no guest agent
+is available; the cause is therefore unresolved. No repair was attempted.
+The guest and its disk were preserved. Screenshot evidence of the unit status
+and exit code is `/mnt/shared/fieldos-e2e/auto-test4-exit-status.png` (SHA-256
+`d628b213c89f15a71481a2d89064d294a6ec46b73aa4230fd98f571bea5583a9`). This
+failed run must not be counted as an automated acceptance pass.
+
+At this checkpoint `/mnt/shared` has 18 GiB free (99% used), below the
+50-GiB clean-E2E preflight. No additional ISO or VM disk was created. Existing
+active VM disks were retained.
+
 The public Git history was scrubbed because earlier release notes contained a
 local username path and unrelated infrastructure labels. The one published
 branch was rewritten with a lease; its tip tree is byte-for-byte unchanged.
