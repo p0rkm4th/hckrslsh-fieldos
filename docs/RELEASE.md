@@ -541,7 +541,7 @@ still presents interactive disk and account setup.
 | Container privilege review | PARTIAL | Runtime inspect, loopback ports, root-only secrets; N.O.M.A.D. Docker socket is root-equivalent by upstream design |
 | Network-enabled exposure | PARTIAL | User-mode NIC, local endpoint, blocked egress, and NIC-address port checks; LAN peer scan pending |
 | Redistribution and attribution | BLOCKED | See `REDISTRIBUTION.md`: Ubuntu modification/trademark review and exact package/image/model/ZIM notices remain unresolved |
-| Public Git history | PASS (Gitleaks) | Latest full history scan covered 61 commits with zero findings; evidence: `/mnt/shared/fieldos-e2e/repository-review-280fda2/gitleaks-history.json`. Earlier private infrastructure indicator review: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
+| Public Git history | PASS (Gitleaks) | Full history scan covered 67 commits with zero findings; evidence: `/mnt/shared/fieldos-e2e/repository-review-customer-20261103/gitleaks-history.json`. Earlier private infrastructure indicator review: `/mnt/shared/fieldos-e2e/repository-review-233b980/` |
 | Content packs | ARCHITECTURE READY | Manifest schema and validator; 28 tests pass; catalog empty and no customer packs approved |
 
 ## Remaining release gates
