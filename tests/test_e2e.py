@@ -89,6 +89,10 @@ class AcceptanceRun:
         hash_proc = subprocess.run(["openssl", "passwd", "-6", "-stdin"],
                                    input=self.temporary_password, text=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        # Keep installer-to-disk handoff deterministic in the test-only ISO
+        # even if the desktop installer leaves its completion dialog visible.
+        # This timer runs in the live installer after late commands; the
+        # customer-facing interactive user-data is not modified.
         self.user_data.write_text(f"""#cloud-config
 autoinstall:
   version: 1
@@ -124,6 +128,7 @@ autoinstall:
     - curtin in-target --target=/target -- chmod 0755 /opt/fieldos/installer/provisioning/firstboot.sh
     - cp /target/opt/fieldos/installer/provisioning/fieldos-firstboot.service /target/etc/systemd/system/fieldos-firstboot.service
     - curtin in-target --target=/target -- systemctl enable fieldos-firstboot.service
+    - systemd-run --unit=fieldos-e2e-poweroff --on-active=90s /usr/bin/systemctl poweroff
 """, encoding="utf-8")
         os.chmod(self.user_data, 0o600)
         build_env = os.environ.copy()
