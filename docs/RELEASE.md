@@ -1,130 +1,98 @@
 # Release readiness and evidence
 
-**Status: engineering test candidate; not approved for customer installation.**
-Clean-source offline E2E passed on implementation revision `43ec3f9`. The
-current customer candidate (`b7f25b0`, documentation-only source change) passed
-structural verification and a fresh interactive installation to a disposable
-no-NIC VM. Firstboot and functional service checks passed, and the installed disk
-booted after the tester detached the still-attached USB and reset the VM. That
-manual recovery means this run does **not** clear the customer handoff gate.
-Two guest reboots passed. The actual desktop showed the corrected Information
-Library copy and rendered the bundled map overview, which was blank at 10 km
-zoom. Kiwix has one 100-article fixture; the tested ice-storm response was
-generic and lacked identifiable source citations. FieldOS is not ready for
-customer or emergency use. Redistribution review, LAN peer isolation, physical
-GPU validation, and broad hardware coverage remain open. The persistent Kasm
-lab is separate and is not release acceptance.
+**Status: engineering test candidate; not approved for customer/emergency use.**
+The latest unattended offline E2E passed on source `0085b7ac2989dc684776ae0910fe5c77dd829c0c`.
+A separate customer-mode UEFI install on the same source completed interactively
+with no NIC, media handoff to the installed disk, firstboot, and two guest
+restarts. Actual browser checks confirmed local N.O.M.A.D. chat and the branded
+desktop. The field-use content check failed: Kiwix has only a 100-article
+Wikipedia fixture, the map has no useful local detail at a 10 km scale, and
+chat guidance was generic and unsourced. Physical hardware, LAN peer isolation,
+GPU acceleration, and redistribution approval remain open.
 
 ## Current source and artifacts
 
-- Latest clean-source E2E implementation source:
-  `43ec3f9faed73632c13a8113b546ade9b5bf488e`.
-- Latest clean-source E2E run:
-  `/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md` (PASS). Test ISO
-  SHA-256: `c4fc27bc3722509d525049b5fe5b8e56396852854a49f9e65cafe1de8276b373`.
-  It verified offline provisioning, N.O.M.A.D. copy correction, local chat and
-  embeddings, Kiwix retrieval, Middle Tennessee pack activation and Firefox map
-  rendering, and two reboots. The disposable disk was retired after PASS; the
-  report, logs, screenshot, and disk-retirement audit remain.
-- Current customer candidate source revision:
-  `b7f25b033fd7c7aabfd17fe686c303b4be0814b1` (code matches tested
-  `43ec3f9faed73632c13a8113b546ade9b5bf488e`; docs-only follow-up does not alter
-  the image contents).
-- Current customer ISO:
-  `/mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso`
-  (11,984,044,032 bytes). SHA-256:
-  `a6af2e66c1042f517747b0ef02b07ef7f1bc9cfdfe93ea90bb55836c799246c1`.
-  ISO structure, BIOS/UEFI boot records, customer setup, local APT repository,
-  and bundled payload verified by `make verify`.
-- Fresh customer-mode interactive run:
-  `/mnt/shared/fieldos-e2e/customer-interactive-b7f25b0-20261103/report.md`.
-  Identity and only the blank disposable `vda` target were selected; installer
-  completed with no virtual NIC. The USB remained attached through restart, and
-  the VM returned to installer media. Tester detached it and reset the VM to
-  reach the installed disk; handoff is therefore PARTIAL, not PASS. Subsequent
-  firstboot, seven services, local chat/embeddings, Kiwix retrieval, no-NIC
-  network state, and two reboots passed. The report preserves UI screenshots,
-  firstboot evidence, acceptance logs, and actual user-interface checks.
-- Earlier E2E results remain in their dated run directories; the current
-  authoritative E2E evidence is the `43ec3f9` run listed above.
-- The older `c744e52` CD-ROM run and the `280fda2` USB-removal run remain
-  historical evidence, not substitutes for testing the current candidate's
-  handoff. The new candidate was installed on virtual USB media; the test missed
-  the media-removal timing and required a reset. Do not report a clean customer
-  install PASS until a fresh run handles that transition without recovery.
-- The actual installed desktop launched N.O.M.A.D.; local chat and embeddings
-  generated successfully. Kiwix exposed one “Top hundred Wikipedia articles”
-  archive: water-purification search returned no results and a first-aid search
-  returned unrelated titles. The bundled map rendered the U.S. at low zoom but
-  showed no useful roads after zooming in. The optional zoom-13 regional pack
-  is not part of this ISO. An emergency-preparedness chat prompt returned
-  generic, unsourced advice and labeled practices “Verified”; do not rely on it
-  for safety-critical guidance. Browser screenshots and logs are in the run
-  evidence directory above.
-- Persistent Kasm lab staging VM 913 uses the installed customer-mode test
-  system. See [FieldOS Lab operations](FIELDOS-LAB.md); owner-authenticated
-  desktop launch remains unconfirmed.
-
-These are local engineering artifacts, not public release assets. The accepted
-E2E result is not customer installer acceptance.
+- Current source and latest pushed commit: `0085b7ac2989dc684776ae0910fe5c77dd829c0c`.
+- Latest clean-source E2E report:
+  `/mnt/shared/fieldos-e2e/20261104T001739Z-2874470/report.md` (PASS). Test ISO
+  SHA-256: `5a6a5e78df0abe6b238b0d9fbfc48638bcb63e5192b67467237e5ed995db61ba`.
+  It verified offline install/provisioning, seven services, chat, embeddings,
+  Kiwix retrieval, bundled map rendering, two reboots, and no NIC. The optional
+  Middle Tennessee content-pack archive was not available in this run; its
+  separate earlier test is documented in `CONTENT-PACKS.md`.
+- Current customer-mode candidate:
+  `/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso`, 11,984,044,032
+  bytes. SHA-256:
+  `4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`.
+  BIOS/UEFI structure and offline payload were verified by `make verify`.
+- Fresh customer-mode install and end-user report:
+  `/mnt/shared/fieldos-e2e/customer-interactive-0085b7a-20261104/report.md`.
+  The interactive install used a blank disposable 80 GiB target in UEFI QEMU
+  with `-net none`. At the restart prompt, the media was ejected and Enter
+  continued to the installed OS without resetting the VM. Firstboot completed,
+  seven containers were visible through `sudo docker ps`, Firefox loaded the
+  local Command Center, and the desktop/assistant remained accessible after two
+  restarts. The firstboot journal was not exported from this guest; the separate
+  unattended E2E has fuller provisioning logs.
+- The disposable customer VM disk and two superseded failed-run disks were
+  retired after validation. The report, compressed screenshots, ISO, and prior
+  small diagnostic reports remain. See `artifact-retirement.md` in the customer
+  run directory for exact paths and reclaimed space.
+- These are local engineering artifacts, not public release assets. The E2E
+  result and QEMU customer install do not constitute physical-machine or
+  redistribution approval.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh Ubuntu installation, offline | PASS | `43ec3f9` E2E report; no virtual NIC; install and firstboot logs retained |
-| Offline provisioning and local images | PASS | Firstboot complete; seven Compose services; external access blocked |
-| N.O.M.A.D. | PASS | `/api/health` returned `{"status":"ok"}` |
-| Truthful information-library UI copy | PASS | Current-source E2E confirmed the database and Easy Setup copy after install and two reboots; the `b7f25b0` customer desktop also displayed accurate installed-archive coverage. The older `c744e52` ISO binary was retired; its checksum and test report remain. |
-| Local chat inference | PASS | Bundled `qwen3:0.6b-q4_K_M` generated `FIELDOS_ACCEPTANCE_OK` |
-| Embeddings | PASS | Bundled model returned a 768-element embedding |
-| Kiwix retrieval | PASS | Search/article retrieval recorded in E2E report |
-| Offline map | PASS for tested optional pack | Browser rendered Nashville at zoom 13 from offline Middle Tennessee pack; screenshot retained |
-| Branded installed desktop | PASS | Fresh guest session checked wallpaper/theme and launchers |
-| Two-reboot persistence | PASS | Essential service checks repeated after both guest reboots |
-| Customer interactive installation | PARTIAL | Current `b7f25b0` fresh install selected identity and disposable disk, completed, then returned to USB installer because test media remained attached. Tester detached media and reset to boot installed disk. Services and two reboots passed, but this is not a clean handoff PASS. See current report. |
-| Prepper-oriented content and safety | FAIL | Current installed UI copy is accurate, but Kiwix exposes only a 100-article Wikipedia fixture. The bundled U.S. map renders only as a broad overview and is blank at 10 km zoom. The actual ice-storm chat response was generic and gave no identifiable installed references; do not use as emergency guidance. |
-| Kasm FieldOS Lab replacement | PARTIAL | VM 913 is staged behind the retained owner-only workspace; guest services, inference, Kiwix, map endpoint, restricted RDP reachability, and blocked app ports checked. Owner-authenticated browser launch and desktop interaction remain unconfirmed |
-| Hardware adaptation | PARTIAL | Configuration/fixture tests exist; physical GPU acceleration and broad machine coverage unverified |
-| Security/network isolation | PARTIAL | E2E had no NIC; Lab has management NIC with no route/DNS and guest firewall. Shared-bridge peer isolation is unverified |
-| Content redistribution | BLOCKED | Exact Ubuntu and all bundled third-party content/license attribution need final release review |
+| Fresh offline Ubuntu installation | PASS | Latest E2E report; no NIC; local APT and images. |
+| Offline provisioning | PASS | E2E logs and customer VM `sudo docker ps`; seven services. |
+| N.O.M.A.D. browser access | PASS | Customer Firefox displayed Command Center and chat at `localhost:8080`. |
+| Local chat inference | PASS, function only | Bundled `qwen3:0.6b-q4_K_M` generated a response in the disconnected customer VM. Response quality and sourcing failed field-readiness review. |
+| Embeddings | PASS | E2E report records a 768-element embedding from the bundled model. |
+| Kiwix service | PASS | Browser loaded the local Kiwix server. |
+| Useful reference coverage | FAIL | Only one “Top hundred Wikipedia articles” archive; “water purification” returned no result. |
+| Bundled offline map rendering | PASS at overview | Firefox rendered the U.S. basemap. |
+| Local map usefulness | FAIL | Nashville at 10 km scale displayed mostly blank background and sparse linework; the separately tested zoom-13 pack is not bundled. |
+| Branded desktop | PASS | Customer install showed wallpaper, dock, and N.O.M.A.D. launcher. |
+| Customer interactive install and media handoff | PASS in QEMU | Fresh interactive account/disk setup; USB ejected at prompt; same VM booted installed OS with no reset. Physical USB workflow remains untested. |
+| Two-reboot persistence | PASS in QEMU | Guest returned to branded desktop twice; N.O.M.A.D. chat/history loaded after both restarts. Full service checks after both reboots are covered by unattended E2E. |
+| Prepper safety/readiness | FAIL | Chat provided generic, uncited water-storage guidance, omitted usable quantities/procedure, and included questionable advice. Do not use for emergency decisions. |
+| Physical hardware / GPU | NOT TESTED | No physical laptop or GPU runtime validation. |
+| Security / LAN isolation | PARTIAL | Offline VM had no NIC; Kasm management network peer isolation remains unverified. |
+| Redistribution | BLOCKED | Exact software/content redistribution terms and attribution require final review. |
+| Overall customer release | BLOCKED | Content adequacy, source-grounded safety guidance, redistribution, hardware, and LAN security gates remain. |
 
 ## Customer installation gate
 
-A customer release requires a separate fresh install from the current
-customer-mode ISO with interactive identity and disk selection, no network,
-automatic installed-disk boot after the expected USB removal step, firstboot
-completion, branded desktop, and service/persistence checks. The unattended E2E
-does not satisfy this gate. The `b7f25b0` candidate installed Ubuntu and its
-disk was confirmed bootable after the tester detached the USB and reset the VM,
-but the current test did not demonstrate the expected unattended-by-engineer
-handoff. Repeat the fresh install with media removal captured at the prompt;
-never target a physical or production disk during acceptance.
+The current ISO has passed a fresh interactive UEFI QEMU installation with
+account and target-disk selection, no virtual NIC, prompt-time media removal,
+automatic installed-disk boot, firstboot, branded desktop, and two guest
+restarts. The full evidence is in the customer run report above. This does not
+prove physical USB behavior or support for customer hardware. Repeat on a spare
+physical machine only after content, licensing, hardware, and security gates are
+reviewed. Never target a physical or production disk during automated tests.
+The unattended `make test-e2e` image remains a separate test artifact.
 
 ## Content and hardware limitations
 
-The bundled Wikipedia ZIM and zoom-5 map fixtures are test-sized. The separately tested Middle Tennessee pack provides roads through zoom 13, but is not included in the core ISO and is not a comprehensive field library or navigation-grade map. No broad medical,
-emergency, agricultural, or survival coverage is claimed. The upstream
-N.O.M.A.D. Command Center landing page advertises medical references and how-to
-guides that were not present in the older `c744e52` customer test ISO. The
-current source contains a guarded firstboot correction for the N.O.M.A.D. home-card
-database description and pinned Easy Setup frontend strings. It preserves an
-operator-modified service description and fails if the pinned UI copy changes
-unexpectedly. The `43ec3f9` offline acceptance verified the corrected database
-description and frontend strings after install and after both reboots. The older `c744e52` ISO binary was retired after the `b7f25b0` candidate was
-built; its checksum and test report remain. The current image includes the
-guarded copy correction, visually verified in the installed Command Center.
-The current customer UI ice-storm test produced generic advice with no
-identifiable retrieval citation. Source-grounded emergency guidance remains
-unimplemented. One optional PMTiles map pack transfers, installs, registers, renders, and persists
-offline. The pack is a locally staged test artifact, not bundled or publicly
-released; other pack types remain storage-only. Before
-redistribution, review the exact content sources, licenses, attribution, and
-Ubuntu image terms in `docs/REDISTRIBUTION.md` and `docs/OFFLINE-CONTENT.md`.
+The bundled Kiwix ZIM contains only 100 Wikipedia articles. Its local service
+works, but basic water-purification lookup returned no result. The bundled map
+is low zoom: it renders a broad U.S. overview, then lacks useful street detail
+near Nashville at a 10 km scale. A separately tested Middle Tennessee PMTiles
+pack has zoom-13 detail but is not included in this ISO or approved for public
+redistribution. The current chat model responds offline but did not provide
+identifiable references or reliable actionable water-storage guidance. Do not
+represent the AI as authoritative medical, emergency, or technical reference.
 
-CPU inference is the validated baseline. Hardware selection is covered by
-fixtures and local detection code; no physical GPU runtime has been validated.
-Documented untested devices must be treated as unsupported until checked.
+The test pack activation work is documented in `CONTENT-PACKS.md`; other pack
+types and a customer content catalog remain incomplete. Review exact sources,
+licenses, attribution, Ubuntu terms, and container-image licenses in
+`REDISTRIBUTION.md`, `OFFLINE-CONTENT.md`, and `CONTAINER-IMAGES.md` before any
+customer distribution. CPU inference is the validated baseline. Hardware
+selection is covered by fixtures and local detection code; no physical GPU
+runtime has been validated. Treat untested devices as unsupported.
 
 ## Evidence handling
 
