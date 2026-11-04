@@ -96,6 +96,7 @@ install -m 0644 "$ROOT/models/manifest.json" "$WORK/fieldos/models/manifest.json
 install -m 0644 "$ROOT/services/compose.yaml" "$WORK/fieldos/services/compose.yaml"
 install -m 0755 "$ROOT/scripts/fieldos-diagnostics.sh" "$WORK/fieldos/scripts/fieldos-diagnostics.sh"
 install -m 0755 "$ROOT/scripts/fieldos-content-packs.py" "$WORK/fieldos/scripts/fieldos-content-packs.py"
+install -m 0755 "$ROOT/scripts/fieldos-nomad-index-references.py" "$WORK/fieldos/scripts/fieldos-nomad-index-references.py"
 install -m 0644 "$ROOT/payload/validate_content_packs.py" "$WORK/fieldos/scripts/validate_content_packs.py"
 install -m 0644 "$ROOT/payload/manifests/content-pack.schema.json" \
   "$WORK/fieldos/payload/manifests/content-pack.schema.json"
