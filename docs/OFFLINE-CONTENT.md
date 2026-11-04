@@ -8,12 +8,11 @@ artifact is missing or its checksum differs.
 The current customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
-Ollama Qwen3 0.6B Q4_K_M for chat, and `nomic-embed-text:v1.5` for embeddings.
-The source tree also stages two unchanged CDC PDFs about emergency water
-treatment and food safety after a power outage. A pending installer change will
-bundle these as the small `us-water-food-emergency` core content pack and
-activate its attributed source index during offline firstboot; the current ISO
-does not yet contain them.
+Ollama Qwen3 0.6B Q4_K_M for chat, `nomic-embed-text:v1.5` for embeddings, and
+the `us-water-food-emergency` core pack. That small pack contains two unchanged
+CDC PDFs about emergency water treatment and food safety after a power outage;
+firstboot activates an attributed local source index. It is a starter set, not
+a comprehensive disaster library.
 The sample PMTiles region is extracted offline from the bundled world archive
 by `build/prepare-payload.sh`; its bounding box and zoom levels are declared in
 `payload/manifests/maps.json`, and the payload records its generated checksum
@@ -60,20 +59,18 @@ part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 
 The extensible pack format and planned categories are documented in
-[`CONTENT-PACKS.md`](CONTENT-PACKS.md). The current ISO does not bundle a
-content-pack archive. The source tree defines the `us-water-food-emergency`
-starter pack with two CDC source PDFs; a pending change will embed and activate
-it in a rebuilt offline candidate. On source
-`09501cb6e6fb4e049da585a610176937a5a52b94`, its
-transfer, installation, browser source index, direct CDC PDF rendering, no-NIC
-operation, and persistence through two reboots passed in a fresh VM. The
-retained evidence is `/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md`
-and its `reference-library-render.png` and `reference-pdf-render.png` screenshots.
+[`CONTENT-PACKS.md`](CONTENT-PACKS.md). The `us-water-food-emergency` pack is
+embedded and activated in the current candidate. On source
+`f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`, clean E2E verified its files,
+attributed index, local web serving, offline use, and persistence through two
+reboots. A separate customer-mode install also retained the files and source
+index after two reboots. Reports and screenshots are retained at
+`/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/` and
+`/mnt/shared/fieldos-e2e/customer-interactive-corepack-f9c10ec/20261104T040000Z/`.
 The pack does not populate N.O.M.A.D.'s semantic retrieval index and is not a
-complete emergency library; it is also not included in the customer ISO. The
-Middle Tennessee candidate remains a separate, unreleased map artifact;
-agricultural, wildlife, first-aid, and comprehensive reference packs still need
-requirements and licensing review.
+complete emergency library. The Middle Tennessee candidate remains a separate,
+unreleased map artifact; agricultural, wildlife, first-aid, and comprehensive
+reference packs still need requirements and licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

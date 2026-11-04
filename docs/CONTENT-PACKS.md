@@ -86,16 +86,20 @@ archive built from this revision is
 SHA-256 `c862c023e8999268be6d78692e4d3a01c95a3f5f840fa954b424b5604eb9518c`.
 It is a small starter set, not a complete water, food, first-aid, medical, or
 disaster-preparedness library. Consult current local guidance. Source-tree
-configuration now includes this pack in the offline payload; a rebuilt ISO must
-pass E2E before this behavior is considered verified.
+configuration includes this pack in the offline payload, and its installation
+in the current candidate is verified by fresh E2E and interactive-install
+reports. The customer candidate is not approved for release.
 
-The pack was transferred and installed in a clean no-NIC VM on source
-`09501cb6e6fb4e049da585a610176937a5a52b94`. Its source index and water PDF
-opened in Firefox, and pack files survived two reboots. The report and browser
-screenshots are retained at
-`/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/`. This validates the pack
-adapter and this narrow source set; it does not establish that the pack is a
-complete prepper library or approved for customer distribution.
+The pack was embedded and installed from the offline payload in a clean no-NIC
+VM on source `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`. Its source index and
+documents were served locally and persisted across two reboots. The customer
+mode guest also retained both PDFs and the index after two reboots. Reports and
+browser screenshots are retained at
+`/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/` and
+`/mnt/shared/fieldos-e2e/customer-interactive-corepack-f9c10ec/20261104T040000Z/`.
+This validates the pack adapter and this narrow source set; it does not
+establish that the pack is a complete prepper library or approved for customer
+distribution.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the

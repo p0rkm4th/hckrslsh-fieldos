@@ -1,127 +1,121 @@
 # Release readiness and evidence
 
-**Status: engineering test candidate; not approved for customer/emergency use.**
-The latest unattended offline E2E passed on source
-`09501cb6e6fb4e049da585a610176937a5a52b94`, including a transferred optional
-water/food reference pack, Firefox access to its source index and PDF, and two
-reboots. A customer-mode ISO built from source `412883c` has now completed a
-fresh interactive UEFI install in a no-NIC disposable VM and booted from its
-installed disk. Local N.O.M.A.D. inference, Kiwix, and maps were checked in the
-installed desktop, with two guest restarts. A separate fresh retest confirmed
-the installer Restart/media handoff: the same QEMU process rebooted to the
-media-removal prompt, the ISO was ejected there, and the installed disk booted
-without a host reset. Field-use readiness remains failed: the core Kiwix
-fixture has only 100 articles, the bundled map lacks useful local detail, and
-an earthquake answer was generic, unsourced, and referred to calling 911.
-Physical hardware, LAN peer isolation, GPU acceleration, and redistribution
-approval remain open.
+**Status: engineering test candidate; not approved for customer or emergency use.**
+
+The current source revision passed the fresh unattended offline E2E test and a
+separate interactive customer-mode installation to a disposable UEFI VM disk.
+The installed system booted, firstboot completed, local services worked without
+a virtual NIC, and key data and services survived two guest reboots. The fresh
+customer-mode handoff did not complete unattended: after the media-removal
+prompt and Enter, the VM powered off and needed a host-side `virsh start` to
+boot the installed disk. The candidate therefore does not yet pass the
+seamless installer handoff gate.
+
+The installed desktop is useful for offline prototyping. Its local AI gave a
+generic, misleading response to a food-safety question and did not cite the
+CDC source pack. The Kiwix archive has only 100 articles; the maps stop at zoom
+level 5. Field readiness remains **FAIL**.
 
 ## Current source and artifacts
 
-- Customer installer handoff retest: `/mnt/shared/fieldos-e2e/customer-handoff-412883c-retest/report.md` (PASS in disposable no-NIC QEMU). Screenshots and QMP record document the installer completion prompt, same-process reboot, media eject prompt, installed-disk boot, desktop, chat, Kiwix, and maps. The interactive customer account was temporary; its password was removed.
+- Current source: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
+- Latest unattended E2E report:
+  `/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/report.md`
+  (PASS). The test ISO SHA-256 is
+  `2d7ab741cdad4ab654400a1b657c8eb9f14a311aad8e9535ca5340c365163255`.
+  It verified no-NIC Ubuntu install, offline firstboot, seven services, chat,
+  embeddings, Kiwix retrieval, Firefox map and reference-library rendering,
+  the bundled CDC pack, and two reboots. A separate removable-media content
+  pack import was skipped; the core CDC pack was already bundled and activated.
+- Customer-mode engineering candidate:
+  `/mnt/shared/fieldos-releases/fieldos-customer-test-corepack-f9c10ec.iso`
+  (11,987,386,368 bytes), SHA-256
+  `95503d257465087b723ba1eb0725dbf63ac6cf2ac83383f4e35cd63af7738c8d`.
+  `make verify` passed BIOS/UEFI structure, interactive customer setup, offline
+  APT, and payload checks.
+- Fresh customer-mode test report and evidence:
+  `/mnt/shared/fieldos-e2e/customer-interactive-corepack-f9c10ec/20261104T040000Z/report.md`.
+  The guest used a blank 80 GiB virtual disk, 4 vCPU, 8 GiB RAM, UEFI, and no
+  virtual NIC. It completed interactive account and disk configuration,
+  booted the installed EFI disk, completed firstboot, rendered the branded
+  desktop, and passed two reboots. The report records the installer handoff
+  caveat and the observed field-use limitations. After report review the VM was
+  shut down and undefined; the unattached 33 GiB qcow2 was retired with the
+  cleanup helper. `disk-retirement.txt`, logs, and selected screenshots remain.
+- Offline payload:
+  `/mnt/shared/fieldos-payload-core-f9c10ec/offline-payload.tar.zst` (5.2 GiB),
+  SHA-256
+  `75fe6c6961ee906995866e93814717b03cc3974913b8a8b79c3b9d33a1821998`.
+- Unit tests: 57 passed on this source revision. The current E2E and customer
+  report logs are preserved under `/mnt/shared/fieldos-e2e/`.
 
-- Latest clean-source E2E source revision:
-  `09501cb6e6fb4e049da585a610176937a5a52b94`.
-- Latest clean-source E2E report:
-  `/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md` (PASS). Test ISO
-  SHA-256: `c71cdb00e180ac29edaa125751b996c71158a1c3478097b42582c9982b9d67c9`.
-  It verified no-NIC installation/provisioning, seven services, chat, embeddings,
-  Kiwix retrieval, map rendering, and two reboots. Optional reference pack
-  `us-water-food-emergency-1.0.0` was transferred separately (archive SHA-256
-  `c862c023e8999268be6d78692e4d3a01c95a3f5f840fa954b424b5604eb9518c`),
-  installed offline, served through N.O.M.A.D.'s loopback static server, and
-  persisted across both reboots. `reference-library-render.png` shows the source
-  index; `reference-pdf-render.png` shows the CDC water-safety PDF opened in
-  Firefox. The optional pack is not included in the customer ISO.
-- Current customer-mode candidate, built from source `412883c`:
-  `/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso`,
-  11,984,044,032 bytes. SHA-256:
-  `81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`.
-  BIOS/UEFI structure and offline payload were verified by `make verify`.
-- Initial fresh customer install and end-user report:
-  `/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
-  The interactive install used a blank disposable 80 GiB target in UEFI QEMU
-  with `-net none`, including disk and account selection. That run manually
-  power-cycled after ISO ejection, so it did not prove the installer handoff.
-  Its handoff gap was resolved by the fresh retest documented above. This
-  initial run verified two guest restarts, local N.O.M.A.D. chat, Kiwix, and
-  ProtoMaps; the separate unattended E2E report covers container inventory and
-  embeddings. Its earthquake answer was generic and unsourced; the bundled
-  Kiwix fixture and map remain inadequate for field use.
-- The initial disposable customer VM disk was retired after confirming no QEMU
-  process was using it. Its report and selected screenshots remain as historical
-  evidence; they are superseded for handoff by the fresh retest above.
-- After the fresh handoff retest completed and QEMU stopped, its 35,267,647,136
-  byte disposable qcow2, duplicate PPM screenshots, transient QEMU files, and
-  temporary credential were removed. The superseded `0085b7a` ISO (SHA-256
-  `4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`) was also
-  retired; its checksum, prior evidence, and retirement note remain. The current
-  `412883c` ISO and relevant current screenshots, QMP record, serial log, and
-  report are retained.
-- These are local engineering artifacts, not public release assets. The E2E
-  result and QEMU customer install do not constitute physical-machine or
-  redistribution approval.
+These are local engineering artifacts, not published release binaries. No
+physical USB installation, physical GPU, or customer laptop has been validated.
+After retiring the customer test disk and duplicate installer screenshots,
+`/mnt/shared` has 625 GiB free (46% used). The 12 GiB candidate ISO, 5.2 GiB
+payload, current E2E evidence, and interactive-install logs/screenshots remain.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh offline Ubuntu installation | PASS | Latest E2E report; no NIC; local APT and images. |
-| Offline provisioning | PASS in unattended E2E; PARTIAL in customer run | Seven-container inventory is in the E2E report; not captured in the interactive customer VM. |
-| N.O.M.A.D. browser access | PASS | Customer Firefox displayed Command Center and chat at `localhost:8080`. |
-| Local chat inference | PASS, function only | Bundled `qwen3:0.6b-q4_K_M` generated responses in the disconnected customer VM. Earthquake answer was generic and unsourced. |
-| Embeddings | PASS | E2E report records a 768-element embedding from the bundled model. |
-| Kiwix service | PASS | Browser loaded the local Kiwix server. |
-| Optional water/food source pack | PASS in E2E | Separate media transfer, validated install, loopback source index, direct Firefox PDF view, and two-reboot persistence; not in customer ISO or N.O.M.A.D. semantic search. |
-| Useful reference coverage | FAIL | Only one “Top hundred Wikipedia articles” archive; a `water` search returned no result. |
-| Bundled offline map rendering | PASS at overview | Firefox rendered the U.S. basemap. |
-| Local map usefulness | FAIL | Nashville at 10 km scale displayed mostly blank background and sparse linework; the separately tested zoom-13 pack is not bundled. |
-| Branded desktop | PASS | Customer install showed wallpaper, dock, and N.O.M.A.D. launcher. |
-| Customer interactive install | PASS in QEMU | Fresh interactive account/disk setup and completed installation; installed EFI disk booted with ISO removed. Physical USB workflow remains untested. |
-| Installer Restart/media handoff | PASS in QEMU | Fresh retest kept the ISO attached through Restart, ejected it at the guest prompt, then booted installed disk in the same QEMU process; see `customer-handoff-412883c-retest/report.md`. |
-| Two-reboot persistence | PASS in QEMU | Guest returned to branded desktop twice; local map and Kiwix loaded and new chat inference worked after the second restart. Full container inventory/embeddings after reboot are covered by unattended E2E only. |
-| Prepper safety/readiness | FAIL | Earthquake answer was generic, uncited, referred to 911/local guidelines, and is not reliable for disconnected emergency use. |
-| Physical hardware / GPU | NOT TESTED | No physical laptop or GPU runtime validation. |
-| Security / LAN isolation | PARTIAL | Offline VM had no NIC; Kasm management network peer isolation remains unverified. |
-| Redistribution | BLOCKED | Exact software/content redistribution terms and attribution require final review. |
-| Overall customer release | BLOCKED | Content adequacy, source-grounded safety guidance, redistribution, hardware, and LAN security gates remain. |
+| Fresh offline Ubuntu installation | PASS in unattended and interactive QEMU | E2E and customer report; no virtual NIC; local APT and container images. |
+| Offline provisioning | PASS | Firstboot status is `complete`; firstboot log and seven-container inventory are retained. |
+| N.O.M.A.D. local UI | PASS | FieldOS desktop launcher opened Command Center and chat in Firefox. |
+| Local chat inference | PASS, function only | Bundled Qwen model generated real text; its practical food-safety answer was misleading and uncited. Not safe as emergency guidance. |
+| Embeddings | PASS | Bundled embedding endpoint returned a 768-element vector, including after reboot two. |
+| Kiwix | PASS, limited | Browser loaded one bundled “Wikipedia 100” archive and retrieved a matching article. |
+| Core source references | PASS, limited | Two CDC PDFs (water treatment and food safety after power outage) are bundled, attributed, served locally, and persist after reboot. They are not indexed in N.O.M.A.D.'s semantic retrieval. |
+| Offline map rendering | PASS at overview only | Firefox visibly rendered the U.S. basemap. Bundled data stops at zoom 5; no street/trail navigation detail. |
+| Two-reboot persistence | PASS in disposable QEMU | Both boot IDs changed; containers, models, CDC references, Kiwix, and map endpoint were checked after reboot two. |
+| Installer Restart/media handoff | PARTIAL | Customer installer reached its media-removal prompt, but after ejection and Enter the VM powered off; host `virsh start` was needed to boot the installed disk. Retest and fix this transition. |
+| Hardware selection | PARTIAL | 8 GiB/4-vCPU virtual profile selected the smallest bundled CPU model. Physical device and GPU acceleration remain untested. |
+| Field-use safety and content breadth | FAIL | Only two CDC source documents, a 100-article ZIM, and zoom-5 maps; tested chat response was poor and uncited. |
+| Security and LAN exposure | PARTIAL | This guest had no NIC. LAN peer isolation and exposed-port behavior on a connected system still need review. N.O.M.A.D. admin/Dozzle retain Docker-socket access. |
+| Redistribution review | BLOCKED | Final license and attribution review is still required for all software, container images, models, maps, and content. |
+| Physical/customer release | BLOCKED | Handoff, content adequacy, physical hardware, security, redistribution, and user recovery gates remain. |
+
+## Field-use limitations
+
+The built-in Source Library identifies its contents as original source
+documents and warns that the set is not comprehensive. The core set covers
+emergency drinking-water treatment and food safety after power loss. It does
+not provide substantive first-aid, wildfire, severe-weather, agriculture,
+mechanical, or navigation references. The two PDFs are available to read
+locally but are not added to N.O.M.A.D.'s semantic search.
+
+Kiwix serves a single 100-article test ZIM. The bundled world and sample U.S.
+PMTiles archives top out at zoom 5. A Middle Tennessee zoom-13 candidate was
+validated separately but is not in the ISO and is not approved for public
+redistribution. GPS/GIS integration and physical hardware adaptation remain
+unverified. Treat untested devices as unsupported.
+
+The small local model can produce plausible but irrelevant or unsafe text. It
+does not reliably follow prompts or identify its sources. Consult the original
+documents and current local authority guidance. Do not use AI output as medical,
+emergency, navigation, or technical authority.
 
 ## Customer installation gate
 
-The current ISO has passed a fresh interactive UEFI QEMU installation with
-account and target-disk selection, no virtual NIC, installed-disk boot, branded
-desktop, and local applications. A separate fresh run confirmed the installer
-Restart/media handoff in the same QEMU process, and the earlier install report
-documents two guest restarts. This does not prove physical USB behavior or
-support for customer hardware. Repeat on a spare physical machine only after
-content, licensing, hardware, and security gates are reviewed. Never target a
-physical or production disk during automated tests. The unattended
-`make test-e2e` image remains a separate test artifact.
+The customer ISO keeps disk choice, identity, and credentials interactive; the
+unattended `make test-e2e` installer is a separate test image. The current ISO
+completed interactive setup and booted from its installed EFI disk in a blank,
+disposable UEFI VM with no NIC. However, the current candidate's Restart flow
+required an extra host-side start after the media-removal prompt. Repeat the
+handoff test after resolving that behavior. Physical USB installation and
+supported hardware testing remain outstanding. Never point automated tests at
+physical or production disks.
 
-## Content and hardware limitations
+## Security, content, and artifact handling
 
-The bundled Kiwix ZIM contains only 100 Wikipedia articles. Its local service
-works, but a `water` search returned no result. The bundled map renders a broad
-U.S. overview, then lacks useful local street detail. A separately tested
-Middle Tennessee PMTiles pack has zoom-13 detail but is not included in this ISO
-or approved for public redistribution. The current chat model responds offline
-but did not provide identifiable references; the earthquake response was
-generic and referred to 911 and local guidelines. Do not represent the AI as
-authoritative medical, emergency, navigation, or technical reference.
+The disconnected test confirms the software works without an external network
+adapter; it does not prove LAN isolation when a NIC is enabled. Recheck Compose
+published ports and management access before connected-lab use. `nomad_admin`
+and `nomad_dozzle` use the Docker socket, which grants powerful host control.
 
-The test pack activation work is documented in `CONTENT-PACKS.md`; other pack
-types and a customer content catalog remain incomplete. Review exact sources,
-licenses, attribution, Ubuntu terms, and container-image licenses in
-`REDISTRIBUTION.md`, `OFFLINE-CONTENT.md`, and `CONTAINER-IMAGES.md` before any
-customer distribution. CPU inference is the validated baseline. Hardware
-selection is covered by fixtures and local detection code; no physical GPU
-runtime has been validated. Treat untested devices as unsupported.
-
-## Evidence handling
-
-Keep test reports, checksums, and diagnostic screenshots in the configured
-external storage root (`/mnt/shared` by default). Retain the current candidate,
-active payload inputs, meaningful E2E evidence, and one lab rollback point.
-Remove only specifically audited superseded artifacts after confirming no
-active VM, build, checksum, or Kasm process uses them. See
-[testing and cleanup](TESTING.md) and [Lab recovery](FIELDOS-LAB.md).
+Review `REDISTRIBUTION.md`, `OFFLINE-CONTENT.md`, and `CONTAINER-IMAGES.md`
+before any public release. The current candidate is not approved for customer
+distribution. Keep the ISO, payload inputs, reports, and useful screenshots on
+the configured artifact volume. Delete a disposable guest disk only after the
+VM is shut down, the report is saved, and the retirement helper confirms no
+process is using it.
