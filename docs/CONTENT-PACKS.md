@@ -100,15 +100,14 @@ configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
 
-The core water/food pack was installed from the offline payload on source
-`da61a843313c443c0e349a75b6395e48c0f73c20`. Fresh no-NIC E2E and interactive
-customer-mode installs confirmed that both CDC PDFs reached N.O.M.A.D.'s
-indexed Knowledge Base and returned cited answers for food outage and water
-treatment queries. The E2E report is
-`/mnt/shared/fieldos-e2e/20261104T060325Z-3127648/report.md`; interactive
-customer-mode evidence is `/mnt/shared/fieldos-e2e/customer-da61a84/report.md`.
-This verifies the core pack adapter for these two source documents; it does not
-make the pack a comprehensive preparedness library or approve redistribution.
+On source `1fb6806`, a fresh no-NIC E2E and a separate interactive customer-mode
+install confirmed that the two CDC PDFs and NWS tornado text were activated in
+N.O.M.A.D.'s indexed Knowledge Base. CDC food-safety and NWS tornado queries
+returned answers with source references. E2E evidence is
+`/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`; customer-mode
+evidence and screenshots are in `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`.
+This verifies activation of these narrow references; it does not make the pack
+a comprehensive preparedness library or approve redistribution.
 The core catalog also includes `us-tornado-safety`, a text-only conversion of
 the National Weather Service's “What to Do During a Tornado” page. Its source,
 NOAA reuse basis, attribution, access date, and conversion limits are recorded

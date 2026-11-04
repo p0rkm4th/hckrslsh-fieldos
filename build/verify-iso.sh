@@ -19,6 +19,8 @@ trap 'rm -rf "$TMP"' EXIT
 for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zst \
   /fieldos/installer/provisioning/patch-nomad-fieldos-copy.sh \
   /fieldos/installer/provisioning/patch-nomad-fieldos-copy.js \
+  /fieldos/installer/provisioning/patch-nomad-rag-policy.sh \
+  /fieldos/installer/provisioning/patch_nomad_rag_policy.py \
   /fieldos/scripts/fieldos-nomad-index-references.py \
   /fieldos/installer/provisioning/fieldos-sources.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.desktop \

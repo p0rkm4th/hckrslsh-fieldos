@@ -153,6 +153,9 @@ for archive in "$PAYLOAD"/oci/*.tar; do
   docker load --input "$archive"
 done
 
+echo "Preparing the pinned N.O.M.A.D. source-bounded RAG prompt..."
+bash "$ROOT/installer/provisioning/patch-nomad-rag-policy.sh"
+
 if [[ -f "$PAYLOAD/content/zim/wikipedia_en_100_mini_2026-01.zim" ]]; then
   library="$STATE/storage/zim/kiwix-library.xml"
   zim_name=$(basename "$PAYLOAD/content/zim/wikipedia_en_100_mini_2026-01.zim")

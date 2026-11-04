@@ -80,6 +80,8 @@ mkdir -p "$WORK/fieldos/installer/provisioning" "$WORK/fieldos/installer/provisi
 install -m 0644 "$ROOT/installer/provisioning/firstboot.sh" "$WORK/fieldos/installer/provisioning/firstboot.sh"
 install -m 0644 "$ROOT/installer/provisioning/patch-nomad-fieldos-copy.sh" "$WORK/fieldos/installer/provisioning/patch-nomad-fieldos-copy.sh"
 install -m 0644 "$ROOT/installer/provisioning/patch-nomad-fieldos-copy.js" "$WORK/fieldos/installer/provisioning/patch-nomad-fieldos-copy.js"
+install -m 0644 "$ROOT/installer/provisioning/patch-nomad-rag-policy.sh" "$WORK/fieldos/installer/provisioning/patch-nomad-rag-policy.sh"
+install -m 0644 "$ROOT/installer/provisioning/patch_nomad_rag_policy.py" "$WORK/fieldos/installer/provisioning/patch_nomad_rag_policy.py"
 install -m 0644 "$ROOT/installer/provisioning/build_local_apt_index.py" "$WORK/fieldos/installer/provisioning/build_local_apt_index.py"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-firstboot.service" "$WORK/fieldos/installer/provisioning/fieldos-firstboot.service"
 install -m 0644 "$ROOT/installer/provisioning/fieldos.desktop" "$WORK/fieldos/installer/provisioning/fieldos.desktop"

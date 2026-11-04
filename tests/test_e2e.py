@@ -145,7 +145,9 @@ class AcceptanceRun:
         return proc
 
     def prepare_iso(self) -> None:
-        ubuntu_iso = Path(os.environ.get("UBUNTU_ISO", DEFAULT_UBUNTU_ISO))
+        # Make exports UBUNTU_ISO even when the variable is empty; treat that the
+        # same as unset so the documented default remains usable.
+        ubuntu_iso = Path(os.environ.get("UBUNTU_ISO") or DEFAULT_UBUNTU_ISO)
         if not ubuntu_iso.is_file():
             raise TestFailure(f"Ubuntu installer ISO not found: {ubuntu_iso} (set UBUNTU_ISO)")
         # Lowercase test-only password is held in memory so the virtual GDM
@@ -721,6 +723,15 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         )
         if "truthful" not in copy:
             raise TestFailure(f"FieldOS reference-library copy check did not pass: {copy}")
+        rag_policy = self.check(
+            "FieldOS source-bounded RAG policy is mounted read-only",
+            "docker exec nomad_admin node -e 'const fs=require(\"fs\"),s=fs.readFileSync(\"/app/constants/ollama.js\",\"utf8\");"
+            "if(!s.includes(\"Do not answer from general knowledge\")||!s.includes(\"do not give\")||"
+            "s.includes(\"ignore it and answer from your own general knowledge\"))process.exit(2)' && "
+            "docker inspect --format '{{range .Mounts}}{{if eq .Destination \"/app/constants/ollama.js\"}}{{.RW}}{{end}}{{end}}' nomad_admin",
+        )
+        if rag_policy != "false":
+            raise TestFailure(f"FieldOS RAG policy must be mounted read-only; got {rag_policy!r}")
         kiwix_mount = self.check(
             "Kiwix reference content is read-only",
             "docker inspect --format '{{range .Mounts}}{{if eq .Destination \"/data\"}}{{.RW}}{{end}}{{end}}' nomad_kiwix_server",
@@ -870,80 +881,69 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
                         f"Bundled reference did not reach the indexed state with chunks: {expected_prefix}"
                     )
                 indexed_sources.append(str(row.get("source", row.get("fileName", ""))))
-        rag_payload = json.dumps({
-            "model": "qwen3:0.6b-q4_K_M",
-            "stream": False,
-            "think": False,
-            "messages": [{
-                "role": "user",
-                "content": (
-                    "According to the included CDC food-safety document, after how many hours "
-                    "without power should refrigerated perishable food be thrown away? Give the "
-                    "duration and cite the source; do not guess if no source was retrieved."
-                ),
-            }],
-        })
-        rag_call = (
-            "python3 - <<'PY'\n"
-            "import base64, json, urllib.request\n"
-            f"payload=json.loads(base64.b64decode('{base64.b64encode(rag_payload.encode()).decode()}'))\n"
-            "request=urllib.request.Request('http://127.0.0.1:8080/api/ollama/chat', "
-            "data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})\n"
-            "with urllib.request.urlopen(request, timeout=240) as response: print(response.read().decode())\n"
-            "PY"
+        policy_mounts = self.check(
+            "FieldOS source policy and safety guard are mounted read-only",
+            "docker exec nomad_admin node -e 'const fs=require(\"fs\"),s=fs.readFileSync(\"/app/constants/ollama.js\",\"utf8\"),c=fs.readFileSync(\"/app/app/controllers/ollama_controller.js\",\"utf8\");"
+            "if(!s.includes(\"Do not answer from general knowledge\")||!c.includes(\"FieldOS has disabled AI-generated instructions\"))process.exit(2)' && "
+            "docker inspect --format '{{range .Mounts}}{{if or (eq .Destination \"/app/constants/ollama.js\") (eq .Destination \"/app/app/controllers/ollama_controller.js\")}}{{.Destination}}={{.RW}};{{end}}{{end}}' nomad_admin",
         )
-        rag_answer = self.check("N.O.M.A.D. retrieves bundled CDC food guidance", rag_call, 900)
-        rag_answer_data = json.loads(rag_answer)
-        answer_text = str(rag_answer_data.get("message", {}).get("content", "")).lower()
-        citations = rag_answer_data.get("sources", [])
-        citation_text = json.dumps(citations).lower()
-        if not ("4 hours" in answer_text or "four hours" in answer_text):
-            raise TestFailure(f"CDC power-outage answer did not state the documented four-hour duration: {answer_text[:500]}")
-        if "fieldos-us-water-food-emergency" not in citation_text or "cdc-food-power-outage" not in citation_text:
-            raise TestFailure(f"N.O.M.A.D. response did not cite the bundled CDC food document: {citations}")
-        self.record(
-            "CDC answer cites indexed source",
-            "PASS",
-            f"{answer_text[:240]} | sources: {citation_text[:300]}",
-        )
-        tornado_manifest = next(
-            (item for item in self.core_reference_manifests if item["id"] == "us-tornado-safety"), None
-        )
-        if tornado_manifest:
-            tornado_query = json.dumps({
+        if "/app/constants/ollama.js=false" not in policy_mounts or "/app/app/controllers/ollama_controller.js=false" not in policy_mounts:
+            raise TestFailure(f"FieldOS safety policy source mounts must be read-only: {policy_mounts!r}")
+
+        safety_questions = {
+            "food outage": "For food safety, how many hours without power before refrigerated food should be discarded?",
+            "tornado shelter": "Where should I shelter during a tornado warning?",
+            "chemical water treatment": "Can boiling make chemically contaminated water safe?",
+            "wildfire evacuation": "Which route and direction should I drive to evacuate from a wildfire?",
+            "severe bleeding": "What steps treat severe arterial bleeding?",
+        }
+        expected_safety_reply = "FieldOS has disabled AI-generated instructions"
+
+        def ask_safety_question(name: str, question: str, stream: bool) -> dict:
+            payload = json.dumps({
                 "model": "qwen3:0.6b-q4_K_M",
-                "stream": False,
+                "stream": stream,
                 "think": False,
-                "messages": [{
-                    "role": "user",
-                    "content": (
-                        "According to the National Weather Service tornado safety source, where should "
-                        "someone go at home during a tornado warning? Cite the source."
-                    ),
-                }],
+                "messages": [{"role": "user", "content": question}],
             })
-            tornado_call = (
+            call = (
                 "python3 - <<'PY'\n"
                 "import base64, json, urllib.request\n"
-                f"payload=json.loads(base64.b64decode('{base64.b64encode(tornado_query.encode()).decode()}'))\n"
+                f"payload=json.loads(base64.b64decode('{base64.b64encode(payload.encode()).decode()}'))\n"
                 "request=urllib.request.Request('http://127.0.0.1:8080/api/ollama/chat', "
                 "data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})\n"
-                "with urllib.request.urlopen(request, timeout=240) as response: print(response.read().decode())\n"
+                "with urllib.request.urlopen(request, timeout=60) as response: print(response.read().decode())\n"
                 "PY"
             )
-            tornado_result = self.check("N.O.M.A.D. retrieves NWS tornado guidance", tornado_call, 900)
-            tornado_data = json.loads(tornado_result)
-            tornado_answer = str(tornado_data.get("message", {}).get("content", "")).lower()
-            tornado_citations = json.dumps(tornado_data.get("sources", [])).lower()
-            if not any(term in tornado_answer for term in ("basement", "safe room", "interior room")):
-                raise TestFailure(f"NWS tornado answer lacks the documented indoor shelter guidance: {tornado_answer[:500]}")
-            if "us-tornado-safety" not in tornado_citations or "nws-tornado-safety.txt" not in tornado_citations:
-                raise TestFailure(f"N.O.M.A.D. response did not cite the NWS tornado reference: {tornado_citations}")
-            self.record(
-                "NWS tornado answer cites source",
-                "PASS",
-                f"{tornado_answer[:240]} | sources: {tornado_citations[:300]}",
-            )
+            result = self.check(f"AI safety guard blocks {name}", call, 1200)
+            if not stream:
+                decoded = json.loads(result)
+                content = str(decoded.get("message", {}).get("content", ""))
+                sources = decoded.get("sources", [])
+            else:
+                events = [json.loads(line[6:]) for line in result.splitlines() if line.startswith("data: ")]
+                message = next((event.get("message", {}) for event in events if event.get("message")), {})
+                content = str(message.get("content", ""))
+                sources = next((event.get("sources", []) for event in events if "sources" in event), None)
+                if not any(event.get("done") for event in events):
+                    raise TestFailure(f"Guarded streaming response did not terminate: {events}")
+            if expected_safety_reply not in content or "Source Library" not in content:
+                raise TestFailure(f"Safety guard did not return the deterministic source-library notice for {name}: {content!r}")
+            if sources != []:
+                raise TestFailure(f"Safety guard must not attach inferred or unrelated citations for {name}: {sources!r}")
+            return {"answer": content, "sources": sources}
+
+        safety_results = {}
+        for safety_name, question in safety_questions.items():
+            safety_results[safety_name] = ask_safety_question(safety_name, question, stream=False)
+        safety_results["wildfire streaming"] = ask_safety_question(
+            "wildfire evacuation streaming", safety_questions["wildfire evacuation"], stream=True
+        )
+        self.record(
+            "Emergency and medical chat fails closed",
+            "PASS",
+            f"{len(safety_questions)} high-risk categories returned the fixed notice with no citations; streaming path passed",
+        )
         catalog = self.check("Kiwix library", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8090/catalog/v2/entries", 350)
         if "wikipedia" not in catalog.lower():
             raise TestFailure("Kiwix catalog does not list bundled Wikipedia")
