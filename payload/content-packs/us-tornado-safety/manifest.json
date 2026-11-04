@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "id": "us-tornado-safety",
+  "version": "20261104",
+  "title": "National Weather Service Tornado Safety",
+  "description": "Text-only copy of National Weather Service guidance for tornado warnings at home, work, school, outdoors, and in vehicles. It is not a live alert service.",
+  "category": "weather-disaster",
+  "sources": [
+    {
+      "id": "nws-tornado-safety",
+      "name": "National Weather Service: What to Do During a Tornado",
+      "url": "https://www.weather.gov/safety/tornado-during",
+      "license": "U.S. government work; NOAA states nearly all NOAA content is public domain unless otherwise noted; exact page checked for third-party credits",
+      "attribution": "National Weather Service (NWS), National Oceanic and Atmospheric Administration (NOAA). Text-only conversion; source and non-endorsement notice are included in the artifact.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "noaa-reuse-guidance",
+      "name": "NOAA guidance on use of NOAA content",
+      "url": "https://www.noaa.gov/office-education/outreach-communication/faq",
+      "license": "Public domain guidance page, retrieved for provenance review",
+      "attribution": "National Oceanic and Atmospheric Administration; reuse guidance says nearly all NOAA content may be used unless otherwise noted and requires attribution and no implied endorsement.",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "nws-tornado-safety.txt",
+      "size_bytes": 1858,
+      "sha256": "7d7a91a5b24ce388b2916a4bc0875657f51618ac36624290a6f1ebad83d14e51",
+      "source": "nws-tornado-safety",
+      "license": "Public domain U.S. federal government source; converted to plain text with attribution and source context"
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": false
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering content review",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2026-11-04"
+  }
+}

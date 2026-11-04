@@ -23,7 +23,8 @@ Planned pack categories are:
 - Agriculture, farming, soils, and equipment reference
 - Wildlife, camping, and overlanding
 - Water treatment and food preservation
-- First aid and emergency reference
+- Severe weather and emergency reference
+- First aid
 - Regional maps, GPS, and GIS data
 
 Each populated pack has its own stable ID and version. Its manifest records
@@ -108,9 +109,13 @@ treatment queries. The E2E report is
 customer-mode evidence is `/mnt/shared/fieldos-e2e/customer-da61a84/report.md`.
 This verifies the core pack adapter for these two source documents; it does not
 make the pack a comprehensive preparedness library or approve redistribution.
-The Middle Tennessee map remains a separate unreleased pack; agriculture,
-wildlife, first-aid, and comprehensive reference packs still need requirements
-and licensing review.
+The core catalog also includes `us-tornado-safety`, a text-only conversion of
+the National Weather Service's “What to Do During a Tornado” page. Its source,
+NOAA reuse basis, attribution, access date, and conversion limits are recorded
+in its manifest and document. It adds narrow tornado guidance, not a first-aid
+or comprehensive all-hazards library. The Middle Tennessee map remains a
+separate unreleased pack; agriculture, wildlife, first-aid, and comprehensive
+reference packs still need requirements and licensing review.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the

@@ -91,13 +91,14 @@ class AcceptanceRun:
         if self.memory_mib < 8192:
             raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
         catalog = json.loads((ROOT / "payload/manifests/content-packs.json").read_text())
-        self.core_reference_manifest: dict | None = None
+        self.core_reference_manifests: list[dict] = []
         for entry in catalog.get("core_packs", []):
             manifest_path = ROOT / "payload/manifests" / entry
             manifest = json.loads(manifest_path.resolve(strict=True).read_text())
             if manifest.get("installation", {}).get("target") == "storage/references/documents":
-                self.core_reference_manifest = manifest
-                break
+                self.core_reference_manifests.append(manifest)
+        self.core_reference_manifest = (self.core_reference_manifests[0]
+                                         if self.core_reference_manifests else None)
         self.pack_archive = Path(os.environ["FIELDOS_TEST_CONTENT_PACK"]).expanduser() if os.environ.get("FIELDOS_TEST_CONTENT_PACK") else None
         self.pack_manifest: dict | None = None
         self.pack_target: str | None = None
@@ -309,15 +310,24 @@ autoinstall:
             )
             if not any(marker in installed for marker in ("activated reference documents:", "already installed:")):
                 raise TestFailure(f"Reference documents were not activated from removable media: {installed}")
-            self.check(
-                "source library attribution and local document links",
-                f"grep -Fq 'not endorsed by the publishers' /var/lib/fieldos/storage/references/index.html && "
-                f"grep -Fq 'cdc-water-treatment.pdf' /var/lib/fieldos/storage/references/index.html && "
-                f"grep -Fq 'cdc-food-power-outage.pdf' /var/lib/fieldos/storage/references/index.html && "
-                f"test \"$(find /var/lib/fieldos/content-packs/{pack_id}/{version} -maxdepth 1 -type f -name '*.pdf' | wc -l)\" -eq 2",
+            index_checks = [
+                "grep -Fq 'not endorsed by the publishers' /var/lib/fieldos/storage/references/index.html"
+            ]
+            for artifact in self.pack_manifest["artifacts"]:
+                index_checks.append(
+                    f"grep -Fq {quote(Path(artifact['path']).name)} "
+                    "/var/lib/fieldos/storage/references/index.html"
+                )
+            self.check("source library attribution and local document links", " && ".join(index_checks))
+            indexed = self.check(
+                "N.O.M.A.D. indexes transferred reference pack",
+                "python3 /opt/fieldos/scripts/fieldos-nomad-index-references.py",
+                950,
             )
+            if "Indexed " not in indexed and "No installed reference documents need" not in indexed:
+                raise TestFailure(f"Reference pack indexing did not report completion: {indexed}")
             self.record("offline content pack transfer", "PASS",
-                        f"{pack_id} verified from removable media; source index and PDFs remain available")
+                        f"{pack_id} verified from removable media; source index and documents remain available")
             return
         regions = self.check(
             "N.O.M.A.D. discovers the imported regional map",
@@ -654,32 +664,44 @@ autoinstall:
             f"{width}x{height} screenshot with {colors} sampled colors; {screenshot.name}",
         )
 
+    def reference_manifests_to_verify(self) -> list[dict]:
+        manifests = list(self.core_reference_manifests)
+        if (self.pack_target == "storage/references/documents" and self.pack_manifest
+                and all((item["id"], item["version"]) !=
+                        (self.pack_manifest["id"], self.pack_manifest["version"])
+                        for item in manifests)):
+            manifests.append(self.pack_manifest)
+        return manifests
+
     def run_checks(self, reboot: bool = False) -> None:
         self.check("disconnected guest", "test -z \"$(ip -4 route show default)\" && ip -brief link")
-        reference_manifest = (self.pack_manifest if self.pack_target == "storage/references/documents"
-                              else self.core_reference_manifest)
-        if reference_manifest:
-            pack_id, version = reference_manifest["id"], reference_manifest["version"]
-            document_paths = [
-                f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{item['path']}"
-                for item in reference_manifest["artifacts"]
-            ]
-            document_paths.extend(
-                f"/var/lib/fieldos/storage/references/documents/{pack_id}/{version}/{item['path']}"
-                for item in reference_manifest["artifacts"]
+        reference_manifests = self.reference_manifests_to_verify()
+        if reference_manifests:
+            document_checks = " && ".join(
+                f"test -s {shlex.quote(path)}"
+                for manifest in reference_manifests
+                for artifact in manifest["artifacts"]
+                for path in (
+                    f"/var/lib/fieldos/content-packs/{manifest['id']}/{manifest['version']}/{artifact['path']}",
+                    f"/var/lib/fieldos/storage/references/documents/{manifest['id']}/{manifest['version']}/{artifact['path']}",
+                )
             )
-            document_checks = " && ".join(f"test -s {shlex.quote(path)}" for path in document_paths)
             if reboot:
                 self.check(
-                    "reference pack persists after reboot",
+                    "reference packs persist after reboot",
                     "test -s /var/lib/fieldos/storage/references/index.html && " + document_checks,
                 )
             else:
+                pack_ids = " && ".join(
+                    f"grep -Fq {shlex.quote(manifest['id'])} "
+                    "/var/lib/fieldos/storage/references/index.html"
+                    for manifest in reference_manifests
+                )
                 self.check(
-                    "bundled reference pack installed and served offline",
+                    "reference packs installed and served offline",
                     "test -s /var/lib/fieldos/storage/references/index.html && " + document_checks +
                     " && curl --fail --silent --show-error http://127.0.0.1:8080/fieldos-references/index.html | "
-                    f"grep -Fq {shlex.quote(pack_id)}",
+                    f"grep -Fq {shlex.quote(reference_manifests[0]['id'])} && " + pack_ids,
                 )
         ps = self.check("container set", "docker compose --project-directory /opt/fieldos/services -f /opt/fieldos/services/compose.yaml ps --format json", 500)
         try:
@@ -828,25 +850,26 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         if not vectors or not vectors[0]:
             raise TestFailure("Embedding API returned an empty vector")
         rag_files = self.check(
-            "N.O.M.A.D. indexes bundled FieldOS reference documents",
+            "N.O.M.A.D. indexes FieldOS reference documents",
             "curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8080/api/rag/files",
             500,
         )
         rag_rows = json.loads(rag_files).get("files", [])
-        reference_manifest = self.core_reference_manifest
-        if not reference_manifest:
-            raise TestFailure("No bundled reference pack is declared for N.O.M.A.D. indexing")
-        pack_prefix = f"fieldos-{reference_manifest['id']}-{reference_manifest['version']}-"
+        reference_manifests = self.reference_manifests_to_verify()
+        if not reference_manifests:
+            raise TestFailure("No core or transferred reference pack is declared for N.O.M.A.D. indexing")
         indexed_sources = []
-        for artifact in reference_manifest.get("artifacts", []):
-            expected_prefix = pack_prefix + Path(artifact["path"]).name + "-"
-            row = next((item for item in rag_rows
-                        if str(item.get("fileName", "")).startswith(expected_prefix)), None)
-            if not row or row.get("state") != "indexed" or int(row.get("chunksEmbedded") or 0) < 1:
-                raise TestFailure(
-                    f"Bundled reference did not reach the indexed state with chunks: {expected_prefix}"
-                )
-            indexed_sources.append(str(row.get("source", row.get("fileName", ""))))
+        for reference_manifest in reference_manifests:
+            pack_prefix = f"fieldos-{reference_manifest['id']}-{reference_manifest['version']}-"
+            for artifact in reference_manifest.get("artifacts", []):
+                expected_prefix = pack_prefix + Path(artifact["path"]).name + "-"
+                row = next((item for item in rag_rows
+                            if str(item.get("fileName", "")).startswith(expected_prefix)), None)
+                if not row or row.get("state") != "indexed" or int(row.get("chunksEmbedded") or 0) < 1:
+                    raise TestFailure(
+                        f"Bundled reference did not reach the indexed state with chunks: {expected_prefix}"
+                    )
+                indexed_sources.append(str(row.get("source", row.get("fileName", ""))))
         rag_payload = json.dumps({
             "model": "qwen3:0.6b-q4_K_M",
             "stream": False,
@@ -883,6 +906,44 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
             "PASS",
             f"{answer_text[:240]} | sources: {citation_text[:300]}",
         )
+        tornado_manifest = next(
+            (item for item in self.core_reference_manifests if item["id"] == "us-tornado-safety"), None
+        )
+        if tornado_manifest:
+            tornado_query = json.dumps({
+                "model": "qwen3:0.6b-q4_K_M",
+                "stream": False,
+                "think": False,
+                "messages": [{
+                    "role": "user",
+                    "content": (
+                        "According to the National Weather Service tornado safety source, where should "
+                        "someone go at home during a tornado warning? Cite the source."
+                    ),
+                }],
+            })
+            tornado_call = (
+                "python3 - <<'PY'\n"
+                "import base64, json, urllib.request\n"
+                f"payload=json.loads(base64.b64decode('{base64.b64encode(tornado_query.encode()).decode()}'))\n"
+                "request=urllib.request.Request('http://127.0.0.1:8080/api/ollama/chat', "
+                "data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})\n"
+                "with urllib.request.urlopen(request, timeout=240) as response: print(response.read().decode())\n"
+                "PY"
+            )
+            tornado_result = self.check("N.O.M.A.D. retrieves NWS tornado guidance", tornado_call, 900)
+            tornado_data = json.loads(tornado_result)
+            tornado_answer = str(tornado_data.get("message", {}).get("content", "")).lower()
+            tornado_citations = json.dumps(tornado_data.get("sources", [])).lower()
+            if not any(term in tornado_answer for term in ("basement", "safe room", "interior room")):
+                raise TestFailure(f"NWS tornado answer lacks the documented indoor shelter guidance: {tornado_answer[:500]}")
+            if "us-tornado-safety" not in tornado_citations or "nws-tornado-safety.txt" not in tornado_citations:
+                raise TestFailure(f"N.O.M.A.D. response did not cite the NWS tornado reference: {tornado_citations}")
+            self.record(
+                "NWS tornado answer cites source",
+                "PASS",
+                f"{tornado_answer[:240]} | sources: {tornado_citations[:300]}",
+            )
         catalog = self.check("Kiwix library", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8090/catalog/v2/entries", 350)
         if "wikipedia" not in catalog.lower():
             raise TestFailure("Kiwix catalog does not list bundled Wikipedia")

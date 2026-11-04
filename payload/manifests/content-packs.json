@@ -3,10 +3,12 @@
   "manifest_schema": "content-pack.schema.json",
   "status": "ready",
   "packs": [
-    "../content-packs/us-water-food-emergency/manifest.json"
+    "../content-packs/us-water-food-emergency/manifest.json",
+    "../content-packs/us-tornado-safety/manifest.json"
   ],
   "core_packs": [
-    "../content-packs/us-water-food-emergency/manifest.json"
+    "../content-packs/us-water-food-emergency/manifest.json",
+    "../content-packs/us-tornado-safety/manifest.json"
   ],
   "planned_categories": [
     "agriculture",

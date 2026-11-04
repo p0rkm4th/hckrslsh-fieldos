@@ -37,6 +37,23 @@ OpenStreetMap contributors and Protomaps. The full ODbL 1.0 text is at
 details are alongside it and in the map interface. The ODbL applies to the
 database rights; individual content may have additional rights.
 
+## National Weather Service tornado-safety reference
+
+The core content catalog includes `us-tornado-safety`, a text-only conversion
+of the National Weather Service page [“What to Do During a
+Tornado”](https://www.weather.gov/safety/tornado-during). The source page was
+accessed 2026-11-04. The converted text is
+`payload/content-packs/us-tornado-safety/nws-tornado-safety.txt`; its header
+identifies the source, access date, omitted page elements, non-endorsement,
+and no-live-alert limits. NOAA's [content reuse
+guidance](https://www.noaa.gov/office-education/outreach-communication/faq)
+says nearly all NOAA content is public domain unless otherwise noted, requires
+attribution, and forbids implied endorsement or misrepresentation. The source
+page displayed NOAA/NWS attribution and no third-party credits when checked.
+This is an engineering content review, not legal clearance for commercial
+release. The reference is narrow tornado guidance, not first aid, a warning
+service, or a complete severe-weather guide.
+
 ## Local AI models and generated answers
 
 The test payload includes Qwen3 0.6B Q4_K_M for chat and Nomic Embed Text v1.5
@@ -46,9 +63,10 @@ listed in `/opt/fieldos/models/manifest.json`; license texts are available in
 
 AI answers are generated output, not authoritative reference documents. They
 can be incomplete or incorrect. Open the underlying reference article and
-check its source and revision information. FieldOS currently ships no reviewed
-first-aid or emergency reference pack; do not rely on the AI as medical,
-emergency, or safety guidance.
+check its source and revision information. FieldOS includes two CDC
+water/food documents and one NWS tornado text conversion; it still lacks a
+first-aid pack and comprehensive emergency library. Do not rely on AI as
+medical, emergency, or safety guidance.
 
 ## Software notices
 

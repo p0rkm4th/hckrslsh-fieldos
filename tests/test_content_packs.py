@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ContentPackValidationTests(unittest.TestCase):
-    def test_repository_catalog_validates_the_reviewed_reference_pack(self):
+    def test_repository_catalog_validates_reviewed_core_and_optional_packs(self):
         self.assertEqual(
             validate_catalog(ROOT / "payload/manifests/content-packs.json"),
-            ["us-water-food-emergency"],
+            ["us-tornado-safety", "us-water-food-emergency"],
         )
 
     def fixture(self, category="agriculture", coverage=None, authority=None, review=None):
@@ -117,12 +117,12 @@ class ContentPackValidationTests(unittest.TestCase):
             validate_catalog(catalog)
 
     def test_emergency_pack_requires_authority_and_review_record(self):
-        catalog, _, _ = self.fixture(category="first-aid-emergency")
+        catalog, _, _ = self.fixture(category="weather-disaster")
         with self.assertRaisesRegex(PackError, "authoritative references"):
             validate_catalog(catalog)
 
         catalog, _, _ = self.fixture(
-            category="first-aid-emergency",
+            category="weather-disaster",
             authority="authoritative-reference",
             review={"reviewer": "Field editor", "reviewed_at": "2026-11-03",
                     "content_revision": "2026-10-15"},

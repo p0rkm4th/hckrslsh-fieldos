@@ -44,13 +44,18 @@ GNOME dock includes **FieldOS Start Here** and **FieldOS Command Center** for
 quick access. These are presentation defaults only and do not change system
 networking, content catalogs, or application security boundaries.
 
-AI responses are generated text, not authoritative references. The current
-source revision uploads the CDC PDFs into N.O.M.A.D.'s native Knowledge Base
-and requires a source-cited factual check in the next clean E2E run. Even with
-retrieval enabled, open the source documents before relying on an answer. The
-limited CDC water/food sources are not a first-aid or comprehensive emergency
-library; FieldOS must not be used as a substitute for current medical or
-emergency guidance.
+AI responses are generated text, not authoritative references. The core
+payload includes two CDC water/food PDFs and a text-only conversion of the
+National Weather Service page [“What to Do During a
+Tornado”](https://www.weather.gov/safety/tornado-during), indexed in
+N.O.M.A.D.'s native Knowledge Base. NOAA's [reuse
+guidance](https://www.noaa.gov/office-education/outreach-communication/faq)
+says nearly all NOAA content is public domain unless otherwise noted, and
+requires attribution and no implied endorsement. The pack manifest records
+the source review and the text conversion's limits. This is narrow tornado
+guidance, not a first-aid or comprehensive emergency library; it provides no
+live warnings. Open source documents and follow current local instructions.
+FieldOS must not be used as a substitute for medical or emergency guidance.
 
 The bundled world map and sample regional map both top out at zoom level 5.
 They support broad orientation and acceptance testing, but do not provide

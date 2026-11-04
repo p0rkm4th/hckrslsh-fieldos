@@ -17,6 +17,7 @@ CATEGORIES = {
     "wildlife-overlanding",
     "water-food",
     "first-aid-emergency",
+    "weather-disaster",
     "maps-gis",
 }
 AUTHORITIES = {"authoritative-reference", "community-reference", "ai-generated", "mixed"}
@@ -221,12 +222,12 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
         raise PackError(f"pack {pack_id} has unknown fields")
     if authority is not None and (not isinstance(authority, str) or authority not in AUTHORITIES):
         raise PackError(f"unsupported authority classification in pack {pack_id}")
-    if category == "first-aid-emergency":
+    if category in {"first-aid-emergency", "weather-disaster"}:
         if authority != "authoritative-reference":
-            raise PackError(f"first-aid/emergency pack {pack_id} must identify authoritative references")
+            raise PackError(f"safety-critical pack {pack_id} must identify authoritative references")
         review = manifest.get("review")
         if not isinstance(review, dict):
-            raise PackError(f"first-aid/emergency pack {pack_id} requires a review record")
+            raise PackError(f"safety-critical pack {pack_id} requires a review record")
         required(review, {"reviewer", "reviewed_at", "content_revision"}, f"review record in {pack_id}")
         if review.keys() - {"reviewer", "reviewed_at", "content_revision"}:
             raise PackError(f"review record in {pack_id} has unknown fields")
