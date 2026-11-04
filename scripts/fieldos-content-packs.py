@@ -246,6 +246,7 @@ def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str 
         raise InstallError(f"refusing to replace a non-FieldOS reference index: {index}")
 
     packs_root = root / "content-packs"
+    web_documents = references_root / "documents"
     entries = []
     for manifest_path in sorted(packs_root.glob("*/*/manifest.json")):
         try:
@@ -269,7 +270,45 @@ def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str 
         entries.append("</ul><ul>")
         for artifact in installed.get("artifacts", []):
             rel = PurePosixPath(artifact["path"])
-            href = "../../content-packs/" + quote(f"{pack_id}/{version}/{rel.as_posix()}", safe="/")
+            source_path = manifest_path.parent.joinpath(*rel.parts)
+            target_path = web_documents / pack_id / version
+            directories = [web_documents, web_documents / pack_id, target_path]
+            for part in rel.parts[:-1]:
+                target_path /= part
+                directories.append(target_path)
+            for directory in directories:
+                if directory.is_symlink():
+                    raise InstallError(f"reference document path must not contain symbolic links: {directory}")
+                directory.mkdir(mode=0o755, parents=True, exist_ok=True)
+            if not source_path.is_file() or source_path.is_symlink():
+                raise InstallError(f"reference artifact must be a regular file: {source_path}")
+            if (source_path.stat().st_size != artifact["size_bytes"] or
+                    file_sha256(source_path) != artifact["sha256"]):
+                raise InstallError(f"reference artifact does not match its declared size and checksum: {source_path}")
+            destination = target_path / rel.name
+            if destination.is_symlink():
+                raise InstallError(f"refusing to replace a symbolic-link reference document: {destination}")
+            if destination.exists():
+                if not destination.is_file() or file_sha256(destination) != artifact["sha256"]:
+                    raise InstallError(f"refusing to replace existing reference document: {destination}")
+            else:
+                fd, temporary_name = tempfile.mkstemp(prefix=".fieldos-reference-document-", dir=target_path)
+                temporary = Path(temporary_name)
+                try:
+                    with os.fdopen(fd, "wb") as output, source_path.open("rb") as input_stream:
+                        shutil.copyfileobj(input_stream, output, length=1024 * 1024)
+                        output.flush()
+                        os.fsync(output.fileno())
+                    if file_sha256(temporary) != artifact["sha256"]:
+                        raise InstallError(f"reference document changed while activating: {source_path}")
+                    try:
+                        os.link(temporary, destination)
+                    except FileExistsError:
+                        if not destination.is_file() or file_sha256(destination) != artifact["sha256"]:
+                            raise InstallError(f"refusing to replace existing reference document: {destination}")
+                finally:
+                    temporary.unlink(missing_ok=True)
+            href = "documents/" + quote(f"{pack_id}/{version}/{rel.as_posix()}", safe="/")
             label = html.escape(rel.name)
             entries.append(f'<li><a href="{href}">{label}</a></li>')
         entries.append("</ul></section>")

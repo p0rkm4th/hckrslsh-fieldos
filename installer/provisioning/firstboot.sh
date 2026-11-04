@@ -120,7 +120,7 @@ if [[ "$root_lv" == /dev/mapper/* ]] && command -v lvextend >/dev/null && comman
   fi
 fi
 
-install -d -m 0755 "$STATE/storage/zim"
+install -d -m 0755 "$STATE/storage/zim" "$STATE/storage/references"
 install -d -m 0750 "$STATE/storage/maps/pmtiles" "$STATE/storage/maps/basemaps-assets" "$STATE/storage/ollama" "$STATE/mysql" "$STATE/redis" "$STATE/qdrant"
 
 if [[ -d "$PAYLOAD/content/zim" ]]; then
