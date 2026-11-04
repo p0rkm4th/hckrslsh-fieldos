@@ -14,16 +14,17 @@ validator checks manifest fields, path containment, declared sizes, and SHA-256
 values; it does not establish that a license grants redistribution rights.
 First-aid/emergency packs must identify authoritative references and record
 their reviewer and content revision date. The repository catalog currently
-contains the core CDC water/food and NWS tornado reference packs, plus the
-optional `us-weather-safety` reference pack. Only packs listed in `core_packs`
-are embedded in the installer; the optional weather pack is built separately
-for removable-media transfer. Other planned specialist and regional packs are
-not yet populated.
+contains four core packs: CDC water/food references and NWS-based FieldOS
+summaries for tornadoes, hurricanes/winter storms, and floods. Only packs listed
+in `core_packs` are embedded in the installer. The build also produces
+independent versioned archives for every listed pack, including core packs, so
+they can be transferred and installed on an existing system. Other planned
+specialist and regional packs are not yet populated.
 
 `make content-packs` validates the catalog and writes separate
 `<id>-<version>.tar.zst` and `.sha256` files under
 `FIELDOS_PAYLOAD_ROOT/content-packs/`. `make payload` invokes the same builder.
-These optional bundles are outside the core ISO. On an installed system, the
+On an installed system, the
 bundled `fieldos-content-packs.py install` command verifies and stores a pack
 version immutably below `/var/lib/fieldos/content-packs/`; `list` shows
 installed versions. A pack with target `storage/maps/pmtiles` and exactly one

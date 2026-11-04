@@ -3,7 +3,7 @@
   "id": "us-weather-safety",
   "version": "1.0.1",
   "title": "U.S. Severe Weather and Winter Safety",
-  "description": "Optional offline summaries of National Weather Service hurricane and winter-storm preparedness guidance. No live warnings or forecasts; not comprehensive emergency instructions.",
+  "description": "Offline FieldOS-edited summaries of National Weather Service hurricane and winter-storm preparedness guidance. No live warnings or forecasts; not comprehensive emergency instructions.",
   "category": "weather-disaster",
   "sources": [
     {
@@ -66,7 +66,7 @@
   "installation": {
     "target": "storage/references/documents",
     "requirements": [],
-    "optional": true
+    "optional": false
   },
   "authority": "authoritative-reference",
   "review": {

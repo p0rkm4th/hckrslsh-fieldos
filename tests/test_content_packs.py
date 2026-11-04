@@ -12,8 +12,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ContentPackValidationTests(unittest.TestCase):
     def test_repository_catalog_validates_reviewed_core_and_optional_packs(self):
+        catalog_path = ROOT / "payload/manifests/content-packs.json"
         self.assertEqual(
-            validate_catalog(ROOT / "payload/manifests/content-packs.json"),
+            validate_catalog(catalog_path),
+            ["us-flood-safety", "us-tornado-safety", "us-water-food-emergency", "us-weather-safety"],
+        )
+        catalog = json.loads(catalog_path.read_text())
+        core = [catalog_path.parent.joinpath(entry).resolve().parent.name for entry in catalog["core_packs"]]
+        self.assertCountEqual(
+            core,
             ["us-flood-safety", "us-tornado-safety", "us-water-food-emergency", "us-weather-safety"],
         )
 
