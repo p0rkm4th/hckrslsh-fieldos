@@ -39,9 +39,8 @@ mkdir -p "$STAGE/content-packs"
 
 echo "Fetching checksum-pinned corresponding source for identified AGPL components..."
 python3 - "$ROOT/payload/manifests/source-offers.json" "$STAGE/licenses/source-offers" <<'PY'
-import hashlib, json, sys
+import hashlib, json, subprocess, sys
 from pathlib import Path
-from urllib.request import urlretrieve
 
 manifest = json.loads(Path(sys.argv[1]).read_text())
 root = Path(sys.argv[2])
@@ -50,11 +49,19 @@ for offer in manifest["source_offers"]:
     target_dir.mkdir(parents=True, exist_ok=True)
     for item in offer["files"]:
         target = target_dir / item["name"]
-        urlretrieve(item["url"], target)
-        data = target.read_bytes()
+        temporary = target.with_name(target.name + ".download")
+        subprocess.run([
+            "curl", "--fail", "--location", "--silent", "--show-error",
+            "--connect-timeout", "15", "--max-time", "180",
+            "--retry", "3", "--retry-all-errors", "--retry-delay", "2",
+            "--happy-eyeballs-timeout-ms", "1500", "--output", str(temporary),
+            item["url"],
+        ], check=True)
+        data = temporary.read_bytes()
         digest = hashlib.sha256(data).hexdigest()
         if len(data) != item["size_bytes"] or digest != item["sha256"]:
             raise SystemExit(f"Source archive integrity mismatch: {target}")
+        temporary.replace(target)
 PY
 
 python3 - "$ROOT/payload/manifests/images.json" <<'PY' > "$STAGE/manifests/images.tsv"
