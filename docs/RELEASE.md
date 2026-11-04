@@ -4,12 +4,16 @@
 The latest unattended offline E2E passed on source
 `09501cb6e6fb4e049da585a610176937a5a52b94`, including a transferred optional
 water/food reference pack, Firefox access to its source index and PDF, and two
-reboots. The separate customer-mode UEFI installation below used the older
-`0085b7a` ISO; the latest source still needs its own customer-ISO build and
-interactive install test. Field-use readiness remains failed: the core Kiwix
-fixture has only 100 articles, the bundled map lacks useful Nashville detail,
-and the chat answer was generic and unsourced. Physical hardware, LAN peer
-isolation, GPU acceleration, and redistribution approval remain open.
+reboots. A customer-mode ISO built from source `412883c` has now completed a
+fresh interactive UEFI install in a no-NIC disposable VM and booted from its
+installed disk. Local N.O.M.A.D. inference, Kiwix, and maps were checked in the
+installed desktop, with two guest restarts. The installer Restart button/media
+handoff was not confirmed because the harness ejected the ISO and cold-booted
+the disk after a QMP reset. Field-use readiness remains failed: the core Kiwix
+fixture has only 100 articles, the bundled map lacks useful local detail, and
+an earthquake answer was generic, unsourced, and referred to calling 911.
+Physical hardware, LAN peer isolation, GPU acceleration, and redistribution
+approval remain open.
 
 ## Current source and artifacts
 
@@ -26,24 +30,29 @@ isolation, GPU acceleration, and redistribution approval remain open.
   persisted across both reboots. `reference-library-render.png` shows the source
   index; `reference-pdf-render.png` shows the CDC water-safety PDF opened in
   Firefox. The optional pack is not included in the customer ISO.
-- Previously tested customer-mode candidate, now behind current source:
-  `/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso`, 11,984,044,032
-  bytes. SHA-256:
-  `4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`.
+- Current customer-mode candidate, built from source `412883c`:
+  `/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso`,
+  11,984,044,032 bytes. SHA-256:
+  `81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`.
   BIOS/UEFI structure and offline payload were verified by `make verify`.
-- Fresh customer-mode install and end-user report:
-  `/mnt/shared/fieldos-e2e/customer-interactive-0085b7a-20261104/report.md`.
+- Fresh customer install and end-user report:
+  `/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
   The interactive install used a blank disposable 80 GiB target in UEFI QEMU
-  with `-net none`. At the restart prompt, the media was ejected and Enter
-  continued to the installed OS without resetting the VM. Firstboot completed,
-  seven containers were visible through `sudo docker ps`, Firefox loaded the
-  local Command Center, and the desktop/assistant remained accessible after two
-  restarts. The firstboot journal was not exported from this guest; the separate
-  unattended E2E has fuller provisioning logs.
-- The disposable customer VM disk and two superseded failed-run disks were
-  retired after validation. The report, compressed screenshots, ISO, and prior
-  small diagnostic reports remain. See `artifact-retirement.md` in the customer
-  run directory for exact paths and reclaimed space.
+  with `-net none`, including disk and account selection. Ubuntu reached its
+  install-complete screen; after ISO ejection, the harness power-cycled and
+  booted from the installed EFI disk. The branded desktop, N.O.M.A.D. chat,
+  Kiwix, and ProtoMaps loaded locally. Two guest restarts returned to the
+  desktop. The installer's own Restart button/media handoff is not verified.
+  The bundled model generated answers, but the earthquake answer was generic
+  and unsourced. Kiwix has one 100-article sample and the map lacks local detail.
+  This run did not capture `docker ps` or embeddings; the separate unattended
+  E2E report covers those checks.
+- The disposable customer VM disk has been retired after confirming no QEMU
+  process was using it. It had 34,974,863,360 allocated bytes (80 GiB virtual);
+  `/mnt/shared` free space rose from 587 GiB to 619 GiB. Duplicate PPM files,
+  unused GUI captures, QEMU control state, and the temporary credential were
+  removed. The report, selected PNG screenshots, serial logs, ISO, and disk
+  retirement record remain.
 - These are local engineering artifacts, not public release assets. The E2E
   result and QEMU customer install do not constitute physical-machine or
   redistribution approval.
@@ -53,19 +62,20 @@ isolation, GPU acceleration, and redistribution approval remain open.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Fresh offline Ubuntu installation | PASS | Latest E2E report; no NIC; local APT and images. |
-| Offline provisioning | PASS | E2E logs and customer VM `sudo docker ps`; seven services. |
+| Offline provisioning | PASS in unattended E2E; PARTIAL in customer run | Seven-container inventory is in the E2E report; not captured in the interactive customer VM. |
 | N.O.M.A.D. browser access | PASS | Customer Firefox displayed Command Center and chat at `localhost:8080`. |
-| Local chat inference | PASS, function only | Bundled `qwen3:0.6b-q4_K_M` generated a response in the disconnected customer VM. Response quality and sourcing failed field-readiness review. |
+| Local chat inference | PASS, function only | Bundled `qwen3:0.6b-q4_K_M` generated responses in the disconnected customer VM. Earthquake answer was generic and unsourced. |
 | Embeddings | PASS | E2E report records a 768-element embedding from the bundled model. |
 | Kiwix service | PASS | Browser loaded the local Kiwix server. |
 | Optional water/food source pack | PASS in E2E | Separate media transfer, validated install, loopback source index, direct Firefox PDF view, and two-reboot persistence; not in customer ISO or N.O.M.A.D. semantic search. |
-| Useful reference coverage | FAIL | Only one “Top hundred Wikipedia articles” archive; “water purification” returned no result. |
+| Useful reference coverage | FAIL | Only one “Top hundred Wikipedia articles” archive; a `water` search returned no result. |
 | Bundled offline map rendering | PASS at overview | Firefox rendered the U.S. basemap. |
 | Local map usefulness | FAIL | Nashville at 10 km scale displayed mostly blank background and sparse linework; the separately tested zoom-13 pack is not bundled. |
 | Branded desktop | PASS | Customer install showed wallpaper, dock, and N.O.M.A.D. launcher. |
-| Customer interactive install and media handoff | PASS in QEMU | Fresh interactive account/disk setup; USB ejected at prompt; same VM booted installed OS with no reset. Physical USB workflow remains untested. |
-| Two-reboot persistence | PASS in QEMU | Guest returned to branded desktop twice; N.O.M.A.D. chat/history loaded after both restarts. Full service checks after both reboots are covered by unattended E2E. |
-| Prepper safety/readiness | FAIL | Chat provided generic, uncited water-storage guidance, omitted usable quantities/procedure, and included questionable advice. Do not use for emergency decisions. |
+| Customer interactive install | PASS in QEMU | Fresh interactive account/disk setup and completed installation; installed EFI disk booted with ISO removed. Physical USB workflow remains untested. |
+| Installer Restart/media handoff | PARTIAL | ISO was ejected; harness QMP reset/power-cycle and cold-booted installed disk. Installer Restart button itself was not confirmed. |
+| Two-reboot persistence | PASS in QEMU | Guest returned to branded desktop twice; local map and Kiwix loaded and new chat inference worked after the second restart. Full container inventory/embeddings after reboot are covered by unattended E2E only. |
+| Prepper safety/readiness | FAIL | Earthquake answer was generic, uncited, referred to 911/local guidelines, and is not reliable for disconnected emergency use. |
 | Physical hardware / GPU | NOT TESTED | No physical laptop or GPU runtime validation. |
 | Security / LAN isolation | PARTIAL | Offline VM had no NIC; Kasm management network peer isolation remains unverified. |
 | Redistribution | BLOCKED | Exact software/content redistribution terms and attribution require final review. |
@@ -74,24 +84,26 @@ isolation, GPU acceleration, and redistribution approval remain open.
 ## Customer installation gate
 
 The current ISO has passed a fresh interactive UEFI QEMU installation with
-account and target-disk selection, no virtual NIC, prompt-time media removal,
-automatic installed-disk boot, firstboot, branded desktop, and two guest
-restarts. The full evidence is in the customer run report above. This does not
-prove physical USB behavior or support for customer hardware. Repeat on a spare
-physical machine only after content, licensing, hardware, and security gates are
-reviewed. Never target a physical or production disk during automated tests.
-The unattended `make test-e2e` image remains a separate test artifact.
+account and target-disk selection, no virtual NIC, installed-disk boot, branded
+desktop, local applications, and two guest restarts. The ISO was ejected, but
+the harness reset/power-cycled the guest to boot from disk; the installer's own
+Restart button/media handoff remains unverified. See the customer run report
+above. This does not prove physical USB behavior or support for customer
+hardware. Repeat on a spare physical machine only after content, licensing,
+hardware, and security gates are reviewed. Never target a physical or
+production disk during automated tests. The unattended `make test-e2e` image
+remains a separate test artifact.
 
 ## Content and hardware limitations
 
 The bundled Kiwix ZIM contains only 100 Wikipedia articles. Its local service
-works, but basic water-purification lookup returned no result. The bundled map
-is low zoom: it renders a broad U.S. overview, then lacks useful street detail
-near Nashville at a 10 km scale. A separately tested Middle Tennessee PMTiles
-pack has zoom-13 detail but is not included in this ISO or approved for public
-redistribution. The current chat model responds offline but did not provide
-identifiable references or reliable actionable water-storage guidance. Do not
-represent the AI as authoritative medical, emergency, or technical reference.
+works, but a `water` search returned no result. The bundled map renders a broad
+U.S. overview, then lacks useful local street detail. A separately tested
+Middle Tennessee PMTiles pack has zoom-13 detail but is not included in this ISO
+or approved for public redistribution. The current chat model responds offline
+but did not provide identifiable references; the earthquake response was
+generic and referred to 911 and local guidelines. Do not represent the AI as
+authoritative medical, emergency, navigation, or technical reference.
 
 The test pack activation work is documented in `CONTENT-PACKS.md`; other pack
 types and a customer content catalog remain incomplete. Review exact sources,
