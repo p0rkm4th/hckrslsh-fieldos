@@ -99,3 +99,13 @@ Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live
 under `payload/licenses/`. An artifact is not approved merely because its
 download endpoint is public.
+
+An optional `us-weather-safety` pack provides three FieldOS-edited summaries of
+NWS hurricane and winter-storm guidance. The pack is not in the baseline ISO;
+its manifest records source URLs, attribution, NOAA reuse basis, version, and
+checksums. Build a removable-media archive with `make content-packs`, then
+install it offline using the commands in [`CONTENT-PACKS.md`](CONTENT-PACKS.md).
+It has no live forecasts or alerts and is not a comprehensive emergency guide.
+The NOAA reuse policy requires attribution and forbids implying endorsement;
+each file identifies itself as an edited FieldOS summary and links its NWS
+source. Redistribution still needs the full project-level licensing review.

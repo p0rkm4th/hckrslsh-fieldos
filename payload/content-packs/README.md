@@ -14,9 +14,11 @@ validator checks manifest fields, path containment, declared sizes, and SHA-256
 values; it does not establish that a license grants redistribution rights.
 First-aid/emergency packs must identify authoritative references and record
 their reviewer and content revision date. The repository catalog currently
-contains the core CDC water/food and NWS tornado reference packs. Other planned
-specialist and regional packs are not in the catalog and are not embedded in
-the customer ISO.
+contains the core CDC water/food and NWS tornado reference packs, plus the
+optional `us-weather-safety` reference pack. Only packs listed in `core_packs`
+are embedded in the installer; the optional weather pack is built separately
+for removable-media transfer. Other planned specialist and regional packs are
+not yet populated.
 
 `make content-packs` validates the catalog and writes separate
 `<id>-<version>.tar.zst` and `.sha256` files under

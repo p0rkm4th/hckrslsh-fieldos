@@ -4,7 +4,8 @@
   "status": "ready",
   "packs": [
     "../content-packs/us-water-food-emergency/manifest.json",
-    "../content-packs/us-tornado-safety/manifest.json"
+    "../content-packs/us-tornado-safety/manifest.json",
+    "../content-packs/us-weather-safety/manifest.json"
   ],
   "core_packs": [
     "../content-packs/us-water-food-emergency/manifest.json",
