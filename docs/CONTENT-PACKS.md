@@ -97,18 +97,18 @@ configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
 
-The pack was installed from the offline payload in a clean no-NIC VM on source
-`f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`. That revision served the source
-index and documents locally across two reboots but did not add them to RAG. The
-current source adds the native Knowledge Base adapter and requires a fresh E2E
-test before that behavior is considered verified. The customer
-mode guest also retained both PDFs and the index after two reboots. Reports and
-browser screenshots are retained at
-`/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/` and
-`/mnt/shared/fieldos-e2e/customer-interactive-corepack-f9c10ec/20261104T040000Z/`.
-This validates the static pack adapter and this narrow source set; it does not
-establish that the pack is a complete prepper library or approved for customer
-distribution.
+The core water/food pack was installed from the offline payload on source
+`da61a843313c443c0e349a75b6395e48c0f73c20`. Fresh no-NIC E2E and interactive
+customer-mode installs confirmed that both CDC PDFs reached N.O.M.A.D.'s
+indexed Knowledge Base and returned cited answers for food outage and water
+treatment queries. The E2E report is
+`/mnt/shared/fieldos-e2e/20261104T060325Z-3127648/report.md`; interactive
+customer-mode evidence is `/mnt/shared/fieldos-e2e/customer-da61a84/report.md`.
+This verifies the core pack adapter for these two source documents; it does not
+make the pack a comprehensive preparedness library or approve redistribution.
+The Middle Tennessee map remains a separate unreleased pack; agriculture,
+wildlife, first-aid, and comprehensive reference packs still need requirements
+and licensing review.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the

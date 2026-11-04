@@ -1,105 +1,67 @@
 # FieldOS Lab operations
 
-FieldOS Lab is a persistent, owner-only Kasm Server workspace for interactive
-testing. It is separate from disposable no-network acceptance VMs and from the
-customer installer. The existing Kasm workspace and its dedicated owner-only
-FieldOS Lab Operators group are retained.
+FieldOS Lab is the owner-only interactive staging workspace used to explore a
+persistent FieldOS desktop. It is separate from disposable no-network
+acceptance VMs and from the customer installer.
 
-## Active deployment
+This repository is public. Deployment-specific host names, management addresses,
+VM identifiers, snapshot names, account names, and credentials belong in the
+operator's private infrastructure records, not here.
 
-The active staging guest is Proxmox VM 913 (`fieldos-lab-d9d459b`) on
-Alexandra. It has 4 vCPU, 8 GiB RAM, a 120 GiB virtual disk, UEFI boot, and
-autostarts. It runs a customer-mode test installation built from source
-`d9d459b`; this is a test candidate, not an approved customer release. The
-existing **FieldOS Lab** Kasm Server/RDP entry uses the guest's private
-management address on TCP 3389. Its owner-only access group was retained.
-Kasm prompts for the guest RDP credentials and opens the `fieldos` desktop
-account. The rotated guest/RDP password is a lowercase, hyphen-separated
-five-word passphrase for easier manual entry. It is kept in the host-local,
-mode-0600 operations file, not in this repository. It is unique to the guest
-and is not the Kasm website password. See [credential guidance](SECURITY.md).
+## Access boundary
 
-The guest's management NIC is on the existing hypervisor bridge. It has no
-default route, DNS, or IPv6. Guest UFW defaults to deny inbound, outbound, and
-routed traffic, with RDP allowed only from the Kasm host. Application ports
-remain bound to guest loopback and are not reachable from Kasm. Compose's
-service network is internal, and the local UI bridge has IP masquerading
-disabled. Kasm-to-RDP and blocked application-port connections were checked.
-External access from the guest has no route. This is host firewall filtering
-on a shared bridge, not a dedicated VLAN; peer isolation on the bridge remains
-unverified. Do not attach this management interface to an untrusted network.
+Use a Kasm Server workspace connected to the FieldOS guest over a restricted
+remote-desktop protocol. Assign it only to the dedicated owner access group.
+Do not expose RDP/VNC, N.O.M.A.D., Ollama, or Kiwix to the public internet.
 
-## Verification and limits
+If the guest must remain offline, prefer a secured hypervisor console bridge.
+If the deployment uses a management NIC, configure no default route or DNS,
+deny outbound traffic, and permit only the Kasm host to reach the required
+remote-desktop port. Keep application listeners on guest loopback. A shared
+bridge with host firewall rules is not equivalent to layer-2 isolation; test
+peer access before relying on that boundary. Keep remote access disabled on
+customer installations unless an operator explicitly configures it.
 
-VM 913 completed firstboot. All seven Compose services were running;
-N.O.M.A.D. returned `{"status":"ok"}`; Ollama generated a response; the
-embedding model returned 768 values; Kiwix served its catalog; and the bundled
-map endpoint returned tile data. The guest has no default route or DNS. RDP
-port 3389 is reachable from the Kasm host, while application ports 8080,
-11434, 8090, 6333, and 9999 are blocked there. The source customer-mode
-installation passed service, inference, reference, map, and two-reboot checks
-after the installer powered off at its media-removal prompt and the host
-started the installed disk. The automatic installer handoff is still a
-customer-release blocker.
+Store the actual Kasm workspace name, guest endpoint, authorized account/group,
+credential file location, hypervisor node, VM identifier, resource allocation,
+and snapshot reference in private operator documentation. Do not put these
+values in Git, build output, screenshots, or support logs.
 
-The new guest's actual authenticated desktop launch from an owner's Kasm
-browser has **not** been observed with this tooling. Kasm entry, guest RDP
-listener, and network reachability are configured and checked, but workspace
-launch, rendered desktop, and in-session application interaction remain
-PARTIAL until an owner session verifies them. The old VM 912 remains stopped
-as the rollback deployment and must not be removed until that confirmation.
+## Verification
 
-The guest contains test-sized reference and low-zoom map fixtures. The optional
-Middle Tennessee zoom-13 pack was tested separately in the no-NIC acceptance
-VM, but is not installed in this lab guest or bundled in the ISO. No
-comprehensive medical, emergency, agricultural, or survival library is
-claimed. Physical GPU validation has not been performed.
+From the authorized Kasm account, verify that the workspace is visible and
+launches, the desktop renders, and the FieldOS applications work in that
+session. Check N.O.M.A.D., local inference, Kiwix content, and maps. A healthy
+RDP port or running guest is not proof of a working authenticated desktop.
 
-Evidence:
-
-- No-NIC E2E report: `/mnt/shared/fieldos-e2e/20261103T194719Z-2651472/report.md`.
-- Customer install and staging evidence:
-  `/mnt/shared/fieldos-e2e/customer-interactive-d9d459b-20261103/report.md`.
-- Post-passphrase reboot and VM 913 smoke checks:
-  `/mnt/shared/fieldos-lab/evidence/20261103/vm913-post-passphrase-reboot.md`.
-- Customer candidate SHA-256:
-  `4e41822852d9e911f186ab1f3659a904eedddef48154c9ca6d955cd2de7ddcd2`.
+For network-enabled management, verify the guest has no general internet route,
+only the intended management connection is reachable, and application/admin
+ports are not accessible from the LAN. Record the test date and results in the
+private operations record; publish only a sanitized summary.
 
 ## Snapshot, reset, and recovery
 
-VM 913's known-good staging snapshot is
-`fieldos-lab-known-good-d9d459b-20261103`. It preserves the firstboot-complete
-state and lab configuration; VM 913's service, inference, reference, map, and
-network checks were run before snapshotting. To restore it, which discards
-changes made after the snapshot:
+Keep one known-good snapshot while validating a replacement. Record its
+hypervisor-specific reference privately. Before restore, confirm the guest is
+stopped and the snapshot belongs to the intended FieldOS VM. A rollback discards
+changes made after that snapshot.
+
+Example Proxmox commands; replace placeholders only from the private operations
+record and review the target before running them:
 
 ```sh
-ssh root@192.168.10.2 'qm stop 913'
-ssh root@192.168.10.2 'qm rollback 913 fieldos-lab-known-good-d9d459b-20261103'
-ssh root@192.168.10.2 'qm start 913'
+ssh <hypervisor-admin>@<hypervisor> 'qm status <VMID>'
+ssh <hypervisor-admin>@<hypervisor> 'qm stop <VMID>'
+ssh <hypervisor-admin>@<hypervisor> 'qm rollback <VMID> <known-good-snapshot>'
+ssh <hypervisor-admin>@<hypervisor> 'qm start <VMID>'
 ```
 
-The previous Lab VM 912 is stopped and retains its snapshot
-`fieldos-lab-known-good-8b0bda3-20261103`. To recover it, stop VM 913 first,
-then start VM 912. Both use the same intended management address; never run
-them simultaneously. Keep VM 912 and its snapshot until the replacement is
-confirmed usable from the owner's Kasm browser. Older VM 911 remains stopped
-as a separate legacy rollback and is not part of the current workspace.
+To rebuild, create a new disposable guest, install a validated customer-mode
+candidate, and complete offline service and desktop checks before changing the
+Kasm workspace target. Keep the previous working guest and snapshot until the
+owner confirms the replacement workspace launches and functions. Retire only
+the specifically identified superseded guest after that confirmation.
 
-For a newer build, create a new disposable guest, install and validate it, then
-change the Kasm Server workspace target only after the new guest is ready.
-Keep test evidence and release artifacts under `/mnt/shared`; do not store
-credentials, ISO binaries, or VM disks in Git. Use the repository's
-`make test-e2e` and `make verify` instructions for acceptance and ISO checks.
-
-## Current state
-
-- VM 913: active staged guest, source `d9d459b`, snapshot above; guest checks
-  passed, owner-authenticated Kasm launch pending.
-- VM 912: stopped previous Lab and rollback snapshot retained.
-- VM 911: stopped legacy rollback, unchanged.
-- Kasm: existing owner-only **FieldOS Lab** Server/RDP entry and dedicated
-  access group retained; it uses the replacement guest's management endpoint.
-- Customer installer: partial; interactive disk/account selection and installed
-  system checks passed, but automatic handoff powered the VM off at the media
-  prompt. See [release readiness](RELEASE.md).
+Keep ISO files, VM disks, credentials, and operational evidence outside Git.
+Use `make test-e2e` and `make verify` for release checks; a persistent lab guest
+is interactive staging and is not a substitute for clean acceptance runs.
