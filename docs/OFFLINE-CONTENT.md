@@ -108,3 +108,20 @@ It has no live forecasts or alerts and is not a comprehensive emergency guide.
 The NOAA reuse policy requires attribution and forbids implying endorsement;
 each file identifies itself as an edited FieldOS summary and links its NWS
 source. Redistribution still needs the full project-level licensing review.
+
+### FEMA CERT manual review (not bundled)
+
+The 2011 FEMA CERT Basic Training Participant Manual was reviewed as a
+possible optional preparedness reference (332 pages; source:
+[FEMA PDF](https://www.fema.gov/sites/default/files/2020-07/fema-cert_basic-training-participant-manual_01-01-2011.pdf)).
+No explicit reuse or redistribution statement was found in the manual. FEMA's
+[NDEMU FAQ](https://training.fema.gov/programs/independent-study/isfaq.aspx?lang=en)
+describes public-domain status for NDEMU materials unless otherwise indicated;
+that guidance does not resolve rights for this contractor-credited CERT manual
+or any third-party material it may contain. FEMA's [development resources]
+(https://training.fema.gov/devres/) require permission or approval for
+third-party material in instructional products. Therefore the manual is not
+included in FieldOS or its packs unless rights are confirmed. It is also dated
+training material, not current medical procedure; any future use must label it
+as historical training reference and direct users to current authoritative
+guidance.
