@@ -104,6 +104,10 @@ original source documents and qualified help for high-consequence decisions.
 | Redistribution and attribution | BLOCKED | Ubuntu branding/permission, all package/image/model/map/data licenses, notices and source offers still require complete review. |
 | Physical customer readiness | BLOCKED | Physical hardware, media handoff, GPU, LAN exposure, comprehensive content, and redistribution gates remain. |
 
+## End-user disaster scenario review
+
+A scenario-by-scenario field-use assessment is recorded in [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md). The no-NIC desktop tests pass for their stated VM scope, but the preparedness usefulness assessment is **FAIL**: coverage is narrow, safety-critical AI requests are refused (and the keyword guard is bypassable), offline navigation is absent, and optional weather material is not in the customer ISO. This distinction is intentional; functional services do not establish disaster readiness.
+
 ## Security and redistribution
 
 Published interfaces bind to loopback, Compose separates internal and local UI

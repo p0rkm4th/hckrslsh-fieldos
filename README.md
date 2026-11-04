@@ -35,7 +35,7 @@ ISO. FieldOS remains an engineering candidate, not a disaster-ready or
 customer-approved appliance: its reference set and map coverage are limited,
 AI safety behavior is not comprehensive, physical GPU and LAN isolation remain
 unverified, and redistribution review is incomplete. See
-[docs/RELEASE.md](docs/RELEASE.md) for exact evidence and remaining gates.
+[docs/RELEASE.md](docs/RELEASE.md) for exact evidence and remaining gates, and [docs/FIELD-USE-ASSESSMENT.md](docs/FIELD-USE-ASSESSMENT.md) for the scenario-by-scenario preparedness review.
 
 ## Build and test
 
