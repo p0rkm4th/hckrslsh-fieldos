@@ -15,14 +15,13 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest automated acceptance: the no-NIC E2E passed installation, offline
-provisioning, local chat and embeddings, reference retrieval, Kiwix, actual
-Firefox rendering of the map and Source Library, and persistence across two
-reboots. It also passed five tested high-risk prompt cases through a new
-server-side safety guard. The E2E used a dirty worktree at base commit `1fb6806`,
-so this is not yet clean-source release evidence. `make check test` currently
-passes 68 tests. See the exact report, image hash, limitations, and next gates
-in [docs/RELEASE.md](docs/RELEASE.md).
+Latest clean-source acceptance passed at commit `7981801`. The no-NIC E2E
+passed installation, offline provisioning, local chat and embeddings, reference
+retrieval, Kiwix, actual Firefox rendering of the map and Source Library, and
+persistence across two reboots. Five tested high-risk prompt cases were blocked
+by the server-side safety guard. `make check test` passed 68 tests. See the exact
+report, test ISO hash, limitations, and remaining customer-mode gate in
+[docs/RELEASE.md](docs/RELEASE.md).
 
 The retained customer candidate
 `/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso` predates the
