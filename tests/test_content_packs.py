@@ -79,6 +79,19 @@ class ContentPackValidationTests(unittest.TestCase):
         })
         self.assertEqual(validate_catalog(catalog), ["fixture-reference"])
 
+    def test_core_pack_must_be_listed_and_nonoptional(self):
+        catalog, _, _ = self.fixture()
+        data = json.loads(catalog.read_text())
+        data["core_packs"] = ["../content-packs/not-listed/manifest.json"]
+        catalog.write_text(json.dumps(data))
+        with self.assertRaisesRegex(PackError, "also be listed"):
+            validate_catalog(catalog)
+
+        data["core_packs"] = ["../content-packs/fixture-reference/manifest.json"]
+        catalog.write_text(json.dumps(data))
+        with self.assertRaisesRegex(PackError, "optional=false"):
+            validate_catalog(catalog)
+
     def test_artifact_hash_and_size_must_match(self):
         catalog, _, pack = self.fixture()
         (pack / "documents/reference.txt").write_text("changed\n", encoding="utf-8")

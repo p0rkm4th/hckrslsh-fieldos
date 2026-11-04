@@ -26,22 +26,23 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def read_catalog(catalog_path: Path) -> tuple[Path, list[tuple[str, str, Path]]]:
+def read_catalog(catalog_path: Path, core_only: bool = False) -> tuple[Path, list[tuple[str, str, Path]]]:
     payload_root = catalog_path.resolve(strict=True).parent.parent
     pack_ids = validate_catalog(catalog_path)
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     entries: list[tuple[str, str, Path]] = []
-    for entry in catalog["packs"]:
+    selected = catalog.get("core_packs", []) if core_only else catalog["packs"]
+    for entry in selected:
         manifest_path = (catalog_path.parent / entry).resolve(strict=True)
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         entries.append((manifest["id"], manifest["version"], manifest_path.parent))
-    if len(entries) != len(pack_ids):
+    if len(entries) != len(selected):
         raise PackError("catalog pack count changed after validation")
     return payload_root, entries
 
 
-def build_archives(catalog_path: Path, output_root: Path) -> list[Path]:
-    payload_root, entries = read_catalog(catalog_path)
+def build_archives(catalog_path: Path, output_root: Path, core_only: bool = False) -> list[Path]:
+    payload_root, entries = read_catalog(catalog_path, core_only=core_only)
     if not entries:
         return []
     output = output_root / "content-packs"
@@ -104,9 +105,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--catalog", type=Path, default=ROOT / "payload/manifests/content-packs.json")
     parser.add_argument("--output-root", type=Path, default=Path("/mnt/shared/fieldos-payload"))
+    parser.add_argument("--core-only", action="store_true",
+                        help="build only content packs included in the installer baseline")
     args = parser.parse_args()
     try:
-        archives = build_archives(args.catalog, args.output_root)
+        archives = build_archives(args.catalog, args.output_root, core_only=args.core_only)
     except (OSError, ValueError, PackError, subprocess.SubprocessError, RuntimeError) as exc:
         print(f"Content-pack build failed: {exc}", file=sys.stderr)
         return 2

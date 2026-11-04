@@ -53,7 +53,7 @@ class ContentPackBundleTests(unittest.TestCase):
                 "source": "fixture-source", "license": "CC0-1.0",
             }],
             "geographic_coverage": None,
-            "installation": {"target": "storage/content-packs", "requirements": [], "optional": True},
+            "installation": {"target": "storage/content-packs", "requirements": [], "optional": False},
             "authority": "community-reference",
         }
         (self.pack / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
@@ -63,6 +63,7 @@ class ContentPackBundleTests(unittest.TestCase):
             "manifest_schema": "content-pack.schema.json",
             "status": "ready",
             "packs": ["../content-packs/fixture-reference/manifest.json"],
+            "core_packs": ["../content-packs/fixture-reference/manifest.json"],
         }), encoding="utf-8")
         self.output = self.base / "output"
         self.install_root = self.base / "installed"
@@ -100,6 +101,12 @@ class ContentPackBundleTests(unittest.TestCase):
         build_archives(self.payload / "manifests/content-packs.json", self.output)
         with self.assertRaises(FileExistsError):
             build_archives(self.payload / "manifests/content-packs.json", self.output)
+
+    def test_core_only_builder_includes_only_declared_core_packs(self):
+        archives = build_archives(
+            self.payload / "manifests/content-packs.json", self.output, core_only=True
+        )
+        self.assertEqual([archive.name for archive in archives], ["fixture-reference-1.0.0.tar.zst"])
 
     def test_install_rejects_corrupt_bundle_checksum(self):
         archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]

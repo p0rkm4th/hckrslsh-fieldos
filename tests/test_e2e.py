@@ -90,6 +90,14 @@ class AcceptanceRun:
         self.memory_mib = int(os.environ.get("FIELDOS_TEST_MEMORY_MIB", "12288"))
         if self.memory_mib < 8192:
             raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
+        catalog = json.loads((ROOT / "payload/manifests/content-packs.json").read_text())
+        self.core_reference_manifest: dict | None = None
+        for entry in catalog.get("core_packs", []):
+            manifest_path = ROOT / "payload/manifests" / entry
+            manifest = json.loads(manifest_path.resolve(strict=True).read_text())
+            if manifest.get("installation", {}).get("target") == "storage/references/documents":
+                self.core_reference_manifest = manifest
+                break
         self.pack_archive = Path(os.environ["FIELDOS_TEST_CONTENT_PACK"]).expanduser() if os.environ.get("FIELDOS_TEST_CONTENT_PACK") else None
         self.pack_manifest: dict | None = None
         self.pack_target: str | None = None
@@ -299,7 +307,7 @@ autoinstall:
                 "offline content pack transfer and source-library activation",
                 common + " && ".join(checks), 350,
             )
-            if "activated reference documents:" not in installed:
+            if not any(marker in installed for marker in ("activated reference documents:", "already installed:")):
                 raise TestFailure(f"Reference documents were not activated from removable media: {installed}")
             self.check(
                 "source library attribution and local document links",
@@ -308,8 +316,8 @@ autoinstall:
                 f"grep -Fq 'cdc-food-power-outage.pdf' /var/lib/fieldos/storage/references/index.html && "
                 f"test \"$(find /var/lib/fieldos/content-packs/{pack_id}/{version} -maxdepth 1 -type f -name '*.pdf' | wc -l)\" -eq 2",
             )
-            self.record("offline optional content pack", "PASS",
-                        f"{pack_id} activated; source index and two PDFs are locally available")
+            self.record("offline content pack transfer", "PASS",
+                        f"{pack_id} verified from removable media; source index and PDFs remain available")
             return
         regions = self.check(
             "N.O.M.A.D. discovers the imported regional map",
@@ -605,11 +613,12 @@ autoinstall:
                     "effective GNOME session uses the FieldOS wallpaper, dark palette, and both FieldOS dock shortcuts")
 
     def verify_reference_library_render(self) -> None:
-        if self.pack_target != "storage/references/documents":
+        manifest = (self.pack_manifest if self.pack_target == "storage/references/documents"
+                    else self.core_reference_manifest)
+        if manifest is None:
             return
-        assert self.pack_manifest is not None
-        pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
-        first_artifact = self.pack_manifest["artifacts"][0]
+        pack_id, version = manifest["id"], manifest["version"]
+        first_artifact = manifest["artifacts"][0]
         document_path = "/".join(quote(part, safe="") for part in first_artifact["path"].split("/"))
         index_url = "http://127.0.0.1:8080/fieldos-references/index.html"
         document_url = f"http://127.0.0.1:8080/fieldos-references/documents/{pack_id}/{version}/{document_path}"
@@ -647,22 +656,31 @@ autoinstall:
 
     def run_checks(self, reboot: bool = False) -> None:
         self.check("disconnected guest", "test -z \"$(ip -4 route show default)\" && ip -brief link")
-        if reboot and self.pack_target == "storage/references/documents":
-            assert self.pack_manifest is not None
-            pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
+        reference_manifest = (self.pack_manifest if self.pack_target == "storage/references/documents"
+                              else self.core_reference_manifest)
+        if reference_manifest:
+            pack_id, version = reference_manifest["id"], reference_manifest["version"]
             document_paths = [
                 f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{item['path']}"
-                for item in self.pack_manifest["artifacts"]
+                for item in reference_manifest["artifacts"]
             ]
             document_paths.extend(
                 f"/var/lib/fieldos/storage/references/documents/{pack_id}/{version}/{item['path']}"
-                for item in self.pack_manifest["artifacts"]
+                for item in reference_manifest["artifacts"]
             )
             document_checks = " && ".join(f"test -s {shlex.quote(path)}" for path in document_paths)
-            self.check(
-                "reference pack persists after reboot",
-                "test -s /var/lib/fieldos/storage/references/index.html && " + document_checks,
-            )
+            if reboot:
+                self.check(
+                    "reference pack persists after reboot",
+                    "test -s /var/lib/fieldos/storage/references/index.html && " + document_checks,
+                )
+            else:
+                self.check(
+                    "bundled reference pack installed and served offline",
+                    "test -s /var/lib/fieldos/storage/references/index.html && " + document_checks +
+                    " && curl --fail --silent --show-error http://127.0.0.1:8080/fieldos-references/index.html | "
+                    f"grep -Fq {shlex.quote(pack_id)}",
+                )
         ps = self.check("container set", "docker compose --project-directory /opt/fieldos/services -f /opt/fieldos/services/compose.yaml ps --format json", 500)
         try:
             services = [json.loads(line) for line in ps.splitlines() if line.strip()]

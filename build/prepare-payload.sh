@@ -30,7 +30,12 @@ mkdir -p "$STAGE"/{debs,oci,content/zim,content/maps/pmtiles,content/maps/basema
 install -m 0644 "$ROOT/payload/manifests/content-pack.schema.json" \
   "$STAGE/manifests/content-pack.schema.json"
 python3 "$ROOT/build/build_content_packs.py" \
-  --catalog "$ROOT/payload/manifests/content-packs.json" --output-root "$OUT"
+  --core-only --catalog "$ROOT/payload/manifests/content-packs.json" --output-root "$STAGE/core-pack-build"
+if [[ -d "$STAGE/core-pack-build/content-packs" ]]; then
+  mv "$STAGE/core-pack-build/content-packs" "$STAGE/content-packs"
+  rmdir "$STAGE/core-pack-build"
+fi
+mkdir -p "$STAGE/content-packs"
 
 echo "Fetching checksum-pinned corresponding source for identified AGPL components..."
 python3 - "$ROOT/payload/manifests/source-offers.json" "$STAGE/licenses/source-offers" <<'PY'
@@ -309,7 +314,7 @@ printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600fea
 
 echo "Creating deterministic compressed payload archive..."
 tar --sort=name --mtime='UTC 2026-11-02' --owner=0 --group=0 --numeric-owner \
-  -C "$STAGE" -cf - debs oci content licenses manifests model-ids.json \
+  -C "$STAGE" -cf - debs oci content content-packs licenses manifests model-ids.json \
   | zstd --threads=0 --ultra -12 -o "$ARCHIVE"
 (
   cd "$OUT"
