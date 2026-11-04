@@ -8,7 +8,8 @@ CDC water/food references, and attributed FieldOS-edited NWS tornado, flood,
 hurricane, and winter-storm summaries for offline use. The owner uses
 N.O.M.A.D. as the main interface.
 An optional, separately transferable 2026 Southeastern vegetable-growing
-handbook is available in the source catalog; it is not part of the tested ISO.
+handbook is cataloged and transfer/index tested; it is not part of the core or
+customer ISO.
 This is still an engineering prototype, not a complete emergency or navigation
 appliance.
 
@@ -19,17 +20,14 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest statewide-map offline E2E: base commit `7e6fa24486f4fd500c7be9191119480acfe5762c`
-with local map and verifier changes, subsequently published in commit
-`3a49627d669cfe0db84547cecf763f185d9e8532` (the report records a dirty
-worktree; a clean-source rebuild and rerun remain open). `make check && make test`
-passed 73 tests after adding the optional agriculture pack. A fresh no-NIC VM
-installed Ubuntu, completed firstboot, ran seven services, generated local inference, loaded
-embeddings, searched the bundled reference, visibly rendered Firefox maps at
-Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
-and rural Big South Fork, and passed two reboots. Report and screenshots:
-`/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`; test ISO SHA-256:
-`c0e2578509cde5522400cdd2969e8793f2278ac4e11f50900728a79acd6c2f09`.
+Latest clean-source offline E2E: commit `b5d6f748c9efdb0f4345c5fe92533b882c7e2856`.
+`make check && make test` passed 74 tests. The fresh no-NIC VM installed
+Ubuntu, completed firstboot, ran seven services, generated local inference,
+loaded embeddings, imported the optional agriculture pack offline, indexed it
+as 678 N.O.M.A.D. chunks, visibly rendered Firefox maps at eight Tennessee
+locations, and passed two reboots. Report and screenshots:
+`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`; test ISO SHA-256:
+`71821434553d6b0b26b0f87cfa6f857ed6a38b97e80e8b357d69f966e4e4217a`.
 The map is a 145,267,908-byte zoom 0–13 Protomaps extract; SHA-256
 `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
 It is verified in the unattended test image, not yet in a new customer ISO.

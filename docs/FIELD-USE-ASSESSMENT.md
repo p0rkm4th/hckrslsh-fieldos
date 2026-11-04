@@ -7,7 +7,16 @@ This review checks the fresh customer desktop, bundled applications, offline con
 
 ## Tested installation and interface
 
-The latest no-NIC unattended test is from base commit `7e6fa24486f4fd500c7be9191119480acfe5762c` with local map and E2E-verifier changes (worktree dirty). It installed, completed firstboot, ran seven services, generated local inference, loaded embeddings, searched Kiwix and the source library, rendered the statewide map in Firefox at eight locations, and passed two reboots. Report and screenshots: `/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`; test ISO SHA-256: `c0e2578509cde5522400cdd2969e8793f2278ac4e11f50900728a79acd6c2f09`. The 145 MB statewide map is not yet in the separately tested customer ISO.
+The latest clean no-NIC unattended test is from source commit
+`b5d6f748c9efdb0f4345c5fe92533b882c7e2856`. It installed, completed firstboot,
+ran seven services, generated local inference, loaded embeddings, imported and
+indexed the optional 2026 vegetable handbook as 678 chunks, searched Kiwix and
+the source library, visibly rendered the statewide map in Firefox at eight
+locations, and passed two reboots. Report and screenshots:
+`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`; test ISO
+SHA-256: `71821434553d6b0b26b0f87cfa6f857ed6a38b97e80e8b357d69f966e4e4217a`.
+The statewide map and optional handbook are not yet in the separately tested
+customer ISO.
 
 The latest customer-mode ISO was built from clean source commit
 `21ad4fcdb882998ca1c3bd47333b1139c162651c`:
@@ -38,13 +47,13 @@ external weather alerts, physical GPS, or broad geographic coverage.
 | Injury or medical emergency | An optional one-page CDC checklist names skills to learn but provides no procedures. No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
 | Travel, navigation, or loss of GPS | The latest unattended image visibly renders detailed zoom-13 maps at eight Tennessee urban and rural locations; world/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
-| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. An optional 2026 Southeastern vegetable handbook is cataloged but was not installed in this test. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
+| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. The optional 2026 Southeastern vegetable handbook imported and indexed in the latest unattended test but is not part of the customer ISO. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
 
 ## AI and source-library behavior
 
 The bundled Qwen3 0.6B model generates a real general response offline. The five tested high-risk prompt categories (food outage, tornado shelter, chemical water treatment, wildfire evacuation, and severe bleeding) returned a fixed notice directing the user to original sources, with no citations. The UI itself worked, but this means the AI is not an emergency-response feature. The keyword guard is incomplete and can be bypassed with alternate phrasing; a blocked prompt is not proof that an unblocked answer is safe. The original source files remain the authority where provided.
 
-The Source Library and Kiwix provide access to locally stored content, but content is sparse. The flood pack appeared in the browser source index after transfer and its document was indexed by N.O.M.A.D.; the generated page is visually plain and metadata-heavy. The optional agriculture handbook has not yet been installed/indexed on the VM. Start Here accurately describes many limits and explains optional pack transfer; reference-pack installation currently requires terminal commands, which is a barrier for a nontechnical field user.
+The Source Library and Kiwix provide access to locally stored content, but content is sparse. The flood pack appeared in the browser source index after transfer and its document was indexed by N.O.M.A.D.; the generated page is visually plain and metadata-heavy. The optional agriculture handbook was transferred and indexed as 678 chunks in the latest VM test. Start Here accurately describes many limits and explains optional pack transfer; reference-pack installation currently requires terminal commands, which is a barrier for a nontechnical field user.
 
 ## Verdict and release implications
 
