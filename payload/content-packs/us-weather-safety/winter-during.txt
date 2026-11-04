@@ -1,0 +1,23 @@
+FIELDOS WEATHER REFERENCE — ACTIONS DURING A WINTER STORM
+Editorial field summary, based on National Weather Service guidance.
+Prepared 2026-11-04. Read the linked NWS source for full context and revisions.
+
+SOURCE
+National Weather Service, “What To Do If You're Caught in a Winter Storm”
+https://www.weather.gov/safety/winter-during
+Accessed 2026-11-04
+
+SAFETY AND SCOPE
+This is an edited, offline summary of federal guidance. It is not an official NWS publication, forecast, alert, or substitute for current local instructions. Conditions can change rapidly; this device does not receive live warnings. If authorities issue instructions, follow them.
+
+OUTSIDE
+Try to find shelter, stay dry, and cover exposed skin. Avoid overexertion; heavy work in cold conditions can increase risk, including heart strain and hypothermia.
+
+IN A VEHICLE
+Avoid travel during dangerous conditions. If stranded, NWS advises staying with the vehicle because leaving can lead to rapid disorientation. If running the engine for heat, the NWS page advises opening a window slightly and clearing snow from the exhaust pipe to reduce carbon-monoxide risk. Make the vehicle visible to rescuers. Conditions and vehicle exhaust risks vary; use current emergency instructions and do not treat this short summary as a vehicle-safety manual.
+
+AT HOME
+If heat fails, close off unused rooms, block drafts, use curtains, and wear layers while avoiding overheating and perspiration. Use fireplaces, stoves, and space heaters with fire safeguards and proper ventilation. Keep carbon-monoxide alarms operational. Follow utility and emergency-management instructions.
+
+SOURCE NOTE
+This summary condenses selected NWS guidance and omits linked materials and site navigation. The source page is the authority for its full recommendations and current context. NOAA states nearly all NOAA content is public domain unless otherwise noted; it requires attribution and prohibits implying government endorsement. FieldOS is not endorsed by NOAA or NWS.

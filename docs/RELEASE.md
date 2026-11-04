@@ -30,6 +30,26 @@
   The screenshots are retained beside the report. The test credential was
   stored in protected runtime storage and is not included in evidence.
 
+## Follow-up content-pack integration test (not accepted)
+
+A later fresh run attempted to import the optional weather pack from removable
+media. Its report is
+`/mnt/shared/fieldos-e2e/20261104T123346Z-3513131/report.md`. Offline Ubuntu
+installation and firstboot passed; the weather archive checksum passed, all
+three documents were installed and indexed in N.O.M.A.D., and the source
+library opened. The overall run **failed** before map rendering or reboot
+checks because the installed guest did not register the required Middle
+Tennessee map.
+
+The failure was traced to a stale `/mnt/shared/fieldos-payload/offline-payload.tar.zst`:
+its embedded `maps.json` described only the zoom-5 U.S. sample, while the
+current source manifest also requires Middle Tennessee. The report records a
+dirty worktree at source `442db6c`, so it does not establish acceptance for a
+clean revision. `build-iso.sh` now compares embedded map manifests and required
+map files against current source before producing another ISO. A rebuilt
+payload and clean rerun are still required; this failure is not a release pass.
+The failed VM disk and report are retained for diagnosis until the rerun passes.
+
 ## What works offline
 
 The tested installer had no virtual network adapter. Firstboot completed from

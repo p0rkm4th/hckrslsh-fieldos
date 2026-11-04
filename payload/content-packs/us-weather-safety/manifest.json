@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "id": "us-weather-safety",
+  "version": "1.0.1",
+  "title": "U.S. Severe Weather and Winter Safety",
+  "description": "Optional offline summaries of National Weather Service hurricane and winter-storm preparedness guidance. No live warnings or forecasts; not comprehensive emergency instructions.",
+  "category": "weather-disaster",
+  "sources": [
+    {
+      "id": "nws-hurricane-action",
+      "name": "National Weather Service: Actions to Take When a Tropical Storm or Hurricane Threatens",
+      "url": "https://www.weather.gov/safety/hurricane-action",
+      "license": "U.S. federal government source; NOAA states nearly all NOAA content is public domain unless otherwise noted. The page was reviewed for NWS attribution and third-party credits; this artifact is an edited summary, not official text.",
+      "attribution": "National Weather Service (NWS), National Oceanic and Atmospheric Administration (NOAA). Edited summary; original source URL and non-endorsement notice included.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "nws-winter-before",
+      "name": "National Weather Service: Prepare! Don't Let a Winter Storm Take You by Surprise",
+      "url": "https://www.weather.gov/safety/winter-before",
+      "license": "U.S. federal government source; NOAA states nearly all NOAA content is public domain unless otherwise noted. The page was reviewed for NWS attribution and third-party credits; this artifact is an edited summary, not official text.",
+      "attribution": "National Weather Service (NWS), National Oceanic and Atmospheric Administration (NOAA). Edited summary; original source URL and non-endorsement notice included.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "nws-winter-during",
+      "name": "National Weather Service: What To Do If You're Caught in a Winter Storm",
+      "url": "https://www.weather.gov/safety/winter-during",
+      "license": "U.S. federal government source; NOAA states nearly all NOAA content is public domain unless otherwise noted. The page was reviewed for NWS attribution and third-party credits; this artifact is an edited summary, not official text.",
+      "attribution": "National Weather Service (NWS), National Oceanic and Atmospheric Administration (NOAA). Edited summary; original source URL and non-endorsement notice included.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "noaa-content-reuse",
+      "name": "NOAA Education and Outreach: Using NOAA content",
+      "url": "https://www.noaa.gov/office-education/outreach-communication/faq",
+      "license": "U.S. federal government guidance page; used to record NOAA reuse, attribution, and no-endorsement requirements.",
+      "attribution": "National Oceanic and Atmospheric Administration. NOAA says nearly all NOAA content is public domain unless otherwise noted, and forbids implied endorsement or presenting edits as official government material.",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "hurricane-threat.txt",
+      "size_bytes": 2159,
+      "sha256": "82d57a75206285d9afe27bd2ff966b7a1c737e207c4e1eba044e5fb9cd560ab1",
+      "source": "nws-hurricane-action",
+      "license": "Edited summary of attributed U.S. federal NWS guidance; NOAA public-domain/reuse policy checked and recorded in source manifest. FieldOS editorial adaptation is not an official NOAA/NWS publication."
+    },
+    {
+      "path": "winter-before.txt",
+      "size_bytes": 2199,
+      "sha256": "50f7ae81f6b691c93f9323e95c8cfd98f5c7e9398dce21596ccdd32b47734e46",
+      "source": "nws-winter-before",
+      "license": "Edited summary of attributed U.S. federal NWS guidance; NOAA public-domain/reuse policy checked and recorded in source manifest. FieldOS editorial adaptation is not an official NOAA/NWS publication."
+    },
+    {
+      "path": "winter-during.txt",
+      "size_bytes": 2015,
+      "sha256": "b79470b82a58428b2d83e26db4f709a9fddb573a3f190e3cc766aa325468fef9",
+      "source": "nws-winter-during",
+      "license": "Edited summary of attributed U.S. federal NWS guidance; NOAA public-domain/reuse policy checked and recorded in source manifest. FieldOS editorial adaptation is not an official NOAA/NWS publication."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering source and content review",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2026-11-04"
+  }
+}

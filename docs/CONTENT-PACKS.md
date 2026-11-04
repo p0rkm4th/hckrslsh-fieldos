@@ -104,6 +104,30 @@ configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
 
+## Optional severe-weather content
+
+`us-weather-safety` version 1.0.1 is a portable reference pack, not part of the
+core installer. It contains three clearly labeled editorial summaries based
+on National Weather Service guidance for hurricane threats, winter-storm
+preparation, and actions during a winter storm. Each document links its exact
+NWS source, states that it is an edited FieldOS summary rather than official
+NWS material, and warns that it cannot provide current forecasts or alerts.
+The manifest records source URLs, access/review dates, NOAA reuse guidance,
+artifact hashes, and attribution. NOAA says nearly all NOAA content is public
+domain unless otherwise noted, while requiring source credit and prohibiting
+implied endorsement; the pages were checked for their agency attribution and
+third-party credits. This is a limited reference set, not an all-hazards plan.
+
+Build its removable-media archive with `make content-packs`. The pack is
+registered as optional and intentionally excluded from `core_packs`, so it does
+not increase the installer ISO size. After transfer, install it with the
+commands above; FieldOS verifies the archive and checksums, publishes the
+source documents, and asks N.O.M.A.D. to index them. The source library remains
+available directly even when AI chat is unavailable or refuses emergency
+questions. The latest transfer test is recorded in the run report noted in
+[`RELEASE.md`](RELEASE.md); its acceptance run later failed at the unrelated
+bundled-map consistency check, so end-to-end acceptance is still pending.
+
 On source `1fb6806`, a fresh no-NIC E2E and a separate interactive customer-mode
 install confirmed that the two CDC PDFs and NWS tornado text were activated in
 N.O.M.A.D.'s indexed Knowledge Base. CDC food-safety and NWS tornado queries
