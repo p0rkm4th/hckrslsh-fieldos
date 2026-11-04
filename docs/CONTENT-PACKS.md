@@ -3,12 +3,14 @@
 FieldOS keeps reference content independent from the core installer wherever
 possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-pack.schema.json` and a catalog at
-`payload/manifests/content-packs.json`. The catalog contains one small core
-water/food reference pack and planned categories; this is not a comprehensive
-customer library. An external Middle Tennessee map bundle has passed offline
-transfer, validation, activation, actual browser rendering at zoom 13, and
-two-reboot persistence on source `cf151a20520d844dcb7bf983a3d92013d539fce9`.
-It remains a test artifact outside the catalog and core ISO.
+`payload/manifests/content-packs.json`. The catalog contains the core reference
+packs and planned categories; this is not a comprehensive customer library.
+The bounded Middle Tennessee map previously passed offline transfer and
+activation testing as a pack. The current source instead builds that same
+checksum-pinned map directly into the core PMTiles payload, where firstboot
+activates it alongside the overview maps. Fresh current-source acceptance is
+required before claiming the refreshed ISO contains it. Other regional and
+reference collections remain modular packs outside the core catalog.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -146,21 +148,17 @@ emergency library.
 
 ## Mapping and location
 
-The bundled world and sample U.S. PMTiles fixtures cover zoom levels 0 through
-5 and remain suitable only for broad orientation. A separate test candidate
-covers Middle Tennessee around Nashville (bounding box `-88.5,35.4,-85.7,36.7`)
-at zoom levels 0–13. Its 19.6 MB PMTiles file was extracted from the 2026-11-02
-Protomaps build using bounded HTTP range requests and includes road and land-use
-detail. Its manifest records the source URL, date, size, SHA-256, ODbL Produced
-Work license, attribution, bounds, and zoom range. It is not currently bundled
-in the customer ISO or approved as a release artifact. The latest E2E import
-and browser checks passed on source
-`cf151a20520d844dcb7bf983a3d92013d539fce9`. The report is
-`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`, and
-`map-render.png` shows the regional map in Firefox at zoom 13. The 19.6 MB
-archive (SHA-256
-`9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`) is a
-test artifact only, not an approved public release pack.
+The bundled world and sample U.S. PMTiles maps cover zoom levels 0 through 5
+for broad orientation. Current source also pins a bounded Middle Tennessee map
+around Nashville (bounding box `-88.5,35.4,-85.7,36.7`) at zoom levels 0–13.
+Its 19.6 MB PMTiles file is extracted from the 2026-11-02 Protomaps build using
+bounded HTTP range requests; the manifest records its expected size and
+SHA-256, ODbL Produced Work status, attribution, bounds, and zoom range. The
+earlier import test rendered this map in Firefox at zoom 13 and passed two
+reboots on source `cf151a20520d844dcb7bf983a3d92013d539fce9` (report
+`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`). The refreshed
+core-payload build and current-source E2E are in progress; the current ISO does
+not include the map until a replacement candidate passes acceptance.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
 parcel, or emergency guidance. GPS/GIS support needs a defined hardware

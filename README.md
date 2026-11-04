@@ -3,8 +3,9 @@
 FieldOS is an offline capable x86-64 field computer built on Ubuntu Desktop
 and [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad).
 It bundles the container images, local AI models, a 100-article Wikipedia
-fixture, zoom-5 basemaps, CDC water/food references, and an attributed NWS
-tornado guide for offline use. The owner uses N.O.M.A.D. as the main interface.
+fixture, low-zoom overview maps plus a bounded zoom-13 Middle Tennessee map,
+CDC water/food references, and an attributed NWS tornado guide for offline
+use. The owner uses N.O.M.A.D. as the main interface.
 This is still an engineering prototype, not a complete emergency or navigation
 appliance.
 
@@ -26,13 +27,14 @@ The current customer test candidate is
 `/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso` (SHA-256
 `10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`). A
 fresh interactive install and two-reboot acceptance passed in a disposable
-UEFI VM. This does not establish physical hardware compatibility or
-redistribution clearance. FieldOS remains an engineering prototype: its safety
-guard can be bypassed with alternate phrasing, the reference library is small,
-bundled maps stop at zoom 5, and physical GPU support, LAN peer isolation, broad
-content coverage, and complete redistribution review remain unverified. Do
-not rely on the AI for emergency, medical, navigation, or other high-consequence
-decisions.
+UEFI VM. It predates the current source change for zoom-13 regional maps, so its
+maps remain zoom-5 overview data. The Middle Tennessee map is now part of the
+source payload build; a fresh ISO and E2E verification are in progress. FieldOS
+remains an engineering prototype: its safety guard can be bypassed with
+alternate phrasing, the reference library is small, and physical GPU support,
+LAN peer isolation, broad content coverage, and complete redistribution review
+remain unverified. Do not rely on the AI for emergency, medical, navigation,
+or other high-consequence decisions.
 
 ## Build and test
 
