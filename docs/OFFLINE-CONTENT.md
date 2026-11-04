@@ -57,7 +57,13 @@ They support broad orientation and acceptance testing, but do not provide
 detailed roads, trails, parcels, or field navigation. A separate Middle
 Tennessee map candidate exists outside the ISO: 19.6 MB, zoom 0–13, coverage
 `-88.5,35.4,-85.7,36.7`, extracted from the 2026-11-02 Protomaps build. Its
-manifest and ODbL license text are included in the portable archive. It passed guest import, N.O.M.A.D. registration, offline browser rendering at zoom 13, and two-reboot persistence in E2E source `43ec3f9faed73632c13a8113b546ade9b5bf488e` (report `/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md`). It remains an external test pack, not included in the ISO or approved for public redistribution. GPS/GIS integration is not
+manifest and ODbL license text are included in the portable archive. It passed
+offline guest import, N.O.M.A.D. registration, Firefox rendering at zoom 13,
+and two-reboot persistence on source
+`cf151a20520d844dcb7bf983a3d92013d539fce9` (report
+`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`). It remains an
+external test pack, not included in the ISO or approved for public
+redistribution. GPS/GIS integration is not
 part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 

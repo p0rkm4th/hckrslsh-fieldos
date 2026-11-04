@@ -3,10 +3,12 @@
 FieldOS keeps reference content independent from the core installer wherever
 possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-pack.schema.json` and a catalog at
-`payload/manifests/content-packs.json`. The catalog contains one small core water/food reference pack and planned
-categories; this is not a comprehensive customer library. One external Middle Tennessee map bundle has passed transfer,
-validation, activation, actual browser rendering, and two-reboot persistence
-checks; it remains a test artifact outside the catalog and core ISO.
+`payload/manifests/content-packs.json`. The catalog contains one small core
+water/food reference pack and planned categories; this is not a comprehensive
+customer library. An external Middle Tennessee map bundle has passed offline
+transfer, validation, activation, actual browser rendering at zoom 13, and
+two-reboot persistence on source `cf151a20520d844dcb7bf983a3d92013d539fce9`.
+It remains a test artifact outside the catalog and core ISO.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -117,7 +119,14 @@ checked through N.O.M.A.D.'s region and style APIs, PMTiles reads, browser map
 rendering, and persistence after reboots. Reference packs are checked for
 installed source documents, local HTTP delivery, a Firefox view, and
 persistence after reboots. The transfer medium is test-only and does not
-change the customer installer.
+change the customer installer. The latest map-pack acceptance report is
+`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`; its test ISO hash
+is `f82809d05c009d021b2427b3ce3f68664c942e33eb12ae2fe0870df5b9f26b38`, and
+the imported archive hash is
+`9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`. A
+separate diagnostic run that tried to re-import the already bundled core pack
+failed safely without overwriting it; its report is
+`/mnt/shared/fieldos-e2e/20261104T071953Z-3238411/report.md`.
 
 ## Reference quality and retrieval
 
@@ -140,7 +149,14 @@ at zoom levels 0–13. Its 19.6 MB PMTiles file was extracted from the 2026-11-0
 Protomaps build using bounded HTTP range requests and includes road and land-use
 detail. Its manifest records the source URL, date, size, SHA-256, ODbL Produced
 Work license, attribution, bounds, and zoom range. It is not currently bundled
-in the customer ISO or approved as a release artifact. The E2E import and browser checks passed on source `43ec3f9faed73632c13a8113b546ade9b5bf488e`; the retained report is `/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md`, and `map-render.png` shows Nashville roads at zoom 13. The 19.6 MB archive (SHA-256 `9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`) is a test artifact only, not an approved public release pack.
+in the customer ISO or approved as a release artifact. The latest E2E import
+and browser checks passed on source
+`cf151a20520d844dcb7bf983a3d92013d539fce9`. The report is
+`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`, and
+`map-render.png` shows the regional map in Firefox at zoom 13. The 19.6 MB
+archive (SHA-256
+`9dce859a72d3b13afa1235838cbfddabfcf8c8cdd741b90fa4b0dec4dcb024a9`) is a
+test artifact only, not an approved public release pack.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
 parcel, or emergency guidance. GPS/GIS support needs a defined hardware
