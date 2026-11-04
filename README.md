@@ -3,7 +3,7 @@
 FieldOS is an offline capable x86-64 field computer built on Ubuntu Desktop
 and [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad).
 It bundles the container images, local AI models, a 100-article Wikipedia
-fixture, low-zoom overview maps plus a bounded zoom-13 Middle Tennessee map,
+fixture, low-zoom overview maps, and a zoom-13 statewide Tennessee map,
 CDC water/food references, and attributed FieldOS-edited NWS tornado, flood,
 hurricane, and winter-storm summaries for offline use. The owner uses
 N.O.M.A.D. as the main interface.
@@ -17,13 +17,18 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest clean-source unattended E2E: commit `7e2674e285be158f56b556f048ad3c785d8b0cb9`.
-`make check test` passed 73 tests at that revision. The no-NIC test installed
-Ubuntu, activated/indexed all four core reference packs, generated local
-inference, loaded embeddings, rendered the zoom-13 Middle Tennessee map in
-Firefox, and passed two reboots. Report:
-`/mnt/shared/fieldos-e2e/20261104T152431Z-3714447/report.md`; test ISO SHA-256:
-`0fcb81e0f5e7043024486a6caa11ca31a7e85c2ae17054e4649c1d8f7b3c5fc6`.
+Latest statewide-map offline E2E: base commit `7e6fa24486f4fd500c7be9191119480acfe5762c`
+with local map and verifier changes (the report records a dirty worktree).
+`make check && make test` passed 73 tests. A fresh no-NIC VM installed Ubuntu,
+completed firstboot, ran seven services, generated local inference, loaded
+embeddings, searched the bundled reference, visibly rendered Firefox maps at
+Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
+and rural Big South Fork, and passed two reboots. Report and screenshots:
+`/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`; test ISO SHA-256:
+`c0e2578509cde5522400cdd2969e8793f2278ac4e11f50900728a79acd6c2f09`.
+The map is a 145,267,908-byte zoom 0–13 Protomaps extract; SHA-256
+`0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
+It is verified in the unattended test image, not yet in a new customer ISO.
 
 The current customer-mode candidate was built from clean source commit
 `21ad4fcdb882998ca1c3bd47333b1139c162651c`:
@@ -37,13 +42,14 @@ handoff the VM powered off after virtual CD ejection; the next power-on booted
 the installed disk without repair. Physical USB handoff is untested. This is
 still an engineering candidate, not a release approval.
 
-The tested four-pack payload is
-`/mnt/shared/fieldos-payload-weather-flood-core/offline-payload.tar.zst`
-(SHA-256 `fb4ad0e04144edd4e914263fb9279833cd1ce7e716a10817e79762824b28a73e`).
-Generated Ollama registry keys and cache are excluded.
-FieldOS is not disaster-ready: its reference set and map coverage remain
-limited, AI safety behavior is not comprehensive, physical GPU and LAN isolation
-remain unverified, and redistribution review is incomplete. See
+The latest rebuilt payload is
+`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
+`cdc90ea60a517bcc3217f8630a1fdfcceb3d208acaa54bead1f81260bb5351b6`).
+Generated Ollama registry keys and cache are excluded. The last customer ISO
+is still the earlier four-pack Middle Tennessee candidate listed below; it
+does not contain the statewide map. FieldOS is not disaster-ready: reference
+coverage is limited, AI safety behavior is not comprehensive, physical GPU and
+LAN isolation remain unverified, and redistribution review is incomplete. See
 [docs/RELEASE.md](docs/RELEASE.md) and the [field-use assessment](docs/FIELD-USE-ASSESSMENT.md)
 for remaining gates and scenario findings.
 ## Build and test

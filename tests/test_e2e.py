@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import secrets
 import shlex
 import string
@@ -102,7 +103,7 @@ class AcceptanceRun:
         map_manifest = json.loads((ROOT / "payload/manifests/maps.json").read_text())
         self.regional_map = next(
             (item for item in map_manifest.get("regions", [])
-             if item.get("id") == "middle-tennessee"), None
+             if item.get("id") == "tennessee-statewide"), None
         )
         self.pack_archive = Path(os.environ["FIELDOS_TEST_CONTENT_PACK"]).expanduser() if os.environ.get("FIELDOS_TEST_CONTENT_PACK") else None
         self.pack_manifest: dict | None = None
@@ -288,9 +289,10 @@ autoinstall:
             "test -n \"$archive\"; /opt/fieldos/scripts/fieldos-content-packs.py install \"$archive\"; "
         )
         if self.pack_target == "storage/maps/pmtiles":
+            map_file = self.pack_manifest["artifacts"][0]["path"]
             installed = self.check(
                 "offline content pack transfer and map activation",
-                common + "test -f /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles",
+                common + f"test -f /var/lib/fieldos/storage/maps/pmtiles/{shlex.quote(map_file)}",
                 350,
             )
             if "activated map:" not in installed:
@@ -341,19 +343,19 @@ autoinstall:
             "curl --fail --silent --show-error http://127.0.0.1:8080/api/maps/regions",
         )
         region_data = json.loads(regions)
-        filename = "middle-tennessee-20261102-z13.pmtiles"
+        filename = "tennessee-20261102-z13.pmtiles"
         if not any(row.get("name") == filename for row in region_data.get("files", [])):
             raise TestFailure(f"N.O.M.A.D. did not discover imported map {filename}: {regions}")
         styles = self.check(
-            "imported regional map is registered in the map style",
+            "imported Tennessee map is registered in the map style",
             "curl --fail --silent --show-error http://127.0.0.1:8080/api/maps/styles",
         )
-        if "middle-tennessee-20261102-z13" not in json.loads(styles).get("sources", {}):
+        if "tennessee-20261102-z13" not in json.loads(styles).get("sources", {}):
             raise TestFailure("N.O.M.A.D. map style does not include the imported regional map")
         tile = self.check(
-            "imported regional map tile is readable offline",
+            "imported Tennessee map tile is readable offline",
             "docker exec nomad_admin /usr/local/bin/pmtiles tile "
-            "/app/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles 13 2121 3212 2>/dev/null | wc -c",
+            "/app/storage/maps/pmtiles/tennessee-20261102-z13.pmtiles 13 2121 3212 2>/dev/null | wc -c",
         )
         if not tile.isdigit() or int(tile) <= 0:
             raise TestFailure(f"Imported regional map did not yield a vector tile: {tile!r}")
@@ -463,10 +465,14 @@ autoinstall:
     def type_virtual_keyboard(self, text: str) -> None:
         keymap = {char: f"KEY_{char.upper()}" for char in string.ascii_lowercase}
         keymap.update({char: f"KEY_{char}" for char in string.digits})
-        keymap.update({"/": "KEY_SLASH", ".": "KEY_DOT"})
+        keymap.update({"/": "KEY_SLASH", ".": "KEY_DOT", "=": "KEY_EQUAL", "-": "KEY_MINUS"})
         for char in text:
             if char == ":":
                 self.send_key("KEY_LEFTSHIFT", "KEY_SEMICOLON")
+            elif char == "?":
+                self.send_key("KEY_LEFTSHIFT", "KEY_SLASH")
+            elif char == "&":
+                self.send_key("KEY_LEFTSHIFT", "KEY_7")
             elif char in keymap:
                 self.send_key(keymap[char])
             else:
@@ -590,24 +596,42 @@ autoinstall:
             f"for i in $(seq 1 40); do pgrep -u {uid} -f '/snap/firefox/.*/firefox' >/dev/null "
             "&& exit 0; sleep 1; done; cat /tmp/fieldos-firefox.log; exit 1", timeout=50)
         time.sleep(20)
-        screenshot = self.run_dir / "map-render.png"
-        deadline = time.monotonic() + 120
-        width = height = colors = water_pixels = 0
-        while time.monotonic() < deadline:
-            self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
-            width, height, colors, water_pixels = self.screenshot_color_count(screenshot)
-            if colors >= 64:
-                break
-            time.sleep(5)
-        if colors < 64:
-            raise TestFailure(
-                f"Map viewport did not render detailed PMTiles tiles: {water_pixels} water pixels, "
-                f"{colors} sampled colors in {width}x{height} screenshot"
-            )
-        self.record("offline map rendering", "PASS",
-                    f"Firefox rendered {'Middle Tennessee at zoom 13' if self.regional_map else 'world/regional map'} "
-                    f"in {width}x{height} VNC screenshot; {water_pixels} sampled water pixels, "
-                    f"{colors} colors; {screenshot.name}")
+        render_locations = [
+            ("Memphis", 35.1495, -90.0490),
+            ("Nashville", 36.1627, -86.7816),
+            ("Knoxville", 35.9606, -83.9207),
+            ("Chattanooga", 35.0456, -85.3097),
+            ("Clarksville", 36.5298, -87.3595),
+            ("Jackson", 35.6145, -88.8139),
+            ("Johnson City", 36.3134, -82.3535),
+            ("Big South Fork rural area", 36.5, -84.65),
+        ] if self.regional_map else [("world overview", 20.0, 0.0)]
+        for location, lat, lng in render_locations:
+            slug = re.sub(r"[^a-z0-9]+", "-", location.lower()).strip("-")
+            screenshot = self.run_dir / f"map-render-{slug}.png"
+            zoom = 13 if self.regional_map else 3
+            url = f"http://127.0.0.1:8080/maps?lat={lat}&lng={lng}&zoom={zoom}"
+            self.send_key("KEY_LEFTCTRL", "KEY_L")
+            time.sleep(0.4)
+            self.type_virtual_keyboard(url)
+            self.send_key("KEY_ENTER")
+            time.sleep(8)
+            deadline = time.monotonic() + 60
+            width = height = colors = water_pixels = 0
+            while time.monotonic() < deadline:
+                self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
+                width, height, colors, water_pixels = self.screenshot_color_count(screenshot)
+                if colors >= 1000:
+                    break
+                time.sleep(4)
+            if colors < 1000:
+                raise TestFailure(
+                    f"Offline map did not render at {location}: {water_pixels} water pixels, "
+                    f"{colors} sampled colors in {width}x{height} screenshot"
+                )
+            self.record(f"offline map render: {location}", "PASS",
+                        f"Firefox screenshot {screenshot.name}, {width}x{height}; "
+                        f"{water_pixels} water pixels and {colors} sampled colors")
 
         settings = self.guest(
             f"runtime=/run/user/{uid}; "
@@ -999,25 +1023,32 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         if self.regional_map:
             if not any(item.get("name") == self.regional_map["file"]
                        for item in regions_data.get("files", [])):
-                raise TestFailure("Bundled Middle Tennessee map is not registered in N.O.M.A.D.")
+                raise TestFailure("Bundled Tennessee map is not registered in N.O.M.A.D.")
             regional_path = f"/app/storage/maps/pmtiles/{self.regional_map['file']}"
-            regional_tile = self.check(
-                "offline Middle Tennessee zoom-13 tile",
-                f"docker exec nomad_admin /usr/local/bin/pmtiles tile '{regional_path}' "
-                "13 2121 3212 2>/dev/null | wc -c",
-                350,
-            )
-            if not regional_tile.isdigit() or int(regional_tile) <= 0:
-                raise TestFailure(f"Bundled Middle Tennessee detail tile unavailable: {regional_tile!r}")
+            places = [
+                ("Memphis", 2046, 3240), ("Nashville", 2121, 3212),
+                ("Knoxville", 2186, 3217), ("Chattanooga", 2154, 3243),
+                ("Clarksville", 2108, 3201), ("Jackson", 2074, 3227),
+                ("Johnson City", 2222, 3208), ("Big South Fork rural area", 2169, 3202),
+            ]
+            for place, tile_x, tile_y in places:
+                regional_tile = self.check(
+                    f"offline Tennessee zoom-13 tile: {place}",
+                    f"docker exec nomad_admin /usr/local/bin/pmtiles tile '{regional_path}' "
+                    f"13 {tile_x} {tile_y} 2>/dev/null | wc -c",
+                    350,
+                )
+                if not regional_tile.isdigit() or int(regional_tile) <= 0:
+                    raise TestFailure(f"Statewide map has no zoom-13 tile near {place}: {regional_tile!r}")
             regional_range = self.check(
-                "Middle Tennessee PMTiles HTTP range",
+                "Tennessee PMTiles HTTP range",
                 f"curl --fail --silent --show-error --max-time 10 -o /dev/null -r 0-126 "
                 f"-w 'HTTP=%{{http_code}} BYTES=%{{size_download}}' "
                 f"http://127.0.0.1:8080/pmtiles/{self.regional_map['file']}",
                 160,
             )
             if "HTTP=206" not in regional_range or "BYTES=127" not in regional_range:
-                raise TestFailure(f"Bundled Middle Tennessee map range failed: {regional_range}")
+                raise TestFailure(f"Bundled Tennessee map range failed: {regional_range}")
         styles = self.check("map renderer configuration", "curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8080/api/maps/styles", 350)
         styles_data = json.loads(styles)
         if "world" not in styles_data.get("sources", {}):
@@ -1031,7 +1062,7 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         if reboot and self.regional_map:
             regional_path = f"/var/lib/fieldos/storage/maps/pmtiles/{self.regional_map['file']}"
             regional_http = self.check(
-                "Middle Tennessee map persists and serves ranges",
+                "Tennessee map persists and serves ranges",
                 f"test -s '{regional_path}' && curl --fail --silent --show-error -o /dev/null -r 0-126 "
                 f"-w 'HTTP=%{{http_code}} BYTES=%{{size_download}}' "
                 f"http://127.0.0.1:8080/pmtiles/{self.regional_map['file']}",
@@ -1040,7 +1071,7 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
             if "HTTP=206" not in regional_http or "BYTES=127" not in regional_http:
                 raise TestFailure(f"Bundled regional map failed its range probe: {regional_http}")
             tile = self.check(
-                "Middle Tennessee zoom-13 vector tile",
+                "Tennessee zoom-13 vector tile",
                 f"docker exec nomad_admin /usr/local/bin/pmtiles tile "
                 f"'/app/storage/maps/pmtiles/{self.regional_map['file']}' 13 2121 3212 2>/dev/null | wc -c",
             )
