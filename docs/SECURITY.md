@@ -159,5 +159,6 @@ The installed Compose file hash matched current source. Evidence:
 `71432edc42a786cc9b1a6d0a0aaa6d8e619a0f487cebbec622b86249f025ffdc`) and
 `/mnt/shared/fieldos-e2e/network-detach-live-102308.txt` (SHA-256
 `6d2b529f73c90cce058668994b3e123c98ada20b1ec22d349542831728acf53e`). This
-uses QEMU user networking, not a physical LAN or guest-to-guest peer scan; it
-is also not a fresh install of current source.
+uses QEMU user networking, not a physical LAN or guest-to-guest peer scan. A
+separate fresh current-source installation passed without a NIC; LAN isolation
+remains unverified.

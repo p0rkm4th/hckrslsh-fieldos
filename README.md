@@ -14,35 +14,28 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Last validated source revision: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
-Newer source `a2c7459` adds N.O.M.A.D. Knowledge Base ingestion but failed its
-fresh E2E run: Qdrant, Ollama, and Kiwix were running in Compose while their
-N.O.M.A.D. service records remained marked uninstalled. The CDC PDF uploaded
-but did not index. The failure report and logs are retained at
-`/mnt/shared/fieldos-e2e/20261104T053509Z-3109787/`. The working tree now
-registers these Compose-managed services idempotently during firstboot and
-asserts that state in E2E; this correction still needs a fresh guest run.
-It also rejects stale offline payload archives missing a required core pack.
-
-The earlier clean-source offline E2E passed with no virtual NIC, including firstboot,
-seven services, local chat and embeddings, Kiwix retrieval, Firefox map and
-reference-library rendering, the bundled CDC starter pack, and two reboots.
-The separate interactive customer-mode installation completed on a blank
-disposable UEFI disk and booted to the branded desktop. In this run the installer
-media-removal prompt powered off QEMU after Enter, so a host-side `virsh start`
-was needed to boot the installed disk; the installer handoff gate remains
-partial. The test and customer-mode reports are retained under
-`/mnt/shared/fieldos-e2e/`; see [`docs/RELEASE.md`](docs/RELEASE.md).
+Current source revision: da61a843313c443c0e349a75b6395e48c0f73c20.
+`make check` and all 61 unit tests passed. A fresh no-NIC unattended install
+passed the offline acceptance checks, including firstboot, seven services,
+CPU chat generation, embeddings, cited retrieval from both bundled CDC PDFs,
+Kiwix search, Firefox map rendering, and two reboots. The same source was
+installed through the separate interactive customer installer to a blank UEFI
+disk; the user selected disk and account credentials, booted the installed
+system, and verified FieldOS services, local retrieval, and the visible map.
+See the exact hashes, test reports, and remaining gates in
+[docs/RELEASE.md](docs/RELEASE.md).
 
 Current customer-mode engineering candidate:
-`/mnt/shared/fieldos-releases/fieldos-customer-test-corepack-f9c10ec.iso`
-(11,987,386,368 bytes), SHA-256
-`95503d257465087b723ba1eb0725dbf63ac6cf2ac83383f4e35cd63af7738c8d`. This is
-not an approved release. The CDC pack covers only emergency water treatment
-and food safety after a power outage; the Kiwix archive has 100 articles, maps
-stop at zoom 5, and the local model gave a misleading uncited answer to a
-food-safety question. Do not use AI output as emergency authority. Physical
-USB, GPU, broader content, LAN security, and redistribution remain unvalidated.
+/mnt/shared/fieldos-releases/fieldos-customer-da61a84.iso (11,987,386,368
+bytes), SHA-256
+0325b6b244cbf3042a1787c85715e052f806bc432d455e512cc4dcb5e70b6931. It is
+not an approved release. At the end of installation Ubuntu asks the user to
+remove the installation medium and press Enter; this test then powered off,
+and powering the machine on again booted the installed disk without repair.
+The bundled CDC pack is small, the Kiwix archive has 100 articles, maps stop at
+zoom 5, and AI output is not emergency authority. Physical hardware, GPU
+acceleration, broad content coverage, LAN security, and final redistribution
+review remain unvalidated.
 
 ## Build and test
 
@@ -56,7 +49,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-corepack-f9c10ec.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-da61a84.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

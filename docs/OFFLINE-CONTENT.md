@@ -63,16 +63,14 @@ GPS device node is present.
 
 The extensible pack format and planned categories are documented in
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md). The `us-water-food-emergency` pack is
-embedded and activated in the current candidate. On source
-`f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`, clean E2E verified its files,
-attributed index, local web serving, offline use, and persistence through two
-reboots. A separate customer-mode install also retained the files and source
-index after two reboots. Reports and screenshots are retained at
-`/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/` and
-`/mnt/shared/fieldos-e2e/customer-interactive-corepack-f9c10ec/20261104T040000Z/`.
-The pack does not populate N.O.M.A.D.'s semantic retrieval index and is not a
-complete emergency library. The Middle Tennessee candidate remains a separate,
-unreleased map artifact; agricultural, wildlife, first-aid, and comprehensive
+embedded in the current candidate. On source
+`da61a843313c443c0e349a75b6395e48c0f73c20`, fresh no-NIC E2E and interactive
+customer-mode tests confirmed its two CDC PDFs were indexed in N.O.M.A.D. and
+retrievable with citations. The E2E and customer reports are at
+`/mnt/shared/fieldos-e2e/20261104T060325Z-3127648/report.md` and
+`/mnt/shared/fieldos-e2e/customer-da61a84/report.md`. This remains a narrow
+starter pack, not a complete emergency library. The Middle Tennessee candidate
+is separate and unreleased; agricultural, wildlife, first-aid, and comprehensive
 reference packs still need requirements and licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
