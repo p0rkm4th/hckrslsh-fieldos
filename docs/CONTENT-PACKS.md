@@ -3,9 +3,8 @@
 FieldOS keeps reference content independent from the core installer wherever
 possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-pack.schema.json` and a catalog at
-`payload/manifests/content-packs.json`. The catalog contains one optional
-starter reference pack and planned categories; this is not a comprehensive
-customer library. One external Middle Tennessee map bundle has passed transfer,
+`payload/manifests/content-packs.json`. The catalog contains one small core water/food reference pack and planned
+categories; this is not a comprehensive customer library. One external Middle Tennessee map bundle has passed transfer,
 validation, activation, actual browser rendering, and two-reboot persistence
 checks; it remains a test artifact outside the catalog and core ISO.
 
@@ -29,17 +28,17 @@ Each populated pack has its own stable ID and version. Its manifest records
 each source and URL, license and attribution, every artifact's size and
 SHA-256, and installation target and requirements. Geographic packs also
 declare bounds, coordinate reference system, and zoom range. Build tooling
-validates sizes and checksums before packaging. `make content-packs` builds one
-deterministic `.tar.zst` archive and SHA-256 sidecar per catalog entry under
-`FIELDOS_PAYLOAD_ROOT/content-packs/`, independently of the core installer.
-Archives contain the manifest and only the artifacts it declares, so stray
-or unreviewed files in a staging directory are excluded.
-`make payload` runs this builder after preparing the core payload. Optional
-archives are built separately from the core image, so adding one does not
-silently enlarge the ISO. The catalog pack described below is staged in Git;
-its portable archive is built outside Git. An independently staged Middle
-Tennessee candidate is described below and remains outside the catalog pending
-final customer content and redistribution review.
+validates sizes and checksums before packaging. `make content-packs` builds
+deterministic `.tar.zst` archives and SHA-256 sidecars for removable-media
+transfer under `FIELDOS_PAYLOAD_ROOT/content-packs/`. Packs listed in the
+catalog's `core_packs` are also embedded in the offline payload by `make payload`
+and activated during firstboot. Other catalog packs remain separate from the
+core image. Archives contain the manifest and only the artifacts it declares,
+so stray or unreviewed files in a staging directory are excluded. The core
+pack's manifest and source PDFs are staged in Git; its portable archive is
+generated during payload construction. An independently staged Middle
+Tennessee candidate remains outside the catalog pending final content and
+redistribution review.
 
 On an installed system, verify and add a bundle with:
 
@@ -70,7 +69,7 @@ existing static-file server exposes only this reference directory read-only at
 added. Existing filenames are never replaced. A failed validation or
 conflicting destination leaves existing application data untouched.
 
-The first optional reference pack is `us-water-food-emergency` version 1.0.0.
+The core starter reference pack is `us-water-food-emergency` version 1.0.0.
 It contains two unchanged CDC PDFs: “Make Water Safe During an Emergency” and
 “Eat Safe Food After a Power Outage.” Their source records are CDC STACKS
 items [128149](https://stacks.cdc.gov/view/cdc/128149) and
@@ -86,8 +85,9 @@ archive built from this revision is
 `/mnt/shared/fieldos-content-packs/content-packs/us-water-food-emergency-1.0.0.tar.zst`,
 SHA-256 `c862c023e8999268be6d78692e4d3a01c95a3f5f840fa954b424b5604eb9518c`.
 It is a small starter set, not a complete water, food, first-aid, medical, or
-disaster-preparedness library. Consult current local guidance. It is not
-included in the current ISO.
+disaster-preparedness library. Consult current local guidance. Source-tree
+configuration now includes this pack in the offline payload; a rebuilt ISO must
+pass E2E before this behavior is considered verified.
 
 The pack was transferred and installed in a clean no-NIC VM on source
 `09501cb6e6fb4e049da585a610176937a5a52b94`. Its source index and water PDF

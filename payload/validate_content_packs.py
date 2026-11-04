@@ -242,7 +242,7 @@ def validate_catalog(catalog_path: Path) -> list[str]:
     payload_root = catalog_path.parent.parent
     catalog = read_json(catalog_path)
     required(catalog, {"schema_version", "manifest_schema", "status", "packs"}, "content-pack catalog")
-    if catalog.keys() - {"schema_version", "manifest_schema", "status", "packs", "planned_categories"}:
+    if catalog.keys() - {"schema_version", "manifest_schema", "status", "packs", "core_packs", "planned_categories"}:
         raise PackError("content-pack catalog has unknown fields")
     if not isinstance(catalog["schema_version"], int) or isinstance(catalog["schema_version"], bool) or catalog["schema_version"] != 1:
         raise PackError("unsupported content-pack catalog schema_version")
@@ -279,6 +279,17 @@ def validate_catalog(catalog_path: Path) -> list[str]:
         if pack_id in pack_ids:
             raise PackError(f"duplicate pack ID in catalog: {pack_id}")
         pack_ids.add(pack_id)
+    core_packs = catalog.get("core_packs", [])
+    if (not isinstance(core_packs, list) or
+            any(not isinstance(item, str) for item in core_packs) or
+            len(core_packs) != len(set(core_packs))):
+        raise PackError("core_packs must be an array of unique manifest paths")
+    if any(item not in entries for item in core_packs):
+        raise PackError("every core pack must also be listed in packs")
+    for entry in core_packs:
+        manifest = read_json(catalog_path.parent / entry)
+        if manifest.get("installation", {}).get("optional", True):
+            raise PackError(f"core pack must declare installation.optional=false: {entry}")
     if catalog["status"] == "architecture-only" and entries:
         raise PackError("architecture-only catalog must not list distributable packs")
     return sorted(pack_ids)

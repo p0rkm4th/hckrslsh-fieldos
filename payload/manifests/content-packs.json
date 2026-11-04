@@ -5,6 +5,9 @@
   "packs": [
     "../content-packs/us-water-food-emergency/manifest.json"
   ],
+  "core_packs": [
+    "../content-packs/us-water-food-emergency/manifest.json"
+  ],
   "planned_categories": [
     "agriculture",
     "wildlife-overlanding",

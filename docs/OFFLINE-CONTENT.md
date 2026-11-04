@@ -5,10 +5,15 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
-The current test payload contains Project N.O.M.A.D.'s miniature English
+The current customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 0.6B Q4_K_M for chat, and `nomic-embed-text:v1.5` for embeddings.
+The source tree also stages two unchanged CDC PDFs about emergency water
+treatment and food safety after a power outage. A pending installer change will
+bundle these as the small `us-water-food-emergency` core content pack and
+activate its attributed source index during offline firstboot; the current ISO
+does not yet contain them.
 The sample PMTiles region is extracted offline from the bundled world archive
 by `build/prepare-payload.sh`; its bounding box and zoom levels are declared in
 `payload/manifests/maps.json`, and the payload records its generated checksum
@@ -41,9 +46,9 @@ quick access. These are presentation defaults only and do not change system
 networking, content catalogs, or application security boundaries.
 
 AI responses are generated text, not authoritative references. Open the source
-articles before relying on an answer. The test edition has no reviewed
-first-aid or emergency pack and must not be used as medical or emergency
-guidance.
+articles before relying on an answer. The limited CDC water/food sources are
+not a first-aid or comprehensive emergency library; FieldOS must not be used as
+a substitute for current medical or emergency guidance.
 
 The bundled world map and sample regional map both top out at zoom level 5.
 They support broad orientation and acceptance testing, but do not provide
@@ -55,10 +60,11 @@ part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 
 The extensible pack format and planned categories are documented in
-[`CONTENT-PACKS.md`](CONTENT-PACKS.md). No content pack is bundled in the
-customer ISO. The optional `us-water-food-emergency` starter pack contains two
-CDC source PDFs and can be transferred and installed offline using the content
-pack installer. On source `09501cb6e6fb4e049da585a610176937a5a52b94`, its
+[`CONTENT-PACKS.md`](CONTENT-PACKS.md). The current ISO does not bundle a
+content-pack archive. The source tree defines the `us-water-food-emergency`
+starter pack with two CDC source PDFs; a pending change will embed and activate
+it in a rebuilt offline candidate. On source
+`09501cb6e6fb4e049da585a610176937a5a52b94`, its
 transfer, installation, browser source index, direct CDC PDF rendering, no-NIC
 operation, and persistence through two reboots passed in a fresh VM. The
 retained evidence is `/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md`

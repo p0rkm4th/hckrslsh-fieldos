@@ -123,6 +123,14 @@ fi
 install -d -m 0755 "$STATE/storage/zim" "$STATE/storage/references"
 install -d -m 0750 "$STATE/storage/maps/pmtiles" "$STATE/storage/maps/basemaps-assets" "$STATE/storage/ollama" "$STATE/mysql" "$STATE/redis" "$STATE/qdrant"
 
+echo "Activating checksum-validated content packs bundled in the offline payload..."
+shopt -s nullglob
+core_pack_archives=("$PAYLOAD"/content-packs/*.tar.zst)
+for pack_archive in "${core_pack_archives[@]}"; do
+  python3 "$ROOT/scripts/fieldos-content-packs.py" install "$pack_archive"
+done
+shopt -u nullglob
+
 if [[ -d "$PAYLOAD/content/zim" ]]; then
   cp -an "$PAYLOAD/content/zim/." "$STATE/storage/zim/"
 fi
