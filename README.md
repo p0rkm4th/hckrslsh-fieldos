@@ -2,9 +2,10 @@
 
 FieldOS is an offline capable x86-64 field computer built on Ubuntu Desktop
 and [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad).
-It bundles the container images, local AI models, a small Wikipedia library,
-and an offline world basemap needed to use the core system without an internet
-connection. The owner uses N.O.M.A.D. as the main interface.
+It bundles the container images, local AI models, a 100-article Wikipedia
+fixture, zoom-5 basemaps, and a small attributed CDC water/food source pack for
+offline use. The owner uses N.O.M.A.D. as the main interface. This is still an
+engineering prototype, not a complete emergency or navigation appliance.
 
 This repository contains the installer source, service configuration, hardware
 selection logic, payload manifests, tests, and release instructions. ISOs,
@@ -13,43 +14,27 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest clean-source offline E2E acceptance passed on revision
-`09501cb6e6fb4e049da585a610176937a5a52b94`. It installed Ubuntu with no virtual
-NIC, provisioned local packages and images, and verified N.O.M.A.D., local chat
-and embeddings, Kiwix retrieval, map rendering, and persistence through two
-reboots. The optional U.S. water/food source pack was transferred from separate
-media, installed offline, shown in Firefox, and its CDC water-safety PDF opened
-in Firefox. The pack remains optional and is not in the current customer ISO.
-See the retained report at
-`/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md` and
-[`docs/RELEASE.md`](docs/RELEASE.md).
+Current source revision: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
 
-The current customer-mode engineering candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso` (11,984,044,032
-bytes), SHA-256
-`81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`. Its
-structure was verified and a fresh no-NIC interactive UEFI install completed
-on a disposable VM, and the installed disk booted to the branded desktop.
-N.O.M.A.D. chat generated a real local response, Kiwix showed the bundled
-100-article Wikipedia fixture, and ProtoMaps rendered the low-zoom U.S. map.
-Two guest restarts returned to the desktop and the local map, Kiwix, and chat
-remained accessible. A fresh handoff retest clicked Restart with the ISO
-attached, ejected it at Ubuntu's media-removal prompt, and pressed Enter; the
-same QEMU process booted the installed disk without a host reset. The full
-report and screenshots are at
-`/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
-Handoff evidence is also at
-`/mnt/shared/fieldos-e2e/customer-handoff-412883c-retest/report.md`.
-This is a working offline prototype, not an emergency-ready appliance: the
-reference archive has no water-treatment result, the map lacks local street
-detail, and an earthquake prompt produced generic uncited advice that referred
-to calling 911. Do not rely on the AI for emergency decisions. Physical USB,
-hardware/GPU, broader content, and redistribution remain unvalidated.
+The clean-source offline E2E passed with no virtual NIC, including firstboot,
+seven services, local chat and embeddings, Kiwix retrieval, Firefox map and
+reference-library rendering, the bundled CDC starter pack, and two reboots.
+The separate interactive customer-mode installation completed on a blank
+disposable UEFI disk and booted to the branded desktop. In this run the installer
+media-removal prompt powered off QEMU after Enter, so a host-side `virsh start`
+was needed to boot the installed disk; the installer handoff gate remains
+partial. The test and customer-mode reports are retained under
+`/mnt/shared/fieldos-e2e/`; see [`docs/RELEASE.md`](docs/RELEASE.md).
 
-The current source has a guarded correction for N.O.M.A.D.'s information
-library descriptions. That correction passed the clean-source E2E and was
-visually confirmed in this customer candidate's Command Center. The older `c744e52` ISO binary was retired after the replacement candidate
-was built; its checksum and historical test report remain for traceability.
+Current customer-mode engineering candidate:
+`/mnt/shared/fieldos-releases/fieldos-customer-test-corepack-f9c10ec.iso`
+(11,987,386,368 bytes), SHA-256
+`95503d257465087b723ba1eb0725dbf63ac6cf2ac83383f4e35cd63af7738c8d`. This is
+not an approved release. The CDC pack covers only emergency water treatment
+and food safety after a power outage; the Kiwix archive has 100 articles, maps
+stop at zoom 5, and the local model gave a misleading uncited answer to a
+food-safety question. Do not use AI output as emergency authority. Physical
+USB, GPU, broader content, LAN security, and redistribution remain unvalidated.
 
 ## Build and test
 
@@ -63,7 +48,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-corepack-f9c10ec.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
@@ -95,7 +80,7 @@ Start with the [documentation guide](docs/README.md), then read
 [installation](docs/INSTALLATION.md), [architecture](docs/ARCHITECTURE.md),
 [operations and troubleshooting](docs/OPERATIONS.md), [hardware support](docs/HARDWARE.md),
 and [offline content/licensing](docs/OFFLINE-CONTENT.md). The
-[content-pack architecture](docs/CONTENT-PACKS.md) includes a small optional
+[content-pack architecture](docs/CONTENT-PACKS.md) includes a small bundled
 water/food source pack and planned categories. Review [security boundaries](docs/SECURITY.md)
 before changing exposed ports or Docker access.
 
