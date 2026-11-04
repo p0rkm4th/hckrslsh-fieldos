@@ -16,32 +16,37 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest clean-source offline E2E: commit `702102c95fae0731315a2afcc211e412ec15e1fd`.
-`make check test` passed 73 tests at this revision. The unattended no-NIC E2E
-installed Ubuntu, completed offline provisioning, generated a real local Ollama
-response, loaded embeddings, indexed and retrieved references, rendered the
-zoom-13 Middle Tennessee map in Firefox, and passed two reboots. Report:
+Latest clean-source unattended E2E: commit `702102c95fae0731315a2afcc211e412ec15e1fd`.
+`make check test` passed 73 tests at that revision. The unattended no-NIC test
+installed Ubuntu, completed offline provisioning, generated local inference,
+loaded embeddings, indexed references, rendered the zoom-13 Middle Tennessee
+map in Firefox, and passed two reboots. Report:
 `/mnt/shared/fieldos-e2e/20261104T135401Z-3631878/report.md`; test ISO SHA-256:
-`6f6beeaf0ffc1e30f2ab045c68103f33eb4ec584da92bc065b468fb0cf0e30a7`. The
-exact sanitized offline payload used by the test is
+`6f6beeaf0ffc1e30f2ab045c68103f33eb4ec584da92bc065b468fb0cf0e30a7`.
+
+The latest customer-mode candidate was built from clean source commit
+`85a33f866f1b929762e47cc5462b16cbbd84c43c`:
+`/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso` (SHA-256
+`5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`). A fresh
+interactive no-NIC UEFI installation selected the 80 GiB virtual disk, completed
+offline firstboot, launched N.O.M.A.D., generated a real local response, loaded
+embeddings, retrieved Kiwix content in Firefox, rendered the Nashville zoom-13
+map, and passed two reboots with persistent user data. At the media-removal
+prompt the VM powered off; its installed disk booted on the next manual start.
+Physical USB handoff remains untested. Screenshots and the detailed report are
+in `/mnt/shared/fieldos-e2e/customer-85a33f8/`. This is an engineering test
+candidate, not a release approval.
+
+The exact sanitized payload is
 `/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
-`188d0692cb6bb6c15d2bcb89335c80b75447cf4cd4f844c51e2e4e6a4c5e1a52`); the
-archive excludes generated Ollama registry keys and cache.
-
-The separate interactive customer-mode candidate remains
-`/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso` (SHA-256
-`522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`). Its
-fresh disposable-VM install, desktop, and two reboot checks passed. The media
-handoff powered off the VM at the virtual CD removal prompt; physical USB
-handoff is untested. The optional `us-weather-safety` pack passed offline transfer testing; a new
-`us-flood-safety` pack also passed no-network transfer, browser, indexing, and
-two-reboot checks in a dirty-worktree pack integration run (using virtual optical transfer media, not physical USB); this is not a clean-source release pass. Both remain outside the customer ISO. Flood-pack evidence is
-recorded in `docs/CONTENT-PACKS.md`; see the [field-use assessment](docs/FIELD-USE-ASSESSMENT.md). FieldOS remains an engineering candidate, not a disaster-ready or
-customer-approved appliance: its reference set and map coverage are limited,
-AI safety behavior is not comprehensive, physical GPU and LAN isolation remain
-unverified, and redistribution review is incomplete. See
-[docs/RELEASE.md](docs/RELEASE.md) for exact evidence and remaining gates, and [docs/FIELD-USE-ASSESSMENT.md](docs/FIELD-USE-ASSESSMENT.md) for the scenario-by-scenario preparedness review.
-
+`188d0692cb6bb6c15d2bcb89335c80b75447cf4cd4f844c51e2e4e6a4c5e1a52`); generated
+Ollama registry keys and cache are excluded. Optional weather and flood packs
+passed separate offline transfer tests and remain outside this customer ISO.
+FieldOS is not disaster-ready: its reference set and map coverage remain
+limited, AI safety behavior is not comprehensive, physical GPU and LAN isolation
+remain unverified, and redistribution review is incomplete. See
+[docs/RELEASE.md](docs/RELEASE.md) and the [field-use assessment](docs/FIELD-USE-ASSESSMENT.md)
+for remaining gates and scenario findings.
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,
@@ -54,7 +59,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

@@ -9,7 +9,16 @@ This review follows the installed desktop and its Start Here/Command Center path
 
 The current clean-source unattended test ISO at source `d8653336ea4597df8eb386a83d364c9dca19d290` passed a fresh no-NIC installation, firstboot, local inference, embeddings, Kiwix, visible Middle Tennessee map rendering, optional weather-pack import, and two reboots. Its report is `/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`; test ISO SHA-256 is `0bd97610307320f5dd725b94eead0745ba61fbff69083d5d43d7f4ff473e2781`.
 
-A separate customer-mode ISO from source `3054c59fe38295d54a316b4da22088582a23d3bc` was installed interactively in a disposable VM. The FieldOS desktop and Command Center opened; the local AI produced a general response, Kiwix search returned results, and Firefox visibly rendered Nashville streets at zoom 13. Local services and these functions persisted through two reboots. Report and user-facing screenshots are in `/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/`. That candidate's SHA-256 is `522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`.
+The latest customer-mode ISO was built from clean source commit
+`85a33f866f1b929762e47cc5462b16cbbd84c43c`:
+`/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`, SHA-256
+`5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`. A fresh
+interactive no-NIC install completed provisioning; Firefox displayed the FieldOS
+home, real local AI response, Kiwix search results, and Nashville at zoom 13.
+Service, model, reference, and map checks passed across two reboots. Evidence is
+in `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`. At media handoff the VM
+powered off after the remove-media prompt; its installed disk booted on the next
+power-on without repair. Physical USB behavior remains untested.
 
 These are two distinct artifacts. The optional weather-pack transfer was exercised on the newer test ISO, not the customer ISO. Neither VM had a network adapter. These results do not test physical USB media handoff, external weather alerts, physical GPS, or broad geographic coverage.
 

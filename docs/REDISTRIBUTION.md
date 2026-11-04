@@ -14,26 +14,24 @@ still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
 The current unpublished customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso`,
+`/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`,
 12,007,178,240 bytes, SHA-256
-`522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`. Its source
-revision is `3054c59fe38295d54a316b4da22088582a23d3bc`. A fresh interactive
-customer-mode install, local service checks, offline operation, actual browser
-map and Kiwix checks, and two consecutive reboots passed in a disposable UEFI
-VM. Evidence is in
-`/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/report.md`. It
-remains a private engineering artifact, not a release: Ubuntu branding remains,
-and complete notice, trademark, source-offer, model, map, and content reviews
-are outstanding. The no-NIC tests establish operation and file integrity, not
-redistribution rights. Do not distribute the ISO or payload until the reviews
-below are done.
-
+`5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`. Its
+source revision is `85a33f866f1b929762e47cc5462b16cbbd84c43c`. A fresh interactive
+customer-mode installation, offline service checks, actual browser chat,
+Kiwix and map checks, and two consecutive reboots passed in a disposable UEFI
+VM. The report is `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`. This is
+still private engineering test material, not a release: Ubuntu branding
+remains, and complete notice, trademark, source-offer, model, map, and content
+reviews are outstanding. Offline tests establish function and file integrity,
+not redistribution rights. Do not distribute the ISO or payload until the
+reviews below are complete.
 ## Current artifact inventory
 
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
 |---|---|---|---|
 | Ubuntu 26.04.1 Desktop ISO | Original ISO URL and SHA-256 are in `payload/manifests/ubuntu-26.04.1-desktop-amd64.json`; Canonical IPR policy: <https://ubuntu.com/legal/intellectual-property-policy> | Original ISO retained as build input | Resolve Ubuntu trademark/modified-image permission; inventory notices for every redistributed Ubuntu package and confirm source/offer obligations. |
-| Offline APT packages | The current source requests Docker, Compose, curl, zstd, qemu-guest-agent, and `vulkan-tools` from Ubuntu 26.04; package archive metadata is generated with the payload. | The current offline acceptance at source `d865333` completed firstboot from the rebuilt payload; report: `/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`. The customer-mode ISO install at source `3054c59` is separately documented at `/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/report.md`. | The detailed package-license inventory predates the current payload and must be regenerated/reviewed for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. The E2E pass proves offline installation, not redistribution clearance. `vulkan-tools` Ubuntu package details: <https://packages.ubuntu.com/resolute/amd64/vulkan-tools>. |
+| Offline APT packages | The current source requests Docker, Compose, curl, zstd, qemu-guest-agent, and `vulkan-tools` from Ubuntu 26.04; package archive metadata is generated with the payload. | The current offline acceptance at source `d865333` completed firstboot from the rebuilt payload; report: `/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`. The customer-mode ISO install at source `85a33f8` is separately documented at `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`. | The detailed package-license inventory predates the current payload and must be regenerated/reviewed for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. The E2E pass proves offline installation, not redistribution clearance. `vulkan-tools` Ubuntu package details: <https://packages.ubuntu.com/resolute/amd64/vulkan-tools>. |
 | N.O.M.A.D. image | Project N.O.M.A.D. is Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest; all-layer SBOM and candidate notice inventory are retained under `/mnt/shared/fieldos-e2e/repository-review-233b980/`. The pinned image includes Debian `ghostscript`, `libgs10`, and `libgs10-common` version `10.0.0~dfsg-11+deb12u8`; `/usr/share/doc/ghostscript/copyright` identifies AGPL-3+. The current candidate's payload hash matches the prepared archive, whose file list includes `manifests/source-offers.json` and the three checksum-pinned Ghostscript source-offer files. | Review the bundled source offer and its notice, verify the signer trust chain, review its dependencies and all other SBOM components, and finish license-specific offer analysis. |
 | MySQL image | GPL-2.0 with MySQL's additional permissions; upstream licensing information: <https://github.com/mysql/mysql-server/blob/8.0/LICENSE> | Pinned OCI digest | Verify exact image version/layers, third-party component notices, and corresponding source/offer requirements. |
 | Redis image | The pinned image config reports `REDIS_VERSION=7.4.12`; Redis's [official licensing overview](https://redis.io/legal/licenses/) lists 7.4.x as RSALv2 or SSPLv1, not BSD-3-Clause. The earlier [licensing-change announcement](https://redis.io/blog/redis-adopts-dual-source-available-licensing/) records the change. | Local image ID matches the pinned digest in `payload/manifests/images.json`; `REDIS_VERSION` was read from the image config. Read-only image inspection is retained at `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`. | Redis's licensing overview describes RSALv2 as allowing distribution while prohibiting commercializing the software or providing it as a managed service that exposes Redis functionality; SSPLv1 has source obligations when providing a service. Applicability to a FieldOS appliance sold or distributed to customers is not determined here. Obtain license-specific review or evaluate Valkey, then rebuild and acceptance-test the offline payload. Valkey compatibility with pinned N.O.M.A.D. and the replacement image's own transitive licenses are unverified. |

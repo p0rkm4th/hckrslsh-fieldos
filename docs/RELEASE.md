@@ -41,22 +41,24 @@
   and duplicate older map payload (SHA-256
   `fa460aea7b482b8f7b881c20c524a807084ac8394d8df627a16422e237b0adf8`) were
   retired after successful validation; see the artifact retirement record.
-- Current customer-mode test ISO:
-  `/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso`;
+- Latest customer-mode ISO, built from clean source commit
+  `85a33f866f1b929762e47cc5462b16cbbd84c43c`:
+  `/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`;
   12,007,178,240 bytes; SHA-256
-  `522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`.
-  Fresh interactive customer installation and two consecutive reboots passed
-  in a separate disposable no-NIC UEFI VM. Detailed report and screenshots:
-  `/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/report.md`.
-- Customer installer media handoff caveat: Ubuntu prompted to remove media and
-  press Enter, opened the virtual CD tray, then powered off the VM. Starting the
-  VM again booted the installed EFI disk without repair. Physical USB reboot
-  behavior has not been tested.
-- The customer VM showed the FieldOS wallpaper, N.O.M.A.D. Command Center,
-  working UI chat, Kiwix search results, and Nashville streets at zoom 13.
-  The screenshots are retained beside the report. The test credential was
-  stored in protected runtime storage and is not included in evidence.
-
+  `5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`.
+  A fresh interactive installation to an 80 GiB disposable no-NIC UEFI VM
+  completed offline provisioning; real N.O.M.A.D. chat, embeddings, Kiwix
+  browser search, and Nashville zoom-13 map rendering passed. Two reboots
+  preserved services and user data. Detailed report and screenshots:
+  `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`.
+- Customer media-handoff caveat reproduced: Ubuntu prompted to remove media
+  and press Enter, then powered off the VM. Starting the VM again booted the
+  installed EFI disk without repair. Physical USB handoff remains untested.
+- The desktop showed FieldOS branding and N.O.M.A.D. The chat UI generated a
+  real local response; Firefox showed Kiwix's Wikipedia 100 fixture and 19
+  results for “New York,” the FieldOS source library, and Nashville streets at
+  zoom 13. Screenshots and installer/firstboot logs remain beside the report.
+  Temporary credentials are excluded from evidence.
 ## Content-pack integration and stale-payload failure
 
 The first optional-pack integration run failed before map rendering because an
@@ -109,7 +111,7 @@ original source documents and qualified help for high-consequence decisions.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Clean unattended offline install | PASS | Exact source/test ISO and report above. |
-| Interactive customer installation | PASS in disposable VM, with handoff caveat | Fresh customer-mode ISO, interactive `vda` and account selection, installed-disk boot, report above. Physical USB behavior untested. |
+| Interactive customer installation | PASS in disposable VM, with handoff caveat | Current customer ISO, interactive `vda` and account selection, installed-disk boot after manual VM start, two reboots; report above. Physical USB behavior untested. |
 | Offline firstboot and services | PASS | Local APT and OCI images; seven Compose services; firstboot status `complete`. |
 | Local chat and embeddings | PASS | Real Ollama output and embedding vector before and after both reboots; UI chat also rendered. |
 | Kiwix retrieval | PASS, narrow archive | Browser search returned 19 results for “New York” from the 100-article fixture. Broader collection needed. |
@@ -143,19 +145,21 @@ redistribution rights.
 
 ## Source synchronization and artifact handling
 
-The tested source commit `702102c95fae0731315a2afcc211e412ec15e1fd` was
-pushed to public `main`; the verifier fix and key/cache payload exclusion are
-included. No ISO, model weights, container archives, or test disks are
-committed.
+The customer ISO above was built from clean source commit
+`85a33f866f1b929762e47cc5462b16cbbd84c43c`, pushed to public `main`. The latest
+clean unattended E2E was run at `702102c95fae0731315a2afcc211e412ec15e1fd`;
+`85a33f8` updates documentation only. No ISO, model weights, container archives,
+or test disks are committed.
 
-The current customer ISO and its interactive-install report/screenshots remain
-under `/mnt/shared`. The old E2E payload cache was retired after its stale
-embedded map manifest was proven to omit Middle Tennessee. The fresh
-20261104T135401Z run's disposable VM was shut down and undefined after PASS;
-its 32.1 GiB allocated guest disk, temporary ISO, and temporary credentials
-were removed. The report, logs, screenshots, and a disk-retirement audit record
-remain. `/mnt/shared` has 637 GiB free after cleanup. No active FieldOS E2E VM
-remains.
-
+The latest customer ISO, report, logs, and selected screenshots remain under
+`/mnt/shared`. Its disposable VM `fieldos-customer-85a33f8` was stopped and
+undefined after acceptance evidence was recorded; its 35.0 GB allocated qcow2
+disk was removed. The fresh unattended E2E VM was also retired after PASS. The
+superseded 3054c59 ISO (12.0 GB), the completed customer guest disk, a 5.3 GiB
+unpacked payload staging copy, and 11.4 MiB of redundant screenshots were
+removed, reclaiming about 49.1 GiB in total. `/mnt/shared` now has 642 GiB free;
+the current test evidence directory uses about 3.5 MiB and
+`/mnt/shared/fieldos-releases` about 12 GiB. No FieldOS VM is running. The
+checksum-verified payload archive and current ISO remain retained.
 No public release is approved. Do not recommend physical customer use until the
 blocked gates above are resolved.
