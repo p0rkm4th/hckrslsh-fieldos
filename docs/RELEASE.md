@@ -19,6 +19,13 @@
   `/mnt/shared/fieldos-payload/content-packs/us-weather-safety-1.0.1.tar.zst`,
   SHA-256 `9be415ad975ef8ef5ef2bd483254dac6ca2b400bfc594ec4309db6205e3b1e1c`.
   It is separate removable-media content and is not in the customer ISO.
+- Optional flood pack: `us-flood-safety` 1.0.0 archive at
+  `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`,
+  SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`.
+  Its fresh no-NIC transfer/index/browser/reboot test passed at
+  `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`. The test used
+  a dirty worktree based on commit `3553391`; it is not a clean-source release
+  acceptance. The pack is optional and is not in the customer ISO.
 - Rebuilt offline payload: `/mnt/shared/fieldos-payload/offline-payload.tar.zst`,
   5,524,968,361 bytes; SHA-256
   `e6d344324813c444541fe2b4396ffe0670ff29951cbddf466aa9af74d27f1486`. Its
@@ -140,7 +147,7 @@ retirement hashes and rationale are in
 The failed and passing E2E reports, logs, screenshots, and per-disk retirement
 records remain under `/mnt/shared/fieldos-e2e/`; both disposable guest disks
 were removed after the repaired acceptance passed, reclaiming
-68,950,827,008 host-allocated bytes. `/mnt/shared` has 636 GiB free. No active
+68,950,827,008 host-allocated bytes. `/mnt/shared` has 637 GiB free after the completed flood-pack guest disk was retired; test reports and screenshots remain. No active
 FieldOS E2E VM remains.
 
 No public release is approved. Do not recommend physical customer use until the

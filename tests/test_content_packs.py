@@ -14,7 +14,7 @@ class ContentPackValidationTests(unittest.TestCase):
     def test_repository_catalog_validates_reviewed_core_and_optional_packs(self):
         self.assertEqual(
             validate_catalog(ROOT / "payload/manifests/content-packs.json"),
-            ["us-tornado-safety", "us-water-food-emergency", "us-weather-safety"],
+            ["us-flood-safety", "us-tornado-safety", "us-water-food-emergency", "us-weather-safety"],
         )
 
     def fixture(self, category="agriculture", coverage=None, authority=None, review=None):

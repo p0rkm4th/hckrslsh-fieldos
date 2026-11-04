@@ -29,9 +29,10 @@ The separate interactive customer-mode candidate remains
 `522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`). Its
 fresh disposable-VM install, desktop, and two reboot checks passed. The media
 handoff powered off the VM at the virtual CD removal prompt; physical USB
-handoff is untested. The optional `us-weather-safety` content pack was tested
-via removable-media import in the latest E2E but is not embedded in the customer
-ISO. FieldOS remains an engineering candidate, not a disaster-ready or
+handoff is untested. The optional `us-weather-safety` pack passed offline transfer testing; a new
+`us-flood-safety` pack also passed no-network transfer, browser, indexing, and
+two-reboot checks in a dirty-worktree pack integration run (using virtual optical transfer media, not physical USB); this is not a clean-source release pass. Both remain outside the customer ISO. Flood-pack evidence is
+recorded in `docs/CONTENT-PACKS.md`; see the [field-use assessment](docs/FIELD-USE-ASSESSMENT.md). FieldOS remains an engineering candidate, not a disaster-ready or
 customer-approved appliance: its reference set and map coverage are limited,
 AI safety behavior is not comprehensive, physical GPU and LAN isolation remain
 unverified, and redistribution review is incomplete. See

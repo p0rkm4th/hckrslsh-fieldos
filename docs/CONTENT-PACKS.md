@@ -126,7 +126,7 @@ not increase the installer ISO size. After transfer, install it with the
 commands above; FieldOS verifies the archive and checksums, publishes the
 source documents, and asks N.O.M.A.D. to index them. The source library remains
 available directly even when AI chat is unavailable or refuses emergency
-questions. The clean-source transfer test at commit `d865333` passed as part of the
+questions. The clean-source transfer test at commit `d865333` passed using virtual optical transfer media (not physical USB) as part of the
 full acceptance run: all three documents were installed, checksummed, indexed,
 opened through the local source library, and persisted across two reboots. The
 report and archive hash are recorded in [`RELEASE.md`](RELEASE.md). An earlier
@@ -164,6 +164,12 @@ the imported archive hash is
 separate diagnostic run that tried to re-import the already bundled core pack
 failed safely without overwriting it; its report is
 `/mnt/shared/fieldos-e2e/20261104T071953Z-3238411/report.md`.
+
+## Optional flood safety pack
+
+`us-flood-safety` version 1.0.0 contains a short FieldOS-edited summary of NWS flood preparedness and response pages. It describes pre-event planning and basic actions while water is rising, identifies its gaps, and links the original NWS sources. The text is an editorial summary, not an official NWS/NOAA publication; it provides no current warning, forecast, local flood-zone data, or route planning. The source list records NOAA reuse guidance, attribution, and non-endorsement language. No third-party images are included. Full project redistribution review remains open.
+
+The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. A fresh no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; browser evidence is in the same directory. The run used an uncommitted worktree and is pack-integration evidence, not a clean-source release acceptance. The customer ISO does not include this optional pack.
 
 ## Reference quality and retrieval
 

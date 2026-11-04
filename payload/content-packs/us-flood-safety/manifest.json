@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "id": "us-flood-safety",
+  "version": "1.0.0",
+  "title": "U.S. Flood Safety Overview",
+  "description": "Optional offline FieldOS-edited summary based on National Weather Service flood preparedness and response pages. No live warnings, forecasts, local flood-zone data, or route planning.",
+  "category": "weather-disaster",
+  "sources": [
+    {
+      "id": "nws-flood-before",
+      "name": "National Weather Service: Before a Flood",
+      "url": "https://www.weather.gov/safety/flood-before",
+      "license": "U.S. federal government source. NOAA states nearly all NOAA content is public domain unless otherwise noted; source text was reviewed and this artifact is an edited summary.",
+      "attribution": "National Weather Service (NWS), National Oceanic and Atmospheric Administration (NOAA). Edited summary; not official NWS material.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "nws-flood-during",
+      "name": "National Weather Service: During a Flood",
+      "url": "https://www.weather.gov/safety/flood-during",
+      "license": "U.S. federal government source. NOAA states nearly all NOAA content is public domain unless otherwise noted; source text was reviewed and this artifact is an edited summary.",
+      "attribution": "National Weather Service (NWS), National Oceanic and Atmospheric Administration (NOAA). Edited summary; not official NWS material.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "noaa-content-reuse",
+      "name": "NOAA Education and Outreach: Using NOAA content",
+      "url": "https://www.noaa.gov/office-education/outreach-communication/faq",
+      "license": "U.S. federal government guidance page; records NOAA public-domain, attribution, and non-endorsement requirements.",
+      "attribution": "National Oceanic and Atmospheric Administration. NOAA requires attribution, prohibits implied endorsement, and requires edited material to be clearly identified as edited.",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "flood-safety-overview.txt",
+      "size_bytes": 2900,
+      "sha256": "25692b8e5b39ba777f3f2b8a0ab3dc4e6bd4a59c531a7b09c17c420740c8c73b",
+      "source": "nws-flood-during",
+      "license": "FieldOS-authored edited summary based on attributed U.S. federal NWS pages; Apache-2.0 project content, subject to source attribution and no-endorsement conditions."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering source and content review",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2026-11-04"
+  }
+}
