@@ -4,16 +4,26 @@
 
 ## Current source and artifacts
 
-- Tested source revision: `3054c59fe38295d54a316b4da22088582a23d3bc`.
-- `make check test` passed at this revision: 69 unit tests, content-pack
-  validation, Python compilation, and shell syntax checks.
+- Latest tested source revision: `d8653336ea4597df8eb386a83d364c9dca19d290`.
+- `make check test` passed at this revision: 71 unit tests, content-pack
+  validation, Python compilation, and shell syntax checks. Output is retained at
+  `/mnt/shared/fieldos-e2e/test-suite-20261104-contentpack.txt`.
 - Fresh clean-source unattended E2E report:
-  `/mnt/shared/fieldos-e2e/20261104T112428Z-3477254/report.md`.
-  Test ISO SHA-256:
-  `94489885144d6a1285c24b7850c426a0072a8f95623da4a9eb82f7417c58310e`.
-  The guest had no virtual NIC; provisioning, seven services, local chat and
-  embeddings, Kiwix retrieval, high-risk guard cases, a zoom-13 Middle
-  Tennessee map in Firefox, and service checks after two reboots passed.
+  `/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`.
+  Source worktree was clean; test ISO SHA-256:
+  `0bd97610307320f5dd725b94eead0745ba61fbff69083d5d43d7f4ff473e2781`.
+  The guest had no virtual NIC. Installation, local services, chat inference,
+  embeddings, Kiwix, optional weather-pack import/indexing, visible zoom-13 map
+  rendering, and two consecutive reboots passed.
+- Optional weather pack: `us-weather-safety` 1.0.1, archive SHA-256
+  `/mnt/shared/fieldos-payload/content-packs/us-weather-safety-1.0.1.tar.zst`,
+  SHA-256 `9be415ad975ef8ef5ef2bd483254dac6ca2b400bfc594ec4309db6205e3b1e1c`.
+  It is separate removable-media content and is not in the customer ISO.
+- Rebuilt offline payload: `/mnt/shared/fieldos-payload/offline-payload.tar.zst`,
+  5,524,968,361 bytes; SHA-256
+  `e6d344324813c444541fe2b4396ffe0670ff29951cbddf466aa9af74d27f1486`. Its
+  sidecar and embedded source/map manifests passed preflight; this is the exact
+  payload used for the passing clean-source E2E.
 - Current customer-mode test ISO:
   `/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso`;
   12,007,178,240 bytes; SHA-256
@@ -30,25 +40,21 @@
   The screenshots are retained beside the report. The test credential was
   stored in protected runtime storage and is not included in evidence.
 
-## Follow-up content-pack integration test (not accepted)
+## Content-pack integration and stale-payload failure
 
-A later fresh run attempted to import the optional weather pack from removable
-media. Its report is
-`/mnt/shared/fieldos-e2e/20261104T123346Z-3513131/report.md`. Offline Ubuntu
-installation and firstboot passed; the weather archive checksum passed, all
-three documents were installed and indexed in N.O.M.A.D., and the source
-library opened. The overall run **failed** before map rendering or reboot
-checks because the installed guest did not register the required Middle
-Tennessee map.
+The first optional-pack integration run failed before map rendering because an
+old cached payload contained only the zoom-5 U.S. sample map. Its report is
+`/mnt/shared/fieldos-e2e/20261104T123346Z-3513131/report.md`. Ubuntu install,
+offline provisioning, and the weather-pack import/indexing passed, but the
+overall E2E result was FAIL; it did not reach map rendering or reboot checks.
 
-The failure was traced to a stale `/mnt/shared/fieldos-payload/offline-payload.tar.zst`:
-its embedded `maps.json` described only the zoom-5 U.S. sample, while the
-current source manifest also requires Middle Tennessee. The report records a
-dirty worktree at source `442db6c`, so it does not establish acceptance for a
-clean revision. `build-iso.sh` now compares embedded map manifests and required
-map files against current source before producing another ISO. A rebuilt
-payload and clean rerun are still required; this failure is not a release pass.
-The failed VM disk and report are retained for diagnosis until the rerun passes.
+The build now compares the payload's embedded map manifest, region metadata,
+checksums, and required map files against current source before producing an
+ISO. A clean payload rebuild at commit `d865333` passed that check. The fresh
+E2E report above confirms that both maps were installed, Nashville rendered at
+zoom 13 in Firefox, the three weather documents were indexed and served, and
+the content persisted across two reboots. The earlier failed report is retained
+as diagnostic history; it is not counted as a pass.
 
 ## What works offline
 
@@ -116,23 +122,22 @@ redistribution rights.
 
 ## Source synchronization and artifact handling
 
-The documentation update is committed as `331bcffc8d3767e1c1c388eecb0c21ceeed88308`
-and pushed to `git@github.com:p0rkm4th/hckrslsh-fieldos.git` on `main`. The
-push advanced the previously verified remote head `da61a84`; `git ls-remote`
-then confirmed remote `main` at `c4cf2e85fb48855572ab4390527737946cb3712b`.
-No ISO, model weights, container archives, or test disks are committed.
+The tested source commit `d8653336ea4597df8eb386a83d364c9dca19d290` was
+pushed to public `main`; the remote was verified at that revision before this
+documentation sync. No ISO, model weights, container archives, or test disks
+are committed.
 
-The current regional customer ISO and its report/screenshots are retained under
-`/mnt/shared`. The disposable customer guest disk was retired after acceptance,
-reclaiming
-34,972,631,040 host-allocated bytes; its report, logs, and selected screenshots
-remain. The superseded `fieldos-customer-safety-7981801.iso` (11,987,386,368
-bytes) was removed after checksum, open-handle, and libvirt-reference checks;
-its sidecar and audit are retained at
-`/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261104-regional-customer.txt`.
-Redundant debug screenshots reclaimed another 597,363 bytes. `/mnt/shared`
-now has 636 GiB free. The unrelated stopped `fieldos-stock-ubuntu-20261102`
-VM and its disk were preserved.
+The current customer ISO and its interactive-install report/screenshots remain
+under `/mnt/shared`. The old E2E payload cache was retired after its stale
+embedded map manifest was proven to omit Middle Tennessee. The current
+5,524,968,361-byte payload and checksum are retained at the default build path;
+retirement hashes and rationale are in
+`/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261104-stale-payload.txt`.
+The failed and passing E2E reports, logs, screenshots, and per-disk retirement
+records remain under `/mnt/shared/fieldos-e2e/`; both disposable guest disks
+were removed after the repaired acceptance passed, reclaiming
+68,950,827,008 host-allocated bytes. `/mnt/shared` has 636 GiB free. No active
+FieldOS E2E VM remains.
 
 No public release is approved. Do not recommend physical customer use until the
 blocked gates above are resolved.

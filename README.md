@@ -16,24 +16,27 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The current source at `3054c59` passed 69 unit tests and a fresh no-NIC
-unattended E2E acceptance. A separate clean interactive installation of the
-customer-mode ISO also booted from its installed disk and passed two consecutive
-reboot checks in a disposable UEFI VM. Report and screenshots:
-`/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/report.md`. The installer
-powers the VM off at its virtual-media removal prompt; physical USB handoff is
-untested.
+Latest tested source commit: `d8653336ea4597df8eb386a83d364c9dca19d290`.
+`make check test` passes 71 tests. A clean-source no-NIC E2E at this exact
+revision passed offline installation, firstboot, N.O.M.A.D., CPU inference,
+embeddings, Kiwix retrieval, visible zoom-13 Middle Tennessee maps, optional
+weather-pack transfer/indexing, and two reboots. Report:
+`/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`; test ISO SHA-256:
+`0bd97610307320f5dd725b94eead0745ba61fbff69083d5d43d7f4ff473e2781`.
 
-Current customer test candidate: `/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso` (SHA-256
-`522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`). It
-includes a zoom-13 Middle Tennessee map that visibly rendered Nashville streets
-in Firefox. The world and other sample maps remain zoom-5 overviews; the library
-is limited to two CDC references, one NWS tornado guide, and 100 Wikipedia
-articles. The emergency chat guard passed five tested prompts but remains
-bypassable. FieldOS is still an engineering candidate, not an emergency-ready
-or customer-approved appliance. Physical hardware/GPU, LAN isolation, USB
-handoff, and complete redistribution reviews remain unverified or blocked. See
-[docs/RELEASE.md](docs/RELEASE.md) for exact evidence and limitations.
+The separate interactive customer-mode candidate remains
+`/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso` (SHA-256
+`522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`). Its
+fresh disposable-VM install, desktop, and two reboot checks passed. The media
+handoff powered off the VM at the virtual CD removal prompt; physical USB
+handoff is untested. The optional `us-weather-safety` content pack was tested
+via removable-media import in the latest E2E but is not embedded in the customer
+ISO. FieldOS remains an engineering candidate, not a disaster-ready or
+customer-approved appliance: its reference set and map coverage are limited,
+AI safety behavior is not comprehensive, physical GPU and LAN isolation remain
+unverified, and redistribution review is incomplete. See
+[docs/RELEASE.md](docs/RELEASE.md) for exact evidence and remaining gates.
+
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,

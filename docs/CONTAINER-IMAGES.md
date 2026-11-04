@@ -32,9 +32,9 @@ clearance open. The local read-only image inspection is retained at
 RSALv2/SSPLv1 is a material release consideration for a FieldOS customer
 appliance. Do not treat this image as cleared for commercial distribution.
 Obtain a review for the planned product and distribution model, or choose a
-compatible alternative and rebuild and retest the offline payload. The
-candidate ISO and payload predate this manifest correction and remain private
-test artifacts.
+compatible alternative and rebuild and retest the offline payload. The customer-mode ISO is an older private test artifact. The payload was
+rebuilt from current manifests and exercised by the clean-source E2E at
+`d865333`; this confirms installation behavior, not license clearance.
 
 Valkey is a possible replacement to evaluate. The [Valkey upstream project](https://github.com/valkey-io/valkey)
 is BSD-3-Clause, and its [migration guide](https://valkey.io/topics/migration/)
@@ -43,8 +43,9 @@ with Redis OSS 7.2. This is a useful
 licensing and compatibility candidate, not a FieldOS validation result: the
 pinned Project N.O.M.A.D. image has not been acceptance-tested against Valkey,
 and the complete Valkey container image still needs its own layer and notice
-review. No service image has been changed pending an offline payload rebuild
-and fresh install acceptance.
+review. No service image has been changed. A fresh payload rebuild and install
+acceptance passed at `d865333`; the licensing and compatibility review remains
+open.
 
 ## Scope of the direct-license table
 
