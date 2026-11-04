@@ -59,7 +59,7 @@
     "installation": {
       "type": "object", "required": ["target", "requirements"],
       "properties": {
-        "target": {"type": "string", "minLength": 1},
+        "target": {"enum": ["storage/maps/pmtiles", "storage/references/documents", "storage/content-packs"]},
         "requirements": {"type": "array", "items": {"type": "string"}},
         "optional": {"type": "boolean", "default": true}
       },

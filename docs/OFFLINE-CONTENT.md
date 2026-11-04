@@ -56,9 +56,13 @@ GPS device node is present.
 
 The extensible pack format and planned categories are documented in
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md). No content pack is bundled in the
-customer ISO. The Middle Tennessee candidate remains a separate, unreleased
-artifact; agricultural, wildlife, water/food, emergency, and comprehensive
-reference packs still need requirements and licensing review.
+customer ISO. The optional `us-water-food-emergency` starter pack contains two
+CDC source PDFs and can be transferred and installed offline using the content
+pack installer. It is not yet verified in the E2E guest/browser and does not
+populate N.O.M.A.D.'s semantic retrieval index. It is not a complete emergency
+library. The Middle Tennessee candidate remains a separate, unreleased map
+artifact; agricultural, wildlife, first-aid, and comprehensive reference packs
+still need requirements and licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

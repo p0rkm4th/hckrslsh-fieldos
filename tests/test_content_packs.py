@@ -11,8 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ContentPackValidationTests(unittest.TestCase):
-    def test_empty_repository_catalog_is_valid(self):
-        self.assertEqual(validate_catalog(ROOT / "payload/manifests/content-packs.json"), [])
+    def test_repository_catalog_validates_the_reviewed_reference_pack(self):
+        self.assertEqual(
+            validate_catalog(ROOT / "payload/manifests/content-packs.json"),
+            ["us-water-food-emergency"],
+        )
 
     def fixture(self, category="agriculture", coverage=None, authority=None, review=None):
         temp = tempfile.TemporaryDirectory()

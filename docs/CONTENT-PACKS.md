@@ -3,7 +3,11 @@
 FieldOS keeps reference content independent from the core installer wherever
 possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-pack.schema.json` and a catalog at
-`payload/manifests/content-packs.json`. The catalog is intentionally empty: the architecture is ready, but customer-specific pack content awaits requirements and license/attribution review. One external Middle Tennessee map bundle has passed transfer, validation, activation, actual browser rendering, and two-reboot persistence checks; it remains a test artifact outside the catalog and core ISO.
+`payload/manifests/content-packs.json`. The catalog contains one optional
+starter reference pack and planned categories; this is not a comprehensive
+customer library. One external Middle Tennessee map bundle has passed transfer,
+validation, activation, actual browser rendering, and two-reboot persistence
+checks; it remains a test artifact outside the catalog and core ISO.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -30,11 +34,12 @@ deterministic `.tar.zst` archive and SHA-256 sidecar per catalog entry under
 `FIELDOS_PAYLOAD_ROOT/content-packs/`, independently of the core installer.
 Archives contain the manifest and only the artifacts it declares, so stray
 or unreviewed files in a staging directory are excluded.
-`make payload` runs this builder after preparing the core payload. The public
-catalog remains empty so the customer ISO stays bounded; optional archives
-are built separately and are not embedded in the core image. An independently
-staged Middle Tennessee candidate is described below and stored outside Git
-pending final customer content and redistribution review.
+`make payload` runs this builder after preparing the core payload. Optional
+archives are built separately from the core image, so adding one does not
+silently enlarge the ISO. The catalog pack described below is staged in Git;
+its portable archive is built outside Git. An independently staged Middle
+Tennessee candidate is described below and remains outside the catalog pending
+final customer content and redistribution review.
 
 On an installed system, verify and add a bundle with:
 
@@ -51,16 +56,43 @@ existing version. For a map pack whose target is `storage/maps/pmtiles`, the
 installer additionally requires exactly one PMTiles archive and atomically
 publishes it in `/var/lib/fieldos/storage/maps/pmtiles/`. N.O.M.A.D. discovers
 that file in its region inventory and generates its map source automatically.
-Existing filenames are never replaced. Other targets currently remain
-storage-only. A failed validation or conflicting destination leaves existing
+For a reference-document pack whose target is `storage/references/documents`,
+the installer accepts only PDF and plain-text artifacts and atomically creates
+`/var/lib/fieldos/storage/references/index.html`. The local index lists source,
+license, attribution, and links to original documents; it identifies them as
+source material rather than AI output. It warns that inclusion is not publisher
+endorsement and users should consult current local guidance. This adapter does
+not add documents to N.O.M.A.D.'s RAG/search index. Existing filenames are never
+replaced. A failed validation or conflicting destination leaves existing
 application data untouched.
+
+The first optional reference pack is `us-water-food-emergency` version 1.0.0.
+It contains two unchanged CDC PDFs: “Make Water Safe During an Emergency” and
+“Eat Safe Food After a Power Outage.” Their source records are CDC STACKS
+items [128149](https://stacks.cdc.gov/view/cdc/128149) and
+[88473](https://stacks.cdc.gov/view/cdc/88473); each record identifies the item
+as Public Domain. The original PDFs are reproduced unmodified with CDC
+attribution and a non-endorsement statement. The included files are 730,926
+bytes (SHA-256
+`c39b55b4d8f3dd40ecd2b13175f7661b52dfc6e73e4a24ef189de64fb9d513b1`) and
+1,675,372 bytes (SHA-256
+`0982174617e2b3405e966b0b1dc2838e3ce92dfad3185da3d450b525a62a7ebf`). The
+manifest records source URLs, access and review dates, and license basis. The
+archive built from this revision is
+`/mnt/shared/fieldos-content-packs/content-packs/us-water-food-emergency-1.0.0.tar.zst`,
+SHA-256 `c862c023e8999268be6d78692e4d3a01c95a3f5f840fa954b424b5604eb9518c`.
+It is a small starter set, not a complete water, food, first-aid, medical, or
+disaster-preparedness library. Consult current local guidance. It is not
+included in the current ISO.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the
-disposable no-NIC VM, imports it from inside the installed guest, then checks
-N.O.M.A.D.'s region and style APIs, PMTiles reads, browser map rendering, and
-persistence after reboots. This transfer medium is test-only and does not
-change the customer installer.
+disposable no-NIC VM and imports it inside the installed guest. Map packs are
+checked through N.O.M.A.D.'s region and style APIs, PMTiles reads, browser map
+rendering, and persistence after reboots. Reference packs are checked for the
+installed source files and local index; the browser view must also be verified
+before claiming end-user acceptance. This transfer medium is test-only and
+does not change the customer installer.
 
 ## Reference quality and retrieval
 
@@ -70,7 +102,8 @@ originating document title and source attribution with each result and make
 the original passage accessible. AI-generated responses are summaries, not
 source documents. This distinction is essential for first-aid and emergency
 material; those packs require a named, reviewable authority and revision date
-before inclusion. No content is currently being represented as an approved
+before inclusion. The CDC starter pack is an attributed source-document
+collection; it does not make AI source-grounded and is not a comprehensive
 emergency library.
 
 ## Mapping and location

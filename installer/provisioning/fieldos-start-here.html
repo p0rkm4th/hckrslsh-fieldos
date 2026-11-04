@@ -36,6 +36,7 @@
     <div class="actions">
       <a class="card" href="http://localhost:8080"><span class="tag">Open</span><h2>FieldOS Command Center</h2><p>Project N.O.M.A.D. brings together local AI, the information library, and maps.</p></a>
       <a class="card" href="http://localhost:8090"><span class="tag">Browse locally</span><h2>Offline reference</h2><p>Open the Kiwix library directly. It only lists archives included on this computer.</p></a>
+      <a class="card" href="file:///var/lib/fieldos/storage/references/index.html"><span class="tag">Optional packs</span><h2>Source Library</h2><p>Open PDF and text references after an optional source pack has been installed from removable media.</p></a>
     </div>
   </header>
   <section>
@@ -48,8 +49,8 @@
   </section>
   <section class="notice">
     <h2>Why some catalog items are missing</h2>
-    <p>Project N.O.M.A.D. can offer additional archives, detailed map regions, software updates, and other optional downloads. Those items are not part of this test payload; downloading them requires a separate internet-connected update session. The installed chat model, archive, and map data remain usable offline.</p>
-    <p>This test edition contains no reviewed first-aid or emergency guidance. Do not use generated answers as a substitute for authoritative medical or safety references.</p>
+    <p>Project N.O.M.A.D. can offer additional archives, detailed map regions, software updates, and other optional downloads. Those catalog downloads require a separate internet-connected update session. Optional FieldOS content packs can instead be transferred by USB and installed without internet; they are not included in this test ISO.</p>
+    <p>A small optional water and food safety source pack is available separately. It is not a comprehensive emergency library, is not indexed in N.O.M.A.D. search, and must be checked against current local guidance. Do not use generated answers as a substitute for authoritative medical or safety references.</p>
   </section>
   <section>
     <h2>Add an optional regional map without internet</h2>
@@ -59,7 +60,11 @@
       <li>Open Terminal and install the pack. Replace <code>USB-NAME</code> and the archive filename with the names shown on your drive:<br><code>sudo /opt/fieldos/scripts/fieldos-content-packs.py install "/media/$USER/USB-NAME/map-pack.tar.zst"</code></li>
       <li>Wait for the command to report <code>activated map</code>, then open or reload Maps in the Command Center. The imported region appears there without a service restart.</li>
     </ol>
-    <p>The installer checks the bundle checksum, manifest, and artifact hashes before storing it. A checksum does not establish that a publisher or license is trustworthy; review the pack's source and attribution. PMTiles packs activate in Maps. Other pack types remain stored but may not yet integrate with an application.</p>
+    <p>The installer checks the bundle checksum, manifest, and artifact hashes before storing it. A checksum does not establish that a publisher or license is trustworthy; review the pack's source and attribution. PMTiles packs activate in Maps. PDF and text source packs appear in the Source Library above. Other pack types remain stored but may not yet integrate with an application.</p>
+  </section>
+  <section>
+    <h2>Add reference documents from a content pack</h2>
+    <p>Use the same verified USB transfer and install command above with a reference-pack archive. After the installer reports <code>activated reference documents</code>, open Source Library from this page. It lists the original PDFs and their source and license information. These documents are not added to N.O.M.A.D.'s semantic search.</p>
   </section>
   <footer>FieldOS test edition · Content sources and license notices: <code>/usr/share/doc/fieldos/CONTENT-SOURCES.md</code></footer>
 </main>
