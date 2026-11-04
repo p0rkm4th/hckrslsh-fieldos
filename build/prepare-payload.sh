@@ -289,12 +289,12 @@ docker rm -f "$MODEL_CONTAINER" >/dev/null
 MODEL_CONTAINER="fieldos-model-seed-$$"
 OLLAMA_REF=ollama/ollama:0.33.3
 OLLAMA_DIGEST=sha256:32931b46719f673c05fdbaa81ccb26da18ea4a1c57590a754874ab28ba269eb2
-# The Ollama CLI creates a private registry key and a recommendation cache.
-# Neither belongs in the offline model payload; only public model blobs do.
+# The Ollama CLI creates a registry key pair and recommendation cache.
+# These runtime-generated files do not belong in the distributable payload.
 docker run --rm --network none \
   -v "$STAGE/content/ollama:/data" \
   --entrypoint /bin/sh "$OLLAMA_REF@$OLLAMA_DIGEST" \
-  -c 'rm -rf /data/cache /data/id_ed25519; chmod -R a+rX /data/models'
+  -c 'rm -rf /data/cache /data/id_ed25519 /data/id_ed25519.pub; chmod -R a+rX /data/models'
 cat > "$STAGE/model-ids.json" <<'EOF'
 {
   "chat": ["qwen3-0.6b-q4_k_m"],

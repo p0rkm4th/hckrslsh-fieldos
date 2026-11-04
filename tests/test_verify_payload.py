@@ -44,6 +44,26 @@ class OfflinePayloadVerificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing required core pack files"):
             verify_payload(self.payload, self.catalog)
 
+    def test_rejects_generated_ollama_key_files(self):
+        members = [
+            "content-packs/core-1.2.3.tar.zst",
+            "content-packs/core-1.2.3.tar.zst.sha256",
+            "content/ollama/id_ed25519.pub",
+        ]
+        self.make_payload(members)
+        with self.assertRaisesRegex(ValueError, "generated Ollama keys"):
+            verify_payload(self.payload, self.catalog)
+
+    def test_rejects_ollama_recommendation_cache(self):
+        members = [
+            "content-packs/core-1.2.3.tar.zst",
+            "content-packs/core-1.2.3.tar.zst.sha256",
+            "content/ollama/cache/library/qwen3.json",
+        ]
+        self.make_payload(members)
+        with self.assertRaisesRegex(ValueError, "generated Ollama keys or recommendation cache"):
+            verify_payload(self.payload, self.catalog)
+
     def test_rejects_payload_with_stale_map_manifest(self):
         maps_manifest = self.root / "maps.json"
         maps_manifest.write_text(json.dumps({"regions": [{"id": "current"}]}))

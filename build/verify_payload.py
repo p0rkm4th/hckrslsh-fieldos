@@ -27,6 +27,21 @@ def verify_payload(payload: Path, catalog_path: Path,
         ["tar", "--use-compress-program=zstd", "-tf", str(payload)],
         check=True, capture_output=True, text=True,
     ).stdout.splitlines()
+    generated_ollama_files = {
+        "content/ollama/id_ed25519",
+        "content/ollama/id_ed25519.pub",
+    }
+    forbidden = sorted(
+        name for name in listing
+        if name in generated_ollama_files
+        or name == "content/ollama/cache"
+        or name.startswith("content/ollama/cache/")
+    )
+    if forbidden:
+        raise ValueError(
+            "offline payload contains generated Ollama keys or recommendation cache: "
+            + ", ".join(forbidden)
+        )
     missing = sorted(set(expected) - set(listing))
     if missing:
         raise ValueError("offline payload is missing required core pack files: " + ", ".join(missing))
