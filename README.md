@@ -15,24 +15,24 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest clean-source acceptance passed at commit `7981801`. The no-NIC E2E
-passed installation, offline provisioning, local chat and embeddings, reference
-retrieval, Kiwix, actual Firefox rendering of the map and Source Library, and
-persistence across two reboots. Five tested high-risk prompt cases were blocked
-by the server-side safety guard. `make check test` passed 68 tests. See the exact
-report, test ISO hash, limitations, and remaining customer-mode gate in
-[docs/RELEASE.md](docs/RELEASE.md).
+Latest clean-source unattended acceptance passed at `7981801`; the separate
+interactive customer-mode install and two-reboot service checks passed on the
+`c642fac` customer candidate. `make check test` passed 68 tests at `7981801`.
+The installation is verified in a no-NIC QEMU VM, but this remains an
+engineering test candidate. See exact hashes, evidence, and outstanding release
+gates in [docs/RELEASE.md](docs/RELEASE.md).
 
-The retained customer candidate
-`/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso` predates the
-latest safety guard. It is kept only until a replacement customer-mode image
-is built and tested. An earlier interactive installation passed in a
-disposable UEFI VM, but it does not validate the new changes. FieldOS remains
-an engineering prototype: its safety guard can be bypassed with alternate
-phrasing, the reference library is small, bundled maps stop at zoom 5, and
-physical GPU support, LAN peer isolation, broad content coverage, and complete
-redistribution review remain unverified. Do not rely on the AI for emergency,
-medical, navigation, or other high-consequence decisions.
+The current customer test candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso` (SHA-256
+`10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`). A
+fresh interactive install and two-reboot acceptance passed in a disposable
+UEFI VM. This does not establish physical hardware compatibility or
+redistribution clearance. FieldOS remains an engineering prototype: its safety
+guard can be bypassed with alternate phrasing, the reference library is small,
+bundled maps stop at zoom 5, and physical GPU support, LAN peer isolation, broad
+content coverage, and complete redistribution review remain unverified. Do
+not rely on the AI for emergency, medical, navigation, or other high-consequence
+decisions.
 
 ## Build and test
 
@@ -46,7 +46,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

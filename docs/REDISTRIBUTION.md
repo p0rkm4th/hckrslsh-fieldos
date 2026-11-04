@@ -6,7 +6,7 @@
 This document records an engineering review of the current test payload; it is
 not a legal opinion or a substitute for counsel's review.
 
-Canonical's official IPRights Policy was checked on 2026-11-03. It permits
+Canonical's official IPRights Policy was rechecked on 2026-11-04. It permits
 modified Ubuntu for personal/internal use. For redistribution, it requires
 Canonical approval/certification/provision when Ubuntu marks remain; otherwise
 the policy says to remove/replace those marks and recompile. This candidate
@@ -14,16 +14,14 @@ still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
 The current unpublished customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso`, 11,987,386,368
-bytes, SHA-256
-`d312bbf785f23a9b0b909ca683ce02a884cc0a707dec532bef2e94d82e25f288`. It was
-built from source commit `1fb6806`. The source passed offline unattended E2E
-and a separate interactive customer-mode install to a disposable UEFI VM,
-including two reboots of the installed customer guest. It is still an
-engineering artifact, not a release:
-Ubuntu branding remains, and complete notice, trademark, source-offer, model,
-map, and content reviews are outstanding. The detailed current results are in
-`docs/RELEASE.md` and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/report.md`.
+`/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso`,
+11,987,386,368 bytes, SHA-256
+`10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`. Its embedded source revision is `c642fac6a74e94cdb301b9e730353b7cd53ab11d`; the tested implementation includes `7981801`. A fresh interactive customer-mode install, local service checks, offline operation, and two reboots passed in a disposable UEFI VM. Detailed evidence is in `docs/RELEASE.md` and
+`/mnt/shared/fieldos-e2e/customer-safety-7981801-r2-20261104/report.md`. It
+remains a private engineering artifact, not a release: Ubuntu branding remains,
+and complete notice, trademark, source-offer, model, map, and content reviews
+are outstanding. The no-NIC tests establish operation and file integrity, not
+redistribution rights.
 The no-NIC tests establish operation and file integrity, not redistribution
 rights. Do not distribute the ISO or payload until the reviews below are done.
 
@@ -32,7 +30,7 @@ rights. Do not distribute the ISO or payload until the reviews below are done.
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
 |---|---|---|---|
 | Ubuntu 26.04.1 Desktop ISO | Original ISO URL and SHA-256 are in `payload/manifests/ubuntu-26.04.1-desktop-amd64.json`; Canonical IPR policy: <https://ubuntu.com/legal/intellectual-property-policy> | Original ISO retained as build input | Resolve Ubuntu trademark/modified-image permission; inventory notices for every redistributed Ubuntu package and confirm source/offer obligations. |
-| Offline APT packages | The current source requests Docker, Compose, curl, zstd, qemu-guest-agent, and `vulkan-tools` from Ubuntu 26.04; package archive metadata is generated with the payload. | The `43ec3f9` no-network E2E completed firstboot from its bundled APT payload; report: `/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md`. | The detailed package-license inventory predates the current payload and must be regenerated/reviewed for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. The E2E pass proves offline installation, not redistribution clearance. `vulkan-tools` Ubuntu package details: <https://packages.ubuntu.com/resolute/amd64/vulkan-tools>. |
+| Offline APT packages | The current source requests Docker, Compose, curl, zstd, qemu-guest-agent, and `vulkan-tools` from Ubuntu 26.04; package archive metadata is generated with the payload. | The current offline acceptance at source `7981801` completed firstboot from its bundled APT payload; report: `/mnt/shared/fieldos-e2e/20261104T100029Z-3363576/report.md`. | The detailed package-license inventory predates the current payload and must be regenerated/reviewed for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. The E2E pass proves offline installation, not redistribution clearance. `vulkan-tools` Ubuntu package details: <https://packages.ubuntu.com/resolute/amd64/vulkan-tools>. |
 | N.O.M.A.D. image | Project N.O.M.A.D. is Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest; all-layer SBOM and candidate notice inventory are retained under `/mnt/shared/fieldos-e2e/repository-review-233b980/`. The pinned image includes Debian `ghostscript`, `libgs10`, and `libgs10-common` version `10.0.0~dfsg-11+deb12u8`; `/usr/share/doc/ghostscript/copyright` identifies AGPL-3+. The current candidate's payload hash matches the prepared archive, whose file list includes `manifests/source-offers.json` and the three checksum-pinned Ghostscript source-offer files. | Review the bundled source offer and its notice, verify the signer trust chain, review its dependencies and all other SBOM components, and finish license-specific offer analysis. |
 | MySQL image | GPL-2.0 with MySQL's additional permissions; upstream licensing information: <https://github.com/mysql/mysql-server/blob/8.0/LICENSE> | Pinned OCI digest | Verify exact image version/layers, third-party component notices, and corresponding source/offer requirements. |
 | Redis image | The pinned image config reports `REDIS_VERSION=7.4.12`; Redis's [official licensing overview](https://redis.io/legal/licenses/) lists 7.4.x as RSALv2 or SSPLv1, not BSD-3-Clause. The earlier [licensing-change announcement](https://redis.io/blog/redis-adopts-dual-source-available-licensing/) records the change. | Local image ID matches the pinned digest in `payload/manifests/images.json`; `REDIS_VERSION` was read from the image config. Read-only image inspection is retained at `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`. | Redis's licensing overview describes RSALv2 as allowing distribution while prohibiting commercializing the software or providing it as a managed service that exposes Redis functionality; SSPLv1 has source obligations when providing a service. Applicability to a FieldOS appliance sold or distributed to customers is not determined here. Obtain license-specific review or evaluate Valkey, then rebuild and acceptance-test the offline payload. Valkey compatibility with pinned N.O.M.A.D. and the replacement image's own transitive licenses are unverified. |
