@@ -25,27 +25,22 @@ Firefox, and passed two reboots. Report:
 `/mnt/shared/fieldos-e2e/20261104T152431Z-3714447/report.md`; test ISO SHA-256:
 `0fcb81e0f5e7043024486a6caa11ca31a7e85c2ae17054e4649c1d8f7b3c5fc6`.
 
-The latest customer-mode candidate was built from clean source commit
-`85a33f866f1b929762e47cc5462b16cbbd84c43c`:
-`/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso` (SHA-256
-`5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`). A fresh
-interactive no-NIC UEFI installation selected the 80 GiB virtual disk, completed
-offline firstboot, launched N.O.M.A.D., generated a real local response, loaded
-embeddings, retrieved Kiwix content in Firefox, rendered the Nashville zoom-13
-map, and passed two reboots with persistent user data. At the media-removal
-prompt the VM powered off; its installed disk booted on the next manual start.
-Physical USB handoff remains untested. Screenshots and the detailed report are
-in `/mnt/shared/fieldos-e2e/customer-85a33f8/`. This is an engineering test
-candidate, not a release approval.
+The current customer-mode candidate was built from clean source commit
+`21ad4fcdb882998ca1c3bd47333b1139c162651c`:
+`/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso` (SHA-256
+`38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`). A fresh
+interactive no-NIC UEFI installation selected the virtual disk and user,
+completed offline firstboot, rendered the regional map in Firefox, and passed
+chat, embeddings, Kiwix, and two reboot checks. The exact report and screenshots
+are in `/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/report.md`. At media
+handoff the VM powered off after virtual CD ejection; the next power-on booted
+the installed disk without repair. Physical USB handoff is untested. This is
+still an engineering candidate, not a release approval.
 
-The previous customer-mode candidate used the sanitized payload
-`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
-`188d0692cb6bb6c15d2bcb89335c80b75447cf4cd4f844c51e2e4e6a4c5e1a52`); generated
-Ollama registry keys and cache are excluded. A new payload containing the four
-core packs, also excluding generated keys and cache, is
-`/mnt/shared/fieldos-payload-weather-flood-core/offline-payload.tar.zst` (SHA-256
-`fb4ad0e04144edd4e914263fb9279833cd1ce7e716a10817e79762824b28a73e`). The
-current customer-mode ISO has not yet been rebuilt with this updated baseline.
+The tested four-pack payload is
+`/mnt/shared/fieldos-payload-weather-flood-core/offline-payload.tar.zst`
+(SHA-256 `fb4ad0e04144edd4e914263fb9279833cd1ce7e716a10817e79762824b28a73e`).
+Generated Ollama registry keys and cache are excluded.
 FieldOS is not disaster-ready: its reference set and map coverage remain
 limited, AI safety behavior is not comprehensive, physical GPU and LAN isolation
 remain unverified, and redistribution review is incomplete. See
@@ -63,7 +58,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

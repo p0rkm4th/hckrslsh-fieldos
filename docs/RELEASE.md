@@ -26,27 +26,24 @@ SHA-256 `e3224426e80c8244180cbe3f083405b9184e65a0c02d8f88c9947cccae8907a7`:
 - Separate weather and flood pack archives were tested as removable media in
   earlier no-NIC runs. The new E2E run exercises their core-install path;
   secondary-media import was skipped.
-- Previous customer-mode ISO, built from clean source commit
-  `85a33f866f1b929762e47cc5462b16cbbd84c43c`:
-  `/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`;
+- Current interactive customer-mode ISO, built from clean source commit
+  `21ad4fcdb882998ca1c3bd47333b1139c162651c`:
+  `/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso`;
   12,007,178,240 bytes; SHA-256
-  `5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`.
-  A fresh interactive installation to an 80 GiB disposable no-NIC UEFI VM
-  completed offline provisioning; real N.O.M.A.D. chat, embeddings, Kiwix
-  browser search, and Nashville zoom-13 map rendering passed. Two reboots
-  preserved services and user data. Detailed report and screenshots:
-  `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`.
-  It predates promotion of the weather and flood packs into the core payload;
-  rebuild and interactive retest are required before it represents current
-  source.
-- Customer media-handoff caveat reproduced: Ubuntu prompted to remove media
-  and press Enter, then powered off the VM. Starting the VM again booted the
-  installed EFI disk without repair. Physical USB handoff remains untested.
-- The desktop showed FieldOS branding and N.O.M.A.D. The chat UI generated a
-  real local response; Firefox showed Kiwix's Wikipedia 100 fixture and 19
-  results for “New York,” the FieldOS source library, and Nashville streets at
-  zoom 13. Screenshots and installer/firstboot logs remain beside the report.
-  Temporary credentials are excluded from evidence.
+  `38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`.
+  Fresh interactive install selected virtual disk `vda`, created a test user,
+  installed with no NIC, booted the installed EFI disk, completed local
+  firstboot, and passed local AI, embeddings, Kiwix, visible Nashville map, and
+  two reboot checks. Full report and screenshots:
+  `/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/report.md`.
+- Media handoff caveat: Ubuntu asked to remove media and press Enter; after
+  virtual media ejection the VM powered off. A subsequent VM power-on booted
+  the installed disk without repair. Physical USB handoff remains untested.
+- The desktop showed FieldOS wallpaper and dock. Firefox visibly rendered
+  Nashville streets at zoom 13 and opened the one-book Wikipedia 100 fixture.
+  The in-app emergency query returned the fixed source-library notice with no
+  citations. Temporary credentials are excluded from evidence.
+
 ## Content-pack integration and stale-payload failure
 
 The first optional-pack integration run failed before map rendering because an
@@ -80,11 +77,12 @@ is no validated GPS, routing, trail, or navigation feature.
 
 ## Field-use and safety assessment
 
-This build is not ready to rely on for disaster response. Bundled references are
-small: two CDC water/food documents, one NWS tornado guide, and a 100-article
-Wikipedia sample. These are not a complete medical, agricultural, mechanical,
-wildfire, or survival library. Kiwix's Wikipedia fixture is useful for smoke
-testing search, not broad preparedness research.
+This build is not ready to rely on for disaster response. The current candidate
+includes four core source packs (two CDC water/food documents and NWS-derived
+tornado, flood, hurricane, and winter references) plus a 100-article Wikipedia
+sample. These are not a complete medical, agricultural, mechanical, wildfire,
+or survival library. Kiwix's Wikipedia fixture is useful for smoke testing
+search, not broad preparedness research.
 
 The bundled `qwen3:0.6b-q4_K_M` model answered a general offline-help prompt in
 N.O.M.A.D. UI. Five tested high-risk categories (food outage, tornado shelter,
@@ -101,19 +99,20 @@ original source documents and qualified help for high-consequence decisions.
 | Clean unattended offline install | PASS | Exact source/test ISO and report above. |
 | Interactive customer installation | PASS in disposable VM, with handoff caveat | Current customer ISO, interactive `vda` and account selection, installed-disk boot after manual VM start, two reboots; report above. Physical USB behavior untested. |
 | Offline firstboot and services | PASS | Local APT and OCI images; seven Compose services; firstboot status `complete`. |
-| Local chat and embeddings | PASS | Real Ollama output and embedding vector before and after both reboots; UI chat also rendered. |
-| Kiwix retrieval | PASS, narrow archive | Browser search returned 19 results for “New York” from the 100-article fixture. Broader collection needed. |
+| Local chat and embeddings | PASS | Real Ollama output and embedding vector before and after reboot two; services were Up and health returned OK after each reboot. The in-app emergency query rendered the fixed source-library notice. |
+| Kiwix retrieval | PASS, narrow archive | Current candidate showed the one-book Wikipedia 100 fixture in Firefox; a “water” search returned results. Broader collection needed. |
 | Offline maps | PASS for bounded region | Firefox visibly rendered Nashville at zoom 13. Other regions remain zoom-5 overviews; GPS/navigation unverified. |
-| Reboot persistence | PASS | Installed services, reference data, model operation, and regional map checked after two consecutive reboots. |
-| Hardware adaptation | PARTIAL | CPU-only 8 GiB VM selected bundled CPU model; simulated profiles only. No physical GPU validation. |
-| Security boundaries | PARTIAL | No-NIC isolation, loopback service binds, container egress block, and secret permissions passed. N.O.M.A.D. and Dozzle still access Docker socket; LAN peer testing remains open. |
+| Reboot persistence | PASS | Services, firstboot state, and persistent map/ZIM checksums were checked after each reboot; chat, embeddings, and Kiwix search passed again after reboot two. |
+| Hardware adaptation | PARTIAL | CPU-only QEMU profile selected the bundled CPU model; simulated profile fixtures only. No physical GPU validation. |
+| Security boundaries | PARTIAL | No NIC/default route, loopback service binds, Docker internal-network and egress checks passed. N.O.M.A.D. and Dozzle still access Docker socket; LAN peer testing remains open. |
 | Field content breadth | FAIL for field readiness | Current reference set and geographic coverage are inadequate for broad disaster preparation. |
 | Redistribution and attribution | BLOCKED | Ubuntu branding/permission, all package/image/model/map/data licenses, notices and source offers still require complete review. |
 | Physical customer readiness | BLOCKED | Physical hardware, media handoff, GPU, LAN exposure, comprehensive content, and redistribution gates remain. |
 
 ## End-user disaster scenario review
 
-A scenario-by-scenario field-use assessment is recorded in [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md). The no-NIC desktop tests pass for their stated VM scope, but the preparedness usefulness assessment remains **FAIL**: coverage is narrow, safety-critical AI requests are refused (and the keyword guard is bypassable), and offline navigation is absent. The previous customer ISO predates promotion of weather and flood material into the core test payload; its replacement still needs interactive validation. Functional services do not establish disaster readiness.
+A scenario-by-scenario field-use assessment is recorded in [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md). The no-NIC desktop tests pass for their stated VM scope, but the preparedness usefulness assessment remains **FAIL**: coverage is narrow, safety-critical AI requests are refused (and the keyword guard is bypassable), and offline navigation is absent. The current customer candidate includes and indexes the four core packs.
+Functional services do not establish disaster readiness.
 
 ## Security and redistribution
 
@@ -133,25 +132,20 @@ redistribution rights.
 
 ## Source synchronization and artifact handling
 
-The new four-pack core implementation and payload passed clean-source E2E at
+The four-pack core implementation passed unattended E2E at
 `7e2674e285be158f56b556f048ad3c785d8b0cb9`, pushed to public `main`. The
-previously tested interactive customer ISO remains built from source
-`85a33f866f1b929762e47cc5462b16cbbd84c43c` and does not include the new content.
-No ISO, model weights, container archives, or test disks are committed.
+interactive customer candidate above was built from commit `21ad4fc`, which
+includes that implementation, and passed its separate fresh VM test. No ISO,
+model weights, container archives, or test disks are committed.
 
-The previous customer ISO, report, logs, and selected screenshots remain under
-`/mnt/shared`. Its disposable VM `fieldos-customer-85a33f8` was stopped and
-undefined after acceptance evidence was recorded; its 35.0 GB allocated qcow2
-disk was removed. The new passing E2E VM was shut down, undefined, and its
-33 GiB disk retired after preserving its report, logs, and browser screenshots.
-The
-superseded 3054c59 ISO (12.0 GB), the completed customer guest disk, a 5.3 GiB
-unpacked payload staging copy, and 11.4 MiB of redundant screenshots were
-removed in earlier cleanup, reclaiming about 49.1 GiB then. This latest disk
-retirement freed about 32 GiB more. `/mnt/shared` now has 637 GiB free; the new
-E2E evidence directory uses about 1.6 MiB and `/mnt/shared/fieldos-releases`
-about 12 GiB. No FieldOS VM is running. The prior customer ISO and both
-checksum-verified payload archives remain until the updated customer image is
-built and tested.
+The previous customer ISO is superseded; its report and screenshots remain as
+historical evidence. The disposable customer VM disk is retired after its
+report is recorded; screenshots and report remain under
+`/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/`. After retiring the 34.8 GB allocated qcow2, superseded 12.0 GB customer ISO,
+and 5.52 GB stale payload archive, `/mnt/shared` has 642 GiB free. The current
+candidate ISO and validated payload remain; the 3.5 MiB report/screenshots are
+retained. Retirement hashes and paths are recorded in
+`/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261104-customer-85a33f8.txt`.
+No VM disk or temporary credentials belong in Git.
 No public release is approved. Do not recommend physical customer use until the
 blocked gates above are resolved.
