@@ -7,7 +7,7 @@ This review follows the installed desktop and its Start Here/Command Center path
 
 ## Tested installation and interface
 
-The current clean-source unattended test ISO at source `d8653336ea4597df8eb386a83d364c9dca19d290` passed a fresh no-NIC installation, firstboot, local inference, embeddings, Kiwix, visible Middle Tennessee map rendering, optional weather-pack import, and two reboots. Its report is `/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`; test ISO SHA-256 is `0bd97610307320f5dd725b94eead0745ba61fbff69083d5d43d7f4ff473e2781`.
+The current clean-source unattended test ISO at source `7e2674e285be158f56b556f048ad3c785d8b0cb9` passed a fresh no-NIC install, firstboot, local inference, embeddings, Kiwix, visible Middle Tennessee map rendering, all four core-pack activations/indexing, and two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T152431Z-3714447/report.md`; test ISO SHA-256: `0fcb81e0f5e7043024486a6caa11ca31a7e85c2ae17054e4649c1d8f7b3c5fc6`.
 
 The latest customer-mode ISO was built from clean source commit
 `85a33f866f1b929762e47cc5462b16cbbd84c43c`:
@@ -20,7 +20,7 @@ in `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`. At media handoff the VM
 powered off after the remove-media prompt; its installed disk booted on the next
 power-on without repair. Physical USB behavior remains untested.
 
-These are two distinct artifacts. The optional weather-pack transfer was exercised on the newer test ISO, not the customer ISO. Neither VM had a network adapter. These results do not test physical USB media handoff, external weather alerts, physical GPS, or broad geographic coverage.
+The unattended test image contains the four-pack core payload; the previous customer-mode ISO predates that change. Neither test VM had a network adapter. These results do not test physical USB media handoff, external weather alerts, physical GPS, or broad geographic coverage.
 
 ## Scenario walk-through
 
@@ -29,9 +29,9 @@ These are two distinct artifacts. The optional weather-pack transfer was exercis
 | Power outage and food spoilage | One CDC source document, “Eat Safe Food After a Power Outage,” is bundled and linked from Start Here/Source Library. The tested AI safety guard refuses food-safety prompts. | **Narrow help available.** No broader food storage, cooking-fuel, or household power reference was verified. |
 | Water service interruption | One CDC emergency-water PDF is bundled. It is available as a primary source; the AI guard refuses water-treatment questions. | **Narrow source available.** It does not cover every contaminant or local water advisory. Read the document directly; do not treat boiling as a universal treatment. |
 | Tornado | A text-only NWS “What to Do During a Tornado” reference is bundled and indexed. The AI guard refuses tested tornado-shelter prompts. | **Basic source available.** No live alerts, local shelter database, or current warning feed works offline. |
-| Hurricane or winter storm | Three NWS-derived FieldOS summaries exist in optional pack `us-weather-safety` 1.0.1. Pack installation and indexing passed on a read-only secondary ISO in the no-NIC test; physical USB was not tested. It is not included in the customer ISO. | **Optional only.** The installed baseline cannot be assumed to contain these documents; no forecasts or alerts are provided. |
+| Hurricane or winter storm | Three NWS-derived FieldOS summaries in `us-weather-safety` 1.0.1 were installed and indexed from the core payload in the clean-source no-NIC test. The previous customer ISO does not contain the update; its replacement needs an interactive test. | **Source available in the latest unattended test image.** No forecasts or alerts are provided. |
 | Wildfire or evacuation | No dedicated wildfire source is bundled. The AI guard refused one tested wildfire prompt, but prior tests found alternate wording can bypass the keyword guard. | **Not dependable.** A refusal is not safety certification or evacuation guidance. |
-| Flood | No flood guide is included in the customer baseline. Optional pack `us-flood-safety` 1.0.0 was transferred on a read-only secondary ISO in a no-NIC E2E; the source page rendered in Firefox and the document indexed into N.O.M.A.D. The pack remains separate from the customer ISO. | **Optional source available; absent from the customer baseline.** |
+| Flood | The FieldOS-edited NWS summary in `us-flood-safety` 1.0.0 was installed and indexed from the core payload in the clean-source no-NIC test. The previous customer ISO does not contain the update; its replacement needs an interactive test. | **Source available in the latest unattended test image.** No current flood alerts, flood-zone data, or safe routing are provided. |
 | Injury or medical emergency | No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
 | Travel, navigation, or loss of GPS | Firefox renders an interactive Middle Tennessee road map through zoom 13. Global and U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful local map viewer only.** It is useful only in the covered area and is not a navigation system. |
