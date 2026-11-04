@@ -3,24 +3,18 @@
 ## Customer installation
 
 **Current candidate status (2026-11-04):**
-`/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso`, source
-`c642fac6a74e94cdb301b9e730353b7cd53ab11d`, SHA-256
-`10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`. The ISO structure and offline payload checks passed. A fresh
-interactive install selected a disposable UEFI disk and user account, completed
-offline, and booted from the installed disk after the installer powered down at
-the media handoff. The branded desktop loaded; local AI generation, embeddings,
-Kiwix article retrieval, map rendering in Firefox, no-NIC isolation, and service
-persistence across two reboots passed. The detailed evidence is at
-`/mnt/shared/fieldos-e2e/customer-safety-7981801-r2-20261104/report.md`.
-This is VM evidence only; physical USB handoff, hardware compatibility, and
-redistribution clearance remain open.
-The installer asks the user to remove the USB and press Enter. In this QEMU run,
-Ubuntu powered the VM off at that handoff; powering it on again booted the
-installed disk. There was no disk repair or host-side change to the guest.
-Physical USB behavior is untested. Older ISO candidates are superseded;
-selected test reports and diagnostic records remain under
-`/mnt/shared/fieldos-e2e`.
-
+`/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso`, source
+`3054c59fe38295d54a316b4da22088582a23d3bc`, SHA-256
+`522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`. A fresh
+interactive customer-mode install in a disposable no-NIC UEFI VM selected the
+virtual disk and account, completed offline provisioning, booted from the
+installed disk, and passed two consecutive reboot checks. N.O.M.A.D., AI chat,
+embeddings, Kiwix retrieval, and zoom-13 Nashville map rendering were verified.
+Report and screenshots: `/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/report.md`.
+At media handoff, Ubuntu opened the virtual CD tray and powered the VM off; the
+operator started it again and it booted from the installed disk without repair.
+Physical USB handoff is untested. This candidate remains unpublished test
+material; see [`RELEASE.md`](RELEASE.md) for blockers.
 The customer-facing ISO is built with:
 
 ```sh
@@ -57,11 +51,12 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 [`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso
 ```
 
 The latest candidate’s QEMU interactive install, installed-disk boot, desktop,
-service checks, and two reboot checks passed in a disposable no-NIC VM. At the
+service checks, and two consecutive reboot checks passed in a disposable
+no-NIC VM. At the
 end, Ubuntu prompted for media removal and Enter; the VM powered off, and a
 subsequent power-on booted the installed disk without repair. Physical USB
 handoff remains untested. For future changes, use

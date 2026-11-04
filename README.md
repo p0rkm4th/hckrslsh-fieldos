@@ -16,26 +16,24 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest clean-source unattended acceptance passed at `7981801`; the separate
-interactive customer-mode install and two-reboot service checks passed on the
-`c642fac` customer candidate. `make check test` passed 68 tests at `7981801`.
-The installation is verified in a no-NIC QEMU VM, but this remains an
-engineering test candidate. See exact hashes, evidence, and outstanding release
-gates in [docs/RELEASE.md](docs/RELEASE.md).
+The current source at `3054c59` passed 69 unit tests and a fresh no-NIC
+unattended E2E acceptance. A separate clean interactive installation of the
+customer-mode ISO also booted from its installed disk and passed two consecutive
+reboot checks in a disposable UEFI VM. Report and screenshots:
+`/mnt/shared/fieldos-e2e/customer-regional-3054c59-20261104/report.md`. The installer
+powers the VM off at its virtual-media removal prompt; physical USB handoff is
+untested.
 
-The current customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso` (SHA-256
-`10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`). A
-fresh interactive install and two-reboot acceptance passed in a disposable
-UEFI VM. It predates the current source change for zoom-13 regional maps, so its
-maps remain zoom-5 overview data. The Middle Tennessee map is now part of the
-source payload build; a fresh ISO and E2E verification are in progress. FieldOS
-remains an engineering prototype: its safety guard can be bypassed with
-alternate phrasing, the reference library is small, and physical GPU support,
-LAN peer isolation, broad content coverage, and complete redistribution review
-remain unverified. Do not rely on the AI for emergency, medical, navigation,
-or other high-consequence decisions.
-
+Current customer test candidate: `/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso` (SHA-256
+`522abcbc4ba04593ce7d1813af43c5c86110b22a41239c13c3e9800f017d1686`). It
+includes a zoom-13 Middle Tennessee map that visibly rendered Nashville streets
+in Firefox. The world and other sample maps remain zoom-5 overviews; the library
+is limited to two CDC references, one NWS tornado guide, and 100 Wikipedia
+articles. The emergency chat guard passed five tested prompts but remains
+bypassable. FieldOS is still an engineering candidate, not an emergency-ready
+or customer-approved appliance. Physical hardware/GPU, LAN isolation, USB
+handoff, and complete redistribution reviews remain unverified or blocked. See
+[docs/RELEASE.md](docs/RELEASE.md) for exact evidence and limitations.
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,
@@ -48,7 +46,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
