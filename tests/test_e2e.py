@@ -6,13 +6,16 @@ from __future__ import annotations
 import base64
 import datetime as dt
 import hashlib
+import io
 import json
 import os
 import secrets
+import shlex
 import string
 import struct
 import subprocess
 import sys
+import tarfile
 import time
 import zlib
 from pathlib import Path
@@ -87,12 +90,30 @@ class AcceptanceRun:
         if self.memory_mib < 8192:
             raise TestFailure("The full offline acceptance requires at least 8192 MiB guest RAM")
         self.pack_archive = Path(os.environ["FIELDOS_TEST_CONTENT_PACK"]).expanduser() if os.environ.get("FIELDOS_TEST_CONTENT_PACK") else None
+        self.pack_manifest: dict | None = None
+        self.pack_target: str | None = None
         if self.pack_archive:
             self.pack_archive = self.pack_archive.resolve(strict=True)
             if not self.pack_archive.is_file() or not Path(f"{self.pack_archive}.sha256").is_file():
                 raise TestFailure("FIELDOS_TEST_CONTENT_PACK must name a bundle with its .sha256 sidecar")
             if not shutil.which("xorriso"):
                 raise TestFailure("xorriso is required to create offline content-transfer media")
+            unpacked = subprocess.run(
+                ["zstd", "--decompress", "--stdout", str(self.pack_archive)],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True,
+            ).stdout
+            with tarfile.open(fileobj=io.BytesIO(unpacked), mode="r:") as bundle:
+                manifests = [item for item in bundle if item.isfile() and
+                             item.name.startswith("content-packs/") and item.name.endswith("/manifest.json")]
+                if len(manifests) != 1:
+                    raise TestFailure("FIELDOS_TEST_CONTENT_PACK must contain exactly one pack manifest")
+                manifest_stream = bundle.extractfile(manifests[0])
+                if manifest_stream is None:
+                    raise TestFailure("Could not read test content-pack manifest")
+                self.pack_manifest = json.loads(manifest_stream.read())
+            self.pack_target = self.pack_manifest.get("installation", {}).get("target")
+            if self.pack_target not in {"storage/maps/pmtiles", "storage/references/documents"}:
+                raise TestFailure(f"No end-to-end activation check exists for pack target {self.pack_target!r}")
         self.run_dir = evidence_root / f"{self.stamp}-{os.getpid()}"
         self.run_dir.mkdir(parents=True, exist_ok=False)
         self.vm_name = f"fieldos-e2e-{self.stamp.lower()}"
@@ -242,18 +263,48 @@ autoinstall:
         if not self.pack_archive:
             self.record("offline optional content pack", "SKIP", "FIELDOS_TEST_CONTENT_PACK was not supplied")
             return
-        installed = self.check(
-            "offline content pack transfer and activation",
+        common = (
             "set -euo pipefail; device=$(blkid -t LABEL=FIELDOSPACK -o device); "
             "test -n \"$device\"; mkdir -p /mnt/fieldos-pack-test; "
             "mount -o ro \"$device\" /mnt/fieldos-pack-test; "
             "archive=$(find /mnt/fieldos-pack-test -maxdepth 1 -type f -name '*.tar.zst' -print -quit); "
             "test -n \"$archive\"; /opt/fieldos/scripts/fieldos-content-packs.py install \"$archive\"; "
-            "test -f /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles",
-            350,
         )
-        if "activated map:" not in installed:
-            raise TestFailure(f"Optional map bundle was not activated from removable media: {installed}")
+        if self.pack_target == "storage/maps/pmtiles":
+            installed = self.check(
+                "offline content pack transfer and map activation",
+                common + "test -f /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles",
+                350,
+            )
+            if "activated map:" not in installed:
+                raise TestFailure(f"Optional map bundle was not activated from removable media: {installed}")
+        else:
+            assert self.pack_manifest is not None
+            pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
+            quote = shlex.quote
+            checks = [
+                "test -s /var/lib/fieldos/storage/references/index.html",
+                f"grep -Fq {quote(pack_id)} /var/lib/fieldos/storage/references/index.html",
+            ]
+            for artifact in self.pack_manifest["artifacts"]:
+                artifact_path = f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{artifact['path']}"
+                checks.append(f"test -s {quote(artifact_path)}")
+            installed = self.check(
+                "offline content pack transfer and source-library activation",
+                common + " && ".join(checks), 350,
+            )
+            if "activated reference documents:" not in installed:
+                raise TestFailure(f"Reference documents were not activated from removable media: {installed}")
+            self.check(
+                "source library attribution and local document links",
+                f"grep -Fq 'not endorsed by the publishers' /var/lib/fieldos/storage/references/index.html && "
+                f"grep -Fq 'cdc-water-treatment.pdf' /var/lib/fieldos/storage/references/index.html && "
+                f"grep -Fq 'cdc-food-power-outage.pdf' /var/lib/fieldos/storage/references/index.html && "
+                f"test \"$(find /var/lib/fieldos/content-packs/{pack_id}/{version} -maxdepth 1 -type f -name '*.pdf' | wc -l)\" -eq 2",
+            )
+            self.record("offline optional content pack", "PASS",
+                        f"{pack_id} activated; source index and two PDFs are locally available")
+            return
         regions = self.check(
             "N.O.M.A.D. discovers the imported regional map",
             "curl --fail --silent --show-error http://127.0.0.1:8080/api/maps/regions",
@@ -497,7 +548,7 @@ autoinstall:
         launch = (
             f"uid={uid}; runtime=/run/user/$uid; wayland={wayland}; "
             "test -S \"$runtime/$wayland\" || exit 1; "
-            f"map_url='http://127.0.0.1:8080/maps{('?lat=36.1627&lng=-86.7816&zoom=13' if self.pack_archive else '')}'; "
+            f"map_url='http://127.0.0.1:8080/maps{('?lat=36.1627&lng=-86.7816&zoom=13' if self.pack_target == 'storage/maps/pmtiles' else '')}'; "
             "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
             "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
             "GDK_BACKEND=wayland /usr/bin/firefox --new-window \"$map_url\" "
@@ -514,16 +565,16 @@ autoinstall:
         while time.monotonic() < deadline:
             self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
             width, height, colors, water_pixels = self.screenshot_color_count(screenshot)
-            if water_pixels >= (5000 if not self.pack_archive else 0) and colors >= 64:
+            if water_pixels >= (5000 if self.pack_target != "storage/maps/pmtiles" else 0) and colors >= 64:
                 break
             time.sleep(5)
-        if colors < 64 or (not self.pack_archive and water_pixels < 5000):
+        if colors < 64 or (self.pack_target != "storage/maps/pmtiles" and water_pixels < 5000):
             raise TestFailure(
                 f"Map viewport did not render PMTiles water tiles: {water_pixels} water pixels, "
                 f"{colors} sampled colors in {width}x{height} screenshot"
             )
         self.record("offline map rendering", "PASS",
-                    f"Firefox rendered {'Middle Tennessee at zoom 13' if self.pack_archive else 'world/regional map'} "
+                    f"Firefox rendered {'Middle Tennessee at zoom 13' if self.pack_target == 'storage/maps/pmtiles' else 'world/regional map'} "
                     f"in {width}x{height} VNC screenshot; {water_pixels} sampled water pixels, "
                     f"{colors} colors; {screenshot.name}")
 
@@ -547,8 +598,53 @@ autoinstall:
         self.record("FieldOS desktop defaults", "PASS",
                     "effective GNOME session uses the FieldOS wallpaper, dark palette, and both FieldOS dock shortcuts")
 
+    def verify_reference_library_render(self) -> None:
+        if self.pack_target != "storage/references/documents":
+            return
+        uid = self.guest("id -u fieldos")
+        wayland = self.guest(
+            f"find /run/user/{uid} -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1"
+        ).strip()
+        if not wayland.startswith("wayland-"):
+            raise TestFailure(f"No active Wayland session for source-library browser check: {wayland!r}")
+        self.guest(
+            f"uid={uid}; runtime=/run/user/$uid; wayland={wayland}; "
+            "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
+            "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
+            "GDK_BACKEND=wayland /usr/bin/firefox --new-window "
+            "file:///var/lib/fieldos/storage/references/index.html "
+            ">/tmp/fieldos-reference-firefox.log 2>&1 </dev/null &",
+            timeout=30,
+        )
+        time.sleep(10)
+        screenshot = self.run_dir / "reference-library-render.png"
+        self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
+        width, height, colors, _ = self.screenshot_color_count(screenshot)
+        if colors < 32:
+            raise TestFailure(
+                f"Reference-library Firefox view was not visibly rendered: {colors} sampled colors "
+                f"in {width}x{height} screenshot"
+            )
+        self.record(
+            "offline reference library browser view", "PASS",
+            f"Firefox opened the locally installed source index in a {width}x{height} screenshot; "
+            f"{colors} sampled colors; {screenshot.name}; inspect screenshot for human-visible content",
+        )
+
     def run_checks(self, reboot: bool = False) -> None:
         self.check("disconnected guest", "test -z \"$(ip -4 route show default)\" && ip -brief link")
+        if reboot and self.pack_target == "storage/references/documents":
+            assert self.pack_manifest is not None
+            pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
+            document_paths = [
+                f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{item['path']}"
+                for item in self.pack_manifest["artifacts"]
+            ]
+            document_checks = " && ".join(f"test -s {shlex.quote(path)}" for path in document_paths)
+            self.check(
+                "reference pack persists after reboot",
+                "test -s /var/lib/fieldos/storage/references/index.html && " + document_checks,
+            )
         ps = self.check("container set", "docker compose --project-directory /opt/fieldos/services -f /opt/fieldos/services/compose.yaml ps --format json", 500)
         try:
             services = [json.loads(line) for line in ps.splitlines() if line.strip()]
@@ -847,6 +943,7 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
             self.install_test_content_pack()
             self.run_checks()
             self.verify_map_render()
+            self.verify_reference_library_render()
             self.do_reboot(1)
             self.do_reboot(2)
             self.record("acceptance run", "PASS", "Installation, offline services, inference, reference retrieval, maps, and two reboots passed")

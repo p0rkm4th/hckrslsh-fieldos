@@ -1,8 +1,10 @@
 {
   "schema_version": 1,
   "manifest_schema": "content-pack.schema.json",
-  "status": "architecture-only",
-  "packs": [],
+  "status": "ready",
+  "packs": [
+    "../content-packs/us-water-food-emergency/manifest.json"
+  ],
   "planned_categories": [
     "agriculture",
     "wildlife-overlanding",

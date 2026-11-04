@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "id": "us-water-food-emergency",
+  "version": "1.0.0",
+  "title": "U.S. Emergency Water and Food Safety",
+  "description": "Two CDC source documents for emergency drinking-water treatment and food safety after a power outage. This is a small starter set, not a complete disaster library.",
+  "category": "water-food",
+  "sources": [
+    {
+      "id": "cdc-water-safety",
+      "name": "CDC STACKS: Make Water Safe During an Emergency (2022; current PDF checksum-verified)",
+      "url": "https://stacks.cdc.gov/view/cdc/128149",
+      "license": "U.S. government work; CDC STACKS record marks the item Public Domain",
+      "attribution": "Centers for Disease Control and Prevention (CDC), reproduced unmodified; freely available from CDC STACKS.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "cdc-food-power-outage",
+      "name": "CDC STACKS: Eat Safe Food After a Power Outage (2020; checksum-identical to CDC's 2025 PDF)",
+      "url": "https://stacks.cdc.gov/view/cdc/88473",
+      "license": "U.S. government work; CDC STACKS record marks the item Public Domain",
+      "attribution": "Centers for Disease Control and Prevention (CDC), reproduced unmodified; freely available from CDC STACKS.",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "cdc-water-treatment.pdf",
+      "size_bytes": 730926,
+      "sha256": "c39b55b4d8f3dd40ecd2b13175f7661b52dfc6e73e4a24ef189de64fb9d513b1",
+      "source": "cdc-water-safety",
+      "license": "Public Domain; exact CDC STACKS item identified above"
+    },
+    {
+      "path": "cdc-food-power-outage.pdf",
+      "size_bytes": 1675372,
+      "sha256": "0982174617e2b3405e966b0b1dc2838e3ce92dfad3185da3d450b525a62a7ebf",
+      "source": "cdc-food-power-outage",
+      "license": "Public Domain; exact CDC STACKS item identified above"
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering content review",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2025-11-24"
+  }
+}

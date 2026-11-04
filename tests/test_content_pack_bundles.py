@@ -177,6 +177,60 @@ class ContentPackBundleTests(unittest.TestCase):
             CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
         self.assertEqual(existing.read_bytes(), b"keep the user's data")
 
+    def test_reference_documents_activate_in_local_source_index(self):
+        artifact = self.pack / "water-guide.pdf"
+        artifact.write_bytes(b"%PDF-1.4 synthetic test document")
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["title"] = "Emergency Water Reference"
+        manifest["description"] = "Synthetic source-pack test, not safety guidance."
+        manifest["category"] = "water-food"
+        manifest["installation"]["target"] = "storage/references/documents"
+        manifest["authority"] = "authoritative-reference"
+        manifest["artifacts"] = [{
+            "path": artifact.name, "size_bytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "source": "fixture-source", "license": "Public Domain",
+        }]
+        manifest_path.write_text(json.dumps(manifest))
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+
+        first = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        index = self.install_root / "storage/references/index.html"
+        page = index.read_text()
+        self.assertIn("activated reference documents:", first)
+        self.assertIn("Emergency Water Reference", page)
+        self.assertIn("Fixture source", page)
+        self.assertIn("Test fixture", page)
+        self.assertIn("water-guide.pdf", page)
+        self.assertIn("../../content-packs/fixture-reference/1.0.0/water-guide.pdf", page)
+
+        second = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertIn("already installed:", second)
+        self.assertIn("water-guide.pdf", index.read_text())
+
+    def test_reference_activation_refuses_to_replace_operator_index(self):
+        artifact = self.pack / "guide.pdf"
+        artifact.write_bytes(b"%PDF-1.4 fixture")
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["installation"]["target"] = "storage/references/documents"
+        manifest["artifacts"] = [{
+            "path": artifact.name, "size_bytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "source": "fixture-source", "license": "CC0-1.0",
+        }]
+        manifest_path.write_text(json.dumps(manifest))
+        refs = self.install_root / "storage/references"
+        refs.mkdir(parents=True)
+        index = refs / "index.html"
+        index.write_text("operator's own index")
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+
+        with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "non-FieldOS reference index"):
+            CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertEqual(index.read_text(), "operator's own index")
+
 
 if __name__ == "__main__":
     unittest.main()
