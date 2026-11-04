@@ -15,9 +15,10 @@ PDFs about emergency water treatment and food safety after a power outage.
 Firstboot indexes these and the attributed NWS tornado guide in N.O.M.A.D.'s
 local source library. This is a starter set, not a comprehensive disaster
 library.
-The current source payload build adds the pinned Middle Tennessee map described
-below. It is not in the retained customer ISO until a replacement image passes
-fresh acceptance. The sample PMTiles region is extracted offline from the bundled world archive
+The retained customer candidate also contains the pinned Middle Tennessee map
+described below. Fresh no-NIC E2E and interactive customer installation checks
+confirmed it is available offline and visibly renders in Firefox. The sample
+PMTiles region is extracted offline from the bundled world archive
 by `build/prepare-payload.sh`; its bounding box and zoom levels are declared in
 `payload/manifests/maps.json`, and the payload records its generated checksum
 and size. The ZIM's Wikipedia content is CC BY-SA; map data is an ODbL Produced
@@ -73,23 +74,26 @@ contains a 19.6 MB Middle Tennessee road and land-use map, zoom 0–13, coverage
 source build, checksum, bounds, attribution, and ODbL Produced Work status are
 recorded in `payload/manifests/maps.json` and generated `map-payload.json`. The
 earlier separate-pack import test rendered it in Firefox at zoom 13 and
-survived two reboots; the current source integrates it directly into the core
-map payload, and the fresh acceptance run is pending. It is a geographic
+survived two reboots. The current customer candidate integrates it directly
+into the core map payload; a fresh customer install rendered it at zoom 13 and
+the map persisted through two reboots. It is a geographic
 reference, not turn-by-turn navigation, GPS positioning, trails, or emergency
 advice. GPS/GIS integration is not
 part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 
 The extensible pack format and planned categories are documented in
-[`CONTENT-PACKS.md`](CONTENT-PACKS.md). On source `1fb6806`, the current customer
-candidate installed and indexed both CDC PDFs and the NWS tornado text in
-N.O.M.A.D. Fresh customer-mode and unattended no-NIC tests retrieved the CDC
-food-safety and NWS tornado guidance with source references. Evidence is in
-`/mnt/shared/fieldos-e2e/customer-nws-1fb6806/` and
-`/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`. This remains a
-narrow starter set, not a complete emergency library. The Middle Tennessee
-candidate is separate and unreleased; agricultural, wildlife, first-aid, and
-comprehensive reference packs still need requirements and licensing review.
+[`CONTENT-PACKS.md`](CONTENT-PACKS.md). An earlier candidate on source
+`1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
+N.O.M.A.D.; the historical E2E and customer-mode
+evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current candidate on
+source `3054c59` also installed the references; its fresh E2E and customer-mode
+results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
+starter set, not a complete emergency library. The Middle Tennessee map is
+included in the current customer candidate; agricultural, wildlife,
+first-aid, and comprehensive reference packs still need requirements and
+licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

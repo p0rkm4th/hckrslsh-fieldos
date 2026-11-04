@@ -6,11 +6,13 @@ possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-packs.json`. The catalog contains the core reference
 packs and planned categories; this is not a comprehensive customer library.
 The bounded Middle Tennessee map previously passed offline transfer and
-activation testing as a pack. The current source instead builds that same
+activation testing as a pack. The current customer candidate builds that same
 checksum-pinned map directly into the core PMTiles payload, where firstboot
-activates it alongside the overview maps. Fresh current-source acceptance is
-required before claiming the refreshed ISO contains it. Other regional and
-reference collections remain modular packs outside the core catalog.
+activates it alongside the overview maps. Fresh no-NIC E2E and interactive
+customer-install acceptance confirmed it visibly renders at zoom 13 and
+persists across two reboots. The exact candidate and reports are recorded in
+[`RELEASE.md`](RELEASE.md). Other regional and specialist reference collections
+remain modular packs outside the core image.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -40,10 +42,10 @@ catalog's `core_packs` are also embedded in the offline payload by `make payload
 and activated during firstboot. Other catalog packs remain separate from the
 core image. Archives contain the manifest and only the artifacts it declares,
 so stray or unreviewed files in a staging directory are excluded. The core
-pack's manifest and source PDFs are staged in Git; its portable archive is
-generated during payload construction. An independently staged Middle
-Tennessee candidate remains outside the catalog pending final content and
-redistribution review.
+packs' manifests and source documents are staged in Git; their portable
+archives are generated during payload construction. The Middle Tennessee map
+is part of the core map payload. Its geographic coverage is limited, and its
+attribution and redistribution review are recorded in the payload manifest.
 
 On an installed system, verify and add a bundle with:
 
@@ -114,8 +116,8 @@ The core catalog also includes `us-tornado-safety`, a text-only conversion of
 the National Weather Service's “What to Do During a Tornado” page. Its source,
 NOAA reuse basis, attribution, access date, and conversion limits are recorded
 in its manifest and document. It adds narrow tornado guidance, not a first-aid
-or comprehensive all-hazards library. The Middle Tennessee map remains a
-separate unreleased pack; agriculture, wildlife, first-aid, and comprehensive
+or comprehensive all-hazards library. The Middle Tennessee map is included in
+the core map payload; agriculture, wildlife, first-aid, and comprehensive
 reference packs still need requirements and licensing review.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
@@ -156,9 +158,11 @@ bounded HTTP range requests; the manifest records its expected size and
 SHA-256, ODbL Produced Work status, attribution, bounds, and zoom range. The
 earlier import test rendered this map in Firefox at zoom 13 and passed two
 reboots on source `cf151a20520d844dcb7bf983a3d92013d539fce9` (report
-`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`). The refreshed
-core-payload build and current-source E2E are in progress; the current ISO does
-not include the map until a replacement candidate passes acceptance.
+`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`). The current
+candidate also includes the map and passed a fresh no-NIC E2E plus a separate
+interactive customer-mode installation. Firefox visibly rendered the map at
+zoom 13, and map availability persisted across two reboots. See
+[`RELEASE.md`](RELEASE.md) for the artifact hash and exact evidence paths.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
 parcel, or emergency guidance. GPS/GIS support needs a defined hardware
