@@ -22,8 +22,13 @@ The last validated build remains `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
 The working source now adds a small adapter that uploads checksum-verified
 FieldOS reference-pack PDFs and text files into N.O.M.A.D.'s existing RAG
 Knowledge Base and waits for indexed chunks. Unit tests pass, but this change
-has not yet been built into an ISO or verified in a fresh guest. The existing
-candidate and reports below still describe the previously tested source.
+has not passed a fresh guest test. The first E2E ISO built from `250fbf0`
+failed firstboot because the build staging list omitted the new indexer script;
+the report and failure logs remain at
+`/mnt/shared/fieldos-e2e/20261104T050709Z-3090544/report.md`. The ISO build and
+verification lists are corrected, and a clean-source rerun is required. The
+existing customer candidate and prior PASS reports below still describe the
+previously tested source.
 
 - Last validated source: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
 - Latest unattended E2E report:
