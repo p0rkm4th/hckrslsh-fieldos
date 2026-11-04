@@ -805,6 +805,16 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         health = self.check("N.O.M.A.D. API", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8080/api/health")
         if not health:
             raise TestFailure("N.O.M.A.D. health endpoint returned no body")
+        registered = self.check(
+            "N.O.M.A.D. FieldOS service registry",
+            "set -a; . /opt/fieldos/services/.env; set +a; "
+            "docker exec -e MYSQL_PWD=\"$DB_PASSWORD\" nomad_mysql "
+            "mysql --protocol=tcp --host=127.0.0.1 --user=nomad_user --database=nomad "
+            "--batch --skip-column-names --execute=\"SELECT COUNT(*) FROM services "
+            "WHERE service_name IN ('nomad_qdrant','nomad_ollama','nomad_kiwix_server') AND installed=1;\"",
+        )
+        if registered.strip() != "3":
+            raise TestFailure(f"Expected three FieldOS-managed N.O.M.A.D. services to be registered; got {registered!r}")
         tags = self.check("Ollama model inventory", "curl --fail --silent http://127.0.0.1:11434/api/tags")
         if "qwen3:0.6b-q4_K_M" not in tags or "nomic-embed-text:v1.5" not in tags:
             raise TestFailure("Bundled chat and embedding models are not both present in Ollama")

@@ -14,14 +14,17 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Last validated source revision: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`. The
-working tree adds native N.O.M.A.D. Knowledge Base ingestion for bundled CDC
-documents. Its first fresh E2E run failed because the new indexer was omitted
-from the ISO staging list; the run report and logs are retained, the staging
-and verifier lists are corrected, and a fresh E2E rerun is required before
-replacing the candidate below.
+Last validated source revision: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
+Newer source `a2c7459` adds N.O.M.A.D. Knowledge Base ingestion but failed its
+fresh E2E run: Qdrant, Ollama, and Kiwix were running in Compose while their
+N.O.M.A.D. service records remained marked uninstalled. The CDC PDF uploaded
+but did not index. The failure report and logs are retained at
+`/mnt/shared/fieldos-e2e/20261104T053509Z-3109787/`. The working tree now
+registers these Compose-managed services idempotently during firstboot and
+asserts that state in E2E; this correction still needs a fresh guest run.
+It also rejects stale offline payload archives missing a required core pack.
 
-The clean-source offline E2E passed with no virtual NIC, including firstboot,
+The earlier clean-source offline E2E passed with no virtual NIC, including firstboot,
 seven services, local chat and embeddings, Kiwix retrieval, Firefox map and
 reference-library rendering, the bundled CDC starter pack, and two reboots.
 The separate interactive customer-mode installation completed on a blank
