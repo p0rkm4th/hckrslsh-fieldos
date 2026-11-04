@@ -8,16 +8,16 @@
 `81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`. Structure
 and offline payload checks passed. A fresh no-NIC UEFI QEMU install completed
 with interactive account and disk selection. The ISO was ejected and the
-installed EFI disk booted to the branded desktop; the test harness had to
-power-cycle the VM, so the installer's own Restart/media handoff is still
-unverified for this candidate. Local N.O.M.A.D. chat generated a response,
+installed EFI disk booted to the branded desktop; a separate fresh retest
+confirmed the installer Restart/media handoff in the same QEMU process after
+ejecting the ISO at the guest prompt. Local N.O.M.A.D. chat generated a response,
 Kiwix and maps loaded, and two guest restarts returned to the desktop with the
 local applications available. See the detailed customer report at
 `/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
 
-The prior `0085b7a` customer candidate had a QEMU media-removal handoff pass and
-is retained as a rollback/reference artifact while the newer candidate's
-handoff is unresolved. It is not the current source candidate.
+The prior `0085b7a` ISO was retired after this candidate passed the handoff
+retest. Its checksum and retirement record remain beside the current candidate;
+historical test evidence is retained under `/mnt/shared/fieldos-e2e`.
 
 This is an engineering candidate, not a customer-ready field appliance. The
 bundled Kiwix archive contains only 100 articles and returned no result for
@@ -42,10 +42,10 @@ provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
 “Restart now.” For USB installation, remove the USB media when prompted so
-firmware can boot the installed disk. For the current candidate, installed-disk
-boot was demonstrated after the harness ejected the virtual media and
-power-cycled QEMU. The installer's Restart button/media handoff itself remains
-unverified; physical USB behavior is also untested. Review the remaining release gates in
+firmware can boot the installed disk. For the current candidate, the installer
+Restart action reached the explicit media-removal prompt; after ejecting the ISO
+and pressing Enter, the same QEMU process booted the installed disk. Physical
+USB behavior is still untested. Review the remaining release gates in
 [`RELEASE.md`](RELEASE.md) before installing on physical customer hardware.
 FieldOS leaves the customer identity and storage sections interactive. Ubuntu
 documents that an autoinstall `shutdown` action is ignored when interactive
@@ -67,8 +67,8 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso
 ```
 
-The QEMU interactive install and installed-disk boot passed; the installer
-Restart/media handoff remains partial. For future changes, use a disposable VM
+The QEMU interactive install, installed-disk boot, and installer Restart/media
+handoff passed in disposable no-NIC VMs. For future changes, use a disposable VM
 with a disposable virtual disk and no network adapter. Do not write this
 candidate to physical media for customer use until all release gates pass.
 The E2E command below uses a separate unattended test image and does not

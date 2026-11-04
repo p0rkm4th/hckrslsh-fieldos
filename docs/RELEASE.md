@@ -7,15 +7,18 @@ water/food reference pack, Firefox access to its source index and PDF, and two
 reboots. A customer-mode ISO built from source `412883c` has now completed a
 fresh interactive UEFI install in a no-NIC disposable VM and booted from its
 installed disk. Local N.O.M.A.D. inference, Kiwix, and maps were checked in the
-installed desktop, with two guest restarts. The installer Restart button/media
-handoff was not confirmed because the harness ejected the ISO and cold-booted
-the disk after a QMP reset. Field-use readiness remains failed: the core Kiwix
+installed desktop, with two guest restarts. A separate fresh retest confirmed
+the installer Restart/media handoff: the same QEMU process rebooted to the
+media-removal prompt, the ISO was ejected there, and the installed disk booted
+without a host reset. Field-use readiness remains failed: the core Kiwix
 fixture has only 100 articles, the bundled map lacks useful local detail, and
 an earthquake answer was generic, unsourced, and referred to calling 911.
 Physical hardware, LAN peer isolation, GPU acceleration, and redistribution
 approval remain open.
 
 ## Current source and artifacts
+
+- Customer installer handoff retest: `/mnt/shared/fieldos-e2e/customer-handoff-412883c-retest/report.md` (PASS in disposable no-NIC QEMU). Screenshots and QMP record document the installer completion prompt, same-process reboot, media eject prompt, installed-disk boot, desktop, chat, Kiwix, and maps. The interactive customer account was temporary; its password was removed.
 
 - Latest clean-source E2E source revision:
   `09501cb6e6fb4e049da585a610176937a5a52b94`.
@@ -73,7 +76,7 @@ approval remain open.
 | Local map usefulness | FAIL | Nashville at 10 km scale displayed mostly blank background and sparse linework; the separately tested zoom-13 pack is not bundled. |
 | Branded desktop | PASS | Customer install showed wallpaper, dock, and N.O.M.A.D. launcher. |
 | Customer interactive install | PASS in QEMU | Fresh interactive account/disk setup and completed installation; installed EFI disk booted with ISO removed. Physical USB workflow remains untested. |
-| Installer Restart/media handoff | PARTIAL | ISO was ejected; harness QMP reset/power-cycle and cold-booted installed disk. Installer Restart button itself was not confirmed. |
+| Installer Restart/media handoff | PASS in QEMU | Fresh retest kept the ISO attached through Restart, ejected it at the guest prompt, then booted installed disk in the same QEMU process; see `customer-handoff-412883c-retest/report.md`. |
 | Two-reboot persistence | PASS in QEMU | Guest returned to branded desktop twice; local map and Kiwix loaded and new chat inference worked after the second restart. Full container inventory/embeddings after reboot are covered by unattended E2E only. |
 | Prepper safety/readiness | FAIL | Earthquake answer was generic, uncited, referred to 911/local guidelines, and is not reliable for disconnected emergency use. |
 | Physical hardware / GPU | NOT TESTED | No physical laptop or GPU runtime validation. |

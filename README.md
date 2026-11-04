@@ -33,10 +33,13 @@ on a disposable VM, and the installed disk booted to the branded desktop.
 N.O.M.A.D. chat generated a real local response, Kiwix showed the bundled
 100-article Wikipedia fixture, and ProtoMaps rendered the low-zoom U.S. map.
 Two guest restarts returned to the desktop and the local map, Kiwix, and chat
-remained accessible. The installer Restart button/media handoff was not
-confirmed: after ejecting the ISO, the QEMU harness power-cycled and booted the
-installed disk. The full report and screenshots are at
+remained accessible. A fresh handoff retest clicked Restart with the ISO
+attached, ejected it at Ubuntu's media-removal prompt, and pressed Enter; the
+same QEMU process booted the installed disk without a host reset. The full
+report and screenshots are at
 `/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
+Handoff evidence is also at
+`/mnt/shared/fieldos-e2e/customer-handoff-412883c-retest/report.md`.
 This is a working offline prototype, not an emergency-ready appliance: the
 reference archive has no water-treatment result, the map lacks local street
 detail, and an earthquake prompt produced generic uncited advice that referred
