@@ -4,9 +4,10 @@
 
 ## Current source and artifacts
 
-The statewide-map work is based on source `7e6fa24` and a dirty working tree;
-the exact source changes are not yet committed. A clean-source release build
-has not been made from these changes.
+The statewide-map E2E ran from base commit `7e6fa24` with a dirty worktree;
+the tested map and harness changes were subsequently committed and pushed as
+`3a49627d669cfe0db84547cecf763f185d9e8532`. This makes the report's test
+state reviewable, but a clean-source rebuild and rerun have not been completed.
 
 - Latest full no-NIC E2E report:
   `/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`.
@@ -56,7 +57,7 @@ has not been made from these changes.
 | Reboot persistence | PASS in latest unattended test | Two consecutive reboots; service/data checks in report. |
 | Hardware adaptation | PARTIAL | CPU test and simulated fixtures only; no physical CPU/GPU compatibility survey or GPU validation. |
 | Network/security boundary | PARTIAL | No-NIC test and container egress checks passed. LAN peer exposure test remains open; Docker socket grants privileged host access to upstream admin components. |
-| Field reference breadth | FAIL for field readiness | Core sources remain limited. The optional CDC checklist is not a first-aid manual; agriculture and wildlife coverage are absent. |
+| Field reference breadth | FAIL for field readiness | Core sources remain limited. An optional 2026 Southeastern vegetable handbook is cataloged but not yet activated/tested in the guest; the CDC checklist is not a first-aid manual and wildlife coverage is absent. |
 | Redistribution review | BLOCKED | Exact software, image, model, map and document licensing/attribution review is incomplete. |
 | Physical customer readiness | BLOCKED | Physical installation, hardware coverage, LAN testing, content breadth and rights review remain. |
 
@@ -66,11 +67,14 @@ The new statewide map renders at zoom levels 0–13 in the tested no-NIC guest,
 including the eight locations listed above. The low-zoom world overview remains
 available. This is a map viewer, not routing or emergency navigation. The
 optional `us-basic-emergency-health` pack contains one CDC checklist, not
-procedural first-aid guidance, and was not transferred in the latest E2E.
-Wikipedia remains a small test fixture. Do not describe the current library as
-a comprehensive preparedness, medical, agriculture, wildlife, or technical
-reference collection. See [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md)
-and [`CONTENT-PACKS.md`](CONTENT-PACKS.md).
+procedural first-aid guidance, and was not transferred in the latest E2E. The
+optional `us-southeastern-vegetable-growers` pack contains an unmodified,
+searchable 2026 agriculture handbook with publisher-stated reprint terms; it
+has not yet been installed or indexed on FieldOS. Wikipedia remains a small
+test fixture. Do not describe the current library as a comprehensive
+preparedness, medical, agriculture, wildlife, or technical reference
+collection. See [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md) and
+[`CONTENT-PACKS.md`](CONTENT-PACKS.md).
 
 The latest map and payload were built from a worktree based on `7e6fa24`; the
 report is valid test evidence for the recorded image and worktree state, but

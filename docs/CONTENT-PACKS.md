@@ -31,6 +31,33 @@ Planned pack categories are:
 - First aid
 - Regional maps, GPS, and GIS data
 
+## Southeastern vegetable production reference
+
+`us-southeastern-vegetable-growers` version `2026.1` is an optional
+Tennessee-relevant agriculture pack. It contains the unmodified, searchable
+397-page 2026 Southeastern U.S. Vegetable Crop Handbook (3,991,344 bytes;
+SHA-256
+`f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c`). The
+handbook's official publication page lists the last revision as January 2026,
+describes the included crop, soil, pest, planting-date, fertilizer, and food
+safety topics, and states that Virginia Cooperative Extension materials may
+be publicly used, reprinted, or cited with specified institutional and author
+credit. The intact PDF preserves the handbook's full contributor and photo
+credits. Source and reuse record: [Virginia Cooperative Extension publication
+page](https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html). This is a
+regional commercial-vegetable reference, not a complete farm manual, livestock
+guide, or Tennessee-specific calendar. The source record advises that local
+markets, weather, and location can require changed practices or planting dates.
+It is optional and not part of the ISO core payload. Searchability was checked
+by extracting 1.8 MB of text from the PDF; actual N.O.M.A.D. indexing and
+guest removable-media transfer remain to be tested. The local installation
+smoke test verified archive checksum/manifest validation and activated the
+source PDF and generated Source Library index in a temporary storage root; it
+did not exercise N.O.M.A.D. indexing. The portable archive is
+`/mnt/shared/fieldos-content-packs/content-packs/us-southeastern-vegetable-growers-2026.1.tar.zst`
+(3,273,118 bytes; SHA-256
+`e7dd06a657973a15bd75a1d9986ec774aef7f0b86c1f88ce4e4b25416cac7e30`).
+
 Each populated pack has its own stable ID and version. Its manifest records
 each source and URL, license and attribution, every artifact's size and
 SHA-256, and installation target and requirements. Geographic packs also

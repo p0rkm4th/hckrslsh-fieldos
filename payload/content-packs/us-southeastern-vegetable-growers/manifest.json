@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "us-southeastern-vegetable-growers",
+  "version": "2026.1",
+  "title": "2026 Southeastern U.S. Vegetable Crop Handbook",
+  "description": "A searchable 397-page production handbook for commercial vegetable growers across the southeastern U.S., including Tennessee. Recommendations are regional guidelines and may need local adaptation.",
+  "category": "agriculture",
+  "sources": [
+    {
+      "id": "sevew-2026-handbook",
+      "name": "Southeastern Vegetable Extension Workers, 2026 Vegetable Crop Handbook for Southeastern United States",
+      "url": "https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html",
+      "license": "Virginia Cooperative Extension states its materials are available for public use, reprint, or citation without further permission when credited to the author, Virginia Cooperative Extension, Virginia Tech, and Virginia State University. The handbook is reproduced unmodified with its contributor and photo credits intact.",
+      "attribution": "Southeastern Vegetable Extension Workers, 2026 Vegetable Crop Handbook for Southeastern United States, 27th edition. Senior editor A. L. Wszelaki, University of Tennessee. Published by Virginia Cooperative Extension, Virginia Tech, and Virginia State University. Reproduced unmodified; no endorsement by these institutions is implied.",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "2026-vegetable-crop-handbook.pdf",
+      "size_bytes": 3991344,
+      "sha256": "f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c",
+      "source": "sevew-2026-handbook",
+      "license": "Reproduced unmodified under the publisher's public-use/reprint terms; attribution and contributor/photo credits retained."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS source, applicability, and reuse-terms review; not agronomic review",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2026-01-16"
+  }
+}

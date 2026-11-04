@@ -7,6 +7,8 @@ fixture, low-zoom overview maps, and a zoom-13 statewide Tennessee map,
 CDC water/food references, and attributed FieldOS-edited NWS tornado, flood,
 hurricane, and winter-storm summaries for offline use. The owner uses
 N.O.M.A.D. as the main interface.
+An optional, separately transferable 2026 Southeastern vegetable-growing
+handbook is available in the source catalog; it is not part of the tested ISO.
 This is still an engineering prototype, not a complete emergency or navigation
 appliance.
 
@@ -18,9 +20,11 @@ build outputs and are excluded from Git.
 ## Current status
 
 Latest statewide-map offline E2E: base commit `7e6fa24486f4fd500c7be9191119480acfe5762c`
-with local map and verifier changes (the report records a dirty worktree).
-`make check && make test` passed 73 tests. A fresh no-NIC VM installed Ubuntu,
-completed firstboot, ran seven services, generated local inference, loaded
+with local map and verifier changes, subsequently published in commit
+`3a49627d669cfe0db84547cecf763f185d9e8532` (the report records a dirty
+worktree; a clean-source rebuild and rerun remain open). `make check && make test`
+passed 73 tests after adding the optional agriculture pack. A fresh no-NIC VM
+installed Ubuntu, completed firstboot, ran seven services, generated local inference, loaded
 embeddings, searched the bundled reference, visibly rendered Firefox maps at
 Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
 and rural Big South Fork, and passed two reboots. Report and screenshots:
