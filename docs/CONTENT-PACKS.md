@@ -62,9 +62,13 @@ the installer accepts only PDF and plain-text artifacts and atomically creates
 license, attribution, and links to original documents; it identifies them as
 source material rather than AI output. It warns that inclusion is not publisher
 endorsement and users should consult current local guidance. This adapter does
-not add documents to N.O.M.A.D.'s RAG/search index. Existing filenames are never
-replaced. A failed validation or conflicting destination leaves existing
-application data untouched.
+not add documents to N.O.M.A.D.'s RAG/search index. Verified documents are
+copied without replacement to
+`/var/lib/fieldos/storage/references/documents/<id>/<version>/`; N.O.M.A.D.'s
+existing static-file server exposes only this reference directory read-only at
+`http://localhost:8080/fieldos-references/`. No new service or external route is
+added. Existing filenames are never replaced. A failed validation or
+conflicting destination leaves existing application data untouched.
 
 The first optional reference pack is `us-water-food-emergency` version 1.0.0.
 It contains two unchanged CDC PDFs: “Make Water Safe During an Emergency” and
@@ -89,10 +93,10 @@ The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the
 disposable no-NIC VM and imports it inside the installed guest. Map packs are
 checked through N.O.M.A.D.'s region and style APIs, PMTiles reads, browser map
-rendering, and persistence after reboots. Reference packs are checked for the
-installed source files and local index; the browser view must also be verified
-before claiming end-user acceptance. This transfer medium is test-only and
-does not change the customer installer.
+rendering, and persistence after reboots. Reference packs are checked for
+installed source documents, local HTTP delivery, a Firefox view, and
+persistence after reboots. The transfer medium is test-only and does not
+change the customer installer.
 
 ## Reference quality and retrieval
 

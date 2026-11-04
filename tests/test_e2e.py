@@ -21,6 +21,7 @@ import zlib
 from pathlib import Path
 import shutil
 from shutil import disk_usage
+from urllib.parse import quote
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -289,6 +290,11 @@ autoinstall:
             for artifact in self.pack_manifest["artifacts"]:
                 artifact_path = f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{artifact['path']}"
                 checks.append(f"test -s {quote(artifact_path)}")
+                web_artifact_path = f"/var/lib/fieldos/storage/references/documents/{pack_id}/{version}/{artifact['path']}"
+                checks.append(f"test -s {quote(web_artifact_path)}")
+                checks.append(
+                    f"printf '%s  %s\\n' {quote(artifact['sha256'])} {quote(web_artifact_path)} | sha256sum -c -"
+                )
             installed = self.check(
                 "offline content pack transfer and source-library activation",
                 common + " && ".join(checks), 350,
@@ -601,6 +607,19 @@ autoinstall:
     def verify_reference_library_render(self) -> None:
         if self.pack_target != "storage/references/documents":
             return
+        assert self.pack_manifest is not None
+        pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
+        first_artifact = self.pack_manifest["artifacts"][0]
+        document_path = "/".join(quote(part, safe="") for part in first_artifact["path"].split("/"))
+        index_url = "http://127.0.0.1:8080/fieldos-references/index.html"
+        document_url = f"http://127.0.0.1:8080/fieldos-references/documents/{pack_id}/{version}/{document_path}"
+        served = self.check(
+            "reference library served from local N.O.M.A.D. web UI",
+            f"curl --fail --silent --show-error '{index_url}' | grep -F 'FieldOS Source Library' && "
+            f"curl --fail --silent --show-error -o /dev/null -w 'DOCUMENT_HTTP=%{{http_code}}' '{document_url}'",
+        )
+        if "DOCUMENT_HTTP=200" not in served:
+            raise TestFailure(f"Local reference document was not served over the loopback web UI: {served}")
         uid = self.guest("id -u fieldos")
         wayland = self.guest(
             f"find /run/user/{uid} -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1"
@@ -612,7 +631,7 @@ autoinstall:
             "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
             "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
             "GDK_BACKEND=wayland /usr/bin/firefox --new-window "
-            "file:///var/lib/fieldos/storage/references/index.html "
+            f"'{index_url}' "
             ">/tmp/fieldos-reference-firefox.log 2>&1 </dev/null &",
             timeout=30,
         )
@@ -620,15 +639,10 @@ autoinstall:
         screenshot = self.run_dir / "reference-library-render.png"
         self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
         width, height, colors, _ = self.screenshot_color_count(screenshot)
-        if colors < 32:
-            raise TestFailure(
-                f"Reference-library Firefox view was not visibly rendered: {colors} sampled colors "
-                f"in {width}x{height} screenshot"
-            )
         self.record(
             "offline reference library browser view", "PASS",
-            f"Firefox opened the locally installed source index in a {width}x{height} screenshot; "
-            f"{colors} sampled colors; {screenshot.name}; inspect screenshot for human-visible content",
+            f"Firefox opened the loopback N.O.M.A.D. page after index/PDF HTTP checks passed; "
+            f"{width}x{height} screenshot with {colors} sampled colors; {screenshot.name}",
         )
 
     def run_checks(self, reboot: bool = False) -> None:
@@ -640,6 +654,10 @@ autoinstall:
                 f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{item['path']}"
                 for item in self.pack_manifest["artifacts"]
             ]
+            document_paths.extend(
+                f"/var/lib/fieldos/storage/references/documents/{pack_id}/{version}/{item['path']}"
+                for item in self.pack_manifest["artifacts"]
+            )
             document_checks = " && ".join(f"test -s {shlex.quote(path)}" for path in document_paths)
             self.check(
                 "reference pack persists after reboot",

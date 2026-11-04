@@ -203,11 +203,14 @@ class ContentPackBundleTests(unittest.TestCase):
         self.assertIn("Fixture source", page)
         self.assertIn("Test fixture", page)
         self.assertIn("water-guide.pdf", page)
-        self.assertIn("../../content-packs/fixture-reference/1.0.0/water-guide.pdf", page)
+        self.assertIn("documents/fixture-reference/1.0.0/water-guide.pdf", page)
+        published = self.install_root / "storage/references/documents/fixture-reference/1.0.0/water-guide.pdf"
+        self.assertEqual(published.read_bytes(), artifact.read_bytes())
 
         second = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
         self.assertIn("already installed:", second)
         self.assertIn("water-guide.pdf", index.read_text())
+        self.assertEqual(published.read_bytes(), artifact.read_bytes())
 
     def test_reference_activation_refuses_to_replace_operator_index(self):
         artifact = self.pack / "guide.pdf"
