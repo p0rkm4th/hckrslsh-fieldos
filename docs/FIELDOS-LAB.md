@@ -39,6 +39,50 @@ only the intended management connection is reachable, and application/admin
 ports are not accessible from the LAN. Record the test date and results in the
 private operations record; publish only a sanitized summary.
 
+### Guest-side route and firewall checks
+
+On a guest that uses a management interface, IPv6 router advertisements can
+install a default route even when IPv4 has none. Disable route acceptance
+persistently for the management interface, its default template, and the
+system-wide setting (substitute the guest's interface name):
+
+```ini
+# /etc/sysctl.d/90-fieldos-kasm-isolation.conf
+net.ipv6.conf.all.accept_ra=0
+net.ipv6.conf.default.accept_ra=0
+net.ipv6.conf.<management-interface>.accept_ra=0
+```
+
+Apply the settings, remove any already installed IPv6 default route, and check
+both route families, DNS configuration, and the firewall after reboot:
+
+```sh
+sudo sysctl --system
+sudo ip -6 route del default   # only if one exists
+ip -4 route show default
+ip -6 route show default
+resolvectl status
+sudo ufw status verbose
+```
+
+The management firewall should allow the required desktop port only from the
+Kasm host, deny other incoming connections, and deny general outbound/routed
+traffic. Test from the Kasm node that the desktop port is reachable while
+FieldOS application ports are blocked. A guest firewall on a shared bridge is
+still not layer-2 isolation; keep that limitation explicit and prefer a
+dedicated isolated bridge or secured console tunnel when available.
+
+On 2026-11-04, a live check of the existing lab guest found an IPv6 default
+route learned by router advertisement. Persistent RA acceptance was disabled
+on the guest, and the route was removed. Afterward, the guest had no IPv4 or
+IPv6 default route; UFW denied incoming, outgoing, and routed traffic by
+default, with RDP allowed only from the Kasm node and local Docker bridge
+exceptions. A connection check from the Kasm node reached RDP and was blocked
+on the FieldOS UI, Kiwix, logs, Ollama, and Qdrant ports. A direct IPv6
+connection attempt also failed. This hardens the existing lab guest but does
+not establish layer-2 isolation or verify the replacement desktop through an
+authenticated Kasm session.
+
 ## Snapshot, reset, and recovery
 
 Keep one known-good snapshot while validating a replacement. Record its
