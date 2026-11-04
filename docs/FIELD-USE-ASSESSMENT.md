@@ -38,13 +38,13 @@ external weather alerts, physical GPS, or broad geographic coverage.
 | Injury or medical emergency | An optional one-page CDC checklist names skills to learn but provides no procedures. No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
 | Travel, navigation, or loss of GPS | The latest unattended image visibly renders detailed zoom-13 maps at eight Tennessee urban and rural locations; world/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
-| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
+| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. An optional 2026 Southeastern vegetable handbook is cataloged but was not installed in this test. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
 
 ## AI and source-library behavior
 
 The bundled Qwen3 0.6B model generates a real general response offline. The five tested high-risk prompt categories (food outage, tornado shelter, chemical water treatment, wildfire evacuation, and severe bleeding) returned a fixed notice directing the user to original sources, with no citations. The UI itself worked, but this means the AI is not an emergency-response feature. The keyword guard is incomplete and can be bypassed with alternate phrasing; a blocked prompt is not proof that an unblocked answer is safe. The original source files remain the authority where provided.
 
-The Source Library and Kiwix provide access to locally stored content, but content is sparse. The flood pack appeared in the browser source index after transfer and its document was indexed by N.O.M.A.D.; the generated page is visually plain and metadata-heavy. Start Here accurately describes many limits and explains optional pack transfer; reference-pack installation currently requires terminal commands, which is a barrier for a nontechnical field user.
+The Source Library and Kiwix provide access to locally stored content, but content is sparse. The flood pack appeared in the browser source index after transfer and its document was indexed by N.O.M.A.D.; the generated page is visually plain and metadata-heavy. The optional agriculture handbook has not yet been installed/indexed on the VM. Start Here accurately describes many limits and explains optional pack transfer; reference-pack installation currently requires terminal commands, which is a barrier for a nontechnical field user.
 
 ## Verdict and release implications
 

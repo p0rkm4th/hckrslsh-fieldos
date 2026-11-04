@@ -111,9 +111,12 @@ evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
 and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `21ad4fc` installed and indexed all four core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
 starter set, not a complete emergency library. The catalog includes an
 optional one-page CDC practical-skills checklist, but it teaches no first-aid
-procedures and is not a medical manual. Agricultural, wildlife, procedural
-first-aid, and comprehensive reference packs still need requirements and
-licensing review. The newest statewide map is verified in the unattended E2E;
+procedures and is not a medical manual. The optional 2026 Southeastern
+Vegetable Crop Handbook provides an attributed, searchable agriculture
+reference for Tennessee; it is separate from the tested core ISO and has not
+yet been installed/indexed in a guest. Wildlife, procedural first-aid, and
+comprehensive reference packs still need source selection and licensing review.
+The newest statewide map is verified in the unattended E2E;
 the current interactive customer candidate still has Middle Tennessee-only
 detail.
 
