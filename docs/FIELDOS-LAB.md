@@ -88,7 +88,9 @@ settings persisted through a controlled guest reboot: the default routes and
 management IPv6 address remained absent, GNOME and Docker were active, all
 seven FieldOS containers restarted, and the local UI, Kiwix, Dozzle, Ollama,
 and Qdrant endpoints responded. RDP remained reachable from the Kasm node;
-the five application ports remained blocked there.
+the five application ports remained blocked there. A post-reboot chat request
+returned `2 + 2 = 4`, the bundled embedding model returned a 768-dimensional
+vector, and Kiwix listed the bundled `Wikipedia 100` archive.
 
 ## Snapshot, reset, and recovery
 
