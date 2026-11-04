@@ -51,6 +51,8 @@ system-wide setting (substitute the guest's interface name):
 net.ipv6.conf.all.accept_ra=0
 net.ipv6.conf.default.accept_ra=0
 net.ipv6.conf.<management-interface>.accept_ra=0
+# Optional when the management path does not require IPv6:
+net.ipv6.conf.<management-interface>.disable_ipv6=1
 ```
 
 Apply the settings, remove any already installed IPv6 default route, and check
@@ -74,14 +76,14 @@ dedicated isolated bridge or secured console tunnel when available.
 
 On 2026-11-04, a live check of the existing lab guest found an IPv6 default
 route learned by router advertisement. Persistent RA acceptance was disabled
-on the guest, and the route was removed. Afterward, the guest had no IPv4 or
-IPv6 default route; UFW denied incoming, outgoing, and routed traffic by
-default, with RDP allowed only from the Kasm node and local Docker bridge
-exceptions. A connection check from the Kasm node reached RDP and was blocked
-on the FieldOS UI, Kiwix, logs, Ollama, and Qdrant ports. A direct IPv6
-connection attempt also failed. This hardens the existing lab guest but does
-not establish layer-2 isolation or verify the replacement desktop through an
-authenticated Kasm session.
+on the guest, its IPv6 management address was disabled, and the route was
+removed. Afterward, the guest had no IPv4 or IPv6 default route and no global
+IPv6 address on its management interface; UFW denied incoming, outgoing, and
+routed traffic by default, with RDP allowed only from the Kasm node and local
+Docker bridge exceptions. A connection check from the Kasm node reached RDP
+and was blocked on the FieldOS UI, Kiwix, logs, Ollama, and Qdrant ports. This
+hardens the existing lab guest but does not establish layer-2 isolation or
+verify the replacement desktop through an authenticated Kasm session.
 
 ## Snapshot, reset, and recovery
 
