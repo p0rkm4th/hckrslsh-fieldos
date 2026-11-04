@@ -3,7 +3,7 @@
   "id": "us-flood-safety",
   "version": "1.0.0",
   "title": "U.S. Flood Safety Overview",
-  "description": "Optional offline FieldOS-edited summary based on National Weather Service flood preparedness and response pages. No live warnings, forecasts, local flood-zone data, or route planning.",
+  "description": "Offline FieldOS-edited summary based on National Weather Service flood preparedness and response pages. No live warnings, forecasts, local flood-zone data, or route planning.",
   "category": "weather-disaster",
   "sources": [
     {
@@ -44,7 +44,7 @@
   "installation": {
     "target": "storage/references/documents",
     "requirements": [],
-    "optional": true
+    "optional": false
   },
   "authority": "authoritative-reference",
   "review": {
