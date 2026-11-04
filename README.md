@@ -3,9 +3,10 @@
 FieldOS is an offline capable x86-64 field computer built on Ubuntu Desktop
 and [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad).
 It bundles the container images, local AI models, a 100-article Wikipedia
-fixture, zoom-5 basemaps, and a small attributed CDC water/food source pack for
-offline use. The owner uses N.O.M.A.D. as the main interface. This is still an
-engineering prototype, not a complete emergency or navigation appliance.
+fixture, zoom-5 basemaps, CDC water/food references, and an attributed NWS
+tornado guide for offline use. The owner uses N.O.M.A.D. as the main interface.
+This is still an engineering prototype, not a complete emergency or navigation
+appliance.
 
 This repository contains the installer source, service configuration, hardware
 selection logic, payload manifests, tests, and release instructions. ISOs,
@@ -14,29 +15,25 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Current source revision: da61a843313c443c0e349a75b6395e48c0f73c20.
-`make check` and all 61 unit tests passed. A fresh no-NIC unattended install
-passed the offline acceptance checks, including firstboot, seven services,
-CPU chat generation, embeddings, cited retrieval from both bundled CDC PDFs,
-Kiwix search, Firefox map rendering, and two reboots. The same source was
-installed through the separate interactive customer installer to a blank UEFI
-disk; the user selected disk and account credentials, booted the installed
-system, and verified FieldOS services, local retrieval, and the visible map.
-See the exact hashes, test reports, and remaining gates in
-[docs/RELEASE.md](docs/RELEASE.md).
+Latest automated acceptance: the no-NIC E2E passed installation, offline
+provisioning, local chat and embeddings, reference retrieval, Kiwix, actual
+Firefox rendering of the map and Source Library, and persistence across two
+reboots. It also passed five tested high-risk prompt cases through a new
+server-side safety guard. The E2E used a dirty worktree at base commit `1fb6806`,
+so this is not yet clean-source release evidence. `make check test` currently
+passes 68 tests. See the exact report, image hash, limitations, and next gates
+in [docs/RELEASE.md](docs/RELEASE.md).
 
-Current customer-mode engineering candidate:
-/mnt/shared/fieldos-releases/fieldos-customer-da61a84.iso (11,987,386,368
-bytes), SHA-256
-0325b6b244cbf3042a1787c85715e052f806bc432d455e512cc4dcb5e70b6931. It is
-not an approved release. At the end of installation Ubuntu asks the user to
-remove the installation medium and press Enter; this test then powered off,
-and powering the machine on again booted the installed disk without repair.
-The bundled CDC and National Weather Service references are a small starter
-set, the Kiwix archive has 100 articles, maps stop at zoom 5, and AI output is
-not emergency authority. Physical hardware, GPU
-acceleration, broad content coverage, LAN security, and final redistribution
-review remain unvalidated.
+The retained customer candidate
+`/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso` predates the
+latest safety guard. It is kept only until a replacement customer-mode image
+is built and tested. An earlier interactive installation passed in a
+disposable UEFI VM, but it does not validate the new changes. FieldOS remains
+an engineering prototype: its safety guard can be bypassed with alternate
+phrasing, the reference library is small, bundled maps stop at zoom 5, and
+physical GPU support, LAN peer isolation, broad content coverage, and complete
+redistribution review remain unverified. Do not rely on the AI for emergency,
+medical, navigation, or other high-consequence decisions.
 
 ## Build and test
 
@@ -50,7 +47,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-da61a84.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

@@ -9,10 +9,12 @@ The current customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 0.6B Q4_K_M for chat, `nomic-embed-text:v1.5` for embeddings, and
-the `us-water-food-emergency` core pack. That small pack contains two unchanged
-CDC PDFs about emergency water treatment and food safety after a power outage;
-firstboot activates an attributed local source index. It is a starter set, not
-a comprehensive disaster library.
+the `us-water-food-emergency` core pack, plus the text-only
+`us-tornado-safety` reference. The water/food pack contains two unchanged CDC
+PDFs about emergency water treatment and food safety after a power outage.
+Firstboot indexes these and the attributed NWS tornado guide in N.O.M.A.D.'s
+local source library. This is a starter set, not a comprehensive disaster
+library.
 The sample PMTiles region is extracted offline from the bundled world archive
 by `build/prepare-payload.sh`; its bounding box and zoom levels are declared in
 `payload/manifests/maps.json`, and the payload records its generated checksum
@@ -56,6 +58,12 @@ the source review and the text conversion's limits. This is narrow tornado
 guidance, not a first-aid or comprehensive emergency library; it provides no
 live warnings. Open source documents and follow current local instructions.
 FieldOS must not be used as a substitute for medical or emergency guidance.
+Current scenario testing found that N.O.M.A.D. can attach unrelated sources
+and generate unsafe, unsupported advice: it claimed boiling removes chemical
+contaminants even though the CDC PDF explicitly says it does not, and it gave
+wildfire evacuation instructions attributed to the unrelated tornado guide.
+Until retrieval is made reliably source-bounded and retested, open the source
+documents directly and do not use AI answers for disaster decisions.
 
 The bundled world map and sample regional map both top out at zoom level 5.
 They support broad orientation and acceptance testing, but do not provide
@@ -73,16 +81,15 @@ part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 
 The extensible pack format and planned categories are documented in
-[`CONTENT-PACKS.md`](CONTENT-PACKS.md). The `us-water-food-emergency` pack is
-embedded in the current candidate. On source
-`da61a843313c443c0e349a75b6395e48c0f73c20`, fresh no-NIC E2E and interactive
-customer-mode tests confirmed its two CDC PDFs were indexed in N.O.M.A.D. and
-retrievable with citations. The E2E and customer reports are at
-`/mnt/shared/fieldos-e2e/20261104T060325Z-3127648/report.md` and
-`/mnt/shared/fieldos-e2e/customer-da61a84/report.md`. This remains a narrow
-starter pack, not a complete emergency library. The Middle Tennessee candidate
-is separate and unreleased; agricultural, wildlife, first-aid, and comprehensive
-reference packs still need requirements and licensing review.
+[`CONTENT-PACKS.md`](CONTENT-PACKS.md). On source `1fb6806`, the current customer
+candidate installed and indexed both CDC PDFs and the NWS tornado text in
+N.O.M.A.D. Fresh customer-mode and unattended no-NIC tests retrieved the CDC
+food-safety and NWS tornado guidance with source references. Evidence is in
+`/mnt/shared/fieldos-e2e/customer-nws-1fb6806/` and
+`/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`. This remains a
+narrow starter set, not a complete emergency library. The Middle Tennessee
+candidate is separate and unreleased; agricultural, wildlife, first-aid, and
+comprehensive reference packs still need requirements and licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

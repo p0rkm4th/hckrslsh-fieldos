@@ -2,112 +2,108 @@
 
 **Status: engineering test candidate; not approved for customer or emergency use.**
 
-## Current source and test artifacts
+## Latest source and acceptance evidence
 
-- Source revision: da61a843313c443c0e349a75b6395e48c0f73c20, pushed to origin/main.
-- Source worktree was clean for the current acceptance build.
-- make check and 61 unit tests passed.
-- Fresh unattended no-NIC E2E report with optional Middle Tennessee map-pack
-  transfer:
-  /mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md.
-  Source revision: cf151a20520d844dcb7bf983a3d92013d539fce9; test ISO SHA-256:
-  f82809d05c009d021b2427b3ce3f68664c942e33eb12ae2fe0870df5b9f26b38.
-  Ubuntu installation, firstboot, AI chat, embeddings, CDC retrieval, Kiwix,
-  offline map-pack transfer and zoom-13 Firefox rendering, and two reboots
-  passed. The temporary test ISO and guest disk were retired; report, logs,
-  and screenshots remain.
-- Current customer-mode candidate:
-  /mnt/shared/fieldos-releases/fieldos-customer-da61a84.iso
-  (11,987,386,368 bytes), SHA-256
-  0325b6b244cbf3042a1787c85715e052f806bc432d455e512cc4dcb5e70b6931.
-  It is a local engineering artifact, not a published release binary.
-- Interactive customer installation report and selected evidence:
-  /mnt/shared/fieldos-e2e/customer-da61a84/report.md.
-- Current reusable offline payload:
-  /mnt/shared/fieldos-payload (about 5.2 GiB). Do not remove while it is the
-  input for the candidate rebuild.
+- Source base: `1fb68063c82c12ba9fc9504ba90fbbbc2a8f876f` (`1fb6806`). The
+  latest E2E was run from this revision with uncommitted changes (`source
+  worktree dirty: true`). Its result is useful engineering evidence, but is
+  not yet attributable to a clean published source revision.
+- Latest automated no-NIC E2E report:
+  `/mnt/shared/fieldos-e2e/20261104T094150Z-3342937/report.md`.
+  Test ISO SHA-256:
+  `04beb5d2467d59fac9448ad14b23ed3a2a7bae9995c051674ce37cef4e05b61b`.
+  Report, installation/firstboot logs, map and source-library screenshots are
+  retained. The disposable guest disk and test ISO were removed after the run.
+- The latest run passed unattended Ubuntu installation, offline provisioning,
+  all seven containers, local Ollama generation and embeddings, indexed CDC
+  and NWS source retrieval, Kiwix search, actual Firefox map and source-library
+  rendering, and essential checks after two reboots. The guest had no virtual
+  NIC and container egress was blocked.
+- The new deterministic chat guard returned the fixed safety notice without
+  citations for five tested high-risk categories through both normal and
+  streaming API paths. This only establishes those test cases; the keyword
+  guard can miss differently phrased requests and is not a general safety
+  system.
+- Optional content-pack transfer was **SKIPPED** in this latest run because
+  its fixture duplicated a pack already bundled. A separate prior run at
+  source `1fb6806` passed offline transfer and Firefox rendering of the
+  Middle Tennessee pack at zoom 13. That optional pack is not in the current
+  baseline ISO.
+- `make check test` passed after the latest source changes: 68 unit tests,
+  content-pack validation, Python compilation, and shell syntax checks.
+- The customer ISO currently retained at
+  `/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso` is an older
+  candidate (SHA-256
+  `d312bbf785f23a9b0b909ca683ce02a884cc0a707dec532bef2e94d82e25f288`). It
+  predates the server-side safety guard and must not be mistaken for an image
+  containing the latest changes. Keep it until a replacement customer-mode
+  install is tested.
+- An interactive customer-mode installation passed earlier on the 1fb6806
+  baseline: the operator selected the virtual disk and account, installation
+  completed, the media handoff powered down, and the installed disk booted and
+  passed service checks. Evidence:
+  `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/report.md`. It does not test the
+  latest uncommitted safety changes.
+- The payload input is `/mnt/shared/fieldos-payload` (about 5.2 GiB); it is
+  required to build the next customer candidate.
 
-## Verified behavior
+## AI safety finding
 
-The unattended E2E test installed Ubuntu into a disposable UEFI disk with no
-virtual NIC. Offline firstboot completed; all seven containers started. The
-optional Middle Tennessee map pack was transferred from read-only media,
-validated, registered by N.O.M.A.D., rendered by Firefox at zoom 13, and
-remained available after both reboots. Ollama
-generated the acceptance marker, the embedding endpoint returned a 768-element
-vector, and N.O.M.A.D. indexed both CDC reference PDFs. A real food-safety RAG
-query returned the four-hour guidance with a CDC source. Kiwix served its
-100-article archive and found a test article. Firefox visibly rendered the
-bundled U.S. overview map. Essential service and content checks passed after
-two consecutive reboots. The report records container egress blocking and the
-absence of a guest uplink adapter.
+Prepper-style probes of the bundled `qwen3:0.6b-q4_K_M` model showed that the
+upstream N.O.M.A.D. prompt alone did not keep unsupported emergency answers
+within retrieved sources. The model claimed boiling makes chemically
+contaminated water safe and invented wildfire advice. These outputs are
+retained in `/mnt/shared/fieldos-e2e/20261104T092055Z-3331284/rag-policy-acceptance.json`.
 
-The separate customer ISO was installed interactively to a blank 80 GiB UEFI
-qcow2 disk with 4 vCPU, 8 GiB RAM, and no NIC. The installer displayed the
-interactive disk and account steps, confirmed the selected vda disk, and
-completed installation. At the final prompt, Ubuntu requested removal of the
-installation medium and Enter. Ejecting the ISO and pressing Enter powered the
-VM off; a subsequent power-on booted the installed EFI disk without repair or
-changing guest state. This models a user removing USB and powering the computer
-on again after the installer shuts it down; physical USB behavior is untested.
-
-Customer firstboot completed with status complete. N.O.M.A.D. health returned
-{"status":"ok"}; seven containers were running. Ollama generated
-FIELDOS_CUSTOMER_INSTALL_OK; the embedding API returned 768 dimensions. The
-knowledge interface retrieved two indexed CDC documents: a food-outage query
-returned four-hour guidance, and a water-treatment query returned the one-minute
-boil guidance plus the document's 6,500-foot/three-minute qualification, with
-CDC citations. Kiwix returned its Wikipedia catalog and a search result. Firefox
-visibly rendered the bundled U.S. map in
-/mnt/shared/fieldos-e2e/customer-da61a84/customer-map.png. The guest had no
-physical or virtual uplink NIC. After one OS reboot, the boot ID changed and
-N.O.M.A.D., all seven containers, the two indexed documents, Kiwix, and model
-inventory were present again. Runtime records and logs are retained beside the
-report. E2E evidence covers two reboots on the same source revision.
+The current work patches the pinned upstream prompt and adds a deterministic
+server-side keyword guard for emergency, medical, water-treatment, food-safety,
+and evacuation questions. Tested requests receive a fixed message directing
+users to original offline sources, with no citations attached. Alternative
+wording can bypass the keyword guard. FieldOS must not be represented as safe
+for emergency, medical, navigation, or other high-consequence decisions; users
+must consult original authoritative material and suitable trained help.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline installation | PASS | Exact source and test ISO hash above; no NIC; local APT and image loading. |
-| Interactive customer installation | PASS in disposable QEMU | Interactive vda and user setup; installed EFI disk booted and services passed. |
-| Installer media handoff | PASS with user power cycle | Remove medium, press Enter, then power on after Ubuntu shutdown. No guest repair; physical USB behavior not yet tested. |
-| Offline provisioning | PASS | Firstboot status complete; runtime log and seven-container inventory retained. |
-| N.O.M.A.D. and knowledge retrieval | PASS for bundled sources | API healthy; both included CDC PDFs indexed and retrieved with source titles. Scope is only these two PDFs. |
-| Local chat and embeddings | PASS, functional check only | Chat generated exact test tokens; embedding returned 768 dimensions. Not a safety certification. |
-| Kiwix | PASS, limited | Bundled Wikipedia 100 archive served and a search result opened. |
-| Offline maps | PASS at overview level; regional pack PASS | Bundled map screenshot visibly renders U.S. labels, roads, water, and attribution at zoom 5. Optional Middle Tennessee pack imported offline and rendered in Firefox at zoom 13; it is not included in the ISO or release-approved. |
-| Reboot persistence | PASS | Two reboots on unattended E2E; one reboot on interactive customer install; service and indexed content checks repeated. |
-| No-network operation | PASS in QEMU | No guest NIC and no container egress in E2E. LAN behavior with a NIC is a separate open review. |
-| Hardware selection | PARTIAL | The 8 GiB virtual guest selected the minimal CPU model and passed local generation. No physical GPU validation. |
-| Content breadth and field readiness | FAIL | Two CDC PDFs, a 100-article ZIM, and zoom-5 maps are fixtures/starter content, not a complete preparedness library or navigation map. |
-| Security and LAN exposure | PARTIAL | Disconnected guest validated. LAN exposure still needs testing. N.O.M.A.D. admin and Dozzle have Docker socket access. |
-| Redistribution review | BLOCKED | Complete component/model/map/document licensing and attribution review before distribution. |
-| Physical/customer release | BLOCKED | Physical USB, supported hardware, content breadth, LAN security, redistribution, and recovery validation remain. |
+| Fresh unattended offline installation | PASS, dirty source | Latest report above; rerun from clean commit for release provenance. |
+| Offline provisioning and local services | PASS, dirty source | Firstboot complete; seven containers and local APT/images checked. |
+| Chat and embedding inference | PASS, dirty source | Local generation and embedding endpoint passed. |
+| High-risk chat guard | PASS for tested phrases only | Five categories plus streaming returned fixed notice/no citations; incomplete keyword coverage remains a release limitation. |
+| Reference retrieval and Kiwix | PASS, limited | CDC/NWS indexed sources and Kiwix search; content breadth is small. |
+| Offline map rendering | PASS at overview level | Firefox screenshot; bundled PMTiles max zoom 5. |
+| Optional regional pack | PASS in prior run; SKIP latest | Prior zoom-13 transfer/render evidence; pack not included in current ISO. |
+| Two-reboot persistence | PASS, dirty source | Services, model inventory, references and state checked after both reboots. |
+| Interactive customer install | PASS on older baseline only | Earlier disposable QEMU installation; latest guard not yet included or tested. |
+| Hardware adaptation | PARTIAL | CPU-only 8 GiB VM profile tested; no physical GPU validation. |
+| Connected/LAN security | PARTIAL | Loopback bind and QEMU user-mode checks exist; peer LAN scan remains unverified. N.O.M.A.D. and Dozzle mount the Docker socket. |
+| Content breadth | FAIL for field-readiness | Miniature Wikipedia, narrow emergency sources, and zoom-5 overview map are starter fixtures. |
+| Redistribution review | BLOCKED | Complete review of software, model, map, and reference rights before any public binary distribution. |
+| Clean-source release candidate | NOT YET TESTED | Commit current changes; rerun E2E and interactive customer installation from that exact clean revision. |
 
 ## Field-use limits
 
-The bundled source pack covers emergency drinking-water treatment and food
-safety after power loss. It does not provide substantive first aid, severe
-weather, wildfire, agriculture, mechanical repair, or navigation guidance. The
-Kiwix archive contains 100 articles. World and sample U.S. PMTiles top out at
-zoom 5 and do not provide street/trail navigation detail. A Middle Tennessee
-zoom-13 candidate was validated separately using the offline pack-transfer
-workflow, but is not included in this ISO and is not approved for public
-redistribution. GPS/GIS integration is unverified.
+The baseline has two CDC water/food documents, one NWS tornado guide, a
+100-article Wikipedia archive, and low-zoom world/sample U.S. map data. The
+bundled map stops at zoom 5 and is not suitable for street or trail navigation.
+It lacks substantial agriculture, first aid, wildfire, mechanical repair, and
+regional topographic collections. The separately tested Middle Tennessee pack
+is not included in the current ISO. GPS/QGIS and physical GPU acceleration are
+unverified. The emergency-chat keyword guard is bypassable and does not make the
+small model an authority.
 
-The small local model can produce irrelevant or unsafe text. Even when a tested
-retrieval answer cites a document, consult the original source before acting.
-Do not use AI output as medical, emergency, navigation, or technical authority.
+## Build, evidence, and artifact handling
 
-## Security, licensing, and release handling
+The repository branch currently contains three local commits beyond its public
+remote and has uncommitted source/documentation changes. Publish only after
+reviewing the exact commit range for secrets and private infrastructure data.
+Do not publish an ISO until the clean-source E2E and separate customer-mode
+installation gates pass. Current test and release storage is on `/mnt/shared`;
+the latest report and screenshots are retained, and its disposable VM disk is
+retired. Keep the existing older customer ISO until the replacement has passed
+interactive installation, then retire that exact superseded file and record
+the reclaimed space.
 
-The no-NIC test confirms disconnected operation, not isolation after enabling a
-LAN adapter. Review published ports before connected use. nomad_admin and
-nomad_dozzle mount the Docker socket, which grants powerful host control.
-Review docs/REDISTRIBUTION.md, docs/OFFLINE-CONTENT.md, and
-docs/CONTAINER-IMAGES.md before public release. Keep ISO and payload inputs,
-VM disks, credentials, and evidence out of public Git. Retain the current ISO,
-core payload, meaningful test reports/logs, and one recovery point during lab
-replacement. Remove only exact superseded artifacts after verifying no active
-process uses them.
+Never infer successful operation from an ISO build or container startup alone.
+The current candidate is not a customer-ready emergency appliance.
