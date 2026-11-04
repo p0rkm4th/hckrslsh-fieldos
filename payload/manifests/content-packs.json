@@ -8,7 +8,8 @@
     "../content-packs/us-weather-safety/manifest.json",
     "../content-packs/us-flood-safety/manifest.json",
     "../content-packs/us-basic-emergency-health/manifest.json",
-    "../content-packs/us-southeastern-vegetable-growers/manifest.json"
+    "../content-packs/us-southeastern-vegetable-growers/manifest.json",
+    "../content-packs/us-niosh-heat-first-aid/manifest.json"
   ],
   "core_packs": [
     "../content-packs/us-water-food-emergency/manifest.json",

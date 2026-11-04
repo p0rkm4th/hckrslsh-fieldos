@@ -224,6 +224,35 @@ until broader content and redistribution review are complete.
 
 The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. An earlier no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; that run used an uncommitted worktree and is integration evidence, not a clean-source release acceptance. The pack is now a core pack in the source catalog. A clean-source E2E at `7e2674e` verified the four-pack core payload, including flood and weather, after two reboots. The separate customer-mode ISO still needs rebuilding and interactive testing.
 
+## Optional NIOSH heat-illness first-aid text
+
+`us-niosh-heat-first-aid` version `2024.1` is an optional, text-only searchable
+transcription of NIOSH Publication 2024-100, *Heat Stress: First Aid for Heat
+Illness*. The exact [CDC Stacks record](https://stacks.cdc.gov/view/cdc/138337)
+marks the 2023 source item Public Domain. The original two-page PDF contains
+third-party stock photographs credited to iStock and Thinkstock and CDC
+agency marks; those are excluded from this transcription. Source wording is
+retained with only layout normalized. The pack includes source attribution,
+no-endorsement language, and the free original source URL in its manifest and
+document. See [CDC material-use guidance](https://www.cdc.gov/other/agencymaterials.html)
+for attribution and logo restrictions. This is a narrow, worker-focused
+reference, not a clinical review or general first-aid manual; consult current
+emergency guidance and professional care.
+
+The plain-text artifact is 6,593 bytes, SHA-256
+`51c4b1f22ce0d7402ce02c05d436bd4e92e132d5c3b04e930cfc794d6a3c3165`. Its
+optional archive is
+`/mnt/shared/fieldos-content-staging/niosh-heat-first-aid-2024/bundle/content-packs/us-niosh-heat-first-aid-2024.1.tar.zst`,
+4,136 bytes, SHA-256
+`761fc09ba843a69591021e820050eabdaa7cf98f004f3e0d6bfc698cee7f35df`. It is
+registered as optional and is not included in the installer payload. The
+customer-mode test guest accepted it from read-only optical transfer media
+with networking absent; the local Source Library listed and served the full
+document (HTTP 200), and N.O.M.A.D. indexed it with three embedded chunks.
+This verifies the existing pack activation path for this text document, not a
+physical USB workflow or clinical correctness. The local activation evidence
+is `/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/niosh-pack-activation.md`.
+
 ## Reference quality and retrieval
 
 Manifest `authority` distinguishes authoritative references from community
