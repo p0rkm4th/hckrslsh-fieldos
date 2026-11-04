@@ -18,7 +18,14 @@ level 5. Field readiness remains **FAIL**.
 
 ## Current source and artifacts
 
-- Current source: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
+The last validated build remains `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
+The working source now adds a small adapter that uploads checksum-verified
+FieldOS reference-pack PDFs and text files into N.O.M.A.D.'s existing RAG
+Knowledge Base and waits for indexed chunks. Unit tests pass, but this change
+has not yet been built into an ISO or verified in a fresh guest. The existing
+candidate and reports below still describe the previously tested source.
+
+- Last validated source: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
 - Latest unattended E2E report:
   `/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/report.md`
   (PASS). The test ISO SHA-256 is

@@ -14,7 +14,10 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Current source revision: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
+Last validated source revision: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`. The
+working tree adds native N.O.M.A.D. Knowledge Base ingestion for bundled CDC
+documents; this change has passed unit tests but needs a fresh offline E2E and
+customer-mode ISO validation before replacing the candidate below.
 
 The clean-source offline E2E passed with no virtual NIC, including firstboot,
 seven services, local chat and embeddings, Kiwix retrieval, Firefox map and

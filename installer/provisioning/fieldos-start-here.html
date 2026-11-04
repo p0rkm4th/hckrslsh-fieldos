@@ -50,7 +50,7 @@
   <section class="notice">
     <h2>Why some catalog items are missing</h2>
     <p>Project N.O.M.A.D. can offer additional archives, detailed map regions, software updates, and other optional downloads. Those catalog downloads require a separate internet-connected update session. Other FieldOS content packs can be transferred by USB and installed without internet.</p>
-    <p>The included CDC PDFs are unchanged, source-attributed references. They are not comprehensive emergency guidance and are not indexed in N.O.M.A.D. search. Check current local authorities and the original instructions. Do not use generated answers as a substitute for authoritative medical or safety references.</p>
+    <p>The included CDC PDFs are unchanged, source-attributed references and are added to N.O.M.A.D.'s local Knowledge Base. They are not comprehensive emergency guidance. Open the original documents and check current local authorities; generated answers may still be wrong and are not a substitute for medical or safety references.</p>
   </section>
   <section>
     <h2>Add an optional regional map without internet</h2>
@@ -64,7 +64,7 @@
   </section>
   <section>
     <h2>Add reference documents from a content pack</h2>
-    <p>Use the same verified USB transfer and install command above with a reference-pack archive. After the installer reports <code>activated reference documents</code>, open Source Library from this page. It lists the original PDFs and their source and license information. These documents are not added to N.O.M.A.D.'s semantic search.</p>
+    <p>Use the same verified USB transfer and install command above with a reference-pack archive. After the installer reports <code>activated reference documents</code>, run <code>sudo python3 /opt/fieldos/scripts/fieldos-nomad-index-references.py</code> to add its PDFs and text documents to N.O.M.A.D.'s Knowledge Base. Wait for each document to report indexed chunks. Open Source Library from this page to check the originals, source, and license. AI answers can still be incorrect; use the source documents as authority.</p>
   </section>
   <footer>FieldOS test edition · Content sources and license notices: <code>/usr/share/doc/fieldos/CONTENT-SOURCES.md</code></footer>
 </main>

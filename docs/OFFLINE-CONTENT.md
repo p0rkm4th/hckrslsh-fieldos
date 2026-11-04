@@ -44,10 +44,13 @@ GNOME dock includes **FieldOS Start Here** and **FieldOS Command Center** for
 quick access. These are presentation defaults only and do not change system
 networking, content catalogs, or application security boundaries.
 
-AI responses are generated text, not authoritative references. Open the source
-articles before relying on an answer. The limited CDC water/food sources are
-not a first-aid or comprehensive emergency library; FieldOS must not be used as
-a substitute for current medical or emergency guidance.
+AI responses are generated text, not authoritative references. The current
+source revision uploads the CDC PDFs into N.O.M.A.D.'s native Knowledge Base
+and requires a source-cited factual check in the next clean E2E run. Even with
+retrieval enabled, open the source documents before relying on an answer. The
+limited CDC water/food sources are not a first-aid or comprehensive emergency
+library; FieldOS must not be used as a substitute for current medical or
+emergency guidance.
 
 The bundled world map and sample regional map both top out at zoom level 5.
 They support broad orientation and acceptance testing, but do not provide
