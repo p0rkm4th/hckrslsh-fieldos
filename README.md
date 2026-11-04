@@ -25,18 +25,23 @@ See the retained report at
 [`docs/RELEASE.md`](docs/RELEASE.md).
 
 The current customer-mode engineering candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso` (11,984,044,032
+`/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso` (11,984,044,032
 bytes), SHA-256
-`4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`. Its
-structure was verified and a fresh no-NIC, interactive UEFI install completed
-on a disposable VM. Media removal led directly to the installed OS without a
-host reset. Firstboot, seven containers, the branded desktop, local AI chat,
-Kiwix, maps, and two guest restarts were checked. This validates the installer
-flow in QEMU, not the appliance for field use: the only Kiwix archive has 100
-articles, the bundled map lacks useful Nashville detail, and the AI answer was
-generic and unsourced. Emergency and physical-hardware use remain unvalidated.
-The VM disk was removed after testing; the report and screenshots remain at
-`/mnt/shared/fieldos-e2e/customer-interactive-0085b7a-20261104/report.md`.
+`81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`. Its
+structure was verified and a fresh no-NIC interactive UEFI install completed
+on a disposable VM, and the installed disk booted to the branded desktop.
+N.O.M.A.D. chat generated a real local response, Kiwix showed the bundled
+100-article Wikipedia fixture, and ProtoMaps rendered the low-zoom U.S. map.
+Two guest restarts returned to the desktop and the local map, Kiwix, and chat
+remained accessible. The installer Restart button/media handoff was not
+confirmed: after ejecting the ISO, the QEMU harness power-cycled and booted the
+installed disk. The full report and screenshots are at
+`/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
+This is a working offline prototype, not an emergency-ready appliance: the
+reference archive has no water-treatment result, the map lacks local street
+detail, and an earthquake prompt produced generic uncited advice that referred
+to calling 911. Do not rely on the AI for emergency decisions. Physical USB,
+hardware/GPU, broader content, and redistribution remain unvalidated.
 
 The current source has a guarded correction for N.O.M.A.D.'s information
 library descriptions. That correction passed the clean-source E2E and was
@@ -55,7 +60,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
