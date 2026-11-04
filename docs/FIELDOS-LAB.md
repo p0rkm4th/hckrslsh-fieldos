@@ -83,7 +83,12 @@ routed traffic by default, with RDP allowed only from the Kasm node and local
 Docker bridge exceptions. A connection check from the Kasm node reached RDP
 and was blocked on the FieldOS UI, Kiwix, logs, Ollama, and Qdrant ports. This
 hardens the existing lab guest but does not establish layer-2 isolation or
-verify the replacement desktop through an authenticated Kasm session.
+verify the replacement desktop through an authenticated Kasm session. The
+settings persisted through a controlled guest reboot: the default routes and
+management IPv6 address remained absent, GNOME and Docker were active, all
+seven FieldOS containers restarted, and the local UI, Kiwix, Dozzle, Ollama,
+and Qdrant endpoints responded. RDP remained reachable from the Kasm node;
+the five application ports remained blocked there.
 
 ## Snapshot, reset, and recovery
 
