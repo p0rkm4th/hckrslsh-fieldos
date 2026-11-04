@@ -16,13 +16,17 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest tested source commit: `d8653336ea4597df8eb386a83d364c9dca19d290`.
-`make check test` passes 71 tests. A clean-source no-NIC E2E at this exact
-revision passed offline installation, firstboot, N.O.M.A.D., CPU inference,
-embeddings, Kiwix retrieval, visible zoom-13 Middle Tennessee maps, optional
-weather-pack transfer/indexing, and two reboots. Report:
-`/mnt/shared/fieldos-e2e/20261104T125608Z-3534340/report.md`; test ISO SHA-256:
-`0bd97610307320f5dd725b94eead0745ba61fbff69083d5d43d7f4ff473e2781`.
+Latest clean-source offline E2E: commit `702102c95fae0731315a2afcc211e412ec15e1fd`.
+`make check test` passed 73 tests at this revision. The unattended no-NIC E2E
+installed Ubuntu, completed offline provisioning, generated a real local Ollama
+response, loaded embeddings, indexed and retrieved references, rendered the
+zoom-13 Middle Tennessee map in Firefox, and passed two reboots. Report:
+`/mnt/shared/fieldos-e2e/20261104T135401Z-3631878/report.md`; test ISO SHA-256:
+`6f6beeaf0ffc1e30f2ab045c68103f33eb4ec584da92bc065b468fb0cf0e30a7`. The
+exact sanitized offline payload used by the test is
+`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
+`188d0692cb6bb6c15d2bcb89335c80b75447cf4cd4f844c51e2e4e6a4c5e1a52`); the
+archive excludes generated Ollama registry keys and cache.
 
 The separate interactive customer-mode candidate remains
 `/mnt/shared/fieldos-releases/fieldos-customer-regional-3054c59.iso` (SHA-256
