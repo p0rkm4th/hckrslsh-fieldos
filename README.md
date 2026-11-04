@@ -32,8 +32,9 @@ bytes), SHA-256
 not an approved release. At the end of installation Ubuntu asks the user to
 remove the installation medium and press Enter; this test then powered off,
 and powering the machine on again booted the installed disk without repair.
-The bundled CDC pack is small, the Kiwix archive has 100 articles, maps stop at
-zoom 5, and AI output is not emergency authority. Physical hardware, GPU
+The bundled CDC and National Weather Service references are a small starter
+set, the Kiwix archive has 100 articles, maps stop at zoom 5, and AI output is
+not emergency authority. Physical hardware, GPU
 acceleration, broad content coverage, LAN security, and final redistribution
 review remain unvalidated.
 
