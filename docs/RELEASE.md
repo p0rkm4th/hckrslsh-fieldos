@@ -4,14 +4,13 @@
 
 ## Latest source and acceptance evidence
 
-- Source base: `1fb68063c82c12ba9fc9504ba90fbbbc2a8f876f` (`1fb6806`). The
-  latest E2E was run from this revision with uncommitted changes (`source
-  worktree dirty: true`). Its result is useful engineering evidence, but is
-  not yet attributable to a clean published source revision.
-- Latest automated no-NIC E2E report:
-  `/mnt/shared/fieldos-e2e/20261104T094150Z-3342937/report.md`.
+- Validated source revision: `7981801280e3552ce7efa3d8aa2fdc03fa1e23a7`
+  (`7981801`), clean worktree at E2E start. The commit includes the pinned
+  upstream RAG prompt correction and deterministic high-risk chat guard.
+- Latest clean-source automated no-NIC E2E report:
+  `/mnt/shared/fieldos-e2e/20261104T100029Z-3363576/report.md`.
   Test ISO SHA-256:
-  `04beb5d2467d59fac9448ad14b23ed3a2a7bae9995c051674ce37cef4e05b61b`.
+  `66c436752c281786a227029c827d502f8fd52e3ad29ff83937ab361d8a039d23`.
   Report, installation/firstboot logs, map and source-library screenshots are
   retained. The disposable guest disk and test ISO were removed after the run.
 - The latest run passed unattended Ubuntu installation, offline provisioning,
@@ -19,7 +18,7 @@
   and NWS source retrieval, Kiwix search, actual Firefox map and source-library
   rendering, and essential checks after two reboots. The guest had no virtual
   NIC and container egress was blocked.
-- The new deterministic chat guard returned the fixed safety notice without
+- The deterministic chat guard returned the fixed safety notice without
   citations for five tested high-risk categories through both normal and
   streaming API paths. This only establishes those test cases; the keyword
   guard can miss differently phrased requests and is not a general safety
@@ -29,7 +28,7 @@
   source `1fb6806` passed offline transfer and Firefox rendering of the
   Middle Tennessee pack at zoom 13. That optional pack is not in the current
   baseline ISO.
-- `make check test` passed after the latest source changes: 68 unit tests,
+- `make check test` passed at commit `7981801`: 68 unit tests,
   content-pack validation, Python compilation, and shell syntax checks.
 - The customer ISO currently retained at
   `/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso` is an older
@@ -67,20 +66,20 @@ must consult original authoritative material and suitable trained help.
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline installation | PASS, dirty source | Latest report above; rerun from clean commit for release provenance. |
-| Offline provisioning and local services | PASS, dirty source | Firstboot complete; seven containers and local APT/images checked. |
-| Chat and embedding inference | PASS, dirty source | Local generation and embedding endpoint passed. |
+| Fresh unattended offline installation | PASS, clean source | Exact source commit and test ISO hash above. |
+| Offline provisioning and local services | PASS, clean source | Firstboot complete; seven containers and local APT/images checked. |
+| Chat and embedding inference | PASS, clean source | Local generation and embedding endpoint passed after each reboot. |
 | High-risk chat guard | PASS for tested phrases only | Five categories plus streaming returned fixed notice/no citations; incomplete keyword coverage remains a release limitation. |
 | Reference retrieval and Kiwix | PASS, limited | CDC/NWS indexed sources and Kiwix search; content breadth is small. |
 | Offline map rendering | PASS at overview level | Firefox screenshot; bundled PMTiles max zoom 5. |
 | Optional regional pack | PASS in prior run; SKIP latest | Prior zoom-13 transfer/render evidence; pack not included in current ISO. |
-| Two-reboot persistence | PASS, dirty source | Services, model inventory, references and state checked after both reboots. |
+| Two-reboot persistence | PASS, clean source | Services, model inventory, references and state checked after both reboots. |
 | Interactive customer install | PASS on older baseline only | Earlier disposable QEMU installation; latest guard not yet included or tested. |
 | Hardware adaptation | PARTIAL | CPU-only 8 GiB VM profile tested; no physical GPU validation. |
 | Connected/LAN security | PARTIAL | Loopback bind and QEMU user-mode checks exist; peer LAN scan remains unverified. N.O.M.A.D. and Dozzle mount the Docker socket. |
 | Content breadth | FAIL for field-readiness | Miniature Wikipedia, narrow emergency sources, and zoom-5 overview map are starter fixtures. |
 | Redistribution review | BLOCKED | Complete review of software, model, map, and reference rights before any public binary distribution. |
-| Clean-source release candidate | NOT YET TESTED | Commit current changes; rerun E2E and interactive customer installation from that exact clean revision. |
+| Clean-source customer ISO | IN PROGRESS | Build from the next clean documentation/source commit; interactive installation and service checks remain. |
 
 ## Field-use limits
 
@@ -95,11 +94,11 @@ small model an authority.
 
 ## Build, evidence, and artifact handling
 
-The repository branch currently contains three local commits beyond its public
-remote and has uncommitted source/documentation changes. Publish only after
-reviewing the exact commit range for secrets and private infrastructure data.
-Do not publish an ISO until the clean-source E2E and separate customer-mode
-installation gates pass. Current test and release storage is on `/mnt/shared`;
+The latest clean E2E passed at `7981801`. Gitleaks scanned all 203 Git commits
+and the working tree with no findings. Source is being synchronized to the
+public repository by a normal fast-forward push; no release binaries are part
+of Git. Do not publish an ISO until the separate customer-mode installation
+gate passes. Current test and release storage is on `/mnt/shared`;
 the latest report and screenshots are retained, and its disposable VM disk is
 retired. Keep the existing older customer ISO until the replacement has passed
 interactive installation, then retire that exact superseded file and record
