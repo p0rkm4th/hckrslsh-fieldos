@@ -165,11 +165,11 @@ separate diagnostic run that tried to re-import the already bundled core pack
 failed safely without overwriting it; its report is
 `/mnt/shared/fieldos-e2e/20261104T071953Z-3238411/report.md`.
 
-## Optional flood safety pack
+## Flood safety reference pack
 
 `us-flood-safety` version 1.0.0 contains a short FieldOS-edited summary of NWS flood preparedness and response pages. It describes pre-event planning and basic actions while water is rising, identifies its gaps, and links the original NWS sources. The text is an editorial summary, not an official NWS/NOAA publication; it provides no current warning, forecast, local flood-zone data, or route planning. The source list records NOAA reuse guidance, attribution, and non-endorsement language. No third-party images are included. Full project redistribution review remains open.
 
-The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. A fresh no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; browser evidence is in the same directory. The run used an uncommitted worktree and is pack-integration evidence, not a clean-source release acceptance. The customer ISO does not include this optional pack.
+The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. An earlier no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; that run used an uncommitted worktree and is integration evidence, not a clean-source release acceptance. The pack is now a core pack in the source catalog. A clean-source E2E at `7e2674e` verified the four-pack core payload, including flood and weather, after two reboots. The separate customer-mode ISO still needs rebuilding and interactive testing.
 
 ## Reference quality and retrieval
 

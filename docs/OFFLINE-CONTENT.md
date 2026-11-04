@@ -5,16 +5,18 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
-The retained customer candidate contains Project N.O.M.A.D.'s miniature English
+The previous customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 0.6B Q4_K_M for chat, `nomic-embed-text:v1.5` for embeddings, and
-the `us-water-food-emergency` core pack, plus the text-only
-`us-tornado-safety` reference. The water/food pack contains two unchanged CDC
-PDFs about emergency water treatment and food safety after a power outage.
-Firstboot indexes these and the attributed NWS tornado guide in N.O.M.A.D.'s
-local source library. This is a starter set, not a comprehensive disaster
-library.
+the `us-water-food-emergency` and `us-tornado-safety` core packs. The current
+source catalog also makes `us-weather-safety` and `us-flood-safety` core packs;
+the new offline payload and unattended test verified that they install and
+index. A customer-mode ISO with those packs has not yet completed its separate
+interactive test. The water/food pack contains two unchanged CDC PDFs about
+emergency water treatment and food safety after a power outage. Firstboot
+indexes the CDC documents and NWS-based summaries in N.O.M.A.D.'s local source
+library. This is a starter set, not a comprehensive disaster library.
 The retained customer candidate also contains the pinned Middle Tennessee map
 described below. Fresh no-NIC E2E and interactive customer installation checks
 confirmed it is available offline and visibly renders in Firefox. The sample
@@ -49,17 +51,16 @@ GNOME dock includes **FieldOS Start Here** and **FieldOS Command Center** for
 quick access. These are presentation defaults only and do not change system
 networking, content catalogs, or application security boundaries.
 
-AI responses are generated text, not authoritative references. The core
-payload includes two CDC water/food PDFs and a text-only conversion of the
-National Weather Service page [“What to Do During a
-Tornado”](https://www.weather.gov/safety/tornado-during), indexed in
+AI responses are generated text, not authoritative references. The current
+core payload includes two CDC water/food PDFs and FieldOS-edited NWS summaries
+on tornado, flood, hurricane, and winter-storm preparedness, indexed in
 N.O.M.A.D.'s native Knowledge Base. NOAA's [reuse
 guidance](https://www.noaa.gov/office-education/outreach-communication/faq)
 says nearly all NOAA content is public domain unless otherwise noted, and
-requires attribution and no implied endorsement. The pack manifest records
-the source review and the text conversion's limits. This is narrow tornado
-guidance, not a first-aid or comprehensive emergency library; it provides no
-live warnings. Open source documents and follow current local instructions.
+requires attribution and no implied endorsement. Pack manifests record the
+source review and each summary's limits. These selected topics are not a
+first-aid or comprehensive emergency library; the packs provide no live
+warnings. Open the original documents and follow current local instructions.
 FieldOS must not be used as a substitute for medical or emergency guidance.
 Current scenario testing found that N.O.M.A.D. can attach unrelated sources
 and generate unsafe, unsupported advice: it claimed boiling removes chemical
@@ -87,7 +88,7 @@ The extensible pack format and planned categories are documented in
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The latest customer candidate at source `85a33f8` also installed the references;
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The previous customer candidate at source `85a33f8` also installed the CDC and tornado references;
 its fresh interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
 starter set, not a complete emergency library. The Middle Tennessee map is
 included in the current customer candidate; agricultural, wildlife,
@@ -99,15 +100,13 @@ inputs are tracked in `payload/manifests/`; license texts and attributions live
 under `payload/licenses/`. An artifact is not approved merely because its
 download endpoint is public.
 
-An optional `us-weather-safety` pack provides three FieldOS-edited summaries of
-NWS hurricane and winter-storm guidance. The pack is not in the baseline ISO;
-its manifest records source URLs, attribution, NOAA reuse basis, version, and
-checksums. Build a removable-media archive with `make content-packs`, then
-install it offline using the commands in [`CONTENT-PACKS.md`](CONTENT-PACKS.md).
-It has no live forecasts or alerts and is not a comprehensive emergency guide.
-The NOAA reuse policy requires attribution and forbids implying endorsement;
-each file identifies itself as an edited FieldOS summary and links its NWS
-source. Redistribution still needs the full project-level licensing review.
+The weather and flood summaries are small enough for the core offline baseline
+and remain independently versioned, checksummed packs. `make content-packs`
+also creates removable-media archives for them. The documents have no live
+forecasts or alerts and are not comprehensive emergency guides. Each identifies
+itself as an edited FieldOS summary and links its NWS sources. NOAA's reuse
+policy requires attribution and forbids implying endorsement; full project
+redistribution review remains open.
 
 ### FEMA CERT manual review (not bundled)
 

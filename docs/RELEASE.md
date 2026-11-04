@@ -4,50 +4,29 @@
 
 ## Current source and artifacts
 
-The published documentation head is `bd2cee3`; it contains documentation-only
-changes after the tested implementation revision `702102c`. `make check test`
-was rerun against `bd2cee3` and passed all 73 tests, payload validation,
-Python compilation, and shell syntax checks. Log SHA-256:
-`a889c5b7dcf0f6b32d5ef5a0d852c6698b954f9759910cdbec8c87e055259d77`.
-The log is `/mnt/shared/fieldos-e2e/test-suite-20261104-bd2cee3.txt`.
+The tested implementation is clean source commit
+`7e2674e285be158f56b556f048ad3c785d8b0cb9`. `make check test` passed 73 tests,
+content-pack validation, Python compilation, and shell syntax checks. Log
+SHA-256 `e3224426e80c8244180cbe3f083405b9184e65a0c02d8f88c9947cccae8907a7`:
+`/mnt/shared/fieldos-e2e/test-suite-7e2674e.txt`.
 
-- Latest clean-source offline E2E revision:
-  `702102c95fae0731315a2afcc211e412ec15e1fd`.
-- `make check test` passed at this revision: 73 tests, content-pack validation,
-  Python compilation, and shell syntax checks. The later documentation-only
-  head was independently checked as recorded above.
-- Fresh clean-source unattended E2E report:
-  `/mnt/shared/fieldos-e2e/20261104T135401Z-3631878/report.md`. Source worktree
-  was clean; test ISO SHA-256:
-  `6f6beeaf0ffc1e30f2ab045c68103f33eb4ec584da92bc065b468fb0cf0e30a7`.
-  Ubuntu installed from the no-NIC test ISO; provisioning, all seven containers,
-  actual CPU inference (`FIELDOS_ACCEPTANCE_OK`), embeddings, N.O.M.A.D. source
-  indexing, Kiwix, and real Firefox rendering of the zoom-13 Middle Tennessee
-  map passed. Services, models, content, and map checks passed after two
-  reboots. The optional-content import step was skipped in this run; separate
-  optional-pack evidence is listed below.
-- Optional weather pack: `us-weather-safety` 1.0.1, archive SHA-256
-  `/mnt/shared/fieldos-payload/content-packs/us-weather-safety-1.0.1.tar.zst`,
-  SHA-256 `9be415ad975ef8ef5ef2bd483254dac6ca2b400bfc594ec4309db6205e3b1e1c`.
-  It is separate removable-media content and is not in the customer ISO.
-- Optional flood pack: `us-flood-safety` 1.0.0 archive at
-  `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`,
-  SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`.
-  Its fresh no-NIC transfer/index/browser/reboot test passed at
-  `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`. The test used
-  a dirty worktree based on commit `3553391`; it is not a clean-source release
-  acceptance. The pack is optional and is not in the customer ISO.
-- Current sanitized offline payload:
-  `/mnt/shared/fieldos-payload/offline-payload.tar.zst`, 5,524,961,523 bytes;
-  SHA-256 `188d0692cb6bb6c15d2bcb89335c80b75447cf4cd4f844c51e2e4e6a4c5e1a52`.
-  Its sidecar and content-pack/map manifests passed verification. This exact
-  archive passed the clean-source E2E and excludes generated Ollama registry
-  keys and recommendation cache. The superseded 5,524,968,361-byte archive
-  (SHA-256 `e6d344324813c444541fe2b4396ffe0670ff29951cbddf466aa9af74d27f1486`)
-  and duplicate older map payload (SHA-256
-  `fa460aea7b482b8f7b881c20c524a807084ac8394d8df627a16422e237b0adf8`) were
-  retired after successful validation; see the artifact retirement record.
-- Latest customer-mode ISO, built from clean source commit
+- Latest clean-source offline E2E report:
+  `/mnt/shared/fieldos-e2e/20261104T152431Z-3714447/report.md`; test ISO
+  SHA-256 `0fcb81e0f5e7043024486a6caa11ca31a7e85c2ae17054e4649c1d8f7b3c5fc6`.
+  Ubuntu installed in a fresh UEFI VM with no virtual NIC. Offline firstboot,
+  all seven containers, CPU inference (`FIELDOS_ACCEPTANCE_OK`), embeddings,
+  N.O.M.A.D. indexing of all four core packs, Kiwix, Firefox rendering of the
+  source library and zoom-13 Middle Tennessee map, and checks after two reboots
+  passed.
+- Exact sanitized payload used by that run:
+  `/mnt/shared/fieldos-payload-weather-flood-core/offline-payload.tar.zst`;
+  SHA-256 `fb4ad0e04144edd4e914263fb9279833cd1ce7e716a10817e79762824b28a73e`.
+  Its sidecar, current map metadata, core pack archives, and exclusion of
+  generated Ollama keys/cache passed validation.
+- Separate weather and flood pack archives were tested as removable media in
+  earlier no-NIC runs. The new E2E run exercises their core-install path;
+  secondary-media import was skipped.
+- Previous customer-mode ISO, built from clean source commit
   `85a33f866f1b929762e47cc5462b16cbbd84c43c`:
   `/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`;
   12,007,178,240 bytes; SHA-256
@@ -57,6 +36,9 @@ The log is `/mnt/shared/fieldos-e2e/test-suite-20261104-bd2cee3.txt`.
   browser search, and Nashville zoom-13 map rendering passed. Two reboots
   preserved services and user data. Detailed report and screenshots:
   `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`.
+  It predates promotion of the weather and flood packs into the core payload;
+  rebuild and interactive retest are required before it represents current
+  source.
 - Customer media-handoff caveat reproduced: Ubuntu prompted to remove media
   and press Enter, then powered off the VM. Starting the VM again booted the
   installed EFI disk without repair. Physical USB handoff remains untested.
@@ -131,7 +113,7 @@ original source documents and qualified help for high-consequence decisions.
 
 ## End-user disaster scenario review
 
-A scenario-by-scenario field-use assessment is recorded in [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md). The no-NIC desktop tests pass for their stated VM scope, but the preparedness usefulness assessment is **FAIL**: coverage is narrow, safety-critical AI requests are refused (and the keyword guard is bypassable), offline navigation is absent, and optional weather material is not in the customer ISO. This distinction is intentional; functional services do not establish disaster readiness.
+A scenario-by-scenario field-use assessment is recorded in [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md). The no-NIC desktop tests pass for their stated VM scope, but the preparedness usefulness assessment remains **FAIL**: coverage is narrow, safety-critical AI requests are refused (and the keyword guard is bypassable), and offline navigation is absent. The previous customer ISO predates promotion of weather and flood material into the core test payload; its replacement still needs interactive validation. Functional services do not establish disaster readiness.
 
 ## Security and redistribution
 
@@ -151,21 +133,25 @@ redistribution rights.
 
 ## Source synchronization and artifact handling
 
-The customer ISO above was built from clean source commit
-`85a33f866f1b929762e47cc5462b16cbbd84c43c`, pushed to public `main`. The latest
-clean unattended E2E was run at `702102c95fae0731315a2afcc211e412ec15e1fd`;
-`85a33f8` updates documentation only. No ISO, model weights, container archives,
-or test disks are committed.
+The new four-pack core implementation and payload passed clean-source E2E at
+`7e2674e285be158f56b556f048ad3c785d8b0cb9`, pushed to public `main`. The
+previously tested interactive customer ISO remains built from source
+`85a33f866f1b929762e47cc5462b16cbbd84c43c` and does not include the new content.
+No ISO, model weights, container archives, or test disks are committed.
 
-The latest customer ISO, report, logs, and selected screenshots remain under
+The previous customer ISO, report, logs, and selected screenshots remain under
 `/mnt/shared`. Its disposable VM `fieldos-customer-85a33f8` was stopped and
 undefined after acceptance evidence was recorded; its 35.0 GB allocated qcow2
-disk was removed. The fresh unattended E2E VM was also retired after PASS. The
+disk was removed. The new passing E2E VM was shut down, undefined, and its
+33 GiB disk retired after preserving its report, logs, and browser screenshots.
+The
 superseded 3054c59 ISO (12.0 GB), the completed customer guest disk, a 5.3 GiB
 unpacked payload staging copy, and 11.4 MiB of redundant screenshots were
-removed, reclaiming about 49.1 GiB in total. `/mnt/shared` now has 642 GiB free;
-the current test evidence directory uses about 3.5 MiB and
-`/mnt/shared/fieldos-releases` about 12 GiB. No FieldOS VM is running. The
-checksum-verified payload archive and current ISO remain retained.
+removed in earlier cleanup, reclaiming about 49.1 GiB then. This latest disk
+retirement freed about 32 GiB more. `/mnt/shared` now has 637 GiB free; the new
+E2E evidence directory uses about 1.6 MiB and `/mnt/shared/fieldos-releases`
+about 12 GiB. No FieldOS VM is running. The prior customer ISO and both
+checksum-verified payload archives remain until the updated customer image is
+built and tested.
 No public release is approved. Do not recommend physical customer use until the
 blocked gates above are resolved.
