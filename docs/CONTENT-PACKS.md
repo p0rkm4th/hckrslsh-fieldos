@@ -60,14 +60,21 @@ the installer accepts only PDF and plain-text artifacts and atomically creates
 `/var/lib/fieldos/storage/references/index.html`. The local index lists source,
 license, attribution, and links to original documents; it identifies them as
 source material rather than AI output. It warns that inclusion is not publisher
-endorsement and users should consult current local guidance. This adapter does
-not add documents to N.O.M.A.D.'s RAG/search index. Verified documents are
-copied without replacement to
+endorsement and users should consult current local guidance. On first boot,
+FieldOS uploads checksum-verified PDF and TXT artifacts through N.O.M.A.D.'s
+native `/api/rag/upload` endpoint and waits until each appears as indexed with
+embedded chunks. This uses N.O.M.A.D.'s existing Knowledge Base and Qdrant
+integration; it adds no separate retrieval service. Run
+`sudo python3 /opt/fieldos/scripts/fieldos-nomad-index-references.py` after
+installing another reference pack from removable media. The command is
+idempotent for files that are already indexed. Verified documents are copied without replacement to
 `/var/lib/fieldos/storage/references/documents/<id>/<version>/`; N.O.M.A.D.'s
 existing static-file server exposes only this reference directory read-only at
 `http://localhost:8080/fieldos-references/`. No new service or external route is
 added. Existing filenames are never replaced. A failed validation or
-conflicting destination leaves existing application data untouched.
+conflicting destination leaves existing application data untouched. If
+indexing fails, firstboot records failure rather than claiming provisioning is
+complete; source documents remain available in the Source Library.
 
 The core starter reference pack is `us-water-food-emergency` version 1.0.0.
 It contains two unchanged CDC PDFs: “Make Water Safe During an Emergency” and
@@ -90,14 +97,16 @@ configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
 
-The pack was embedded and installed from the offline payload in a clean no-NIC
-VM on source `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`. Its source index and
-documents were served locally and persisted across two reboots. The customer
+The pack was installed from the offline payload in a clean no-NIC VM on source
+`f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`. That revision served the source
+index and documents locally across two reboots but did not add them to RAG. The
+current source adds the native Knowledge Base adapter and requires a fresh E2E
+test before that behavior is considered verified. The customer
 mode guest also retained both PDFs and the index after two reboots. Reports and
 browser screenshots are retained at
 `/mnt/shared/fieldos-e2e/corepack-f9c10ec/20261104T034230Z-3056023/` and
 `/mnt/shared/fieldos-e2e/customer-interactive-corepack-f9c10ec/20261104T040000Z/`.
-This validates the pack adapter and this narrow source set; it does not
+This validates the static pack adapter and this narrow source set; it does not
 establish that the pack is a complete prepper library or approved for customer
 distribution.
 

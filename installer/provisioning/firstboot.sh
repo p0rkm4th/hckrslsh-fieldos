@@ -279,5 +279,10 @@ curl --fail --silent http://127.0.0.1:11434/api/embed \
   > "$STATE/embedding-smoke.json"
 grep -q 'embeddings' "$STATE/embedding-smoke.json"
 
+echo "Indexing checksum-verified FieldOS source documents in N.O.M.A.D.'s offline Knowledge Base..."
+python3 "$ROOT/scripts/fieldos-nomad-index-references.py" \
+  --storage-root "$STATE" --url http://127.0.0.1:8080/ \
+  | tee "$STATE/reference-indexing.log"
+
 write_status "{\"status\":\"complete\",\"completed_at\":\"$(date --iso-8601=seconds)\"}"
 echo "FieldOS services are available at http://localhost:8080."

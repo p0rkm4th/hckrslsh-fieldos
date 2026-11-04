@@ -817,6 +817,62 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         vectors = embed_data.get("embeddings", [])
         if not vectors or not vectors[0]:
             raise TestFailure("Embedding API returned an empty vector")
+        rag_files = self.check(
+            "N.O.M.A.D. indexes bundled FieldOS reference documents",
+            "curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8080/api/rag/files",
+            500,
+        )
+        rag_rows = json.loads(rag_files).get("files", [])
+        reference_manifest = self.core_reference_manifest
+        if not reference_manifest:
+            raise TestFailure("No bundled reference pack is declared for N.O.M.A.D. indexing")
+        pack_prefix = f"fieldos-{reference_manifest['id']}-{reference_manifest['version']}-"
+        indexed_sources = []
+        for artifact in reference_manifest.get("artifacts", []):
+            expected_prefix = pack_prefix + Path(artifact["path"]).name + "-"
+            row = next((item for item in rag_rows
+                        if str(item.get("fileName", "")).startswith(expected_prefix)), None)
+            if not row or row.get("state") != "indexed" or int(row.get("chunksEmbedded") or 0) < 1:
+                raise TestFailure(
+                    f"Bundled reference did not reach the indexed state with chunks: {expected_prefix}"
+                )
+            indexed_sources.append(str(row.get("source", row.get("fileName", ""))))
+        rag_payload = json.dumps({
+            "model": "qwen3:0.6b-q4_K_M",
+            "stream": False,
+            "think": False,
+            "messages": [{
+                "role": "user",
+                "content": (
+                    "According to the included CDC food-safety document, after how many hours "
+                    "without power should refrigerated perishable food be thrown away? Give the "
+                    "duration and cite the source; do not guess if no source was retrieved."
+                ),
+            }],
+        })
+        rag_call = (
+            "python3 - <<'PY'\n"
+            "import base64, json, urllib.request\n"
+            f"payload=json.loads(base64.b64decode('{base64.b64encode(rag_payload.encode()).decode()}'))\n"
+            "request=urllib.request.Request('http://127.0.0.1:8080/api/ollama/chat', "
+            "data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})\n"
+            "with urllib.request.urlopen(request, timeout=240) as response: print(response.read().decode())\n"
+            "PY"
+        )
+        rag_answer = self.check("N.O.M.A.D. retrieves bundled CDC food guidance", rag_call, 900)
+        rag_answer_data = json.loads(rag_answer)
+        answer_text = str(rag_answer_data.get("message", {}).get("content", "")).lower()
+        citations = rag_answer_data.get("sources", [])
+        citation_text = json.dumps(citations).lower()
+        if not ("4 hours" in answer_text or "four hours" in answer_text):
+            raise TestFailure(f"CDC power-outage answer did not state the documented four-hour duration: {answer_text[:500]}")
+        if "fieldos-us-water-food-emergency" not in citation_text or "cdc-food-power-outage" not in citation_text:
+            raise TestFailure(f"N.O.M.A.D. response did not cite the bundled CDC food document: {citations}")
+        self.record(
+            "CDC answer cites indexed source",
+            "PASS",
+            f"{answer_text[:240]} | sources: {citation_text[:300]}",
+        )
         catalog = self.check("Kiwix library", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8090/catalog/v2/entries", 350)
         if "wikipedia" not in catalog.lower():
             raise TestFailure("Kiwix catalog does not list bundled Wikipedia")
