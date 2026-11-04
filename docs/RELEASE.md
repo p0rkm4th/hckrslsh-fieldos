@@ -7,12 +7,15 @@
 - Source revision: da61a843313c443c0e349a75b6395e48c0f73c20, pushed to origin/main.
 - Source worktree was clean for the current acceptance build.
 - make check and 61 unit tests passed.
-- Fresh unattended no-NIC E2E report:
-  /mnt/shared/fieldos-e2e/20261104T060325Z-3127648/report.md.
-  It records test ISO SHA-256
-  339970d3b5ca2a7440300647b7c460fc03b4d9b480447676169de30d3c938d3c.
-  The temporary test ISO and guest disk were retired after review; report,
-  logs, and screenshots remain.
+- Fresh unattended no-NIC E2E report with optional Middle Tennessee map-pack
+  transfer:
+  /mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md.
+  Source revision: cf151a20520d844dcb7bf983a3d92013d539fce9; test ISO SHA-256:
+  f82809d05c009d021b2427b3ce3f68664c942e33eb12ae2fe0870df5b9f26b38.
+  Ubuntu installation, firstboot, AI chat, embeddings, CDC retrieval, Kiwix,
+  offline map-pack transfer and zoom-13 Firefox rendering, and two reboots
+  passed. The temporary test ISO and guest disk were retired; report, logs,
+  and screenshots remain.
 - Current customer-mode candidate:
   /mnt/shared/fieldos-releases/fieldos-customer-da61a84.iso
   (11,987,386,368 bytes), SHA-256
@@ -27,7 +30,10 @@
 ## Verified behavior
 
 The unattended E2E test installed Ubuntu into a disposable UEFI disk with no
-virtual NIC. Offline firstboot completed; all seven containers started. Ollama
+virtual NIC. Offline firstboot completed; all seven containers started. The
+optional Middle Tennessee map pack was transferred from read-only media,
+validated, registered by N.O.M.A.D., rendered by Firefox at zoom 13, and
+remained available after both reboots. Ollama
 generated the acceptance marker, the embedding endpoint returned a 768-element
 vector, and N.O.M.A.D. indexed both CDC reference PDFs. A real food-safety RAG
 query returned the four-hour guidance with a CDC source. Kiwix served its
@@ -70,7 +76,7 @@ report. E2E evidence covers two reboots on the same source revision.
 | N.O.M.A.D. and knowledge retrieval | PASS for bundled sources | API healthy; both included CDC PDFs indexed and retrieved with source titles. Scope is only these two PDFs. |
 | Local chat and embeddings | PASS, functional check only | Chat generated exact test tokens; embedding returned 768 dimensions. Not a safety certification. |
 | Kiwix | PASS, limited | Bundled Wikipedia 100 archive served and a search result opened. |
-| Offline maps | PASS at overview level | Firefox screenshot visibly renders U.S. labels, roads, water, and attribution. Bundled maps top out at zoom 5. |
+| Offline maps | PASS at overview level; regional pack PASS | Bundled map screenshot visibly renders U.S. labels, roads, water, and attribution at zoom 5. Optional Middle Tennessee pack imported offline and rendered in Firefox at zoom 13; it is not included in the ISO or release-approved. |
 | Reboot persistence | PASS | Two reboots on unattended E2E; one reboot on interactive customer install; service and indexed content checks repeated. |
 | No-network operation | PASS in QEMU | No guest NIC and no container egress in E2E. LAN behavior with a NIC is a separate open review. |
 | Hardware selection | PARTIAL | The 8 GiB virtual guest selected the minimal CPU model and passed local generation. No physical GPU validation. |
@@ -86,8 +92,9 @@ safety after power loss. It does not provide substantive first aid, severe
 weather, wildfire, agriculture, mechanical repair, or navigation guidance. The
 Kiwix archive contains 100 articles. World and sample U.S. PMTiles top out at
 zoom 5 and do not provide street/trail navigation detail. A Middle Tennessee
-zoom-13 candidate was validated separately but is not included in this ISO and
-is not approved for public redistribution. GPS/GIS integration is unverified.
+zoom-13 candidate was validated separately using the offline pack-transfer
+workflow, but is not included in this ISO and is not approved for public
+redistribution. GPS/GIS integration is unverified.
 
 The small local model can produce irrelevant or unsafe text. Even when a tested
 retrieval answer cites a document, consult the original source before acting.
