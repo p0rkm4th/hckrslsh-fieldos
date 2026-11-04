@@ -4,12 +4,18 @@
 
 ## Current source and artifacts
 
+The published documentation head is `bd2cee3`; it contains documentation-only
+changes after the tested implementation revision `702102c`. `make check test`
+was rerun against `bd2cee3` and passed all 73 tests, payload validation,
+Python compilation, and shell syntax checks. Log SHA-256:
+`a889c5b7dcf0f6b32d5ef5a0d852c6698b954f9759910cdbec8c87e055259d77`.
+The log is `/mnt/shared/fieldos-e2e/test-suite-20261104-bd2cee3.txt`.
+
 - Latest clean-source offline E2E revision:
   `702102c95fae0731315a2afcc211e412ec15e1fd`.
 - `make check test` passed at this revision: 73 tests, content-pack validation,
-  Python compilation, and shell syntax checks. The latest recorded test output
-  is retained at `/mnt/shared/fieldos-e2e/test-suite-20261104-contentpack.txt`;
-  that file predates the last two key-exclusion tests.
+  Python compilation, and shell syntax checks. The later documentation-only
+  head was independently checked as recorded above.
 - Fresh clean-source unattended E2E report:
   `/mnt/shared/fieldos-e2e/20261104T135401Z-3631878/report.md`. Source worktree
   was clean; test ISO SHA-256:
