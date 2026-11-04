@@ -30,19 +30,18 @@
   baseline ISO.
 - `make check test` passed at commit `7981801`: 68 unit tests,
   content-pack validation, Python compilation, and shell syntax checks.
-- The customer ISO currently retained at
-  `/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso` is an older
-  candidate (SHA-256
-  `d312bbf785f23a9b0b909ca683ce02a884cc0a707dec532bef2e94d82e25f288`). It
-  predates the server-side safety guard and must not be mistaken for an image
-  containing the latest changes. Keep it until a replacement customer-mode
-  install is tested.
-- An interactive customer-mode installation passed earlier on the 1fb6806
-  baseline: the operator selected the virtual disk and account, installation
-  completed, the media handoff powered down, and the installed disk booted and
-  passed service checks. Evidence:
-  `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/report.md`. It does not test the
-  latest uncommitted safety changes.
+- The latest customer candidate is
+  `/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso` (SHA-256
+  `10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`), built
+  from clean source `c642fac`. Its fresh interactive install and two-reboot
+  test passed; detailed evidence is at
+  `/mnt/shared/fieldos-e2e/customer-safety-7981801-r2-20261104/report.md`.
+- The earlier interactive installation on the 1fb6806 baseline is historical.
+  The latest `c642fac` customer candidate was independently installed with
+  interactive disk and account selection; the installer media handoff required
+  detaching the ISO after its power-off, then the installed EFI disk booted
+  normally. Desktop branding, map rendering, local AI, references, no-NIC
+  operation, and two reboots passed. See the report above.
 - The payload input is `/mnt/shared/fieldos-payload` (about 5.2 GiB); it is
   required to build the next customer candidate.
 
@@ -74,12 +73,12 @@ must consult original authoritative material and suitable trained help.
 | Offline map rendering | PASS at overview level | Firefox screenshot; bundled PMTiles max zoom 5. |
 | Optional regional pack | PASS in prior run; SKIP latest | Prior zoom-13 transfer/render evidence; pack not included in current ISO. |
 | Two-reboot persistence | PASS, clean source | Services, model inventory, references and state checked after both reboots. |
-| Interactive customer install | PASS on older baseline only | Earlier disposable QEMU installation; latest guard not yet included or tested. |
+| Interactive customer install | PASS in disposable VM | Fresh `c642fac` candidate, interactive disk/account, installed-disk boot, branded desktop, and two reboot checks; report above. |
 | Hardware adaptation | PARTIAL | CPU-only 8 GiB VM profile tested; no physical GPU validation. |
 | Connected/LAN security | PARTIAL | Loopback bind and QEMU user-mode checks exist; peer LAN scan remains unverified. N.O.M.A.D. and Dozzle mount the Docker socket. |
 | Content breadth | FAIL for field-readiness | Miniature Wikipedia, narrow emergency sources, and zoom-5 overview map are starter fixtures. |
 | Redistribution review | BLOCKED | Complete review of software, model, map, and reference rights before any public binary distribution. |
-| Clean-source customer ISO | IN PROGRESS | Build from the next clean documentation/source commit; interactive installation and service checks remain. |
+| Customer ISO install and persistence | PASS in disposable VM | Candidate checksum and evidence report above; physical-machine and redistribution gates remain. |
 
 ## Field-use limits
 
@@ -95,14 +94,15 @@ small model an authority.
 ## Build, evidence, and artifact handling
 
 The latest clean E2E passed at `7981801`. Gitleaks scanned all 203 Git commits
-and the working tree with no findings. Source is being synchronized to the
-public repository by a normal fast-forward push; no release binaries are part
-of Git. Do not publish an ISO until the separate customer-mode installation
-gate passes. Current test and release storage is on `/mnt/shared`;
-the latest report and screenshots are retained, and its disposable VM disk is
-retired. Keep the existing older customer ISO until the replacement has passed
-interactive installation, then retire that exact superseded file and record
-the reclaimed space.
+and the working tree with no findings. Five reviewed commits are local ahead of the public `origin/main`; publication
+is pending because the available SSH key is rejected and connected GitHub write
+endpoints return 403. No release binaries are part of Git. The customer-mode
+VM acceptance gate passed, but the ISO is still a test candidate, not an
+approved public release. The superseded 1fb6806 ISO and its checksum sidecar
+were retired after confirming no process used them; their SHA-256 and reason
+are recorded in `fieldos-artifact-retirement-20261104-customer-nws.txt`. Test and release data live on `/mnt/shared`; preserve
+the current candidate, reports, and screenshots, and retire only superseded
+VM disks and ISO candidates after verifying they are not in use.
 
 Never infer successful operation from an ISO build or container startup alone.
 The current candidate is not a customer-ready emergency appliance.
