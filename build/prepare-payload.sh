@@ -242,7 +242,7 @@ print(json.dumps({
 }, indent=2))
 PY
 cat > "$STAGE/licenses/protomaps-odbl-attribution.txt" <<'EOF'
-The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. The fieldos-sample-us.pmtiles file is an extract from that bundled world archive. The middle-tennessee-20261102-z13.pmtiles file is an extract of the same pinned Protomaps build for the declared Middle Tennessee bounding box and zoom range. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json and manifests/map-payload.json. Preserve this attribution in the map interface and any redistributed derivative.
+The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. The fieldos-sample-us.pmtiles file is an extract from that bundled world archive. The tennessee-20261102-z13.pmtiles file is an extract of the pinned Protomaps build for the Tennessee statewide bounds and zoom range. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, checksum metadata, and geographic bounds are in manifests/protomaps-build.json and manifests/map-payload.json. Preserve this attribution in the map interface and any redistributed derivative.
 EOF
 
 echo "Fetching model license texts and pinned Ollama model payloads..."

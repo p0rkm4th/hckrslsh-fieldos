@@ -7,7 +7,7 @@ This review checks the fresh customer desktop, bundled applications, offline con
 
 ## Tested installation and interface
 
-The current clean-source unattended test ISO at source `7e2674e285be158f56b556f048ad3c785d8b0cb9` passed a fresh no-NIC install, firstboot, local inference, embeddings, Kiwix, visible Middle Tennessee map rendering, all four core-pack activations/indexing, and two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T152431Z-3714447/report.md`; test ISO SHA-256: `0fcb81e0f5e7043024486a6caa11ca31a7e85c2ae17054e4649c1d8f7b3c5fc6`.
+The latest no-NIC unattended test is from base commit `7e6fa24486f4fd500c7be9191119480acfe5762c` with local map and E2E-verifier changes (worktree dirty). It installed, completed firstboot, ran seven services, generated local inference, loaded embeddings, searched Kiwix and the source library, rendered the statewide map in Firefox at eight locations, and passed two reboots. Report and screenshots: `/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`; test ISO SHA-256: `c0e2578509cde5522400cdd2969e8793f2278ac4e11f50900728a79acd6c2f09`. The 145 MB statewide map is not yet in the separately tested customer ISO.
 
 The latest customer-mode ISO was built from clean source commit
 `21ad4fcdb882998ca1c3bd47333b1139c162651c`:
@@ -35,9 +35,9 @@ external weather alerts, physical GPS, or broad geographic coverage.
 | Hurricane or winter storm | Three NWS-derived FieldOS summaries in `us-weather-safety` 1.0.1 were installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No forecasts or alerts are provided. |
 | Wildfire or evacuation | No dedicated wildfire source is bundled. The AI guard refused one tested wildfire prompt, but prior tests found alternate wording can bypass the keyword guard. | **Not dependable.** A refusal is not safety certification or evacuation guidance. |
 | Flood | The FieldOS-edited NWS summary in `us-flood-safety` 1.0.0 was installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No current flood alerts, flood-zone data, or safe routing are provided. |
-| Injury or medical emergency | No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
+| Injury or medical emergency | An optional one-page CDC checklist names skills to learn but provides no procedures. No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
-| Travel, navigation, or loss of GPS | Firefox renders an interactive Middle Tennessee road map through zoom 13. Global and U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful local map viewer only.** It is useful only in the covered area and is not a navigation system. |
+| Travel, navigation, or loss of GPS | The latest unattended image visibly renders detailed zoom-13 maps at eight Tennessee urban and rural locations; world/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
 | Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
 
 ## AI and source-library behavior

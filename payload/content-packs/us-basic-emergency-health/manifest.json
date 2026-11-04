@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "id": "us-basic-emergency-health",
+  "version": "1.0.0",
+  "title": "U.S. Basic Emergency Health Preparedness",
+  "description": "One CDC preparedness checklist that points readers toward first-aid and emergency-health skills to learn. It does not teach the procedures and is not a first-aid manual or medical advice.",
+  "category": "first-aid-emergency",
+  "sources": [
+    {
+      "id": "cdc-practical-skills",
+      "name": "CDC STACKS: Prepare Your Health: Practical Skills (2019; item record cdc:79987)",
+      "url": "https://stacks.cdc.gov/view/cdc/79987",
+      "license": "The exact CDC STACKS item record identifies this CDC-authored fact sheet as Public Domain.",
+      "attribution": "Centers for Disease Control and Prevention, Center for Preparedness and Response. Reproduced unmodified; CDC attribution retained. No endorsement is implied.",
+      "accessed": "2026-11-04"
+    },
+    {
+      "id": "cdc-stacks-rights",
+      "name": "CDC STACKS Content and Copyright guidance",
+      "url": "https://stacks.cdc.gov/Content%20and%20Copyright",
+      "license": "Rights guidance used to record the source item's public-domain status; not bundled as a content artifact.",
+      "attribution": "Centers for Disease Control and Prevention (CDC).",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "cdc-prepare-your-health-practical-skills.pdf",
+      "size_bytes": 294644,
+      "sha256": "f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966",
+      "source": "cdc-practical-skills",
+      "license": "Public Domain per the exact CDC STACKS item record; original PDF is unmodified."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS source and metadata review; not clinical review",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2019-02-06"
+  }
+}

@@ -5,14 +5,14 @@ possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-pack.schema.json` and a catalog at
 `payload/manifests/content-packs.json`. The catalog contains the core reference
 packs and planned categories; this is not a comprehensive customer library.
-The bounded Middle Tennessee map previously passed offline transfer and
-activation testing as a pack. The current customer candidate builds that same
-checksum-pinned map directly into the core PMTiles payload, where firstboot
-activates it alongside the overview maps. Fresh no-NIC E2E and interactive
-customer-install acceptance confirmed it visibly renders at zoom 13 and
-persists across two reboots. The exact candidate and reports are recorded in
-[`RELEASE.md`](RELEASE.md). Other regional and specialist reference collections
-remain modular packs outside the core image.
+The Middle Tennessee map previously passed offline transfer and activation
+testing as a pack. A newer statewide Tennessee map candidate is built into the
+current source payload. It passed a fresh no-NIC unattended E2E with visible
+Firefox rendering at eight locations and two reboots. The newer map has not
+been included in a separately tested interactive customer ISO. The exact
+candidate, checksum, and report are recorded in [`RELEASE.md`](RELEASE.md).
+Other regional and specialist reference collections remain modular packs
+outside the core image.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -43,9 +43,11 @@ and activated during firstboot. Other catalog packs remain separate from the
 core image. Archives contain the manifest and only the artifacts it declares,
 so stray or unreviewed files in a staging directory are excluded. The core
 packs' manifests and source documents are staged in Git; their portable
-archives are generated during payload construction. The Middle Tennessee map
-is part of the core map payload. Its geographic coverage is limited, and its
-attribution and redistribution review are recorded in the payload manifest.
+archives are generated during payload construction. The current source map
+payload contains a checksum-pinned statewide Tennessee candidate, while the
+older validated interactive customer ISO still contains the Middle Tennessee
+map. Redistribution review remains incomplete; see the payload manifest and
+[`REDISTRIBUTION.md`](REDISTRIBUTION.md).
 
 On an installed system, verify and add a bundle with:
 
@@ -145,9 +147,11 @@ The core catalog also includes `us-tornado-safety`, a text-only conversion of
 the National Weather Service's “What to Do During a Tornado” page. Its source,
 NOAA reuse basis, attribution, access date, and conversion limits are recorded
 in its manifest and document. It adds narrow tornado guidance, not a first-aid
-or comprehensive all-hazards library. The Middle Tennessee map is included in
-the core map payload; agriculture, wildlife, first-aid, and comprehensive
-reference packs still need requirements and licensing review.
+or comprehensive all-hazards library. The current source payload includes the
+statewide Tennessee map candidate; the previously validated customer ISO still
+has Middle Tennessee coverage. Agriculture, wildlife, procedural first-aid,
+and comprehensive reference packs still need source selection and licensing
+review.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the
@@ -164,6 +168,27 @@ the imported archive hash is
 separate diagnostic run that tried to re-import the already bundled core pack
 failed safely without overwriting it; its report is
 `/mnt/shared/fieldos-e2e/20261104T071953Z-3238411/report.md`.
+
+## Basic emergency-health checklist
+
+`us-basic-emergency-health` version `1.0.0` is a portable, optional CDC source
+document and is not included in the current core ISO. It contains the CDC's
+one-page 2019 *Prepare Your Health: Practical Skills* checklist. The sheet
+encourages users to learn skills such as Hands-Only CPR, AED use, seizure first
+aid, choking response, and wound care; it does not explain how to perform those
+procedures. Treat it as a training checklist, not a first-aid manual, medical
+advice, or substitute for professional instruction.
+
+The unchanged PDF is 294,644 bytes with SHA-256
+`f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966`. Its
+[CDC STACKS record](https://stacks.cdc.gov/view/cdc/79987) marks the exact item
+Public Domain; the [CDC STACKS rights guidance](https://stacks.cdc.gov/Content%20and%20Copyright)
+requests acknowledgement and warns that some materials have separate rights.
+The pack retains CDC attribution and says no endorsement is implied. The
+manifest records source, license basis, checksum, review date, and its
+nonclinical-review limitation. This is a small orientation sheet and does not
+close FieldOS's first-aid or medical-reference gap. The pack remains optional
+until broader content and redistribution review are complete.
 
 ## Flood safety reference pack
 
@@ -186,18 +211,16 @@ emergency library.
 ## Mapping and location
 
 The bundled world and sample U.S. PMTiles maps cover zoom levels 0 through 5
-for broad orientation. Current source also pins a bounded Middle Tennessee map
-around Nashville (bounding box `-88.5,35.4,-85.7,36.7`) at zoom levels 0–13.
-Its 19.6 MB PMTiles file is extracted from the 2026-11-02 Protomaps build using
-bounded HTTP range requests; the manifest records its expected size and
-SHA-256, ODbL Produced Work status, attribution, bounds, and zoom range. The
-earlier import test rendered this map in Firefox at zoom 13 and passed two
-reboots on source `cf151a20520d844dcb7bf983a3d92013d539fce9` (report
-`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`). The current
-candidate also includes the map and passed a fresh no-NIC E2E plus a separate
-interactive customer-mode installation. Firefox visibly rendered the map at
-zoom 13, and map availability persisted across two reboots. See
-[`RELEASE.md`](RELEASE.md) for the artifact hash and exact evidence paths.
+for broad orientation. Current source also pins a statewide Tennessee map
+candidate, including a neighboring-state buffer (bounds
+`-90.9,34.5,-81.0,37.25`) at zoom levels 0–13. The 145,267,908-byte PMTiles
+file is extracted from the pinned 2026-11-02 Protomaps build using bounded HTTP
+range requests. The source manifest records expected size and SHA-256,
+ODbL/OSM attribution, bounds, and zoom range. The fresh no-NIC E2E report
+(`/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`) records visible
+Firefox map views for eight locations and persistence across two reboots. The
+older customer ISO has not yet been rebuilt with this map. See
+[`RELEASE.md`](RELEASE.md) for checksums and exact evidence paths.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
 parcel, or emergency guidance. GPS/GIS support needs a defined hardware

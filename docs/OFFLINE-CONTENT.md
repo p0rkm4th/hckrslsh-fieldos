@@ -5,6 +5,31 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
+## Statewide Tennessee map candidate, verified 2026-11-04
+
+The latest unattended test payload replaces the former 19.6 MB Middle
+Tennessee extract with `tennessee-20261102-z13.pmtiles`, a 145,267,908-byte
+Protomaps vector-tile extract covering `-90.9,34.5,-81.0,37.25`, zoom 0–13.
+It covers Tennessee with a buffer into neighboring states and preserves the
+zoom 0–5 world and U.S. overview maps. The source is Protomaps build
+`20261102.pmtiles`, version 4.15.2; the extracted file SHA-256 is
+`0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
+Source metadata, bounds, expected size, and checksum are pinned in
+`payload/manifests/maps.json`. The data is an ODbL 1.0 Produced Work derived
+from OpenStreetMap; the map UI displays `© OpenStreetMap contributors` and
+Protomaps attribution.
+
+Fresh no-NIC E2E report:
+`/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`. Firefox screenshots
+visibly show detailed streets, labels, waterways, and public/green space at
+Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
+and Big South Fork. Nonempty zoom-13 vector tiles at all eight locations were
+also checked. The world and U.S. overviews remain low resolution. This map does
+not supply routing, GPS positioning, trail data, or navigation. The newest
+statewide map is in the tested unattended image only; the last interactive
+customer ISO below still contains the earlier Middle Tennessee map until a new
+customer ISO is built and separately tested.
+
 The previous customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
@@ -17,7 +42,7 @@ interactive test. The water/food pack contains two unchanged CDC PDFs about
 emergency water treatment and food safety after a power outage. Firstboot
 indexes the CDC documents and NWS-based summaries in N.O.M.A.D.'s local source
 library. This is a starter set, not a comprehensive disaster library.
-The retained customer candidate also contains the pinned Middle Tennessee map
+The retained customer candidate contains the pinned Middle Tennessee map
 described below. Fresh no-NIC E2E and interactive customer installation checks
 confirmed it is available offline and visibly renders in Firefox. The sample
 PMTiles region is extracted offline from the bundled world archive
@@ -71,19 +96,12 @@ and alternate phrasing can bypass it, so it is not a general safety system.
 Open original documents directly and do not use AI answers for emergency or
 medical decisions.
 
-The bundled world and U.S. overview maps top out at zoom 5. The payload also
-contains a 19.6 MB Middle Tennessee road and land-use map, zoom 0–13, coverage
-`-88.5,35.4,-85.7,36.7`, extracted from the 2026-11-02 Protomaps build. Its
-source build, checksum, bounds, attribution, and ODbL Produced Work status are
-recorded in `payload/manifests/maps.json` and generated `map-payload.json`. The
-earlier separate-pack import test rendered it in Firefox at zoom 13 and
-survived two reboots. The current customer candidate integrates it directly
-into the core map payload; a fresh customer install rendered it at zoom 13 and
-the map persisted through two reboots. It is a geographic
-reference, not turn-by-turn navigation, GPS positioning, trails, or emergency
-advice. GPS/GIS integration is not
-part of the current test release; the detector only reports whether a likely
-GPS device node is present.
+The retained interactive customer candidate contains a 19.6 MB Middle
+Tennessee map, zoom 0–13, coverage `-88.5,35.4,-85.7,36.7`. Its historic
+acceptance is recorded in `RELEASE.md`. The statewide map above supersedes that
+coverage in the latest unattended test payload, but it has not yet replaced
+the interactive candidate. GPS/GIS integration is not validated; the detector
+only reports whether a likely GPS device node is present.
 
 The extensible pack format and planned categories are documented in
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md). An earlier candidate on source
@@ -91,10 +109,13 @@ The extensible pack format and planned categories are documented in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
 and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `21ad4fc` installed and indexed all four core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
-starter set, not a complete emergency library. The Middle Tennessee map is
-included in the current customer candidate; agricultural, wildlife,
+starter set, not a complete emergency library. The catalog includes an
+optional one-page CDC practical-skills checklist, but it teaches no first-aid
+procedures and is not a medical manual. Agricultural, wildlife, procedural
 first-aid, and comprehensive reference packs still need requirements and
-licensing review.
+licensing review. The newest statewide map is verified in the unattended E2E;
+the current interactive customer candidate still has Middle Tennessee-only
+detail.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live
