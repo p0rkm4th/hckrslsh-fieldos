@@ -3,16 +3,21 @@
 ## Customer installation
 
 **Current candidate status (2026-11-04):**
-`/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso`, source
-`0085b7ac2989dc684776ae0910fe5c77dd829c0c`, SHA-256
-`4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`. Structure
+`/mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso`, source
+`412883cb3757eda6af8ae38fc264c40e7c0d3136`, SHA-256
+`81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`. Structure
 and offline payload checks passed. A fresh no-NIC UEFI QEMU install completed
-with interactive account and disk selection. Removing the installer media at
-the restart prompt led directly to the installed OS without a host reset.
-Firstboot started seven containers, the branded desktop and local N.O.M.A.D.
-opened, and the guest returned to the desktop after two restarts. See the
-customer report at
-`/mnt/shared/fieldos-e2e/customer-interactive-0085b7a-20261104/report.md`.
+with interactive account and disk selection. The ISO was ejected and the
+installed EFI disk booted to the branded desktop; the test harness had to
+power-cycle the VM, so the installer's own Restart/media handoff is still
+unverified for this candidate. Local N.O.M.A.D. chat generated a response,
+Kiwix and maps loaded, and two guest restarts returned to the desktop with the
+local applications available. See the detailed customer report at
+`/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
+
+The prior `0085b7a` customer candidate had a QEMU media-removal handoff pass and
+is retained as a rollback/reference artifact while the newer candidate's
+handoff is unresolved. It is not the current source candidate.
 
 This is an engineering candidate, not a customer-ready field appliance. The
 bundled Kiwix archive contains only 100 articles and returned no result for
@@ -36,10 +41,11 @@ entry is the upstream Ubuntu live installer and does not run FieldOS
 provisioning. In the FieldOS installer, select the intended target disk and
 review its erase confirmation carefully. Use the supported Ubuntu encryption
 option if full disk encryption is required. After installation, choose
-“Restart now.” For USB installation, remove the USB media when prompted so firmware can boot
-the installed disk. This media handoff was demonstrated in the latest disposable
-UEFI QEMU run after ejecting the virtual media at the prompt. Physical USB
-behavior remains untested. Review the remaining release gates in
+“Restart now.” For USB installation, remove the USB media when prompted so
+firmware can boot the installed disk. For the current candidate, installed-disk
+boot was demonstrated after the harness ejected the virtual media and
+power-cycled QEMU. The installer's Restart button/media handoff itself remains
+unverified; physical USB behavior is also untested. Review the remaining release gates in
 [`RELEASE.md`](RELEASE.md) before installing on physical customer hardware.
 FieldOS leaves the customer identity and storage sections interactive. Ubuntu
 documents that an autoinstall `shutdown` action is ignored when interactive
@@ -58,10 +64,11 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 [`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-412883c.iso
 ```
 
-The current QEMU handoff test passed. For future changes, use a disposable VM
+The QEMU interactive install and installed-disk boot passed; the installer
+Restart/media handoff remains partial. For future changes, use a disposable VM
 with a disposable virtual disk and no network adapter. Do not write this
 candidate to physical media for customer use until all release gates pass.
 The E2E command below uses a separate unattended test image and does not
