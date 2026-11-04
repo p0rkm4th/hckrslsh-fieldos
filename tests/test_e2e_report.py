@@ -1,11 +1,21 @@
 import subprocess
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-from test_e2e import git_source_state, write_preflight_report
+from test_e2e import AcceptanceRun, git_source_state, write_preflight_report
 
 
 class E2ESourceStateTests(unittest.TestCase):
+    def test_check_forwards_long_guest_command_timeout(self):
+        run = AcceptanceRun.__new__(AcceptanceRun)
+        run.results = []
+        run.guest = Mock(return_value="index complete")
+
+        result = run.check("reference indexing", "index-command", timeout=1200)
+
+        self.assertEqual(result, "index complete")
+        run.guest.assert_called_once_with("index-command", timeout=1200)
+
     @patch(
         "test_e2e.subprocess.run",
         side_effect=[

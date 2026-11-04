@@ -331,7 +331,7 @@ autoinstall:
             indexed = self.check(
                 "N.O.M.A.D. indexes transferred reference pack",
                 "python3 /opt/fieldos/scripts/fieldos-nomad-index-references.py",
-                950,
+                timeout=1200,
             )
             if "Indexed " not in indexed and "No installed reference documents need" not in indexed:
                 raise TestFailure(f"Reference pack indexing did not report completion: {indexed}")
@@ -449,8 +449,9 @@ autoinstall:
             except Exception as exc:
                 (self.run_dir / filename).write_text(f"Log capture failed: {exc}\n", encoding="utf-8")
 
-    def check(self, name: str, command: str, evidence_limit: int = 300) -> str:
-        output = self.guest(command)
+    def check(self, name: str, command: str, evidence_limit: int = 300,
+              timeout: int = 180) -> str:
+        output = self.guest(command, timeout=timeout)
         evidence = output.replace("\n", " | ")[:evidence_limit]
         self.record(name, "PASS", evidence or "command completed")
         return output
