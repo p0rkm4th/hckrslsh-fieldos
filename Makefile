@@ -13,7 +13,7 @@ export UBUNTU_ISO FIELDOS_TEST_CONTENT_PACK
 
 check: validate-content-packs
 	$(PYTHON) -m compileall -q build hardware installer/provisioning payload scripts tests
-	bash -n scripts/*.sh build/*.sh
+	bash -n scripts/*.sh build/*.sh installer/provisioning/*.sh
 
 validate-content-packs:
 	$(PYTHON) payload/validate_content_packs.py

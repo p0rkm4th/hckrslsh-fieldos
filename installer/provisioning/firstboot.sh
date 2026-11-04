@@ -101,7 +101,12 @@ apt-get "${apt_offline[@]}" update
 apt-get "${apt_offline[@]}" --yes --no-install-recommends install \
   docker.io docker-compose-v2 curl zstd qemu-guest-agent
 rm -f /etc/apt/sources.list.d/fieldos-offline.list
-systemctl enable --now qemu-guest-agent.service
+if [[ -e /dev/virtio-ports/org.qemu.guest_agent.0 ]]; then
+  echo "Starting the optional QEMU guest agent on its available virtio channel..."
+  systemctl start qemu-guest-agent.service
+else
+  echo "No QEMU guest-agent channel is present; skipping this optional VM integration."
+fi
 
 root_lv=$(findmnt --noheadings --output SOURCE /)
 if [[ "$root_lv" == /dev/mapper/* ]] && command -v lvextend >/dev/null && command -v vgs >/dev/null; then
