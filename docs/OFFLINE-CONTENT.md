@@ -87,9 +87,8 @@ The extensible pack format and planned categories are documented in
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current candidate on
-source `3054c59` also installed the references; its fresh E2E and customer-mode
-results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The latest customer candidate at source `85a33f8` also installed the references;
+its fresh interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
 starter set, not a complete emergency library. The Middle Tennessee map is
 included in the current customer candidate; agricultural, wildlife,
 first-aid, and comprehensive reference packs still need requirements and
