@@ -3,19 +3,17 @@
 ## Customer installation
 
 **Current candidate status (2026-11-04):**
-`/mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso`, source
-`1fb6806`, SHA-256
-`d312bbf785f23a9b0b909ca683ce02a884cc0a707dec532bef2e94d82e25f288`. Structure
-and offline payload checks passed. A fresh no-NIC UEFI QEMU install completed
-with interactive disk and account selection; review showed the blank `vda`
-target and EFI/root partitions. The media-removal handoff powered off the VM;
-its next power-on booted the installed disk without repair. Firstboot completed,
-all seven services responded, chat and embeddings ran, N.O.M.A.D. retrieved
-CDC and NWS guidance, Kiwix opened in Firefox, and the bundled map visibly
-rendered. Two subsequent reboots retained the services, model inventory, and
-indexed references. Detailed evidence is at
-`/mnt/shared/fieldos-e2e/customer-nws-1fb6806/report.md`.
-
+`/mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso`, source
+`c642fac6a74e94cdb301b9e730353b7cd53ab11d`, SHA-256
+`10f55a4293f2d8659895e3358091b2b5bc4e99841b75d02e9b25552baa48ea9f`. The ISO structure and offline payload checks passed. A fresh
+interactive install selected a disposable UEFI disk and user account, completed
+offline, and booted from the installed disk after the installer powered down at
+the media handoff. The branded desktop loaded; local AI generation, embeddings,
+Kiwix article retrieval, map rendering in Firefox, no-NIC isolation, and service
+persistence across two reboots passed. The detailed evidence is at
+`/mnt/shared/fieldos-e2e/customer-safety-7981801-r2-20261104/report.md`.
+This is VM evidence only; physical USB handoff, hardware compatibility, and
+redistribution clearance remain open.
 The installer asks the user to remove the USB and press Enter. In this QEMU run,
 Ubuntu powered the VM off at that handoff; powering it on again booted the
 installed disk. There was no disk repair or host-side change to the guest.
@@ -23,7 +21,7 @@ Physical USB behavior is untested. Older ISO candidates are superseded;
 selected test reports and diagnostic records remain under
 `/mnt/shared/fieldos-e2e`.
 
-The customer facing ISO is built with:
+The customer-facing ISO is built with:
 
 ```sh
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
@@ -59,13 +57,14 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 [`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-1fb6806-nws.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-safety-7981801.iso
 ```
 
-The QEMU interactive install, installed-disk boot, and two reboot checks passed
-in a disposable no-NIC VM. At the end, Ubuntu prompted for media removal and
-Enter; the VM powered off, and a subsequent power-on booted the installed disk
-without repair. Physical USB handoff remains untested. For future changes, use
+The latest candidate’s QEMU interactive install, installed-disk boot, desktop,
+service checks, and two reboot checks passed in a disposable no-NIC VM. At the
+end, Ubuntu prompted for media removal and Enter; the VM powered off, and a
+subsequent power-on booted the installed disk without repair. Physical USB
+handoff remains untested. For future changes, use
 a disposable VM with a disposable virtual disk and no network adapter. Do not
 write this candidate to physical media for customer use until all release
 gates pass.
