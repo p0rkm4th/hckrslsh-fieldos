@@ -94,14 +94,15 @@ small model an authority.
 ## Build, evidence, and artifact handling
 
 The latest clean E2E passed at `7981801`. Gitleaks scanned all 203 Git commits
-and the working tree with no findings. Seven reviewed commits are local ahead
-of public `origin/main` at `da61a84`. The latest push attempt was rejected with
+and the working tree with no findings. Local `main` contains reviewed changes
+ahead of the last locally known public `origin/main` at `da61a84`. The latest
+push attempt was rejected with
 `Permission denied (publickey)`; GitHub repository metadata reports push
 permission, but connected GitHub write endpoints previously returned 403.
 Remote read access timed out during the latest recheck, so the remote head has
-not been freshly confirmed. No release binaries are part of Git. The customer-mode
-VM acceptance gate passed, but the ISO is still a test candidate, not an
-approved public release. The superseded 1fb6806 ISO and its checksum sidecar
+not been freshly confirmed. No release binaries are part of Git. The
+customer-mode VM acceptance gate passed, but the ISO is still a test candidate,
+not an approved public release. The superseded 1fb6806 ISO and its checksum sidecar
 were retired after confirming no process used them; their SHA-256 and reason
 are recorded in `fieldos-artifact-retirement-20261104-customer-nws.txt`. Test
 and release data live on `/mnt/shared`; preserve the current candidate, reports,
