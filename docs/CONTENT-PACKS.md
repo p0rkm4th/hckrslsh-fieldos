@@ -118,15 +118,20 @@ domain unless otherwise noted, while requiring source credit and prohibiting
 implied endorsement; the pages were checked for their agency attribution and
 third-party credits. This is a limited reference set, not an all-hazards plan.
 
-Build its removable-media archive with `make content-packs`. The pack is
-registered as optional and intentionally excluded from `core_packs`, so it does
+Build its removable-media archive with `make content-packs`. The current
+archive is `/mnt/shared/fieldos-payload/content-packs/us-weather-safety-1.0.1.tar.zst`
+(SHA-256 `9be415ad975ef8ef5ef2bd483254dac6ca2b400bfc594ec4309db6205e3b1e1c`).
+The pack is registered as optional and intentionally excluded from `core_packs`, so it does
 not increase the installer ISO size. After transfer, install it with the
 commands above; FieldOS verifies the archive and checksums, publishes the
 source documents, and asks N.O.M.A.D. to index them. The source library remains
 available directly even when AI chat is unavailable or refuses emergency
-questions. The latest transfer test is recorded in the run report noted in
-[`RELEASE.md`](RELEASE.md); its acceptance run later failed at the unrelated
-bundled-map consistency check, so end-to-end acceptance is still pending.
+questions. The clean-source transfer test at commit `d865333` passed as part of the
+full acceptance run: all three documents were installed, checksummed, indexed,
+opened through the local source library, and persisted across two reboots. The
+report and archive hash are recorded in [`RELEASE.md`](RELEASE.md). An earlier
+run failed because its cached baseline payload was stale; that source-to-payload
+mismatch is now checked before ISO creation.
 
 On source `1fb6806`, a fresh no-NIC E2E and a separate interactive customer-mode
 install confirmed that the two CDC PDFs and NWS tornado text were activated in
