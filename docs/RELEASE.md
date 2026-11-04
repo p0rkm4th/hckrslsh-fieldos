@@ -12,7 +12,9 @@ GPU acceleration, and redistribution approval remain open.
 
 ## Current source and artifacts
 
-- Current source and latest pushed commit: `0085b7ac2989dc684776ae0910fe5c77dd829c0c`.
+- Code revision represented by both accepted test runs and the customer ISO:
+  `0085b7ac2989dc684776ae0910fe5c77dd829c0c`. The later documentation update
+  does not change the ISO contents.
 - Latest clean-source E2E report:
   `/mnt/shared/fieldos-e2e/20261104T001739Z-2874470/report.md` (PASS). Test ISO
   SHA-256: `5a6a5e78df0abe6b238b0d9fbfc48638bcb63e5192b67467237e5ed995db61ba`.
