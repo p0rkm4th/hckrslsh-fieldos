@@ -44,7 +44,7 @@
     <div class="cards">
       <article class="card"><span class="tag">Local AI</span><p>Project N.O.M.A.D. uses the bundled chat and embedding models. FieldOS blocks common emergency, medical, water-treatment, food-safety, and evacuation questions from AI chat after the test model produced unsafe answers. For those topics, read the original offline references.</p></article>
       <article class="card"><span class="tag">Reference</span><p>A small English Wikipedia archive, two CDC source documents on emergency water and food safety, and a text-only National Weather Service tornado-safety reference are included. This is a limited starter set, not a comprehensive repair, medical, or emergency library.</p></article>
-      <article class="card"><span class="tag">Maps</span><p>Low-zoom world and sample U.S. map data is included for orientation and testing. It is not suitable for street, trail, parcel, or navigation decisions.</p></article>
+      <article class="card"><span class="tag">Maps</span><p>World overview data covers zoom levels 0–5. A detailed road and land-use map covers Middle Tennessee around Nashville through zoom 13. It is not turn-by-turn navigation and does not provide GPS positioning.</p></article>
     </div>
   </section>
   <section class="notice">
@@ -53,8 +53,8 @@
     <p>The included CDC PDFs and text-only NWS tornado reference are source-attributed and added to N.O.M.A.D.'s local Knowledge Base. They are not comprehensive emergency guidance and do not provide live weather alerts. A keyword-based FieldOS guard blocks many safety-related prompts, but it cannot recognize every phrasing; do not use AI answers for emergency, medical, water-treatment, food-safety, or evacuation decisions. Open the originals and consult appropriate official guidance.</p>
   </section>
   <section>
-    <h2>Add an optional regional map without internet</h2>
-    <p>Map packs are separate files and are not included in this test edition. Obtain the archive and its matching <code>.sha256</code> file from a source you trust on another computer, then copy both to a USB drive.</p>
+    <h2>Add another regional map without internet</h2>
+    <p>The Middle Tennessee map is included in this edition. Additional verified map packs can be copied to a USB drive with their matching <code>.sha256</code> file.</p>
     <ol>
       <li>Open the USB drive in Files and note its name.</li>
       <li>Open Terminal and install the pack. Replace <code>USB-NAME</code> and the archive filename with the names shown on your drive:<br><code>sudo /opt/fieldos/scripts/fieldos-content-packs.py install "/media/$USER/USB-NAME/map-pack.tar.zst"</code></li>

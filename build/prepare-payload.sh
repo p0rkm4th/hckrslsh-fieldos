@@ -162,31 +162,47 @@ docker run --rm --network bridge \
 docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
   --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/world.pmtiles \
   > "$STAGE/manifests/world-map-metadata.txt"
-REGION_FILENAME=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["file"])' "$ROOT/payload/manifests/maps.json")
-REGION_BBOX=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["bbox"])' "$ROOT/payload/manifests/maps.json")
-REGION_MINZOOM=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["minzoom"])' "$ROOT/payload/manifests/maps.json")
-REGION_MAXZOOM=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["regions"][0]["maxzoom"])' "$ROOT/payload/manifests/maps.json")
-echo "Extracting the bundled sample region $REGION_FILENAME from the local world map..."
-docker run --rm --network none \
-  -v "$STAGE/content/maps/pmtiles:/maps" \
-  --entrypoint /usr/local/bin/pmtiles \
-  "$NOMAD_REF@$NOMAD_DIGEST" \
-  extract /maps/world.pmtiles "/maps/$REGION_FILENAME" \
-  --bbox="$REGION_BBOX" --minzoom="$REGION_MINZOOM" --maxzoom="$REGION_MAXZOOM"
-docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
-  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show "/maps/$REGION_FILENAME" \
-  > "$STAGE/manifests/$(basename "$REGION_FILENAME" .pmtiles)-metadata.txt"
-python3 - "$STAGE/content/maps/pmtiles/world.pmtiles" \
-  "$STAGE/content/maps/pmtiles/$REGION_FILENAME" \
-  "$ROOT/payload/manifests/maps.json" > "$STAGE/manifests/map-payload.json" <<'PY'
+while IFS=$'\t' read -r region_id region_file region_bbox minzoom maxzoom source expected_bytes expected_sha256; do
+  [[ -n "$region_id" ]] || continue
+  echo "Extracting bundled map region $region_id ($region_file), zoom $minzoom-$maxzoom..."
+  if [[ "$source" == "world" ]]; then
+    MAP_SOURCE=/maps/world.pmtiles
+    MAP_NETWORK=none
+  elif [[ "$source" == "pinned-build" ]]; then
+    MAP_SOURCE="https://build.protomaps.com/$MAP_KEY"
+    MAP_NETWORK=bridge
+  else
+    echo "Unknown map source mode for $region_id: $source" >&2
+    exit 1
+  fi
+  docker run --rm --network "$MAP_NETWORK" \
+    -v "$STAGE/content/maps/pmtiles:/maps" \
+    --entrypoint /usr/local/bin/pmtiles \
+    "$NOMAD_REF@$NOMAD_DIGEST" \
+    extract "$MAP_SOURCE" "/maps/$region_file" \
+    --bbox="$region_bbox" --minzoom="$minzoom" --maxzoom="$maxzoom"
+  docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
+    --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show "/maps/$region_file" \
+    > "$STAGE/manifests/$(basename "$region_file" .pmtiles)-metadata.txt"
+done < <(python3 - "$ROOT/payload/manifests/maps.json" <<'PY'
+import json, sys
+for region in json.load(open(sys.argv[1]))["regions"]:
+    print("\t".join(str(region.get(key, "")) for key in (
+        "id", "file", "bbox", "minzoom", "maxzoom", "source",
+        "expected_size_bytes", "expected_sha256")))
+PY
+)
+python3 - "$STAGE/content/maps/pmtiles" \
+  "$ROOT/payload/manifests/maps.json" "$STAGE/manifests/protomaps-build.json" \
+  > "$STAGE/manifests/map-payload.json" <<'PY'
 import hashlib
 import json
 import pathlib
 import sys
 
-world, region, manifest = map(pathlib.Path, sys.argv[1:])
+map_root, manifest, build_manifest = map(pathlib.Path, sys.argv[1:])
 record = json.loads(manifest.read_text())
-item = record["regions"][0]
+build = json.loads(build_manifest.read_text())
 def file_record(path):
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -194,20 +210,32 @@ def file_record(path):
             digest.update(chunk)
     return {"file": path.name, "bytes": path.stat().st_size, "sha256": digest.hexdigest()}
 
-print(json.dumps({
-    "schema_version": 1,
-    "source_archive": file_record(world),
-    "region": {
+regions = []
+for item in record["regions"]:
+    result = file_record(map_root / item["file"])
+    if item.get("expected_size_bytes") and result["bytes"] != item["expected_size_bytes"]:
+        raise SystemExit(f"Map size mismatch for {item['id']}: {result['bytes']}")
+    if item.get("expected_sha256") and result["sha256"] != item["expected_sha256"]:
+        raise SystemExit(f"Map SHA-256 mismatch for {item['id']}: {result['sha256']}")
+    source_archive = "world.pmtiles" if item["source"] == "world" else build["key"]
+    regions.append({
         **item,
-        "source": world.name,
-        "derived_file": file_record(region),
+        "source_archive": source_archive,
+        "derived_file": result,
         "license": record["license"],
         "attribution": record["attribution"],
-    },
+    })
+
+print(json.dumps({
+    "schema_version": 1,
+    "source_build": build,
+    "license": record["license"],
+    "attribution": record["attribution"],
+    "regions": regions,
 }, indent=2))
 PY
 cat > "$STAGE/licenses/protomaps-odbl-attribution.txt" <<'EOF'
-The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. The fieldos-sample-us.pmtiles file is an extract from that bundled world archive. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json and manifests/map-payload.json. Preserve this attribution in the map interface and any redistributed derivative.
+The world.pmtiles dataset is a low-zoom extract of the Protomaps Basemap, a Produced Work derived from OpenStreetMap data. The fieldos-sample-us.pmtiles file is an extract from that bundled world archive. The middle-tennessee-20261102-z13.pmtiles file is an extract of the same pinned Protomaps build for the declared Middle Tennessee bounding box and zoom range. Attribution: © OpenStreetMap contributors; Protomaps Basemap. Data license: Open Database License (ODbL) 1.0. The source build key, date, size, and checksum metadata are in manifests/protomaps-build.json and manifests/map-payload.json. Preserve this attribution in the map interface and any redistributed derivative.
 EOF
 
 echo "Fetching model license texts and pinned Ollama model payloads..."

@@ -28,10 +28,15 @@ archive is not cleared for public redistribution.
 
 ## Maps
 
-The test payload includes a global Protomaps basemap and a small United States
-sample extracted from it. The data is limited to zoom levels 0–5 and is for
-broad orientation and software testing; it does not provide detailed roads,
-trails, parcels, or field navigation. The map interface attributes
+The test payload includes a global Protomaps basemap and a U.S. sample
+extracted from it, both limited to zoom levels 0–5. It also includes a bounded
+Middle Tennessee road and land-use map centered on Nashville, with coverage
+`-88.5,35.4,-85.7,36.7` and zoom levels 0–13. The regional file is
+19,609,616 bytes with SHA-256
+`d3f059ebe098d058dde9c7a1ee046cef80dff8df061e4846d61e262cdff50a66`, extracted
+from Protomaps build `20261102.pmtiles`. It is a local geographic reference,
+not turn-by-turn navigation, GPS positioning, trail guidance, or emergency
+advice. The map interface attributes
 OpenStreetMap contributors and Protomaps. The full ODbL 1.0 text is at
 `/usr/share/doc/fieldos/ODbL-1.0.txt`; the attribution notice and source-build
 details are alongside it and in the map interface. The ODbL applies to the
@@ -87,7 +92,7 @@ contents.
 ## Additional packs
 
 The content-pack format supports independently sourced and licensed additions.
-No customer-specific packs are currently approved or included. Higher-zoom
-regional maps, GPS integration, and additional agriculture, outdoor, water,
-food-preservation, and emergency references require separate source,
-redistribution, and field-use review.
+The Middle Tennessee map is the only included detailed region. Other
+customer-specific packs are not approved. Additional regional maps, GPS
+integration, and agriculture, outdoor, water, food-preservation, and emergency
+references require separate source, redistribution, and field-use review.

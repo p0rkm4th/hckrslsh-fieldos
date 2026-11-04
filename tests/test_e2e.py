@@ -99,6 +99,11 @@ class AcceptanceRun:
                 self.core_reference_manifests.append(manifest)
         self.core_reference_manifest = (self.core_reference_manifests[0]
                                          if self.core_reference_manifests else None)
+        map_manifest = json.loads((ROOT / "payload/manifests/maps.json").read_text())
+        self.regional_map = next(
+            (item for item in map_manifest.get("regions", [])
+             if item.get("id") == "middle-tennessee"), None
+        )
         self.pack_archive = Path(os.environ["FIELDOS_TEST_CONTENT_PACK"]).expanduser() if os.environ.get("FIELDOS_TEST_CONTENT_PACK") else None
         self.pack_manifest: dict | None = None
         self.pack_target: str | None = None
@@ -574,7 +579,7 @@ autoinstall:
         launch = (
             f"uid={uid}; runtime=/run/user/$uid; wayland={wayland}; "
             "test -S \"$runtime/$wayland\" || exit 1; "
-            f"map_url='http://127.0.0.1:8080/maps{('?lat=36.1627&lng=-86.7816&zoom=13' if self.pack_target == 'storage/maps/pmtiles' else '')}'; "
+            f"map_url='http://127.0.0.1:8080/maps{('?lat=36.1627&lng=-86.7816&zoom=13' if self.regional_map else '')}'; "
             "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
             "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
             "GDK_BACKEND=wayland /usr/bin/firefox --new-window \"$map_url\" "
@@ -591,16 +596,16 @@ autoinstall:
         while time.monotonic() < deadline:
             self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
             width, height, colors, water_pixels = self.screenshot_color_count(screenshot)
-            if water_pixels >= (5000 if self.pack_target != "storage/maps/pmtiles" else 0) and colors >= 64:
+            if colors >= 64:
                 break
             time.sleep(5)
-        if colors < 64 or (self.pack_target != "storage/maps/pmtiles" and water_pixels < 5000):
+        if colors < 64:
             raise TestFailure(
-                f"Map viewport did not render PMTiles water tiles: {water_pixels} water pixels, "
+                f"Map viewport did not render detailed PMTiles tiles: {water_pixels} water pixels, "
                 f"{colors} sampled colors in {width}x{height} screenshot"
             )
         self.record("offline map rendering", "PASS",
-                    f"Firefox rendered {'Middle Tennessee at zoom 13' if self.pack_target == 'storage/maps/pmtiles' else 'world/regional map'} "
+                    f"Firefox rendered {'Middle Tennessee at zoom 13' if self.regional_map else 'world/regional map'} "
                     f"in {width}x{height} VNC screenshot; {water_pixels} sampled water pixels, "
                     f"{colors} colors; {screenshot.name}")
 
@@ -991,6 +996,28 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         regions_data = json.loads(regions)
         if not any(item.get("name") == "fieldos-sample-us.pmtiles" for item in regions_data.get("files", [])):
             raise TestFailure("Bundled sample map region is not registered in N.O.M.A.D.")
+        if self.regional_map:
+            if not any(item.get("name") == self.regional_map["file"]
+                       for item in regions_data.get("files", [])):
+                raise TestFailure("Bundled Middle Tennessee map is not registered in N.O.M.A.D.")
+            regional_path = f"/app/storage/maps/pmtiles/{self.regional_map['file']}"
+            regional_tile = self.check(
+                "offline Middle Tennessee zoom-13 tile",
+                f"docker exec nomad_admin /usr/local/bin/pmtiles tile '{regional_path}' "
+                "13 2121 3212 2>/dev/null | wc -c",
+                350,
+            )
+            if not regional_tile.isdigit() or int(regional_tile) <= 0:
+                raise TestFailure(f"Bundled Middle Tennessee detail tile unavailable: {regional_tile!r}")
+            regional_range = self.check(
+                "Middle Tennessee PMTiles HTTP range",
+                f"curl --fail --silent --show-error --max-time 10 -o /dev/null -r 0-126 "
+                f"-w 'HTTP=%{{http_code}} BYTES=%{{size_download}}' "
+                f"http://127.0.0.1:8080/pmtiles/{self.regional_map['file']}",
+                160,
+            )
+            if "HTTP=206" not in regional_range or "BYTES=127" not in regional_range:
+                raise TestFailure(f"Bundled Middle Tennessee map range failed: {regional_range}")
         styles = self.check("map renderer configuration", "curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8080/api/maps/styles", 350)
         styles_data = json.loads(styles)
         if "world" not in styles_data.get("sources", {}):
@@ -1001,24 +1028,24 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         assets = self.check("map renderer assets", "curl --fail --silent --show-error --max-time 10 -o /dev/null -w 'HTTP=%{http_code} BYTES=%{size_download}' http://127.0.0.1:8080/basemaps-assets/sprites/v4/light.json", 160)
         if "HTTP=200" not in assets:
             raise TestFailure("N.O.M.A.D. did not serve the bundled map renderer assets")
-        if self.pack_target == "storage/maps/pmtiles":
-            map_pack = self.check(
-                "optional regional map survives reboot",
-                "test -s /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles "
-                "&& curl --fail --silent --show-error -o /dev/null -r 0-126 "
-                "-w 'HTTP=%{http_code} BYTES=%{size_download}' "
-                "http://127.0.0.1:8080/pmtiles/middle-tennessee-20261102-z13.pmtiles",
+        if reboot and self.regional_map:
+            regional_path = f"/var/lib/fieldos/storage/maps/pmtiles/{self.regional_map['file']}"
+            regional_http = self.check(
+                "Middle Tennessee map persists and serves ranges",
+                f"test -s '{regional_path}' && curl --fail --silent --show-error -o /dev/null -r 0-126 "
+                f"-w 'HTTP=%{{http_code}} BYTES=%{{size_download}}' "
+                f"http://127.0.0.1:8080/pmtiles/{self.regional_map['file']}",
                 160,
             )
-            if "HTTP=206" not in map_pack or "BYTES=127" not in map_pack:
-                raise TestFailure(f"Imported regional map failed its persistent range probe: {map_pack}")
+            if "HTTP=206" not in regional_http or "BYTES=127" not in regional_http:
+                raise TestFailure(f"Bundled regional map failed its range probe: {regional_http}")
             tile = self.check(
-                "optional regional detail tile survives reboot",
-                "docker exec nomad_admin /usr/local/bin/pmtiles tile "
-                "/app/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles 13 2121 3212 2>/dev/null | wc -c",
+                "Middle Tennessee zoom-13 vector tile",
+                f"docker exec nomad_admin /usr/local/bin/pmtiles tile "
+                f"'/app/storage/maps/pmtiles/{self.regional_map['file']}' 13 2121 3212 2>/dev/null | wc -c",
             )
             if not tile.isdigit() or int(tile) <= 0:
-                raise TestFailure(f"Imported regional vector tile unavailable after reboot: {tile!r}")
+                raise TestFailure(f"Persistent regional vector tile unavailable: {tile!r}")
         net = self.check("container egress disabled", "docker network inspect fieldos-internal fieldos-local-ui --format '{{.Name}} internal={{.Internal}} masquerade={{index .Options \"com.docker.network.bridge.enable_ip_masquerade\"}}' && docker exec nomad_admin node -e 'fetch(\"https://example.com\",{signal:AbortSignal.timeout(5000)}).then(()=>process.exit(3)).catch(()=>process.exit(0))' && echo EXTERNAL_EGRESS_BLOCKED", 350)
         if "EXTERNAL_EGRESS_BLOCKED" not in net:
             raise TestFailure("N.O.M.A.D. container could reach an external URL")

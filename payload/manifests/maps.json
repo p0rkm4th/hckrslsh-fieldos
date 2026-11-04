@@ -17,7 +17,19 @@
       "file": "fieldos-sample-us.pmtiles",
       "bbox": "-130,20,-60,55",
       "minzoom": 0,
-      "maxzoom": 5
+      "maxzoom": 5,
+      "source": "world"
+    },
+    {
+      "id": "middle-tennessee",
+      "title": "Middle Tennessee road and land-use map",
+      "file": "middle-tennessee-20261102-z13.pmtiles",
+      "bbox": "-88.5,35.4,-85.7,36.7",
+      "minzoom": 0,
+      "maxzoom": 13,
+      "source": "pinned-build",
+      "expected_size_bytes": 19609616,
+      "expected_sha256": "d3f059ebe098d058dde9c7a1ee046cef80dff8df061e4846d61e262cdff50a66"
     }
   ]
 }

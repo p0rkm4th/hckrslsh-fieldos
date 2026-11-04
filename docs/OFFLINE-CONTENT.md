@@ -5,7 +5,7 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
-The current customer candidate contains Project N.O.M.A.D.'s miniature English
+The retained customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 0.6B Q4_K_M for chat, `nomic-embed-text:v1.5` for embeddings, and
@@ -15,7 +15,9 @@ PDFs about emergency water treatment and food safety after a power outage.
 Firstboot indexes these and the attributed NWS tornado guide in N.O.M.A.D.'s
 local source library. This is a starter set, not a comprehensive disaster
 library.
-The sample PMTiles region is extracted offline from the bundled world archive
+The current source payload build adds the pinned Middle Tennessee map described
+below. It is not in the retained customer ISO until a replacement image passes
+fresh acceptance. The sample PMTiles region is extracted offline from the bundled world archive
 by `build/prepare-payload.sh`; its bounding box and zoom levels are declared in
 `payload/manifests/maps.json`, and the payload records its generated checksum
 and size. The ZIM's Wikipedia content is CC BY-SA; map data is an ODbL Produced
@@ -65,18 +67,16 @@ wildfire evacuation instructions attributed to the unrelated tornado guide.
 Until retrieval is made reliably source-bounded and retested, open the source
 documents directly and do not use AI answers for disaster decisions.
 
-The bundled world map and sample regional map both top out at zoom level 5.
-They support broad orientation and acceptance testing, but do not provide
-detailed roads, trails, parcels, or field navigation. A separate Middle
-Tennessee map candidate exists outside the ISO: 19.6 MB, zoom 0–13, coverage
+The bundled world and U.S. overview maps top out at zoom 5. The payload also
+contains a 19.6 MB Middle Tennessee road and land-use map, zoom 0–13, coverage
 `-88.5,35.4,-85.7,36.7`, extracted from the 2026-11-02 Protomaps build. Its
-manifest and ODbL license text are included in the portable archive. It passed
-offline guest import, N.O.M.A.D. registration, Firefox rendering at zoom 13,
-and two-reboot persistence on source
-`cf151a20520d844dcb7bf983a3d92013d539fce9` (report
-`/mnt/shared/fieldos-e2e/20261104T073217Z-3246434/report.md`). It remains an
-external test pack, not included in the ISO or approved for public
-redistribution. GPS/GIS integration is not
+source build, checksum, bounds, attribution, and ODbL Produced Work status are
+recorded in `payload/manifests/maps.json` and generated `map-payload.json`. The
+earlier separate-pack import test rendered it in Firefox at zoom 13 and
+survived two reboots; the current source integrates it directly into the core
+map payload, and the fresh acceptance run is pending. It is a geographic
+reference, not turn-by-turn navigation, GPS positioning, trails, or emergency
+advice. GPS/GIS integration is not
 part of the current test release; the detector only reports whether a likely
 GPS device node is present.
 
