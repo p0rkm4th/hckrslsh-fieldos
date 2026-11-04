@@ -58,6 +58,19 @@ Ollama chat generation, embedding output, Kiwix library/search, a PMTiles world
 tile and a registered sample region, and a rendered browser map screenshot.
 They also check the installed content source guide, bundled license text, and
 the reference archive checksum against its pinned manifest.
+When `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst` is set, the harness
+creates a separate read-only transfer ISO and imports the pack entirely offline.
+Map packs are checked against N.O.M.A.D.'s map inventory, rendering, and reboot
+persistence. Reference-document packs are checked for checksum-matched installed
+and web-served copies, a Firefox source-index view, and reboot persistence. A
+direct document URL is also checked over the loopback web server; review the
+retained screenshot when validating a specific PDF viewer experience. For
+example:
+
+```sh
+FIELDOS_TEST_CONTENT_PACK="/mnt/shared/fieldos-content-packs/content-packs/us-water-food-emergency-1.0.0.tar.zst" \
+  make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
+```
 The runner checks the map viewport contains actual low-zoom water tiles, then
 checks blocked container egress and repeats service/model/reference/map-tile
 checks after two guest reboots. The guest has no external network interface;

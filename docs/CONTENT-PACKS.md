@@ -89,6 +89,14 @@ It is a small starter set, not a complete water, food, first-aid, medical, or
 disaster-preparedness library. Consult current local guidance. It is not
 included in the current ISO.
 
+The pack was transferred and installed in a clean no-NIC VM on source
+`09501cb6e6fb4e049da585a610176937a5a52b94`. Its source index and water PDF
+opened in Firefox, and pack files survived two reboots. The report and browser
+screenshots are retained at
+`/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/`. This validates the pack
+adapter and this narrow source set; it does not establish that the pack is a
+complete prepper library or approved for customer distribution.
+
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the
 disposable no-NIC VM and imports it inside the installed guest. Map packs are

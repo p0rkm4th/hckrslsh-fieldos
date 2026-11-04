@@ -1,28 +1,32 @@
 # Release readiness and evidence
 
 **Status: engineering test candidate; not approved for customer/emergency use.**
-The latest unattended offline E2E passed on source `0085b7ac2989dc684776ae0910fe5c77dd829c0c`.
-A separate customer-mode UEFI install on the same source completed interactively
-with no NIC, media handoff to the installed disk, firstboot, and two guest
-restarts. Actual browser checks confirmed local N.O.M.A.D. chat and the branded
-desktop. The field-use content check failed: Kiwix has only a 100-article
-Wikipedia fixture, the map has no useful local detail at a 10 km scale, and
-chat guidance was generic and unsourced. Physical hardware, LAN peer isolation,
-GPU acceleration, and redistribution approval remain open.
+The latest unattended offline E2E passed on source
+`09501cb6e6fb4e049da585a610176937a5a52b94`, including a transferred optional
+water/food reference pack, Firefox access to its source index and PDF, and two
+reboots. The separate customer-mode UEFI installation below used the older
+`0085b7a` ISO; the latest source still needs its own customer-ISO build and
+interactive install test. Field-use readiness remains failed: the core Kiwix
+fixture has only 100 articles, the bundled map lacks useful Nashville detail,
+and the chat answer was generic and unsourced. Physical hardware, LAN peer
+isolation, GPU acceleration, and redistribution approval remain open.
 
 ## Current source and artifacts
 
-- Code revision represented by both accepted test runs and the customer ISO:
-  `0085b7ac2989dc684776ae0910fe5c77dd829c0c`. The later documentation update
-  does not change the ISO contents.
+- Latest clean-source E2E source revision:
+  `09501cb6e6fb4e049da585a610176937a5a52b94`.
 - Latest clean-source E2E report:
-  `/mnt/shared/fieldos-e2e/20261104T001739Z-2874470/report.md` (PASS). Test ISO
-  SHA-256: `5a6a5e78df0abe6b238b0d9fbfc48638bcb63e5192b67467237e5ed995db61ba`.
-  It verified offline install/provisioning, seven services, chat, embeddings,
-  Kiwix retrieval, bundled map rendering, two reboots, and no NIC. The optional
-  Middle Tennessee content-pack archive was not available in this run; its
-  separate earlier test is documented in `CONTENT-PACKS.md`.
-- Current customer-mode candidate:
+  `/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md` (PASS). Test ISO
+  SHA-256: `c71cdb00e180ac29edaa125751b996c71158a1c3478097b42582c9982b9d67c9`.
+  It verified no-NIC installation/provisioning, seven services, chat, embeddings,
+  Kiwix retrieval, map rendering, and two reboots. Optional reference pack
+  `us-water-food-emergency-1.0.0` was transferred separately (archive SHA-256
+  `c862c023e8999268be6d78692e4d3a01c95a3f5f840fa954b424b5604eb9518c`),
+  installed offline, served through N.O.M.A.D.'s loopback static server, and
+  persisted across both reboots. `reference-library-render.png` shows the source
+  index; `reference-pdf-render.png` shows the CDC water-safety PDF opened in
+  Firefox. The optional pack is not included in the customer ISO.
+- Previously tested customer-mode candidate, now behind current source:
   `/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso`, 11,984,044,032
   bytes. SHA-256:
   `4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`.
@@ -54,6 +58,7 @@ GPU acceleration, and redistribution approval remain open.
 | Local chat inference | PASS, function only | Bundled `qwen3:0.6b-q4_K_M` generated a response in the disconnected customer VM. Response quality and sourcing failed field-readiness review. |
 | Embeddings | PASS | E2E report records a 768-element embedding from the bundled model. |
 | Kiwix service | PASS | Browser loaded the local Kiwix server. |
+| Optional water/food source pack | PASS in E2E | Separate media transfer, validated install, loopback source index, direct Firefox PDF view, and two-reboot persistence; not in customer ISO or N.O.M.A.D. semantic search. |
 | Useful reference coverage | FAIL | Only one “Top hundred Wikipedia articles” archive; “water purification” returned no result. |
 | Bundled offline map rendering | PASS at overview | Firefox rendered the U.S. basemap. |
 | Local map usefulness | FAIL | Nashville at 10 km scale displayed mostly blank background and sparse linework; the separately tested zoom-13 pack is not bundled. |

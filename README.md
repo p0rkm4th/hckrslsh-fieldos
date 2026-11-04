@@ -14,13 +14,14 @@ build outputs and are excluded from Git.
 ## Current status
 
 The latest clean-source offline E2E acceptance passed on revision
-`0085b7ac2989dc684776ae0910fe5c77dd829c0c`. It installed Ubuntu with no virtual
+`09501cb6e6fb4e049da585a610176937a5a52b94`. It installed Ubuntu with no virtual
 NIC, provisioned local packages and images, and verified N.O.M.A.D., local chat
 and embeddings, Kiwix retrieval, map rendering, and persistence through two
-reboots. The optional Middle Tennessee content pack was not present in this
-run; its earlier independent activation test is recorded in
-[`docs/CONTENT-PACKS.md`](docs/CONTENT-PACKS.md). See the retained report at
-`/mnt/shared/fieldos-e2e/20261104T001739Z-2874470/report.md` and
+reboots. The optional U.S. water/food source pack was transferred from separate
+media, installed offline, shown in Firefox, and its CDC water-safety PDF opened
+in Firefox. The pack remains optional and is not in the current customer ISO.
+See the retained report at
+`/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md` and
 [`docs/RELEASE.md`](docs/RELEASE.md).
 
 The current customer-mode engineering candidate is
@@ -86,8 +87,8 @@ Start with the [documentation guide](docs/README.md), then read
 [installation](docs/INSTALLATION.md), [architecture](docs/ARCHITECTURE.md),
 [operations and troubleshooting](docs/OPERATIONS.md), [hardware support](docs/HARDWARE.md),
 and [offline content/licensing](docs/OFFLINE-CONTENT.md). The
-[content-pack architecture](docs/CONTENT-PACKS.md) is defined with an empty
-catalog pending source and license review. Review [security boundaries](docs/SECURITY.md)
+[content-pack architecture](docs/CONTENT-PACKS.md) includes a small optional
+water/food source pack and planned categories. Review [security boundaries](docs/SECURITY.md)
 before changing exposed ports or Docker access.
 
 ## Security and redistribution

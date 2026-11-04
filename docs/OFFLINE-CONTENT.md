@@ -58,14 +58,16 @@ The extensible pack format and planned categories are documented in
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md). No content pack is bundled in the
 customer ISO. The optional `us-water-food-emergency` starter pack contains two
 CDC source PDFs and can be transferred and installed offline using the content
-pack installer. Its transfer and persistence passed in a fresh VM, but visual
-review found the first browser integration could not open a file under
-`/var/lib` from Ubuntu's confined Firefox. The adapter now serves the documents
-through N.O.M.A.D.'s existing loopback-only static server; a fresh guest retest
-is pending. It does not populate N.O.M.A.D.'s semantic retrieval index and is
-not a complete emergency library. The Middle Tennessee candidate remains a
-separate, unreleased map artifact; agricultural, wildlife, first-aid, and
-comprehensive reference packs still need requirements and licensing review.
+pack installer. On source `09501cb6e6fb4e049da585a610176937a5a52b94`, its
+transfer, installation, browser source index, direct CDC PDF rendering, no-NIC
+operation, and persistence through two reboots passed in a fresh VM. The
+retained evidence is `/mnt/shared/fieldos-e2e/20261104T015835Z-2935466/report.md`
+and its `reference-library-render.png` and `reference-pdf-render.png` screenshots.
+The pack does not populate N.O.M.A.D.'s semantic retrieval index and is not a
+complete emergency library; it is also not included in the customer ISO. The
+Middle Tennessee candidate remains a separate, unreleased map artifact;
+agricultural, wildlife, first-aid, and comprehensive reference packs still need
+requirements and licensing review.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live
