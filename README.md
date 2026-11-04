@@ -14,34 +14,28 @@ build outputs and are excluded from Git.
 ## Current status
 
 The latest clean-source offline E2E acceptance passed on revision
-`43ec3f9faed73632c13a8113b546ade9b5bf488e`. It completed unattended Ubuntu
-installation with no virtual NIC, local package and image provisioning,
-N.O.M.A.D. health, a real Ollama response, embeddings, Kiwix retrieval, and
-browser rendering of the separately transferred Middle Tennessee map at zoom
-13. It verified truthful information-library descriptions and passed two
-reboots with services and map content intact. Evidence is at
-`/mnt/shared/fieldos-e2e/20261103T222621Z-2749281/report.md`; the test ISO SHA-256
-is `c4fc27bc3722509d525049b5fe5b8e56396852854a49f9e65cafe1de8276b373`, and the
-browser screenshot is `map-render.png`. The 80 GiB disposable disk was retired
-after PASS; logs, report, screenshot, and retirement audit remain. This does
-not certify the separate customer installer.
+`0085b7ac2989dc684776ae0910fe5c77dd829c0c`. It installed Ubuntu with no virtual
+NIC, provisioned local packages and images, and verified N.O.M.A.D., local chat
+and embeddings, Kiwix retrieval, map rendering, and persistence through two
+reboots. The optional Middle Tennessee content pack was not present in this
+run; its earlier independent activation test is recorded in
+[`docs/CONTENT-PACKS.md`](docs/CONTENT-PACKS.md). See the retained report at
+`/mnt/shared/fieldos-e2e/20261104T001739Z-2874470/report.md` and
+[`docs/RELEASE.md`](docs/RELEASE.md).
 
 The current customer-mode engineering candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso` (11.2 GiB),
-SHA-256 `a6af2e66c1042f517747b0ef02b07ef7f1bc9cfdfe93ea90bb55836c799246c1`,
-built from `b7f25b033fd7c7aabfd17fe686c303b4be0814b1` (documentation-only changes atop
-tested code revision `43ec3f9faed73632c13a8113b546ade9b5bf488e`). Its structure and offline payload verified. A fresh no-NIC
-interactive install completed to a disposable disk; firstboot, all seven
-services, local AI/embeddings, Kiwix retrieval, and two guest reboots passed.
-The guest reached the installer again after Restart because the USB media was
-not removed promptly in this run; a tester detached it and reset the VM to boot
-the installed disk. Thus the current image's automatic USB handoff remains
-unverified, and this was not a clean customer-install PASS. A browser test
-rendered the bundled U.S. overview, but it was blank at 10 km zoom. Kiwix
-contains one 100-article fixture, and an ice-storm chat answer was generic and
-not grounded in identifiable references. FieldOS is not ready for customer or
-emergency use. See [release evidence](docs/RELEASE.md) and the current run at
-`/mnt/shared/fieldos-e2e/customer-interactive-b7f25b0-20261103/report.md`.
+`/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso` (11,984,044,032
+bytes), SHA-256
+`4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`. Its
+structure was verified and a fresh no-NIC, interactive UEFI install completed
+on a disposable VM. Media removal led directly to the installed OS without a
+host reset. Firstboot, seven containers, the branded desktop, local AI chat,
+Kiwix, maps, and two guest restarts were checked. This validates the installer
+flow in QEMU, not the appliance for field use: the only Kiwix archive has 100
+articles, the bundled map lacks useful Nashville detail, and the AI answer was
+generic and unsourced. Emergency and physical-hardware use remain unvalidated.
+The VM disk was removed after testing; the report and screenshots remain at
+`/mnt/shared/fieldos-e2e/customer-interactive-0085b7a-20261104/report.md`.
 
 The current source has a guarded correction for N.O.M.A.D.'s information
 library descriptions. That correction passed the clean-source E2E and was
@@ -60,7 +54,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-branded-b7f25b0.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-0085b7a.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
