@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "us-niosh-heat-first-aid",
+  "version": "2024.1",
+  "title": "U.S. Heat Illness First Aid (NIOSH)",
+  "description": "A searchable text-only transcription of NIOSH Publication 2024-100 on recognizing and responding to workplace heat illness. The 2023 source is useful but worker-focused; this pack is not a comprehensive first-aid manual or clinical review.",
+  "category": "first-aid-emergency",
+  "sources": [
+    {
+      "id": "niosh-heat-firstaid-2024-100",
+      "name": "NIOSH, Heat Stress: First Aid for Heat Illness, DHHS (NIOSH) Publication No. 2024-100, October 2023",
+      "url": "https://stacks.cdc.gov/view/cdc/138337",
+      "license": "The exact CDC Stacks item is marked Public Domain. CDC reuse guidance requires agency attribution, a clear no-endorsement disclaimer, unchanged substantive text, and notice that the original is available without charge. The original PDF includes third-party stock photographs credited ©mycola/iStock and ©Thinkstock and CDC logos/marks; this pack transcribes the full textual content with layout normalized and excludes those images and marks. U.S. public-domain review only; international rights may differ.",
+      "attribution": "Source: NIOSH [2023], Heat Stress: First Aid for Heat Illness, DHHS (NIOSH) Publication No. 2024-100, Centers for Disease Control and Prevention, National Institute for Occupational Safety and Health. DOI: https://doi.org/10.26616/NIOSHPUB2024100. Original PDF available without charge at https://stacks.cdc.gov/view/cdc/138337. No CDC, NIOSH, HHS, or U.S. Government endorsement is implied. No substantive source wording changed; third-party photos and agency marks are excluded.",
+      "accessed": "2026-11-04"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "niosh-heat-first-aid-2024-100.txt",
+      "size_bytes": 6593,
+      "sha256": "51c4b1f22ce0d7402ce02c05d436bd4e92e132d5c3b04e930cfc794d6a3c3165",
+      "source": "niosh-heat-firstaid-2024-100",
+      "license": "Public Domain text from exact CDC Stacks item; complete text transcribed without substantive edits, with only layout normalized; third-party stock photos and CDC marks excluded."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS source, rights metadata, and transcription review; no clinical validation",
+    "reviewed_at": "2026-11-04",
+    "content_revision": "2023-10-01"
+  }
+}

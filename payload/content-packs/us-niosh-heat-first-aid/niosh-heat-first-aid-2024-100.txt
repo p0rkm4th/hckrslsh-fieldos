@@ -1,0 +1,121 @@
+FIELDOS SOURCE LIBRARY — TEXT-ONLY TRANSCRIPTION
+
+Heat Stress: First Aid for Heat Illness
+
+Source: National Institute for Occupational Safety and Health (NIOSH), DHHS (NIOSH) Publication No. 2024-100, October 2023. DOI: https://doi.org/10.26616/NIOSHPUB2024100. The original two-page PDF is available without charge at https://stacks.cdc.gov/view/cdc/138337.
+
+CDC Stacks identifies the exact source item as Public Domain. This reproduction does not imply endorsement by CDC, NIOSH, HHS, or the U.S. Government. The original wording below is unchanged; line breaks and layout were normalized for text search. The original's third-party photographs (credited ©mycola/iStock and ©Thinkstock) and CDC logos/marks are not reproduced.
+
+FIELDOS EDITORIAL NOTE: This is a worker-focused reference published in 2023, not a clinical review by FieldOS. It is not a substitute for emergency services, professional care, or hands-on training. Treat the original source and its date as authoritative for the text below; do not rely on AI-generated summaries for emergency decisions.
+
+--- BEGIN TRANSCRIBED SOURCE TEXT ---
+
+Heat Stress: First Aid for Heat Illness
+
+Cooling is key. Know the symptoms and treatment of heat illness.*
+
+Things you need to know:
+
+- Heat illness can strike quickly. Stop working, get cool, and drink fluids.
+- When treating severe heat illness, cooling is the first priority.
+- Altered mental state can be a sign of heat stroke and requires immediate attention.
+- Muscle cramps, pain, or spasms in the abdomen, arms, or legs—alone or with any symptom—should not be ignored.
+- Never leave a worker with heat illness alone.
+
+Symptoms can occur in any order. You don't need to have all of the symptoms in a category to have heat illness.
+
+## Heat Rash/Prickly Heat
+
+**Signs and symptoms**
+
+- Red cluster of pimples or small blisters, usually on neck, upper chest, groin, under breasts, and in elbow creases.
+- Extensive areas of skin that do not sweat on heat exposure, but present a gooseflesh appearance that subsides with cool environments.
+
+**What to do**
+
+- When possible, a cooler, less humid work environment is the best treatment.
+- Keep rash area dry.
+- Do not use ointments or creams, as they may impair cooling—warm, moist skin can make the rash worse.
+
+## Heat Cramps
+
+**Signs and symptoms**
+
+- Muscle cramps, pain, or spasms in the abdomen, arms, or legs.
+
+**What to do**
+
+- Drink fluids every 15 to 20 minutes and eat a snack or sports drink.
+- Avoid salt tablets, but drinks containing electrolytes are OK.
+- Get medical help if the worker has heart problems, is on a low sodium diet, or if cramps do not subside within 1 hour.
+
+## Heat Syncope (Fainting)
+
+**Signs and symptoms**
+
+- Fainting, dizziness, or light-headedness after standing or suddenly rising from a sitting/lying position.
+
+**What to do**
+
+- Sit or lie down in a cool place when beginning to feel faint or dizzy.
+- Slowly drink water or clear juice.
+
+## Heat Exhaustion
+
+**Signs and symptoms**
+
+- Headache.
+- Nausea.
+- Dizziness, weakness.
+- Irritability.
+- Thirst, heavy sweating.
+- Elevated body temperature.
+- Decreased urine output.
+
+**What to do**
+
+- Call for medical help or take worker to a health facility for evaluation and treatment.
+- Stay with worker until help arrives.
+- Remove worker from hot area and give liquids to drink.
+- Remove unnecessary clothing, including shoes and socks.
+- Cool worker with water, cold compresses, an ice bath, or fans.
+- Encourage frequent sips of cool water.
+
+## Exertional Heat Stroke
+
+**Signs and symptoms**
+
+- Confusion, altered mental state, slurred speech, loss of consciousness.
+- Hot, dry skin or profuse sweating.
+- Seizures.
+- Very high body temperatures.
+- Fatal if treatment delayed.
+
+**What to do**
+
+- This is an emergency! Call for emergency care immediately!
+- Move worker to a cool area and remove clothing.
+- Immerse worker in a tub of ice water.
+- If a tub is not available, place worker in a tarp with ice and water (e.g., tarp-assisted cooling with oscillation†).
+- If cold-water immersion is not possible, soak worker with cold water from a hose or shower.
+- Apply cold, wet towels to as much of the skin as possible, and replace towels frequently.
+
+## Case Study: Heat Stroke
+
+A 44-year-old male worker died of heat stroke while working on a North Carolina farm. The man had been working in the fields for about a week. On August 1st, the heat index was between 100°F and 110°F. The heat index reports how hot it feels to people outside based on the air temperature and humidity.
+
+Around 3 p.m., the worker complained to the crew leader that he was feeling ill. He drank some water and was driven to the employee housing and left alone. He was found unconscious 45 minutes later. Emergency personnel took the worker to the hospital, where he was pronounced dead. His core body temperature was 108°F.
+
+### Lessons Learned
+
+- Feeling ill while working in the heat is a serious warning sign. Any employee who reports feeling unwell during work in hot conditions could have heat exhaustion, which can quickly progress to heat stroke if not treated.
+- Proper first aid for someone with suspected heat exhaustion or heat stroke involves COOLING the body as quickly as possible—not simply drinking water.
+- People with severe heat illness do not always recognize the risks they face. If a worker shows signs of heat exhaustion or heat stroke, do not leave him or her alone until he or she receives medical attention.
+
+* For more information about heat exposure at work, see NIOSH [2016]. Criteria for a recommended standard: occupational exposure to heat and hot environments. By Jacklitsch B, Williams J, Musolin K, Coca A, Kim J, Turner N. Cincinnati, OH: U.S. Department of Health and Human Services, Centers for Disease Control and Prevention, National Institute for Occupational Safety and Health, DHHS (NIOSH) Publication No. 2016-106, https://www.cdc.gov/niosh/docs/2016-106/.
+
+† For more information on tarp-assisted cooling with oscillation, see Luhring KE, Butts CL, Smith CR, Bonacci JA, Ylanan RC, Ganio MS, McDermott BP [2016]. Cooling effectiveness of a modified cold-water immersion method after exercise-induced hyperthermia. J Athl Train 51(11):946–951.
+
+Find NIOSH products and get answers to workplace safety and health questions: 1-800-CDC-INFO (1-800-232-4636) | TTY: 1-888-232-6348. cdc.gov/cdc-info | cdc.gov/niosh. NIOSH monthly newsletter: cdc.gov/niosh/eNews. DHHS (NIOSH) Publication No. 2024-100. DOI: https://doi.org/10.26616/NIOSHPUB2024100. October 2023.
+
+--- END TRANSCRIBED SOURCE TEXT ---

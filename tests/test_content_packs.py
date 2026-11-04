@@ -16,7 +16,7 @@ class ContentPackValidationTests(unittest.TestCase):
         self.assertEqual(
             validate_catalog(catalog_path),
             ["us-basic-emergency-health", "us-flood-safety",
-             "us-southeastern-vegetable-growers", "us-tornado-safety",
+             "us-niosh-heat-first-aid", "us-southeastern-vegetable-growers", "us-tornado-safety",
              "us-water-food-emergency", "us-weather-safety"],
         )
         catalog = json.loads(catalog_path.read_text())

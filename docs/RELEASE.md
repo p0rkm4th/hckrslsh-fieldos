@@ -4,12 +4,12 @@
 
 ## Current source and artifacts
 
-The current repository source is clean commit
-`bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`, published to `main`. The latest
-application and payload acceptance run tested source commit
-`b5d6f748c9efdb0f4345c5fe92533b882c7e2856`; the intervening `bc7e4c1` commit
-changed documentation only. The statewide customer ISO below was built from
-`bc7e4c1` and separately installed in customer mode.
+The latest fully tested application/payload source is
+`b5d6f748c9efdb0f4345c5fe92533b882c7e2856`. The statewide customer ISO below
+was built from documentation-only commit `bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`
+and separately installed in customer mode. The current source adds an
+optional NIOSH text pack and its activation evidence; that pack is not in the
+ISO, and the change did not require rebuilding it.
 
 ### Current customer-mode test candidate
 
@@ -45,8 +45,8 @@ retained as a rollback/reference image and is not the current statewide build.
   `FIELDOS_ACCEPTANCE_OK` with CPU Ollama, returned an embedding vector, served
   Kiwix, visibly rendered the eight Tennessee map locations, and passed two
   reboot/persistence cycles. Container egress checks passed.
-- `make check && make test` passed 74 tests on the source before the current
-  documentation-only update.
+- `make check && make test` passed all 74 tests on the current worktree after
+  adding the optional pack to the catalog and its catalog expectation.
 
 ### Offline content artifacts
 
@@ -62,6 +62,15 @@ retained as a rollback/reference image and is not the current statewide build.
   `e7dd06a657973a15bd75a1d9986ec774aef7f0b86c1f88ce4e4b25416cac7e30`.
   N.O.M.A.D. indexed it as 678 chunks after offline transfer; it is not in the
   customer ISO.
+- Optional NIOSH heat-illness pack `us-niosh-heat-first-aid` version `2024.1`
+  was transferred from read-only optical media to the no-NIC interactive
+  customer test guest. N.O.M.A.D. indexed its 6,593-byte text transcription as
+  3 chunks; the Source Library returned the document over local HTTP (200),
+  and both activation and indexing persisted across a reboot. The graphical
+  display was inactive during the separate visual check, so this pack's
+  browser presentation is not verified. It remains optional and is not in the
+  customer ISO. Full evidence:
+  `/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/niosh-pack-activation.md`.
 - The core reference library currently contains a small set of emergency,
   weather, water, and food sources plus a 100-article Wikipedia fixture. This
   is not a comprehensive first-aid, medical, agricultural, wildlife, or
@@ -76,6 +85,7 @@ retained as a rollback/reference image and is not the current statewide build.
 | Offline firstboot and services | PASS | Customer VM provisioning status complete; seven N.O.M.A.D. containers running. |
 | Local chat and embeddings | PASS | Actual local response `FIELDOS_CUSTOMER_OK`; embedding vector length 768. Physical GPU acceleration remains unverified. |
 | Kiwix and source retrieval | PASS, narrow collection | Kiwix search returned a bundled article; seven core source documents indexed. Library breadth remains limited. |
+| Optional NIOSH heat first-aid pack | PASS, local activation; visual view PARTIAL | No-NIC import, checksum validation, 3 indexed chunks, local source document HTTP 200, and post-reboot persistence. Browser view of this new pack was not confirmed. |
 | Tennessee maps | PASS in customer VM | Firefox visibly rendered eight zoom-13 locations; map is not routing or navigation. GPS is unverified. |
 | Reboot persistence | PASS | Two customer-VM reboots preserved provisioning state, a user-data sentinel, map availability, Kiwix retrieval, and service availability. |
 | Hardware adaptation | PARTIAL | CPU model selection exercised; simulated profiles pass. No physical CPU/GPU validation. |
