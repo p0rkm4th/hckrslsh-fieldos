@@ -19,8 +19,8 @@ Source metadata, bounds, expected size, and checksum are pinned in
 from OpenStreetMap; the map UI displays `© OpenStreetMap contributors` and
 Protomaps attribution.
 
-Fresh no-NIC E2E report:
-`/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`. Firefox screenshots
+Fresh clean-source no-NIC E2E report:
+`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`. Firefox screenshots
 visibly show detailed streets, labels, waterways, and public/green space at
 Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
 and Big South Fork. Nonempty zoom-13 vector tiles at all eight locations were
@@ -113,12 +113,13 @@ starter set, not a complete emergency library. The catalog includes an
 optional one-page CDC practical-skills checklist, but it teaches no first-aid
 procedures and is not a medical manual. The optional 2026 Southeastern
 Vegetable Crop Handbook provides an attributed, searchable agriculture
-reference for Tennessee; it is separate from the tested core ISO and has not
-yet been installed/indexed in a guest. Wildlife, procedural first-aid, and
-comprehensive reference packs still need source selection and licensing review.
-The newest statewide map is verified in the unattended E2E;
-the current interactive customer candidate still has Middle Tennessee-only
-detail.
+reference for Tennessee; it was transferred and indexed in the latest clean
+no-NIC E2E as 678 chunks, but remains separate from the core ISO. Wildlife,
+procedural first-aid, and comprehensive reference packs still need source
+selection and licensing review.
+The newest statewide map and optional agriculture pack are verified in the
+unattended E2E; the current interactive customer candidate still has Middle
+Tennessee-only detail and does not contain the optional pack.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

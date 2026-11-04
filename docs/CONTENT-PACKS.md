@@ -49,14 +49,15 @@ regional commercial-vegetable reference, not a complete farm manual, livestock
 guide, or Tennessee-specific calendar. The source record advises that local
 markets, weather, and location can require changed practices or planting dates.
 It is optional and not part of the ISO core payload. Searchability was checked
-by extracting 1.8 MB of text from the PDF; actual N.O.M.A.D. indexing and
-guest removable-media transfer remain to be tested. The local installation
-smoke test verified archive checksum/manifest validation and activated the
-source PDF and generated Source Library index in a temporary storage root; it
-did not exercise N.O.M.A.D. indexing. The portable archive is
+by extracting 1.8 MB of text from the PDF. A fresh no-NIC E2E imported the
+archive from read-only transfer media, activated its Source Library link, and
+indexed the document in N.O.M.A.D. as 678 chunks. It survived two guest
+reboots. This validates the existing transfer workflow, not a nontechnical
+USB interface. The portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-southeastern-vegetable-growers-2026.1.tar.zst`
 (3,273,118 bytes; SHA-256
 `e7dd06a657973a15bd75a1d9986ec774aef7f0b86c1f88ce4e4b25416cac7e30`).
+E2E evidence: `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`.
 
 Each populated pack has its own stable ID and version. Its manifest records
 each source and URL, license and attribution, every artifact's size and
@@ -244,7 +245,7 @@ candidate, including a neighboring-state buffer (bounds
 file is extracted from the pinned 2026-11-02 Protomaps build using bounded HTTP
 range requests. The source manifest records expected size and SHA-256,
 ODbL/OSM attribution, bounds, and zoom range. The fresh no-NIC E2E report
-(`/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`) records visible
+(`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`) records visible
 Firefox map views for eight locations and persistence across two reboots. The
 older customer ISO has not yet been rebuilt with this map. See
 [`RELEASE.md`](RELEASE.md) for checksums and exact evidence paths.

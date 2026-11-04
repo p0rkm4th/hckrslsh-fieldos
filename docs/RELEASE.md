@@ -4,102 +4,96 @@
 
 ## Current source and artifacts
 
-The statewide-map E2E ran from base commit `7e6fa24` with a dirty worktree;
-the tested map and harness changes were subsequently committed and pushed as
-`3a49627d669cfe0db84547cecf763f185d9e8532`. This makes the report's test
-state reviewable, but a clean-source rebuild and rerun have not been completed.
+Latest tested source is clean commit
+`b5d6f748c9efdb0f4345c5fe92533b882c7e2856`, published to `main`.
 
 - Latest full no-NIC E2E report:
-  `/mnt/shared/fieldos-e2e/20261104T210719Z-896057/report.md`.
-  The test ISO SHA-256 recorded by the report is
-  `c0e2578509cde5522400cdd2969e8793f2278ac4e11f50900728a79acd6c2f09`.
-  It passed unattended Ubuntu installation, offline firstboot, seven Compose
-  services, local CPU Ollama generation (`FIELDOS_ACCEPTANCE_OK`), embeddings,
-  Kiwix retrieval, and visible Firefox map rendering at eight Tennessee
-  locations. The guest had no virtual NIC. Services and persistent data passed
-  two reboots. Optional removable-media pack import was skipped.
-- The eight map screenshots, logs, VM XML, and report are retained in
-  `/mnt/shared/fieldos-e2e/20261104T210719Z-896057/`. The screenshots were
-  visually inspected and showed streets/labels in Memphis, Nashville,
-  Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and roads,
-  waterways, and terrain features in the Big South Fork rural area.
-- Statewide map candidate:
+  `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`. It records a
+  clean worktree at the exact source commit. Test ISO SHA-256:
+  `71821434553d6b0b26b0f87cfa6f857ed6a38b97e80e8b357d69f966e4e4217a`.
+  The disposable UEFI VM installed Ubuntu offline with no virtual NIC,
+  completed firstboot, ran seven services, generated `FIELDOS_ACCEPTANCE_OK`
+  with CPU Ollama, returned an embedding vector, served Kiwix, and passed two
+  reboot/persistence cycles. Container egress checks passed.
+- The E2E imported the optional
+  `us-southeastern-vegetable-growers-2026.1.tar.zst` from separate read-only
+  transfer media. Archive SHA-256:
+  `e7dd06a657973a15bd75a1d9986ec774aef7f0b86c1f88ce4e4b25416cac7e30`.
+  N.O.M.A.D. indexed the handbook as 678 chunks, the local Source Library
+  served the source PDF, and the pack survived both reboots.
+- Firefox visibly rendered zoom-13 maps at Memphis, Nashville, Knoxville,
+  Chattanooga, Clarksville, Jackson, Johnson City, and Big South Fork. Screenshots,
+  reference-library view, logs, VM XML, and report are retained in
+  `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/`.
+- Statewide map artifact:
   `/mnt/shared/fieldos-map-review-20261104/tennessee-20261102-z13.pmtiles`;
   145,267,908 bytes; SHA-256
   `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
   It uses the pinned Protomaps 2026-11-02 build, zoom 0–13, bounds
-  `-90.9,34.5,-81.0,37.25`, and ODbL/OSM attribution. Its map content is a
-  candidate pending the complete redistribution review in
-  [`REDISTRIBUTION.md`](REDISTRIBUTION.md).
-- Rebuilt offline payload:
-  `/mnt/shared/fieldos-payload/offline-payload.tar.zst`, 5,650,331,542 bytes;
-  SHA-256 `cdc90ea60a517bcc3217f8630a1fdfcceb3d208acaa54bead1f81260bb5351b6`.
-- The prior interactive customer ISO remains intact at
+  `-90.9,34.5,-81.0,37.25`. Redistribution review remains open.
+- The old interactive customer ISO remains intact at
   `/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso`, SHA-256
   `38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`.
-  It passed its own interactive VM installation and two-reboot checks, but it
-  contains only the former Middle Tennessee detailed map. It does **not**
-  contain the statewide candidate and is not evidence for the new map build.
-- Local validation previously passed 73 tests. The current documentation and
-  final Tennessee label edits still need a fresh `make check && make test`
-  before source publication.
+  Its separate interactive VM installation passed, but the ISO has only the
+  former Middle Tennessee detailed map and does not include the optional
+  handbook. It is not evidence for the current statewide payload.
+- `make check && make test` passed 74 tests. The new test covers the long
+  guest-command timeout required for large PDF indexing.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline install | PASS, test-only image | E2E report above; this is not the customer ISO. |
-| Interactive customer install | PASS for older image; statewide image untested | Prior ISO/report above. Build and test a new customer-mode ISO separately. |
-| Offline firstboot and services | PASS in latest unattended test | Local APT/images; seven services and completed firstboot. |
-| Local chat and embeddings | PASS in latest unattended test | Actual CPU response and embedding vector in report. Physical acceleration is unverified. |
-| Kiwix/reference retrieval | PASS, narrow collection | Wikipedia fixture and installed source documents work; optional pack transfer was skipped. |
-| Tennessee maps | PASS in latest unattended test | Eight Firefox views and persisted map checks. New customer ISO still required. GPS, routing, trail and navigation are not implemented/validated. |
-| Reboot persistence | PASS in latest unattended test | Two consecutive reboots; service/data checks in report. |
-| Hardware adaptation | PARTIAL | CPU test and simulated fixtures only; no physical CPU/GPU compatibility survey or GPU validation. |
-| Network/security boundary | PARTIAL | No-NIC test and container egress checks passed. LAN peer exposure test remains open; Docker socket grants privileged host access to upstream admin components. |
-| Field reference breadth | FAIL for field readiness | Core sources remain limited. An optional 2026 Southeastern vegetable handbook is cataloged but not yet activated/tested in the guest; the CDC checklist is not a first-aid manual and wildlife coverage is absent. |
-| Redistribution review | BLOCKED | Exact software, image, model, map and document licensing/attribution review is incomplete. |
-| Physical customer readiness | BLOCKED | Physical installation, hardware coverage, LAN testing, content breadth and rights review remain. |
+| Fresh unattended offline install | PASS, test-only image | Exact clean source, test ISO hash, and report above; not the customer ISO. |
+| Interactive customer install | PASS for older image; current image untested | Build and test a new customer-mode ISO separately. |
+| Offline firstboot and services | PASS in latest unattended test | Local packages/images; seven services and completed firstboot. |
+| Local chat and embeddings | PASS in latest unattended test | Actual CPU response and embedding vector. Physical GPU acceleration is unverified. |
+| Kiwix/reference retrieval | PASS, narrow collection | Wikipedia fixture and core sources work; optional handbook imported offline and indexed as 678 chunks. Library breadth remains limited. |
+| Tennessee maps | PASS in latest unattended test | Eight visible Firefox views and persistence. New customer ISO still required; GPS, routing, trails, and navigation are unverified. |
+| Reboot persistence | PASS in latest unattended test | Services, map, and optional pack passed two reboots. |
+| Hardware adaptation | PARTIAL | CPU test and simulated fixtures only; no physical CPU/GPU validation. |
+| Network/security boundary | PARTIAL | No-NIC test and container egress checks passed. LAN peer test remains open; Docker socket grants privileged host access to upstream admin components. |
+| Field reference breadth | FAIL for field readiness | Optional 2026 vegetable handbook is validated; CDC checklist is not first aid, and wildlife, agriculture beyond vegetables, and broad practical references remain limited. |
+| Redistribution review | BLOCKED | Full software, image, model, map, and document attribution/license review incomplete. |
+| Physical customer readiness | BLOCKED | Physical install/hardware, LAN exposure, content breadth, and rights review remain. |
 
 ## Offline content status
 
-The new statewide map renders at zoom levels 0–13 in the tested no-NIC guest,
-including the eight locations listed above. The low-zoom world overview remains
-available. This is a map viewer, not routing or emergency navigation. The
-optional `us-basic-emergency-health` pack contains one CDC checklist, not
-procedural first-aid guidance, and was not transferred in the latest E2E. The
-optional `us-southeastern-vegetable-growers` pack contains an unmodified,
-searchable 2026 agriculture handbook with publisher-stated reprint terms; it
-has not yet been installed or indexed on FieldOS. Wikipedia remains a small
-test fixture. Do not describe the current library as a comprehensive
-preparedness, medical, agriculture, wildlife, or technical reference
-collection. See [`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md) and
+The statewide map renders at zoom 0–13 across the tested Tennessee locations.
+It is a map viewer, not routing or emergency navigation. The optional CDC
+emergency-health pack contains a checklist, not first-aid procedures. The
+Southeastern vegetable handbook is a separate optional pack and is not in the
+core/customer ISO. Wikipedia remains a 100-article test fixture. Do not
+describe FieldOS as a comprehensive preparedness, medical, agriculture,
+wildlife, or technical reference library. See
+[`FIELD-USE-ASSESSMENT.md`](FIELD-USE-ASSESSMENT.md) and
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md).
 
-The latest map and payload were built from a worktree based on `7e6fa24`; the
-report is valid test evidence for the recorded image and worktree state, but
-not a clean-source reproducibility result. Do not replace the existing
-customer ISO until a committed source revision has passed a rebuild and the
-new customer-mode installation has been tested independently.
+The latest test image is a clean-source build from `b5d6f74`. The statewide map
+and pack were acceptance-tested in that unattended image, but not yet in a new
+interactive customer ISO. Keep the existing customer candidate until its
+statewide replacement passes a separate customer-mode installation.
 
-## Older evidence
+## Earlier failed run and retained evidence
 
-Earlier passing reports document the four-pack core, weather-pack transfer,
-and interactive installation of the older customer ISO. They remain useful
-historical evidence but do not validate the statewide-map payload. Failed
-intermediate runs are retained as diagnostics and are not counted as passes.
-See the individual reports under `/mnt/shared/fieldos-e2e/`.
+The first handbook transfer run at
+`/mnt/shared/fieldos-e2e/20261104T214216Z-1034272/` failed because the test
+harness accidentally treated its requested 950-second command timeout as an
+output-truncation limit and used the 180-second default. The guest subsequently
+completed indexing; the local N.O.M.A.D. API showed 678 chunks in
+`handbook-index-post-timeout.json`. That run is not counted as a PASS. The
+harness fix is included in the passing clean-source run above. Failed
+intermediate map runs are retained as diagnostics, not passes.
 
 ## Security, licensing, and release hygiene
 
 The latest acceptance guest had no virtual NIC; container egress checks also
-failed as expected. This does not establish safety when attached to a LAN. A
-LAN-connected peer test is still required. N.O.M.A.D.'s upstream management
-components retain Docker socket access; treat it as privileged host access.
+passed. This does not establish safety when attached to a LAN. A LAN-connected
+peer test remains required. N.O.M.A.D.'s upstream management components retain
+Docker socket access; treat it as privileged host access.
 
 The ISO remains test material. Complete redistribution and attribution review,
 including Ubuntu branding/trademark requirements, before publishing binaries.
 No ISO, model weights, container archives, VM disks, credentials, or generated
-private keys belong in public Git. Keep the previous known-good customer ISO
-until its statewide replacement passes the separate customer installation
-gate.
+private keys belong in public Git. Preserve the old customer ISO until the
+statewide customer image passes a separate interactive installation test.
