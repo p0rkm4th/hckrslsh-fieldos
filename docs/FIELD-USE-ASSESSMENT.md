@@ -3,24 +3,27 @@
 Date: 2026-11-04  
 Assessment: **Not suitable as a standalone disaster-preparedness computer.**
 
-This review follows the installed desktop and its Start Here/Command Center paths as a new offline user, then checks each scenario against bundled source material and the recorded guest tests. It distinguishes actual functional tests from a content-coverage review. It is not a clinical, emergency-response, or field trial.
+This review checks the fresh customer desktop, bundled applications, offline content, and recorded guest tests. The candidate showed its FieldOS wallpaper and dock; Firefox visibly opened Kiwix and the Nashville map, and the source-library page responded. Start Here and Command Center shortcuts were visible but were not separately launched in this exact install. This is a content-coverage review, not a clinical, emergency-response, or field trial.
 
 ## Tested installation and interface
 
 The current clean-source unattended test ISO at source `7e2674e285be158f56b556f048ad3c785d8b0cb9` passed a fresh no-NIC install, firstboot, local inference, embeddings, Kiwix, visible Middle Tennessee map rendering, all four core-pack activations/indexing, and two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T152431Z-3714447/report.md`; test ISO SHA-256: `0fcb81e0f5e7043024486a6caa11ca31a7e85c2ae17054e4649c1d8f7b3c5fc6`.
 
 The latest customer-mode ISO was built from clean source commit
-`85a33f866f1b929762e47cc5462b16cbbd84c43c`:
-`/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`, SHA-256
-`5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`. A fresh
-interactive no-NIC install completed provisioning; Firefox displayed the FieldOS
-home, real local AI response, Kiwix search results, and Nashville at zoom 13.
-Service, model, reference, and map checks passed across two reboots. Evidence is
-in `/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`. At media handoff the VM
-powered off after the remove-media prompt; its installed disk booted on the next
-power-on without repair. Physical USB behavior remains untested.
+`21ad4fcdb882998ca1c3bd47333b1139c162651c`:
+`/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso`, SHA-256
+`38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`. A fresh
+interactive no-NIC install selected a disposable virtual disk and user, booted
+the installed EFI disk, completed four-pack provisioning, and passed local AI,
+embeddings, Kiwix search, visible Nashville zoom-13 rendering, and two reboots.
+Evidence is in `/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/report.md`. At
+media handoff Ubuntu powered off after the remove-media prompt; a subsequent VM
+power-on booted the installed disk without repair. Physical USB behavior is
+untested.
 
-The unattended test image contains the four-pack core payload; the previous customer-mode ISO predates that change. Neither test VM had a network adapter. These results do not test physical USB media handoff, external weather alerts, physical GPS, or broad geographic coverage.
+The current customer image contains the four-pack core payload. Neither test VM
+had a network adapter. These results do not test physical USB media handoff,
+external weather alerts, physical GPS, or broad geographic coverage.
 
 ## Scenario walk-through
 
@@ -29,9 +32,9 @@ The unattended test image contains the four-pack core payload; the previous cust
 | Power outage and food spoilage | One CDC source document, “Eat Safe Food After a Power Outage,” is bundled and linked from Start Here/Source Library. The tested AI safety guard refuses food-safety prompts. | **Narrow help available.** No broader food storage, cooking-fuel, or household power reference was verified. |
 | Water service interruption | One CDC emergency-water PDF is bundled. It is available as a primary source; the AI guard refuses water-treatment questions. | **Narrow source available.** It does not cover every contaminant or local water advisory. Read the document directly; do not treat boiling as a universal treatment. |
 | Tornado | A text-only NWS “What to Do During a Tornado” reference is bundled and indexed. The AI guard refuses tested tornado-shelter prompts. | **Basic source available.** No live alerts, local shelter database, or current warning feed works offline. |
-| Hurricane or winter storm | Three NWS-derived FieldOS summaries in `us-weather-safety` 1.0.1 were installed and indexed from the core payload in the clean-source no-NIC test. The previous customer ISO does not contain the update; its replacement needs an interactive test. | **Source available in the latest unattended test image.** No forecasts or alerts are provided. |
+| Hurricane or winter storm | Three NWS-derived FieldOS summaries in `us-weather-safety` 1.0.1 were installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No forecasts or alerts are provided. |
 | Wildfire or evacuation | No dedicated wildfire source is bundled. The AI guard refused one tested wildfire prompt, but prior tests found alternate wording can bypass the keyword guard. | **Not dependable.** A refusal is not safety certification or evacuation guidance. |
-| Flood | The FieldOS-edited NWS summary in `us-flood-safety` 1.0.0 was installed and indexed from the core payload in the clean-source no-NIC test. The previous customer ISO does not contain the update; its replacement needs an interactive test. | **Source available in the latest unattended test image.** No current flood alerts, flood-zone data, or safe routing are provided. |
+| Flood | The FieldOS-edited NWS summary in `us-flood-safety` 1.0.0 was installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No current flood alerts, flood-zone data, or safe routing are provided. |
 | Injury or medical emergency | No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
 | Travel, navigation, or loss of GPS | Firefox renders an interactive Middle Tennessee road map through zoom 13. Global and U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful local map viewer only.** It is useful only in the covered area and is not a navigation system. |

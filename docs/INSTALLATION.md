@@ -3,18 +3,19 @@
 ## Customer installation
 
 **Current customer-mode test candidate (2026-11-04):**
-`/mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso`, source
-`85a33f866f1b929762e47cc5462b16cbbd84c43c`, SHA-256
-`5c238570a7b2b9ff4fc9277692af618d0379f0edbd4ce989db3c963008cad4a0`. A fresh
+`/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso`, source
+`21ad4fcdb882998ca1c3bd47333b1139c162651c`, SHA-256
+`38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`. A fresh
 interactive install in a disposable no-NIC UEFI VM selected the 80 GiB virtual
-disk and user identity, completed offline provisioning, and passed application
-checks across two consecutive reboots with persistent user data. The UI showed
-local chat, Kiwix retrieval, and Nashville zoom-13 maps. Report and screenshots:
-`/mnt/shared/fieldos-e2e/customer-85a33f8/report.md`. At media handoff Ubuntu
-opened the virtual CD tray and powered the VM off; starting it again booted the
-installed disk without repair. Physical USB handoff is untested. This remains
-unpublished engineering test material, not an approved release; see
-[`RELEASE.md`](RELEASE.md) for outstanding gates.
+disk and user identity, completed four-pack offline provisioning, booted the
+installed disk, and passed application checks across two consecutive reboots.
+Firefox visibly rendered Nashville at zoom 13; local chat, embeddings, Kiwix,
+and the FieldOS source library responded. Report and screenshots:
+`/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/report.md`. At media handoff
+Ubuntu prompted to remove the virtual CD and press Enter, then powered off; the
+next VM power-on booted the installed disk without repair. Physical USB handoff
+is untested. This remains unpublished engineering test material, not an
+approved release; see [`RELEASE.md`](RELEASE.md) for outstanding gates.
 
 The customer-facing ISO is built with:
 
@@ -52,13 +53,12 @@ Before testing it, compare its SHA-256 with the candidate hash recorded in
 [`RELEASE.md`](RELEASE.md):
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-regional-85a33f8.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso
 ```
 
-The latest candidate’s QEMU interactive install, installed-disk boot, desktop,
+The current candidate’s QEMU interactive install, installed-disk boot, desktop,
 service checks, and two consecutive reboot checks passed in a disposable
-no-NIC VM. At the
-end, Ubuntu prompted for media removal and Enter; the VM powered off, and a
+no-NIC VM. At the end, Ubuntu prompted for media removal and Enter; the VM powered off, and a
 subsequent power-on booted the installed disk without repair. Physical USB
 handoff remains untested. For future changes, use
 a disposable VM with a disposable virtual disk and no network adapter. Do not

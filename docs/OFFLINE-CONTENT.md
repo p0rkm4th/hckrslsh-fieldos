@@ -62,12 +62,14 @@ source review and each summary's limits. These selected topics are not a
 first-aid or comprehensive emergency library; the packs provide no live
 warnings. Open the original documents and follow current local instructions.
 FieldOS must not be used as a substitute for medical or emergency guidance.
-Current scenario testing found that N.O.M.A.D. can attach unrelated sources
-and generate unsafe, unsupported advice: it claimed boiling removes chemical
-contaminants even though the CDC PDF explicitly says it does not, and it gave
-wildfire evacuation instructions attributed to the unrelated tornado guide.
-Until retrieval is made reliably source-bounded and retested, open the source
-documents directly and do not use AI answers for disaster decisions.
+Earlier scenario testing found that N.O.M.A.D. could attach unrelated sources
+and generate unsafe, unsupported advice, including false claims about chemical
+water treatment and irrelevant wildfire evacuation guidance. The current
+candidate installs a source-bounded policy; tested high-risk prompts returned a
+fixed refusal with no citations. The policy uses a lightweight keyword guard
+and alternate phrasing can bypass it, so it is not a general safety system.
+Open original documents directly and do not use AI answers for emergency or
+medical decisions.
 
 The bundled world and U.S. overview maps top out at zoom 5. The payload also
 contains a 19.6 MB Middle Tennessee road and land-use map, zoom 0–13, coverage
@@ -88,8 +90,7 @@ The extensible pack format and planned categories are documented in
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The previous customer candidate at source `85a33f8` also installed the CDC and tornado references;
-its fresh interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `21ad4fc` installed and indexed all four core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
 starter set, not a complete emergency library. The Middle Tennessee map is
 included in the current customer candidate; agricultural, wildlife,
 first-aid, and comprehensive reference packs still need requirements and
