@@ -98,9 +98,9 @@ redistribution rights.
 
 The documentation update is committed as `331bcffc8d3767e1c1c388eecb0c21ceeed88308`
 and pushed to `git@github.com:p0rkm4th/hckrslsh-fieldos.git` on `main`. The
-push advanced the previously verified remote head `da61a84`; the remote head is
-being checked after publication. No ISO, model weights, container archives, or
-test disks are committed.
+push advanced the previously verified remote head `da61a84`; `git ls-remote`
+then confirmed remote `main` at `c4cf2e85fb48855572ab4390527737946cb3712b`.
+No ISO, model weights, container archives, or test disks are committed.
 
 The current regional customer ISO and its report/screenshots are retained under
 `/mnt/shared`. The disposable customer guest disk was retired after acceptance,
