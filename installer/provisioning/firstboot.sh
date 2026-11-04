@@ -206,6 +206,22 @@ curl --fail --silent http://127.0.0.1:8080/api/health >/dev/null
 curl --fail --silent http://127.0.0.1:11434/api/version >/dev/null
 curl --fail --silent http://127.0.0.1:8090 >/dev/null
 
+echo "Registering FieldOS-managed N.O.M.A.D. services..."
+set -a
+source /opt/fieldos/services/.env
+set +a
+registered_services=0
+for attempt in $(seq 1 60); do
+  registered_services=$(docker exec -e MYSQL_PWD="$DB_PASSWORD" nomad_mysql \
+    mysql --protocol=tcp --host=127.0.0.1 --user=nomad_user --database=nomad \
+      --batch --skip-column-names --execute="UPDATE services SET installed=1 WHERE service_name IN ('nomad_qdrant','nomad_ollama','nomad_kiwix_server'); SELECT COUNT(*) FROM services WHERE service_name IN ('nomad_qdrant','nomad_ollama','nomad_kiwix_server') AND installed=1;" \
+      2>/dev/null | tail -n 1 || true)
+  if [[ "$registered_services" == 3 ]]; then break; fi
+  sleep 2
+done
+[[ "$registered_services" == 3 ]] || fatal "N.O.M.A.D. did not seed the FieldOS-managed service records."
+echo "Registered N.O.M.A.D. service records: Qdrant, Ollama, Kiwix."
+
 echo "Making N.O.M.A.D. reference-library descriptions accurate for installed FieldOS content..."
 bash "$ROOT/installer/provisioning/patch-nomad-fieldos-copy.sh"
 

@@ -2,7 +2,7 @@
 
 **Status: engineering test candidate; not approved for customer or emergency use.**
 
-The current source revision passed the fresh unattended offline E2E test and a
+The prior source revision passed the fresh unattended offline E2E test and a
 separate interactive customer-mode installation to a disposable UEFI VM disk.
 The installed system booted, firstboot completed, local services worked without
 a virtual NIC, and key data and services survived two guest reboots. The fresh
@@ -19,16 +19,26 @@ level 5. Field readiness remains **FAIL**.
 ## Current source and artifacts
 
 The last validated build remains `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
-The working source now adds a small adapter that uploads checksum-verified
-FieldOS reference-pack PDFs and text files into N.O.M.A.D.'s existing RAG
-Knowledge Base and waits for indexed chunks. Unit tests pass, but this change
-has not passed a fresh guest test. The first E2E ISO built from `250fbf0`
-failed firstboot because the build staging list omitted the new indexer script;
-the report and failure logs remain at
-`/mnt/shared/fieldos-e2e/20261104T050709Z-3090544/report.md`. The ISO build and
-verification lists are corrected, and a clean-source rerun is required. The
-existing customer candidate and prior PASS reports below still describe the
-previously tested source.
+The newer source at `a2c74597f91d1030d97aaba881b0346dab248e2e` contains an
+N.O.M.A.D. reference-pack indexer, but its fresh E2E run failed: Project
+N.O.M.A.D. only resolves Qdrant, Ollama, and Kiwix when their service records
+are marked installed. FieldOS Compose started those services while leaving
+the upstream database records at their seeded `installed=false` values, so
+the PDFs uploaded but did not index. The failed report is
+`/mnt/shared/fieldos-e2e/20261104T053509Z-3109787/report.md`; detailed logs
+remain beside it. The working tree now includes idempotent firstboot
+registration for these three managed services and an E2E assertion for their
+registry state. This correction is not yet committed or guest-tested.
+
+An earlier run using the default `/mnt/shared/fieldos-payload` archive also
+failed before reference acceptance because it lacks the declared core pack.
+`build/verify_payload.py` now rejects such a stale archive before ISO build.
+The verified core-pack archive replaced the stale default at
+`/mnt/shared/fieldos-payload/offline-payload.tar.zst`; its checksum and
+required CDC pack both pass preflight. The redundant stale payload copy was
+removed after confirming no build or VM process used it. One initial guard
+invocation had a shell-continuation typo and stopped before VM creation; that
+is corrected.
 
 - Last validated source: `f9c10ec170c2b33000a287a0ee8ef38d6e2b0f50`.
 - Latest unattended E2E report:
@@ -61,6 +71,10 @@ previously tested source.
 - Unit tests: 57 passed on this source revision. The current E2E and customer
   report logs are preserved under `/mnt/shared/fieldos-e2e/`.
 
+The current uncommitted payload-preflight and N.O.M.A.D. service-registration
+changes pass `make check && make test` (61 tests). The previous baseline
+candidate and reports above do not validate these newer changes.
+
 These are local engineering artifacts, not published release binaries. No
 physical USB installation, physical GPU, or customer laptop has been validated.
 After retiring the customer test disk and duplicate installer screenshots,
@@ -77,7 +91,7 @@ payload, current E2E evidence, and interactive-install logs/screenshots remain.
 | Local chat inference | PASS, function only | Bundled Qwen model generated real text; its practical food-safety answer was misleading and uncited. Not safe as emergency guidance. |
 | Embeddings | PASS | Bundled embedding endpoint returned a 768-element vector, including after reboot two. |
 | Kiwix | PASS, limited | Browser loaded one bundled “Wikipedia 100” archive and retrieved a matching article. |
-| Core source references | PASS, limited | Two CDC PDFs (water treatment and food safety after power outage) are bundled, attributed, served locally, and persist after reboot. They are not indexed in N.O.M.A.D.'s semantic retrieval. |
+| Core source references | PARTIAL | The two attributed CDC PDFs are bundled and locally served on the prior validated revision. On the newer revision, real N.O.M.A.D. indexing failed because its Qdrant service record was not marked installed; firstboot registration fix remains unverified. |
 | Offline map rendering | PASS at overview only | Firefox visibly rendered the U.S. basemap. Bundled data stops at zoom 5; no street/trail navigation detail. |
 | Two-reboot persistence | PASS in disposable QEMU | Both boot IDs changed; containers, models, CDC references, Kiwix, and map endpoint were checked after reboot two. |
 | Installer Restart/media handoff | PARTIAL | Customer installer reached its media-removal prompt, but after ejection and Enter the VM powered off; host `virsh start` was needed to boot the installed disk. Retest and fix this transition. |

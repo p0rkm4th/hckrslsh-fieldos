@@ -25,6 +25,8 @@ if [[ ! -s "$PAYLOAD" || ! -s "$PAYLOAD.sha256" ]]; then
   exit 1
 fi
 (cd "$(dirname "$PAYLOAD")" && sha256sum -c "$(basename "$PAYLOAD").sha256")
+python3 "$ROOT/build/verify_payload.py" "$PAYLOAD" \
+  --catalog "$ROOT/payload/manifests/content-packs.json"
 
 OUT_DIR=${FIELDOS_OUTPUT_ROOT:-"$ROOT/build/out"}
 mkdir -p "$OUT_DIR"
