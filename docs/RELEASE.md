@@ -38,24 +38,26 @@ approval remain open.
   11,984,044,032 bytes. SHA-256:
   `81880d5afd13c44c76012df2ab02fc5b8eab598467ed7f4b0c9cee7f1185f7da`.
   BIOS/UEFI structure and offline payload were verified by `make verify`.
-- Fresh customer install and end-user report:
+- Initial fresh customer install and end-user report:
   `/mnt/shared/fieldos-e2e/customer-interactive-412883c-20261104/report.md`.
   The interactive install used a blank disposable 80 GiB target in UEFI QEMU
-  with `-net none`, including disk and account selection. Ubuntu reached its
-  install-complete screen; after ISO ejection, the harness power-cycled and
-  booted from the installed EFI disk. The branded desktop, N.O.M.A.D. chat,
-  Kiwix, and ProtoMaps loaded locally. Two guest restarts returned to the
-  desktop. The installer's own Restart button/media handoff is not verified.
-  The bundled model generated answers, but the earthquake answer was generic
-  and unsourced. Kiwix has one 100-article sample and the map lacks local detail.
-  This run did not capture `docker ps` or embeddings; the separate unattended
-  E2E report covers those checks.
-- The disposable customer VM disk has been retired after confirming no QEMU
-  process was using it. It had 34,974,863,360 allocated bytes (80 GiB virtual);
-  `/mnt/shared` free space rose from 587 GiB to 619 GiB. Duplicate PPM files,
-  unused GUI captures, QEMU control state, and the temporary credential were
-  removed. The report, selected PNG screenshots, serial logs, ISO, and disk
-  retirement record remain.
+  with `-net none`, including disk and account selection. That run manually
+  power-cycled after ISO ejection, so it did not prove the installer handoff.
+  Its handoff gap was resolved by the fresh retest documented above. This
+  initial run verified two guest restarts, local N.O.M.A.D. chat, Kiwix, and
+  ProtoMaps; the separate unattended E2E report covers container inventory and
+  embeddings. Its earthquake answer was generic and unsourced; the bundled
+  Kiwix fixture and map remain inadequate for field use.
+- The initial disposable customer VM disk was retired after confirming no QEMU
+  process was using it. Its report and selected screenshots remain as historical
+  evidence; they are superseded for handoff by the fresh retest above.
+- After the fresh handoff retest completed and QEMU stopped, its 35,267,647,136
+  byte disposable qcow2, duplicate PPM screenshots, transient QEMU files, and
+  temporary credential were removed. The superseded `0085b7a` ISO (SHA-256
+  `4d1b7ed6ed6c8089fbb0cdb416743fed2f917f9ae899d6bf6aa45de92915ba22`) was also
+  retired; its checksum, prior evidence, and retirement note remain. The current
+  `412883c` ISO and relevant current screenshots, QMP record, serial log, and
+  report are retained.
 - These are local engineering artifacts, not public release assets. The E2E
   result and QEMU customer install do not constitute physical-machine or
   redistribution approval.
@@ -88,14 +90,13 @@ approval remain open.
 
 The current ISO has passed a fresh interactive UEFI QEMU installation with
 account and target-disk selection, no virtual NIC, installed-disk boot, branded
-desktop, local applications, and two guest restarts. The ISO was ejected, but
-the harness reset/power-cycled the guest to boot from disk; the installer's own
-Restart button/media handoff remains unverified. See the customer run report
-above. This does not prove physical USB behavior or support for customer
-hardware. Repeat on a spare physical machine only after content, licensing,
-hardware, and security gates are reviewed. Never target a physical or
-production disk during automated tests. The unattended `make test-e2e` image
-remains a separate test artifact.
+desktop, and local applications. A separate fresh run confirmed the installer
+Restart/media handoff in the same QEMU process, and the earlier install report
+documents two guest restarts. This does not prove physical USB behavior or
+support for customer hardware. Repeat on a spare physical machine only after
+content, licensing, hardware, and security gates are reviewed. Never target a
+physical or production disk during automated tests. The unattended
+`make test-e2e` image remains a separate test artifact.
 
 ## Content and hardware limitations
 
