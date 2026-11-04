@@ -838,7 +838,7 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         assets = self.check("map renderer assets", "curl --fail --silent --show-error --max-time 10 -o /dev/null -w 'HTTP=%{http_code} BYTES=%{size_download}' http://127.0.0.1:8080/basemaps-assets/sprites/v4/light.json", 160)
         if "HTTP=200" not in assets:
             raise TestFailure("N.O.M.A.D. did not serve the bundled map renderer assets")
-        if self.pack_archive:
+        if self.pack_target == "storage/maps/pmtiles":
             map_pack = self.check(
                 "optional regional map survives reboot",
                 "test -s /var/lib/fieldos/storage/maps/pmtiles/middle-tennessee-20261102-z13.pmtiles "
