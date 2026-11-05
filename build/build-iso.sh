@@ -88,6 +88,9 @@ install -m 0644 "$ROOT/installer/provisioning/fieldos-firstboot.service" "$WORK/
 install -m 0644 "$ROOT/installer/provisioning/fieldos.desktop" "$WORK/fieldos/installer/provisioning/fieldos.desktop"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-start-here.desktop" "$WORK/fieldos/installer/provisioning/fieldos-start-here.desktop"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-start-here.html" "$WORK/fieldos/installer/provisioning/fieldos-start-here.html"
+install -m 0644 "$ROOT/installer/provisioning/fieldos-content-pack-import.desktop" "$WORK/fieldos/installer/provisioning/fieldos-content-pack-import.desktop"
+install -m 0644 "$ROOT/installer/provisioning/fieldos-content-pack-import.policy" "$WORK/fieldos/installer/provisioning/fieldos-content-pack-import.policy"
+install -m 0755 "$ROOT/installer/provisioning/fieldos-content-pack-import-root" "$WORK/fieldos/installer/provisioning/fieldos-content-pack-import-root"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-sources.desktop" "$WORK/fieldos/installer/provisioning/fieldos-sources.desktop"
 install -m 0755 "$ROOT/installer/provisioning/install-branding.sh" "$WORK/fieldos/installer/provisioning/install-branding.sh"
 install -m 0644 "$ROOT/installer/provisioning/assets/fieldos-wallpaper.svg" "$WORK/fieldos/installer/provisioning/assets/fieldos-wallpaper.svg"
@@ -101,6 +104,7 @@ install -m 0644 "$ROOT/models/manifest.json" "$WORK/fieldos/models/manifest.json
 install -m 0644 "$ROOT/services/compose.yaml" "$WORK/fieldos/services/compose.yaml"
 install -m 0755 "$ROOT/scripts/fieldos-diagnostics.sh" "$WORK/fieldos/scripts/fieldos-diagnostics.sh"
 install -m 0755 "$ROOT/scripts/fieldos-content-packs.py" "$WORK/fieldos/scripts/fieldos-content-packs.py"
+install -m 0755 "$ROOT/scripts/fieldos-content-pack-import.py" "$WORK/fieldos/scripts/fieldos-content-pack-import.py"
 install -m 0755 "$ROOT/scripts/fieldos-nomad-index-references.py" "$WORK/fieldos/scripts/fieldos-nomad-index-references.py"
 install -m 0644 "$ROOT/payload/validate_content_packs.py" "$WORK/fieldos/scripts/validate_content_packs.py"
 install -m 0644 "$ROOT/payload/manifests/content-pack.schema.json" \

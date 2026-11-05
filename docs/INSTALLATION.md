@@ -69,8 +69,11 @@ firstboot.
 Sign in to the account selected during installation. **FieldOS Command Center**
 opens N.O.M.A.D. at `http://localhost:8080`; **FieldOS Start Here** explains
 which resources are included and which packs are optional. **FieldOS Content
-Sources and Limits** opens source, license, and safety notes. The wallpaper,
-icon, and dock shortcuts are local assets. Core application endpoints bind to
+Sources and Limits** opens source, license, and safety notes. To import an
+offline pack without terminal commands, launch **FieldOS Install Content
+Pack** from Applications → Utilities, select the `.tar.zst` archive beside its
+`.sha256` sidecar, and approve the administrator prompt. The wallpaper, icon,
+and dock shortcuts are local assets. Core application endpoints bind to
 loopback and do not require an Internet connection.
 
 For diagnostics, run:

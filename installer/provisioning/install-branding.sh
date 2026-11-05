@@ -13,8 +13,14 @@ install -D -m 0644 "$ROOT/fieldos-start-here.desktop" \
   /usr/share/applications/fieldos-start-here.desktop
 install -D -m 0644 "$ROOT/fieldos-sources.desktop" \
   /usr/share/applications/fieldos-sources.desktop
+install -D -m 0644 "$ROOT/fieldos-content-pack-import.desktop" \
+  /usr/share/applications/fieldos-content-pack-import.desktop
 install -D -m 0644 "$ROOT/fieldos-start-here.html" \
   /usr/share/doc/fieldos/START-HERE.html
+install -D -m 0755 "$ROOT/fieldos-content-pack-import-root" \
+  /usr/libexec/fieldos-content-pack-import-root
+install -D -m 0644 "$ROOT/fieldos-content-pack-import.policy" \
+  /usr/share/polkit-1/actions/org.fieldos.content-pack-import.policy
 
 # System defaults apply to new users; existing per-user preferences win.
 profile=/etc/dconf/profile/user

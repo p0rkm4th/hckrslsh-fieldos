@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=FieldOS Install Content Pack
+Comment=Add a verified offline map or reference pack from USB or local storage
+Exec=/usr/bin/python3 /opt/fieldos/scripts/fieldos-content-pack-import.py
+Icon=fieldos
+Terminal=false
+Categories=Utility;Education;

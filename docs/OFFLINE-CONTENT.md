@@ -25,26 +25,23 @@ visibly show detailed streets, labels, waterways, and public/green space at
 Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
 and Big South Fork. Nonempty zoom-13 vector tiles at all eight locations were
 also checked. The world and U.S. overviews remain low resolution. This map does
-not supply routing, GPS positioning, trail data, or navigation. The newest
-statewide map is in the tested unattended image only; the last interactive
-customer ISO below still contains the earlier Middle Tennessee map until a new
-customer ISO is built and separately tested.
+not supply routing, GPS positioning, trail data, or navigation. The statewide
+map is also present in the separately tested interactive customer ISO
+`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`. The exact
+checksum and eight-location browser evidence are recorded in [`RELEASE.md`](RELEASE.md).
 
-The previous customer candidate contains Project N.O.M.A.D.'s miniature English
+The current customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 0.6B Q4_K_M for chat, `nomic-embed-text:v1.5` for embeddings, and
-the `us-water-food-emergency` and `us-tornado-safety` core packs. The current
-source catalog also makes `us-weather-safety` and `us-flood-safety` core packs;
-the new offline payload and unattended test verified that they install and
-index. A customer-mode ISO with those packs has not yet completed its separate
-interactive test. The water/food pack contains two unchanged CDC PDFs about
-emergency water treatment and food safety after a power outage. Firstboot
-indexes the CDC documents and NWS-based summaries in N.O.M.A.D.'s local source
-library. This is a starter set, not a comprehensive disaster library.
-The retained customer candidate contains the pinned Middle Tennessee map
-described below. Fresh no-NIC E2E and interactive customer installation checks
-confirmed it is available offline and visibly renders in Firefox. The sample
+the four core water, food, and emergency reference packs. The water/food pack
+contains two unchanged CDC PDFs about emergency water treatment and food
+safety after a power outage. Firstboot indexes the CDC documents and NWS-based
+summaries in N.O.M.A.D.'s local source library. This is a starter set, not a
+comprehensive disaster library. The customer candidate contains the pinned
+statewide Tennessee map described below. Fresh no-NIC E2E and interactive
+customer installation checks confirmed it is available offline and visibly
+renders in Firefox. The sample
 PMTiles region is extracted offline from the bundled world archive
 by `build/prepare-payload.sh`; its bounding box and zoom levels are declared in
 `payload/manifests/maps.json`, and the payload records its generated checksum
@@ -96,30 +93,32 @@ and alternate phrasing can bypass it, so it is not a general safety system.
 Open original documents directly and do not use AI answers for emergency or
 medical decisions.
 
-The retained interactive customer candidate contains a 19.6 MB Middle
-Tennessee map, zoom 0–13, coverage `-88.5,35.4,-85.7,36.7`. Its historic
-acceptance is recorded in `RELEASE.md`. The statewide map above supersedes that
-coverage in the latest unattended test payload, but it has not yet replaced
-the interactive candidate. GPS/GIS integration is not validated; the detector
-only reports whether a likely GPS device node is present.
+The earlier `fieldos-customer-core4-21ad4fc.iso` contained a 19.6 MB Middle
+Tennessee map, zoom 0–13, coverage `-88.5,35.4,-85.7,36.7`; it was superseded
+by the statewide customer candidate above. GPS/GIS integration is not
+validated; the detector only reports whether a likely GPS device node is
+present.
 
 The extensible pack format and planned categories are documented in
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md). An earlier candidate on source
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `21ad4fc` installed and indexed all four core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `bc7e4c1` installed and indexed all four core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
 starter set, not a complete emergency library. The catalog includes an
 optional one-page CDC practical-skills checklist, but it teaches no first-aid
 procedures and is not a medical manual. The optional 2026 Southeastern
 Vegetable Crop Handbook provides an attributed, searchable agriculture
 reference for Tennessee; it was transferred and indexed in the latest clean
-no-NIC E2E as 678 chunks, but remains separate from the core ISO. Wildlife,
-procedural first-aid, and comprehensive reference packs still need source
-selection and licensing review.
-The newest statewide map and optional agriculture pack are verified in the
-unattended E2E; the current interactive customer candidate still has Middle
-Tennessee-only detail and does not contain the optional pack.
+no-NIC E2E as 678 chunks, but remains separate from the ISO. The optional
+NIOSH heat-illness text pack was transferred and indexed as three chunks on
+the interactive customer test guest and survived a reboot; its browser view
+was not visually confirmed. Wildlife, broader agriculture, procedural
+first-aid, and comprehensive reference packs still need source selection,
+licensing review, and activation evidence.
+The statewide map is verified in both the unattended E2E and interactive
+customer installation. Optional agriculture and NIOSH packs are not in the
+customer ISO.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

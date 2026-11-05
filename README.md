@@ -20,40 +20,27 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Latest clean-source offline E2E: commit `b5d6f748c9efdb0f4345c5fe92533b882c7e2856`.
-`make check && make test` passed 74 tests. The fresh no-NIC VM installed
-Ubuntu, completed firstboot, ran seven services, generated local inference,
-loaded embeddings, imported the optional agriculture pack offline, indexed it
-as 678 N.O.M.A.D. chunks, visibly rendered Firefox maps at eight Tennessee
-locations, and passed two reboots. Report and screenshots:
-`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`; test ISO SHA-256:
-`71821434553d6b0b26b0f87cfa6f857ed6a38b97e80e8b357d69f966e4e4217a`.
-The map is a 145,267,908-byte zoom 0–13 Protomaps extract; SHA-256
-`0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
-It is verified in the unattended test image, not yet in a new customer ISO.
+FieldOS remains an engineering test candidate, not an approved emergency or
+navigation appliance. The latest interactive customer-mode ISO is
+`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`, built
+from clean commit `bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`; SHA-256
+`bdfbe5c01f9960634f275e230c3a3957623f778c511c36a73ddf992a2f4e85bd`. In a
+disposable no-NIC UEFI VM, interactive disk/account selection, installation,
+offline firstboot, local AI, embeddings, Kiwix, statewide Tennessee map views,
+and two reboot checks passed. The latest clean-source unattended E2E also
+passed at source `b5d6f748c9efdb0f4345c5fe92533b882c7e2856`. Exact logs,
+screenshots, source revision and remaining limitations are recorded in
+[`docs/RELEASE.md`](docs/RELEASE.md).
 
-The current customer-mode candidate was built from clean source commit
-`21ad4fcdb882998ca1c3bd47333b1139c162651c`:
-`/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso` (SHA-256
-`38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`). A fresh
-interactive no-NIC UEFI installation selected the virtual disk and user,
-completed offline firstboot, rendered the regional map in Firefox, and passed
-chat, embeddings, Kiwix, and two reboot checks. The exact report and screenshots
-are in `/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/report.md`. At media
-handoff the VM powered off after virtual CD ejection; the next power-on booted
-the installed disk without repair. Physical USB handoff is untested. This is
-still an engineering candidate, not a release approval.
-
-The latest rebuilt payload is
-`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
-`cdc90ea60a517bcc3217f8630a1fdfcceb3d208acaa54bead1f81260bb5351b6`).
-Generated Ollama registry keys and cache are excluded. The last customer ISO
-is still the earlier four-pack Middle Tennessee candidate listed below; it
-does not contain the statewide map. FieldOS is not disaster-ready: reference
-coverage is limited, AI safety behavior is not comprehensive, physical GPU and
-LAN isolation remain unverified, and redistribution review is incomplete. See
-[docs/RELEASE.md](docs/RELEASE.md) and the [field-use assessment](docs/FIELD-USE-ASSESSMENT.md)
-for remaining gates and scenario findings.
+The detailed Tennessee map covers the state and a neighboring-state buffer at
+zoom 0–13. The core reference library is still limited. An optional 2026
+Southeastern vegetable handbook and a narrow NIOSH heat-illness reference have
+been transferred and indexed in test guests; neither optional pack is in the
+current ISO. The NIOSH reference survived a reboot, but its new browser view
+has not been visually confirmed. Physical hardware, GPS, LAN-connected
+security, broader field references, and redistribution clearance remain
+unverified or incomplete. Do not rely on the local model for medical or
+emergency decisions.
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,
@@ -66,7 +53,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

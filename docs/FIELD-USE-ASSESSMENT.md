@@ -15,17 +15,18 @@ the source library, visibly rendered the statewide map in Firefox at eight
 locations, and passed two reboots. Report and screenshots:
 `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`; test ISO
 SHA-256: `71821434553d6b0b26b0f87cfa6f857ed6a38b97e80e8b357d69f966e4e4217a`.
-The statewide map and optional handbook are not yet in the separately tested
-customer ISO.
+The statewide map is also present in the separately tested customer ISO. The
+optional handbook remains outside the ISO.
 
 The latest customer-mode ISO was built from clean source commit
-`21ad4fcdb882998ca1c3bd47333b1139c162651c`:
-`/mnt/shared/fieldos-releases/fieldos-customer-core4-21ad4fc.iso`, SHA-256
-`38acf9bda9d62b328e5baf117895d25affa78688730cf9da1be7b4769791f9bd`. A fresh
+`bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`:
+`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`, SHA-256
+`bdfbe5c01f9960634f275e230c3a3957623f778c511c36a73ddf992a2f4e85bd`. A fresh
 interactive no-NIC install selected a disposable virtual disk and user, booted
 the installed EFI disk, completed four-pack provisioning, and passed local AI,
-embeddings, Kiwix search, visible Nashville zoom-13 rendering, and two reboots.
-Evidence is in `/mnt/shared/fieldos-e2e/customer-core4-21ad4fc/report.md`. At
+embeddings, Kiwix search, visible zoom-13 map rendering at eight Tennessee
+locations, and two reboots. Evidence is in
+`/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/report.md`. At
 media handoff Ubuntu powered off after the remove-media prompt; a subsequent VM
 power-on booted the installed disk without repair. Physical USB behavior is
 untested.
@@ -44,10 +45,10 @@ external weather alerts, physical GPS, or broad geographic coverage.
 | Hurricane or winter storm | Three NWS-derived FieldOS summaries in `us-weather-safety` 1.0.1 were installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No forecasts or alerts are provided. |
 | Wildfire or evacuation | No dedicated wildfire source is bundled. The AI guard refused one tested wildfire prompt, but prior tests found alternate wording can bypass the keyword guard. | **Not dependable.** A refusal is not safety certification or evacuation guidance. |
 | Flood | The FieldOS-edited NWS summary in `us-flood-safety` 1.0.0 was installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No current flood alerts, flood-zone data, or safe routing are provided. |
-| Injury or medical emergency | An optional one-page CDC checklist names skills to learn but provides no procedures. No first-aid or trauma manual is bundled. The AI guard refused one severe-bleeding prompt. | **Not covered.** Do not rely on the AI for medical decisions. |
+| Injury or medical emergency | An optional CDC checklist names skills but gives no procedures. A separate optional NIOSH heat-illness source was transferred, indexed as 3 chunks, and persisted after reboot in the customer test guest; its new browser view was not confirmed. Neither optional pack is in the ISO, and no general first-aid or trauma manual is bundled. | **Not covered by the ISO.** The NIOSH source is narrow and worker-focused; do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
-| Travel, navigation, or loss of GPS | The latest unattended image visibly renders detailed zoom-13 maps at eight Tennessee urban and rural locations; world/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
-| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. The optional 2026 Southeastern vegetable handbook imported and indexed in the latest unattended test but is not part of the customer ISO. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
+| Travel, navigation, or loss of GPS | Both the latest unattended image and interactive customer installation visibly render detailed zoom-13 maps at eight Tennessee urban and rural locations; world/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
+| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. The optional 2026 Southeastern vegetable handbook imported and indexed in E2E as 678 chunks but is not part of the customer ISO. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
 
 ## AI and source-library behavior
 

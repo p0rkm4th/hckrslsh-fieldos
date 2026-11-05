@@ -29,14 +29,16 @@ archive is not cleared for public redistribution.
 ## Maps
 
 The test payload includes a global Protomaps basemap and a U.S. sample
-extracted from it, both limited to zoom levels 0–5. It also includes a bounded
-Middle Tennessee road and land-use map centered on Nashville, with coverage
-`-88.5,35.4,-85.7,36.7` and zoom levels 0–13. The regional file is
-19,609,616 bytes with SHA-256
-`d3f059ebe098d058dde9c7a1ee046cef80dff8df061e4846d61e262cdff50a66`, extracted
-from Protomaps build `20261102.pmtiles`. It is a local geographic reference,
-not turn-by-turn navigation, GPS positioning, trail guidance, or emergency
-advice. The map interface attributes
+extracted from it, both limited to zoom levels 0–5. The current statewide
+Tennessee map covers the full state plus a neighboring-state buffer (bounds
+`-90.9,34.5,-81.0,37.25`) at zoom levels 0–13. The 145,267,908-byte regional
+file has SHA-256
+`0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`, extracted
+from pinned Protomaps build `20261102.pmtiles`. A fresh no-NIC E2E and a
+separate interactive customer installation visibly rendered eight Tennessee
+locations; reports and screenshots are listed in `docs/RELEASE.md`. It is a
+local geographic reference, not turn-by-turn navigation, GPS positioning,
+trail guidance, or emergency advice. The map interface attributes
 OpenStreetMap contributors and Protomaps. The full ODbL 1.0 text is at
 `/usr/share/doc/fieldos/ODbL-1.0.txt`; the attribution notice and source-build
 details are alongside it and in the map interface. The ODbL applies to the
@@ -68,10 +70,25 @@ listed in `/opt/fieldos/models/manifest.json`; license texts are available in
 
 AI answers are generated output, not authoritative reference documents. They
 can be incomplete or incorrect. Open the underlying reference article and
-check its source and revision information. FieldOS includes two CDC
-water/food documents and one NWS tornado text conversion; it still lacks a
-first-aid pack and comprehensive emergency library. Do not rely on AI as
-medical, emergency, or safety guidance.
+check its source and revision information. FieldOS includes CDC water/food
+documents and NWS-based tornado, flood, hurricane, and winter-storm references.
+An optional NIOSH heat-illness first-aid text pack can be installed from
+removable media, but it is narrow, worker-focused, and has not had clinical
+review. The core library is not comprehensive. Do not rely on AI as medical,
+emergency, or safety guidance.
+
+## Optional NIOSH heat-illness reference
+
+An independently transferable, text-only pack transcribes NIOSH Publication
+2024-100, *Heat Stress: First Aid for Heat Illness* (October 2023). The exact
+[CDC Stacks record](https://stacks.cdc.gov/view/cdc/138337) marks the item
+Public Domain. Its original photographs credited to iStock and Thinkstock and
+CDC agency marks are omitted; source text is retained with layout normalized.
+The original is available without charge from the linked record. This is a
+narrow, worker-focused source, not a clinical review, a general first-aid
+manual, or current emergency direction. The pack is optional and is not
+included in the customer ISO. Its installed manifest provides the artifact
+checksum and full attribution.
 
 ## Software notices
 
@@ -92,7 +109,8 @@ contents.
 ## Additional packs
 
 The content-pack format supports independently sourced and licensed additions.
-The Middle Tennessee map is the only included detailed region. Other
-customer-specific packs are not approved. Additional regional maps, GPS
-integration, and agriculture, outdoor, water, food-preservation, and emergency
-references require separate source, redistribution, and field-use review.
+The statewide Tennessee map is included in the current customer candidate.
+The Southeastern vegetable handbook and NIOSH heat-illness text are optional
+packs and are not in that ISO. Packs require separate source, redistribution,
+and field-use review. GPS integration and broader wildlife, outdoor, livestock,
+food-preservation, and emergency references remain incomplete.
