@@ -4,7 +4,8 @@
 
 ## Current source and customer candidate
 
-- Current source revision: `5720321b362c99fc7d86935c5e4bd1da9d91cb02` (`main`, clean and pushed; current-source E2E passed).
+- Current repository revision: `605a631` (`main`, clean and pushed).
+- Latest E2E tested source revision: `5720321b362c99fc7d86935c5e4bd1da9d91cb02`; `605a631` only updates documentation and preserves that evidence.
 - Customer candidate source revision: `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19` (the customer ISO below has not been rebuilt from current `main`).
 - Customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`
 - Customer ISO SHA-256: `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`
@@ -50,7 +51,7 @@ installer validation.
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline install | PASS | Current source `5720321`; report and test ISO SHA-256 above. |
+| Fresh unattended offline install | PASS | Tested source `5720321`; report and test ISO SHA-256 above. |
 | Interactive customer install | PARTIAL | Interactive account and `vda` selection completed; at Ubuntu's media-removal prompt, ejecting the ISO and pressing Enter powered off the VM. A normal power-on booted the installed disk without repair. Physical USB behavior and automatic VM restart remain open. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
 | Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
