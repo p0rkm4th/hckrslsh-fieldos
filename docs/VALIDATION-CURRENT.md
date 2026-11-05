@@ -4,30 +4,34 @@
 **Source:** `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start; same commit as `origin/main`)  
 **Customer ISO:** `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`  
 **ISO SHA-256:** `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`  
-**Detailed evidence:** `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`
+**Detailed evidence:** `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/` (clean handoff retest) and `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/` (eight-location statewide map run)
 
 ## Result
 
-The current customer ISO is structurally valid and its installed system works
-offline in a disposable UEFI VM. The interactive installation completed after
-selecting the disposable virtual disk and confirming the erase. However, the
-installer's **Restart Now** did not hand off automatically: the VM remained
-black/idle until a diagnostic `virsh reset`. The installed OS then booted from
-the virtual disk, with the ISO detached, and completed provisioning. Because
-of this intervention, this run is **not a clean customer-installer PASS**.
-Resolve or reproduce the handoff behavior before making a customer-readiness
-claim.
+The current customer ISO installed successfully in a fresh, disposable UEFI VM
+with no virtual NIC. The user selected the virtual target disk and confirmed
+the destructive action. At the standard “Please remove the installation
+medium, then press ENTER” prompt, the guest had already opened its virtual CD
+tray. Pressing Enter caused a normal guest shutdown; a normal VM power-on then
+booted the installed disk. No reset, repair, or ISO-present boot was used.
+Firstboot and two subsequent guest reboots passed. This is a **PASS for
+interactive installation and installed-disk boot in this UEFI VM**, including
+the standard virtual-media handoff. A seamless automatic restart without the
+ordinary power-on after the prompt was not demonstrated, and physical USB
+behavior remains unverified.
 
 ## VM and offline state
 
-- UEFI VM: 6 vCPU, 12 GiB RAM, 80 GiB disposable qcow2 disk.
+- UEFI VM: 6 vCPU, 12 GiB RAM, 80 GiB disposable qcow2 disk; domain
+  `fieldos-customer-cc4aa38-handoff2`.
 - No virtual network adapter (`virsh domiflist` empty); guest had no physical
   network interface and no default route. Docker bridges remained available
   for local services.
-- Target disk selection, destructive-action confirmation, identity setup,
-  installation completion, media ejection, and subsequent installed-disk boot
-  were observed. The media was absent from the boot device list after install.
-- Firstboot status: `complete` at `2026-11-05T17:31:22Z`.
+- Target disk selection (`vda`), destructive-action confirmation, identity
+  setup, installation completion, the installer media-removal prompt, clean
+  guest shutdown, and subsequent installed-disk boot were observed. After the
+  prompt the guest tray was open; `vda` was the only boot device on power-on.
+- Firstboot status: complete at `2026-11-05T18:51:16Z`.
 - All seven containers were running: `nomad_admin`, `nomad_redis`,
   `nomad_qdrant`, `nomad_kiwix_server`, `nomad_mysql`, `nomad_dozzle`, and
   `nomad_ollama`.
@@ -37,19 +41,22 @@ claim.
 | Area | Result | Evidence |
 |---|---|---|
 | Build validation | PASS | `make check test`: 87 unit tests passed; 10 content pack manifests validated. `make verify ISO=...`: BIOS/UEFI boot records, customer setup, offline APT, and payload passed. |
-| Provisioning | PASS after diagnostic reset | `firstboot-status.json`, `firstboot.log`, `guest-services.txt`; installed OS reports firstboot complete. |
-| Local AI inference | PASS | Selected Qwen3 1.7B Q4_K_M CPU model returned `FIELDOS_OFFLINE_CHAT_OK`; after reboot 2 it returned `FIELDOS_REBOOT2_OK`. See `functional-checks-pre-reboot.json` and `reboot-2.json`. |
-| Embeddings | PASS | `nomic-embed-text:v1.5` returned a 768-dimensional vector before and after reboots. |
-| N.O.M.A.D. retrieval | PARTIAL | API and Firefox chat returned a local Southeastern Vegetable Crop Handbook source. A soil-pH query did not recover the requested detail; another harmless UI prompt received an overbroad status refusal with irrelevant weather references. Do not treat generated answers or citations as authoritative. |
-| Kiwix | PASS, fixture limited | Firefox opened the bundled Wikipedia 100 ZIM and its in-book search returned 19 results for “new york,” including “The New York Times.” See `kiwix-wikipedia-book.png` and `kiwix-article-search-ui.png`. This is a test fixture, not a useful broad encyclopedia. |
-| Tennessee maps | PASS in browser | Firefox visibly rendered zoom-13 detail at Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big South Fork. Screenshots: `map-memphis.png`, `map-nashville.png`, `map-knoxville.png`, `map-chattanooga.png`, `map-clarksville.png`, `map-jackson-clean.png`, `map-johnson-city-clean.png`, and `map-rural-clean.png`. `map-memphis-after-reboot.png` also confirms rendering after reboot. |
-| Branding and desktop | PASS in VM | FieldOS wallpaper remained visible after reboot; Project N.O.M.A.D. Command Center and AI Assistant opened in Firefox. See `desktop-after-two-reboots-unlocked.png`, `nomad-home-after-reboot.png`, and `nomad-chat-generated.png`. |
-| Persistence | PASS, two post-install reboots | Boot IDs changed twice. A user-created test marker SHA-256 stayed `0a133e633924da56e5abfc415afecb19e34d87744a081975daac0e4f021d42e6`; the 145,267,908-byte Tennessee PMTiles SHA-256 stayed `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`; firstboot, all seven services, health, model generation, embeddings, and Kiwix search persisted. See `persistence-baseline.json`, `reboot-1.json`, and `reboot-2.json`. |
+| Build validation | PASS | `make check test`: 87 unit tests passed; 10 content-pack manifests validated. `make verify ISO=...`: BIOS/UEFI boot records, customer setup, offline APT, and payload passed. |
+| Interactive install and disk boot | PASS in disposable UEFI VM | Fresh customer installation reached the standard media-removal prompt, cleanly shut down after Enter, then booted from `vda` on ordinary `virsh start`; no reset or repair. See `reboot-stage-1.png`, `disk-boot.png`, and this report's run directory. Seamless automatic restart was not demonstrated. |
+| Provisioning | PASS | Firstboot status complete at `2026-11-05T18:51:16Z`; all seven containers running. Reboot evidence is in `persistence-baseline-second-install.txt`, `reboot-1-second-install.txt`, and `reboot-2-second-install.txt`. |
+| Local AI inference | PASS, CPU | Bundled Qwen3 1.7B Q4_K_M returned `FIELDOS_AFTER_REBOOT2_OK` after reboot 2; evidence `inference-after-reboot2.txt`. Hardware selector chose CPU; no GPU validation. |
+| Embeddings | PASS | Bundled `nomic-embed-text:v1.5` returned a 768-dimensional vector after reboot 2; same evidence file. |
+| N.O.M.A.D. retrieval | PARTIAL | API health and browser UI work. Firefox Source Library search for “flood” returned three local document matches (`source-search-current-install.png`); indexing reported 9 files/689 chunks. A safety-sensitive chat query produced the configured refusal and directed the user to original sources. Semantic answer quality and citations remain unreliable. |
+| Kiwix | PASS, fixture limited | Firefox opened the bundled 100-article Wikipedia ZIM and in-book search returned “The New York Times” (`kiwix-current-install.png`, `kiwix-search-current-install.png`). This is not a broad encyclopedia. |
+| Tennessee maps | PASS in browser, same ISO checksum | Current clean-install Firefox showed readable zoom-13 Nashville streets (`map-current-install.png`). The separate installation of this exact ISO SHA visually rendered all eight required points; see the eight `map-*.png` screenshots in `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`. The map is a geographic reference, not routing or GPS. |
+| Branding and desktop | PASS in VM | Fresh installed GNOME desktop and N.O.M.A.D. Command Center, AI Assistant, and Source Library opened; screenshots `desktop-ready.png`, `nomad-current-install.png`, `nomad-ai-current-install.png`, and `source-library-current-install.png`. |
+| Persistence | PASS, two post-install reboots | Boot IDs changed from `517fa702-62cf-44e2-9641-c181886c0add` to `6a855656-f217-4bd4-bf37-090785b44fef` to `0a2ca040-42ff-4e99-acd3-da6ddcf32a7a`. User marker SHA-256 remained `9bf000f4d7b03b01e24f81a836257cf973898c90eb5ba0265b66ce22892329b6`; PMTiles SHA-256 remained `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`. All seven containers, N.O.M.A.D. health, Kiwix search, reference index, inference, and embeddings worked after reboot 2. |
 
 ## Limits and release blockers
 
-- Installer restart/handoff was manually recovered. The current customer-mode
-  install gate remains **PARTIAL** pending a clean run.
+- Installer's normal virtual-media removal prompt and subsequent installed-disk
+  boot passed in a VM. The guest shut down at the prompt and required an ordinary
+  power-on; fully automatic restart and physical USB handoff remain unverified.
 - VM validation is not physical USB/firmware or broad hardware validation.
   Physical GPU acceleration, GPS, and connected-LAN exposure have not been
   validated by this run.
@@ -65,10 +72,10 @@ claim.
 
 ## Storage retained for this run
 
-- ISO: 13,523,091,456 bytes.
-- Active test disk: `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/guest.qcow2`,
-  39,412,826,112 allocated bytes (80 GiB virtual capacity). The VM remains
-  available for handoff diagnosis and is intentionally retained.
-- Run directory: about 37 GiB including the disk and evidence. `/mnt/shared`
-  had about 435 GiB free when this report was written.
-
+- ISO: 13,523,091,456 bytes; SHA-256 above.
+- Retained test disks: the original accepted-services run at
+  `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/guest.qcow2` and the clean
+  handoff retest at
+  `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/guest.qcow2`.
+  Both VMs remain available and are intentionally retained as test evidence.
+- At report time `/mnt/shared` had 399 GiB free (745 GiB used of 1.2 TiB).
