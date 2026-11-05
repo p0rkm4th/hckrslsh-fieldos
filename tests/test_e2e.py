@@ -318,9 +318,30 @@ autoinstall:
         time.sleep(0.5)
         self.type_virtual_keyboard(archive_path)
         self.send_key("KEY_ENTER")
+        picker_state = self.guest(
+            f"for i in $(seq 1 12); do "
+            f"if ! pgrep -u {uid} -f 'zenity --file-selection' >/dev/null; then "
+            "echo PICKER_CLOSED; exit 0; fi; sleep 0.5; done; echo PICKER_STILL_OPEN",
+            timeout=15,
+        )
+        if "PICKER_STILL_OPEN" in picker_state:
+            # GTK's Ctrl+L location entry first navigates to the containing
+            # directory and selects the file; a second Enter accepts it.
+            self.send_key("KEY_ENTER")
+            picker_state = self.guest(
+                f"for i in $(seq 1 30); do "
+                f"if ! pgrep -u {uid} -f 'zenity --file-selection' >/dev/null; then "
+                "echo PICKER_CLOSED; exit 0; fi; sleep 0.5; done; "
+                "echo PICKER_STILL_OPEN; exit 1",
+                timeout=20,
+            )
+        if "PICKER_CLOSED" not in picker_state:
+            screenshot = self.run_dir / "content-pack-import-picker-failed.png"
+            self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], check=False)
+            raise TestFailure("The selected archive remained in the GNOME file picker")
         prompt = self.guest(
             f"for i in $(seq 1 45); do "
-            "pgrep -u " + str(uid) + " -af 'pkexec.*/usr/libexec/fieldos-content-pack-import-root' "
+            "pgrep -u " + str(uid) + " -af 'pkexec.*fieldos-content-pack-import-root' "
             ">/dev/null && echo AUTH_REQUESTED && exit 0; sleep 1; done; "
             "pgrep -af 'zenity|pkexec|fieldos-content-pack-import' || true; exit 1",
             timeout=55,
