@@ -72,12 +72,18 @@ core image. Archives contain the manifest and only the artifacts it declares,
 so stray or unreviewed files in a staging directory are excluded. The core
 packs' manifests and source documents are staged in Git; their portable
 archives are generated during payload construction. The current source map
-payload contains a checksum-pinned statewide Tennessee candidate, while the
-older validated interactive customer ISO still contains the Middle Tennessee
-map. Redistribution review remains incomplete; see the payload manifest and
+payload and separately tested interactive customer ISO contain the same
+checksum-pinned statewide Tennessee map. Redistribution review remains incomplete; see the payload manifest and
 [`REDISTRIBUTION.md`](REDISTRIBUTION.md).
 
-On an installed system, verify and add a bundle with:
+For a desktop import, open **FieldOS Install Content Pack** from Applications
+→ Utilities, choose the `.tar.zst` archive, and approve the administrator
+authentication prompt. Keep the matching `.sha256` sidecar beside the archive.
+The launcher uses the same validator and installer described below; it asks
+N.O.M.A.D. to index reference documents after activation. This adds no new
+network service and exposes no remote administrative interface.
+
+For operator use, verify and add a bundle with:
 
 ```sh
 sudo /opt/fieldos/scripts/fieldos-content-packs.py install /path/to/pack-1.0.tar.zst
@@ -175,10 +181,11 @@ The core catalog also includes `us-tornado-safety`, a text-only conversion of
 the National Weather Service's “What to Do During a Tornado” page. Its source,
 NOAA reuse basis, attribution, access date, and conversion limits are recorded
 in its manifest and document. It adds narrow tornado guidance, not a first-aid
-or comprehensive all-hazards library. The current source payload includes the
-statewide Tennessee map candidate; the previously validated customer ISO still
-has Middle Tennessee coverage. Agriculture, wildlife, procedural first-aid,
-and comprehensive reference packs still need source selection and licensing
+or comprehensive all-hazards library. The current customer candidate includes
+the statewide Tennessee map. The optional Southeastern vegetable handbook
+and NIOSH heat-illness transcription have source review and pack-level
+activation evidence, but broader livestock, wildlife, procedural first-aid,
+and comprehensive reference coverage still needs development and licensing
 review.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
@@ -268,15 +275,16 @@ emergency library.
 ## Mapping and location
 
 The bundled world and sample U.S. PMTiles maps cover zoom levels 0 through 5
-for broad orientation. Current source also pins a statewide Tennessee map
-candidate, including a neighboring-state buffer (bounds
+for broad orientation. The tested customer candidate also includes a
+checksum-pinned statewide Tennessee map with a neighboring-state buffer (bounds
 `-90.9,34.5,-81.0,37.25`) at zoom levels 0–13. The 145,267,908-byte PMTiles
 file is extracted from the pinned 2026-11-02 Protomaps build using bounded HTTP
 range requests. The source manifest records expected size and SHA-256,
 ODbL/OSM attribution, bounds, and zoom range. The fresh no-NIC E2E report
 (`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`) records visible
 Firefox map views for eight locations and persistence across two reboots. The
-older customer ISO has not yet been rebuilt with this map. See
+separate interactive customer installation also rendered this map at all eight
+locations. See
 [`RELEASE.md`](RELEASE.md) for checksums and exact evidence paths.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,

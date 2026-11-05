@@ -22,6 +22,10 @@ for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zs
   /fieldos/installer/provisioning/patch-nomad-rag-policy.sh \
   /fieldos/installer/provisioning/patch_nomad_rag_policy.py \
   /fieldos/scripts/fieldos-nomad-index-references.py \
+  /fieldos/scripts/fieldos-content-pack-import.py \
+  /fieldos/installer/provisioning/fieldos-content-pack-import.desktop \
+  /fieldos/installer/provisioning/fieldos-content-pack-import-root \
+  /fieldos/installer/provisioning/fieldos-content-pack-import.policy \
   /fieldos/installer/provisioning/fieldos-sources.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.html \
@@ -56,6 +60,8 @@ grep -q 'Ready offline in this test edition' "$TMP/provisioning-fieldos-start-he
   || { echo "FieldOS offline content guide is missing its bundled-content section" >&2; exit 1; }
 grep -q 'separate internet-connected update session' "$TMP/provisioning-fieldos-start-here.html" \
   || { echo "FieldOS offline content guide is missing its update boundary" >&2; exit 1; }
+grep -q 'FieldOS Install Content Pack' "$TMP/provisioning-fieldos-start-here.html" \
+  || { echo "FieldOS offline content guide is missing the pack installer workflow" >&2; exit 1; }
 grep -q "picture-uri='file:///usr/share/backgrounds/fieldos/fieldos-wallpaper.svg'" \
   "$TMP/provisioning-install-branding.sh" \
   || { echo "FieldOS wallpaper defaults are missing" >&2; exit 1; }

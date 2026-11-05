@@ -99,7 +99,7 @@ apt_offline=(
 )
 apt-get "${apt_offline[@]}" update
 apt-get "${apt_offline[@]}" --yes --no-install-recommends install \
-  docker.io docker-compose-v2 curl zstd qemu-guest-agent
+  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity pkexec
 rm -f /etc/apt/sources.list.d/fieldos-offline.list
 if [[ -e /dev/virtio-ports/org.qemu.guest_agent.0 ]]; then
   echo "Starting the optional QEMU guest agent on its available virtio channel..."
