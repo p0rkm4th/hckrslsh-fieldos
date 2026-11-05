@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "us-household-communications",
+  "version": "1.0.0",
+  "title": "Household Emergency Communications Plan",
+  "description": "A printable, FieldOS-authored household planning worksheet informed by FEMA/Ready.gov guidance. It does not provide live communications, alerts, tracking, or emergency response.",
+  "category": "weather-disaster",
+  "sources": [
+    {
+      "id": "ready-family-plan",
+      "name": "FEMA/Ready.gov: Family Emergency Communication Plan",
+      "url": "https://www.ready.gov/sites/default/files/2020-03/family-emergency-communication-planning-document.pdf",
+      "license": "Consulted as a factual reference only; the source PDF, artwork, form, and wording are not redistributed in this pack.",
+      "attribution": "Federal Emergency Management Agency (FEMA), Ready.gov. Source linked for attribution and further review; no endorsement implied.",
+      "accessed": "2026-11-05"
+    },
+    {
+      "id": "ready-make-plan",
+      "name": "Ready.gov: Make a Plan",
+      "url": "https://www.ready.gov/plan",
+      "license": "Consulted as a factual reference only; no source text or assets are redistributed.",
+      "attribution": "FEMA, Ready.gov. Source linked for attribution and further review; no endorsement implied.",
+      "accessed": "2026-11-05"
+    },
+    {
+      "id": "fema-rights-guidance",
+      "name": "FEMA Independent Study Program FAQ: Copyright",
+      "url": "https://training.fema.gov/programs/independent-study/isfaq.aspx?lang=en",
+      "license": "U.S. federal government guidance page consulted for public-domain context; no page content is redistributed.",
+      "attribution": "Federal Emergency Management Agency (FEMA).",
+      "accessed": "2026-11-05"
+    },
+    {
+      "id": "nws-weather-radio",
+      "name": "National Weather Service: NOAA Weather Radio",
+      "url": "https://www.weather.gov/iwx/noaaweatherradio",
+      "license": "Consulted as a factual reference only; no source text or assets are redistributed.",
+      "attribution": "National Weather Service, NOAA. Local station and coverage details vary by area.",
+      "accessed": "2026-11-05"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "household-communications-plan.txt",
+      "size_bytes": 6411,
+      "sha256": "dc4c71783a5799de26a4f7ddf4f27169185126d4eca3ab7c751d5768ef621da7",
+      "source": "ready-family-plan",
+      "license": "Original FieldOS-authored text licensed under Apache-2.0; factual planning concepts are attributed to linked FEMA/Ready.gov references. No FEMA text, logo, images, form, or template is reproduced."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering source and content review",
+    "reviewed_at": "2026-11-05",
+    "content_revision": "2026-11-05"
+  }
+}

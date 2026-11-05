@@ -53,7 +53,7 @@ substitute for customer installer validation.
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |
 | Hardware adaptation | PARTIAL | CPU and fixture profiles tested. Physical hardware, GPU driver compatibility, and varied storage systems are unverified. |
 | Network-connected security | PARTIAL | Disconnected operation and container egress blocking tested; LAN-connected peer exposure test remains open. Docker socket consumers retain powerful host access. |
-| Field reference breadth | FAIL for broad field readiness | Core library remains limited and Kiwix is a small fixture. Optional packs are available; broad agriculture, medical, wildlife, and technical coverage is incomplete. |
+| Field reference breadth | FAIL for broad field readiness | The optional household communications planner has a validated archive and host-side install/index result, but has not been tested in a running guest. The core library remains limited and Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
 | Redistribution review | BLOCKED | Exact Ubuntu, software, model, maps, and content license/attribution review is incomplete. Keep candidate binaries unpublished. |
 | Physical customer readiness | BLOCKED | Physical installation/hardware, LAN exposure, content breadth, and rights review remain. |
 

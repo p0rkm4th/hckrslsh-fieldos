@@ -1,0 +1,81 @@
+FIELDOS HOUSEHOLD EMERGENCY COMMUNICATIONS PLAN
+FieldOS-authored planning worksheet, version 1.0.0 (2026-11-05)
+
+PURPOSE AND LIMITS
+Use this worksheet with the people in your household and support network before an emergency. Fill in a paper copy, share it with the people who need it, and practice the plan. FieldOS does not send messages, receive alerts, locate people, or provide a live communications service. Phone, internet, power, and radio coverage may be unavailable or overloaded. No method is guaranteed.
+
+This is an independently written planning aid informed by FEMA/Ready.gov family emergency communication guidance. It is not an official FEMA document, emergency plan for a particular property, or substitute for local instructions. Review local hazards, evacuation instructions, and alert options with your local emergency-management office while connected.
+
+1. CHOOSE HOW TO RECONNECT
+
+Primary out-of-area contact (someone household members can try to reach):
+Name: __________________________________________________________
+Phone or other agreed contact: __________________________________
+City/state: _____________________________________________________
+
+Backup contact:
+Name: __________________________________________________________
+Phone or other agreed contact: __________________________________
+
+Agree in advance on:
+- A simple check-in message and how to confirm who sent it.
+- A check-in time or interval if people become separated.
+- What to do if the primary contact cannot be reached.
+- A safe meeting place near home and a second place outside the neighborhood.
+- A fallback if the selected meeting place is closed or unsafe.
+
+Do not go to a meeting point through an unsafe area. Follow evacuation orders and directions from emergency officials. If people cannot safely travel, agree on how they should shelter and who will check on them when possible.
+
+2. PLAN FOR MORE THAN ONE CHANNEL
+
+Write down the channels the household can actually use and practice them:
+- Voice call: ___________________________________________________
+- Text message: __________________________________________________
+- Other agreed method (for example, in-person relay): ______________
+
+A text or other low-bandwidth message may sometimes get through when a call does not, but this is not guaranteed. Do not repeatedly retry in a way that creates additional risk. A broadcast weather radio can receive some public alerts but is not a two-way communication method for contacting family. Check which alert and radio services cover your area before an emergency.
+
+3. INCLUDE EVERYONE WHO NEEDS THE PLAN
+
+For each household member, record a name, at least one contact method, and the person's role or support needs. Include children, caregivers, people with disabilities or access and functional needs, service animals, and pets. Decide who can help with transportation, mobility devices, medicines, communication aids, or animal carriers. Confirm that backup helpers know the plan and can perform the agreed task.
+
+Household member / contact / support or assigned role:
+________________________________________________________________
+________________________________________________________________
+________________________________________________________________
+________________________________________________________________
+
+School, workplace, care provider, or other reunification contact:
+Name: ___________________________ Phone: ________________________
+Plan or pickup instructions to verify with them: __________________
+________________________________________________________________
+
+4. KEEP A USABLE COPY
+
+- Give each household member who may need it a copy in a place they can access, such as a wallet, bag, or emergency kit.
+- Keep a home copy where household members can find it, and a separate copy with the out-of-area contact if appropriate.
+- Use a printed copy if devices may lose power. Store a digital copy only where it is available offline and protected.
+- Do not place a copy with sensitive personal details where visitors or the public can read it. Include only the information needed to reconnect. Do not write Social Security numbers, account passwords, or unnecessary medical details on a general contact sheet.
+- If someone has a medical or access need, record the minimum information that helps the support person act and keep more detailed records securely.
+
+5. PRACTICE AND UPDATE
+
+Practice a brief household check-in and the meeting-place plan. Verify that contact numbers and locations are current. Update the paper and offline copies when people, phone numbers, schools, caregivers, meeting places, or support needs change. Review at least yearly and after a move or major household change.
+
+Last reviewed: __________________  Next review: __________________
+
+LOCAL DETAILS TO FILL IN WHILE CONNECTED
+Local emergency-management office: _______________________________
+Local alert enrollment instructions/source: ______________________
+County/city evacuation and shelter information source: ____________
+NOAA Weather Radio coverage or receiver information: ______________
+
+Do not treat a printed number, map, or this worksheet as a current alert. During an event, use available official warnings and follow instructions from local emergency officials. Call emergency services when immediate help is needed and the service is reachable.
+
+SOURCES AND EDITORIAL STATUS
+- FEMA/Ready.gov, Family Emergency Communication Plan (planning guidance and blank form): https://www.ready.gov/sites/default/files/2020-03/family-emergency-communication-planning-document.pdf
+- Ready.gov, Make a Plan: https://www.ready.gov/plan
+- FEMA/Ready.gov, Are You Ready? An In-Depth Guide to Citizen Preparedness: https://www.ready.gov/sites/default/files/2021-11/are-you-ready-guide.pdf
+- National Weather Service, NOAA Weather Radio: https://www.weather.gov/iwx/noaaweatherradio
+
+FieldOS wrote this worksheet in original language and does not reproduce FEMA text, branding, illustrations, or form fields. The linked sources are provided for attribution and further review; their inclusion here does not imply FEMA endorsement. FEMA states that government-produced course materials are generally public domain unless otherwise indicated, but this pack does not redistribute those source files. Source guidance can change; check current official information while connectivity is available.
