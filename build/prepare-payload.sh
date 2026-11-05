@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+PYTHON=${PYTHON:-python3}
 OUT=${FIELDOS_PAYLOAD_ROOT:-"$ROOT/build/payload"}
 ARCHIVE="$OUT/offline-payload.tar.zst"
 [[ ! -e "$ARCHIVE" ]] || { echo "Payload already exists; move it aside explicitly before rebuilding: $ARCHIVE" >&2; exit 1; }

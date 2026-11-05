@@ -13,19 +13,20 @@ the policy says to remove/replace those marks and recompile. This candidate
 still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
-The latest interactive customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, SHA-256
-`4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`, built
-from `562fee9b93c53679f57fd25af49fd79fc61a2d95`. A fresh no-NIC UEFI VM
+The latest accepted interactive customer test candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, SHA-256
+`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`, built
+from source `cc4aa38f3debd078b877589355221e94821bd160`. A fresh no-NIC UEFI VM
 installation, firstboot, offline services, interactive account/disk selection,
 installed-disk boot, two reboots, local model generation, embeddings, Kiwix,
 statewide maps, and six core reference packs were verified. Detailed evidence
-is in `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`. This
-remains private engineering test material, not a release: Ubuntu branding
-remains, and complete notice, trademark, source-offer, model, map, and content
-reviews are outstanding. Offline tests establish function and file integrity,
-not redistribution rights. Do not distribute the ISO or payload until the
-reviews below are complete.
+is in `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/validation.md`.
+Source revisions after this ISO add map attribution and promote two reviewed
+reference packs to core; they are not in this tested binary. It remains private
+engineering test material, not a release: Ubuntu branding remains, and complete
+notice, trademark, source-offer, model, map, and content reviews are outstanding.
+Offline tests establish function and file integrity, not redistribution rights.
+Do not distribute the ISO or payload until the reviews below are complete.
 ## Current artifact inventory
 
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
