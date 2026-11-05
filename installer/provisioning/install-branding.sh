@@ -21,6 +21,8 @@ install -D -m 0755 "$ROOT/fieldos-content-pack-import-root" \
   /usr/libexec/fieldos-content-pack-import-root
 install -D -m 0644 "$ROOT/fieldos-content-pack-import.policy" \
   /usr/share/polkit-1/actions/org.fieldos.content-pack-import.policy
+install -D -m 0644 "$ROOT/fieldos-polkit-agent.desktop" \
+  /etc/xdg/autostart/fieldos-polkit-agent.desktop
 
 # System defaults apply to new users; existing per-user preferences win.
 profile=/etc/dconf/profile/user

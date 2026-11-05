@@ -97,6 +97,8 @@ class ContentPackImportUiTests(unittest.TestCase):
     def test_offline_importer_bundles_and_installs_graphical_polkit_agent(self):
         build = (ROOT / "build/prepare-payload.sh").read_text()
         firstboot = (ROOT / "installer/provisioning/firstboot.sh").read_text()
+        branding = (ROOT / "installer/provisioning/install-branding.sh").read_text()
+        desktop = (ROOT / "installer/provisioning/fieldos-polkit-agent.desktop").read_text()
         self.assertIn("zenity", build)
         self.assertIn("policykit-1-gnome", build)
         self.assertIn("required_base_packages\":[\"zenity\",\"pkexec\",\"policykit-1-gnome\"]", build)
@@ -104,6 +106,9 @@ class ContentPackImportUiTests(unittest.TestCase):
         self.assertIn("command -v pkexec", firstboot)
         self.assertIn("command -v zenity", firstboot)
         self.assertIn("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", firstboot)
+        self.assertIn("/etc/xdg/autostart/fieldos-polkit-agent.desktop", branding)
+        self.assertIn("Exec=/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", desktop)
+        self.assertNotIn("OnlyShowIn=", desktop)
 
 
 if __name__ == "__main__":

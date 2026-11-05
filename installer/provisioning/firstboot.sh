@@ -109,6 +109,10 @@ if [[ ! -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ]]; th
   echo "The graphical PolicyKit authentication agent is missing; offline content imports will not work." >&2
   exit 1
 fi
+if [[ ! -f /etc/xdg/autostart/fieldos-polkit-agent.desktop ]]; then
+  echo "FieldOS PolicyKit authentication agent autostart entry is missing." >&2
+  exit 1
+fi
 if [[ -e /dev/virtio-ports/org.qemu.guest_agent.0 ]]; then
   echo "Starting the optional QEMU guest agent on its available virtio channel..."
   systemctl start qemu-guest-agent.service
