@@ -23,10 +23,11 @@ account and disk selection, no-NIC installation, firstboot, the branded desktop,
 all six content packs, local AI, embeddings, Kiwix search, a zoom-13 Nashville
 browser render, and two reboots were verified. Report and screenshots are in
 `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/`. Ubuntu's standard
-media-removal/restart handoff required host-side ISO ejection and VM power
-cycling before the installed disk booted. The installation itself succeeded,
-but customer installer acceptance remains partial until this handoff completes
-without host intervention. Physical USB behavior is untested.
+media-removal/restart handoff reached Ubuntu's standard prompt. Ejecting the ISO
+and pressing Enter powered off the VM; a normal power-on booted the installed
+disk. The installation itself succeeded, but the VM did not restart itself,
+so installer handoff acceptance remains partial. Physical USB behavior is
+untested.
 
 The current customer image contains the six-pack core payload. Neither test VM
 had a network adapter. These results do not test physical USB media handoff,

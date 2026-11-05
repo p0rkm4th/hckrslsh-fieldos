@@ -10,11 +10,15 @@ Interactive account and target-disk selection completed in a disposable no-NIC
 UEFI VM; firstboot finished and the installed disk booted to the branded
 desktop. All six core packs indexed, local chat and embeddings worked, Kiwix
 returned a local result, Firefox rendered Nashville at zoom 13, and services
-persisted across two reboots. Ubuntu's media-removal/restart handoff required
-host-side ISO ejection and a VM power cycle, so customer installer acceptance
-remains partial. Evidence and screenshots:
-`/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
-Physical USB behavior remains unverified.
+persisted across two reboots. An initial handoff attempt ejected the ISO before
+Ubuntu reached its removal prompt and was not a valid handoff test. A repeat
+test reached Ubuntu's standard “Please remove the
+installation medium, then press ENTER” prompt. After the virtual ISO was
+removed and Enter was pressed, the VM powered off; powering it on once booted
+the installed disk to GDM without repair. Do not eject the installer before
+this prompt. Physical USB behavior remains unverified. Detailed reports and
+screenshots are in `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/`
+and `/mnt/shared/fieldos-e2e/customer-handoff-9c59a5f-20261105/`.
 
 Build a customer-mode test ISO with:
 
