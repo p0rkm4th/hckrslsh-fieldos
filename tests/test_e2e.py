@@ -285,8 +285,72 @@ autoinstall:
             "set -euo pipefail; device=$(blkid -t LABEL=FIELDOSPACK -o device); "
             "test -n \"$device\"; mkdir -p /mnt/fieldos-pack-test; "
             "mount -o ro \"$device\" /mnt/fieldos-pack-test; "
-            "archive=$(find /mnt/fieldos-pack-test -maxdepth 1 -type f -name '*.tar.zst' -print -quit); "
-            "test -n \"$archive\"; /opt/fieldos/scripts/fieldos-content-packs.py install \"$archive\"; "
+            "findmnt -rn -o OPTIONS /mnt/fieldos-pack-test | grep -qw ro; "
+        )
+        self.check("read-only content transfer media", common +
+                   f"test -s /mnt/fieldos-pack-test/{shlex.quote(self.pack_archive.name)} && "
+                   f"test -s /mnt/fieldos-pack-test/{shlex.quote(self.pack_archive.name + '.sha256')}")
+        uid = self.guest("id -u fieldos").strip()
+        wayland = self.guest(
+            f"find /run/user/{uid} -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1"
+        ).strip()
+        if not wayland.startswith("wayland-"):
+            raise TestFailure(f"No active Wayland session for content-pack GUI test: {wayland!r}")
+        import_log = "/tmp/fieldos-content-pack-import-ui.log"
+        self.guest(
+            f"runtime=/run/user/{uid}; "
+            f"runuser -u fieldos -- env XDG_RUNTIME_DIR=$runtime "
+            "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus "
+            f"WAYLAND_DISPLAY={shlex.quote(wayland)} GDK_BACKEND=wayland "
+            "/usr/bin/python3 /opt/fieldos/scripts/fieldos-content-pack-import.py "
+            f">{import_log} 2>&1 </dev/null &"
+        )
+        picker = self.guest(
+            f"for i in $(seq 1 60); do "
+            f"pgrep -u {uid} -f 'zenity --file-selection' >/dev/null && echo PICKER_OPEN && exit 0; sleep 0.5; "
+            "done; pgrep -af 'fieldos-content-pack-import|zenity' || true; exit 1",
+            timeout=40,
+        )
+        if "PICKER_OPEN" not in picker:
+            raise TestFailure("GNOME content-pack file picker did not open")
+        archive_path = f"/mnt/fieldos-pack-test/{self.pack_archive.name}"
+        self.send_key("KEY_LEFTCTRL", "KEY_L")
+        time.sleep(0.5)
+        self.type_virtual_keyboard(archive_path)
+        self.send_key("KEY_ENTER")
+        prompt = self.guest(
+            f"for i in $(seq 1 45); do "
+            "pgrep -u " + str(uid) + " -af 'pkexec.*/usr/libexec/fieldos-content-pack-import-root' "
+            ">/dev/null && echo AUTH_REQUESTED && exit 0; sleep 1; done; "
+            "pgrep -af 'zenity|pkexec|fieldos-content-pack-import' || true; exit 1",
+            timeout=55,
+        )
+        if "AUTH_REQUESTED" not in prompt:
+            screenshot = self.run_dir / "content-pack-import-auth-failed.png"
+            self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], check=False)
+            raise TestFailure(f"Selecting the pack did not reach the administrator prompt: {prompt}")
+        time.sleep(1)
+        self.type_virtual_keyboard(self.temporary_password)
+        self.send_key("KEY_ENTER")
+        success = self.guest(
+            f"for i in $(seq 1 240); do "
+            f"pgrep -u {uid} -af 'zenity.*Offline content ready' >/dev/null && echo SUCCESS_DIALOG && exit 0; "
+            "sleep 1; done; tail -80 " + import_log + "; "
+            "pgrep -af 'zenity|pkexec|fieldos-content-pack-import' || true; exit 1",
+            timeout=260,
+        )
+        if "SUCCESS_DIALOG" not in success:
+            screenshot = self.run_dir / "content-pack-import-failed.png"
+            self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], check=False)
+            raise TestFailure(f"Graphical content import did not reach its success dialog: {success}")
+        screenshot = self.run_dir / "content-pack-import-success.png"
+        self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
+        self.send_key("KEY_ENTER")
+        self.record("offline GUI content-pack import", "PASS",
+                    f"GNOME file picker, authenticated installer, and success dialog; screenshot {screenshot.name}")
+        self.check(
+            "GUI importer completed",
+            f"! pgrep -u {uid} -f '/opt/fieldos/scripts/fieldos-content-pack-import.py' >/dev/null",
         )
         if self.pack_target == "storage/maps/pmtiles":
             map_file = self.pack_manifest["artifacts"][0]["path"]
@@ -1173,9 +1237,9 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
                 raise TestFailure(f"Provisioning did not complete: {status}")
             self.capture_guest_logs()
             self.record("offline provisioning", "PASS", "Local packages and all declared firstboot smoke checks completed")
+            self.verify_map_render()
             self.install_test_content_pack()
             self.run_checks()
-            self.verify_map_render()
             self.verify_reference_library_render()
             self.do_reboot(1)
             self.do_reboot(2)
