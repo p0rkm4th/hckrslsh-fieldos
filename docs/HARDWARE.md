@@ -123,3 +123,15 @@ selector still chose the bundled chat and embedding models. Evidence is
 detection, not GPU inference. Later source revisions request `vulkan-tools` in
 the offline APT payload, and current-source E2E provisioning passed. No
 accelerated inference has been validated on a physical GPU.
+
+## Physical detector recheck — 2026-11-05
+
+A fresh read-only run of the current detector reported the same i9-12900H,
+62.46 GiB RAM, RTX 3080 Ti Laptop GPU (16 GiB total, 15.57 GiB available),
+Intel Iris Xe integrated GPU, and NVMe storage. Both GPU drivers were visible;
+the detector correctly left `runtime_validated` false for each. The machine had
+30.61 GiB available RAM and no likely GPS device. This is evidence that current
+source detects this workstation's hardware, not that an installer selects or
+uses GPU inference correctly. No inference was run. Full JSON evidence:
+`/mnt/shared/fieldos-e2e/hardware-detection-20261105.json` (SHA-256
+`f17a876dc84c93dd246703a8274a024090f672ff3cdc3cbe3ae9683e71b6b0d6`).
