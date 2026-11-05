@@ -4,15 +4,15 @@
 
 ## Current source and customer candidate
 
-- Current source/content revision: `c4deb18e63e1fdc1f02d552ecc1ff3ac24436216` (`main`; documentation follow-up may advance `main` without changing payloads).
-- Latest E2E tested source revision: `5720321b362c99fc7d86935c5e4bd1da9d91cb02`; `c4deb18` adds an optional content pack and corrects optional-pack classification but has not been installed in a guest or rebuilt into an ISO.
+- Current source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (`main`; release-status documentation may advance `main` without changing tested implementation).
+- Latest clean-source E2E tested source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (clean worktree at test time).
 - Customer candidate source revision: `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19` (the customer ISO below has not been rebuilt from current `main`).
 - Customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`
 - Customer ISO SHA-256: `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`
 - Customer-mode validation: `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`
-- Current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/report.md`
-- Current-source test ISO SHA-256: `15b459ffbdc4540f3676785cfde0a9e854cada02c6fbd4a278dcec22c25d91da` (test harness removed the ISO after the run).
-- Current-source offline payload: `/mnt/shared/fieldos-payload-5720321/offline-payload.tar.zst`, SHA-256 `4ebf8f18e838f686862f53da22112781077cca87d24177f2951a1d91a2ea6429`.
+- Current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/report.md`
+- Current-source test ISO SHA-256: `339989c4224b0bc9735e8eaf7349d9a7a4caba6e27d224bf894c462081b99aa7` (test harness removed the ISO after the run).
+- Current-source offline payload: `/mnt/shared/fieldos-payload-29ff87b/offline-payload.tar.zst`, SHA-256 `41194c0e16015c10ed41d6b49cc9fb12684ebf39882a1878a188b3d7a33f18d9`; payload verification passed against current pack and map manifests.
 - Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
 
 The customer-mode candidate completed interactive account and disk selection
@@ -37,25 +37,30 @@ vector. Firefox visibly rendered Nashville streets, labels, parks, and
 waterways at zoom 13 in the customer-mode install. Screenshot and diagnostics
 are beside the customer validation report.
 
-The current-source E2E at `5720321` passed from a freshly rebuilt payload in a
-no-NIC UEFI VM. It records offline installation and provisioning, local chat
-and embeddings, Kiwix retrieval, safety refusal checks, all eight visible
-Tennessee locations, container-egress blocking, and two reboot/persistence
-cycles. The optional household communications archive was transferred from
-read-only media, activated in the Source Library, indexed as three chunks, and
-persisted through both reboots. The Source Library opened in Firefox. Its ISO
-was test-only and removed after the run; this does not replace customer-mode
-installer validation.
+The current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM using the
+verified 5.7 GB payload above. It records unattended installation and complete
+firstboot provisioning, seven services, local CPU chat, embeddings, Kiwix
+catalogue/search, source indexing and AI safety refusals, eight actual Firefox
+map screenshots, container-egress blocking, and two reboot/persistence cycles.
+The installed Source Library page visibly rendered its offline search field and
+nine-document inventory. Unit tests exercise the generated search JavaScript
+for matching, excerpts, and empty results. The optional transfer-pack branch
+was skipped in this run; the household communications and CDC packs each have
+separate no-NIC transfer/index/browser/reboot evidence. The test-only ISO was
+removed after the run, while its report, logs, screenshots, and stopped guest
+disk remain in `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/`. This does not
+replace customer-mode installer validation.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline install | PASS | Tested source `5720321`; report and test ISO SHA-256 above. |
+| Fresh unattended offline install | PASS | Clean source `82c7786`; report and test ISO SHA-256 above. |
 | Interactive customer install | PARTIAL | Interactive account and `vda` selection completed; at Ubuntu's media-removal prompt, ejecting the ISO and pressing Enter powered off the VM. A normal power-on booted the installed disk without repair. Physical USB behavior and automatic VM restart remain open. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
 | Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
 | Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
+| Offline Source Library search | PASS, limited formats | Current-source guest rendered search and nine-document inventory; Node-backed test verifies matching and excerpts. Plain text up to 1 MiB is searchable on the page; PDFs and larger documents require browser Find. This is source discovery, not verified semantic Q&A. |
 | Tennessee maps | PASS in VMs | Customer Firefox visibly rendered Nashville; unattended E2E visibly rendered eight urban/rural locations. Map display is not routing or navigation; GPS is unverified. |
 | Optional offline content-pack import | PASS in VM; semantic retrieval FAIL | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots. A later isolated query test cited the planner but failed to extract its clearly printed primary-contact fields; see the supplemental report below. |
 | New optional CDC preparedness pack | PASS in isolated VM | The 2013 CDC two-page checklist is item-recorded Public Domain and has a checksum-pinned 109,922-byte archive. A separate no-NIC copy-on-write guest imported it from read-only media; Firefox showed the Source Library entry and rendered the PDF, N.O.M.A.D. indexed one chunk, and both survived two reboots. It remains outside the ISO. Evidence and screenshots: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/cdc-pack-20261105T140000Z/validation.md`. |
