@@ -16,31 +16,25 @@
 - Current-source offline payload: `/mnt/shared/fieldos-payload-29ff87b/offline-payload.tar.zst`, SHA-256 `41194c0e16015c10ed41d6b49cc9fb12684ebf39882a1878a188b3d7a33f18d9`; payload verification passed against current pack and map manifests.
 - Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
 
-The customer-mode candidate completed interactive account and disk selection
-and installed to the disposable UEFI VM's `vda` disk with no virtual NIC. The
-installer reached Ubuntu's standard “Please remove the installation
-medium, then press ENTER” prompt. In a fresh repeat run, the ISO was detached
-at that prompt and Enter was pressed. The VM then powered off; a normal host
-power-on booted the installed disk to GDM without repair. The user logged into
-the branded GNOME desktop in the earlier candidate validation. This verifies
-the installation and installed-disk boot, but the installer handoff remains
-**PARTIAL** because the VM did not restart itself after the prompt. Physical USB
-firmware behavior remains untested. Repeat handoff evidence:
-`/mnt/shared/fieldos-e2e/customer-handoff-9c59a5f-20261105/validation.md`.
-
-Firstboot reached `complete` at `2026-11-05T04:17:38Z`; all six bundled
-reference packs activated, and N.O.M.A.D. indexed nine documents as 689 chunks.
-All seven containers returned after two consecutive reboots. N.O.M.A.D. health,
-Kiwix catalogue/search, and no-default-route checks passed after each reboot.
-Before reboot, CPU chat generated `FIELDOS_CUSTOMER_OK`; after reboot 1 it
-generated `PERSISTENCE_OK`. The embedding model returned a 768-dimensional
-vector. Firefox visibly rendered Nashville streets, labels, parks, and
-waterways at zoom 13 in the customer-mode install. Screenshot and diagnostics
-are beside the customer validation report.
+An earlier `9c59a5f` customer candidate required a host power-on after the
+media-removal prompt; that predecessor's handoff remains partial. The newer
+`ac319b3` candidate below completed the virtual-media handoff and booted from
+the installed disk without repair. Physical USB firmware behavior remains
+untested.
 
 The customer ISO from `ac319b3` was installed interactively to the disposable no-NIC 80 GiB UEFI VM. The user selected `vda`, created a local account, reviewed the install plan, and reached Ubuntu's installation-complete screen. The virtual ISO was ejected at the normal media-removal prompt; after Enter, the guest booted from the installed disk to GDM without repair or a host power cycle. Firstboot reached `complete`, loaded the CPU model and embeddings, indexed nine reference documents, and started all seven containers. The user logged into the FieldOS-branded desktop and used N.O.M.A.D., Kiwix, and maps in Firefox. Two consecutive reboots retained the services, model files, map packs, and reference files. Eight Tennessee locations visibly rendered in the actual browser. The exact installer selection, completion, handoff, service output, and screenshots are in `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md` and adjacent files. This verifies the VM installation flow; physical USB and hardware behavior remain untested.
 
-The same customer VM exposed an AI retrieval quality failure: the local assistant's answer to a tomato question mixed in snap-bean instructions and showed no visible citations, despite all nine bundled files being indexed. Treat semantic answer quality as unresolved; direct source access works, but the model must not be treated as an authoritative field reference.
+The same customer VM exposed an AI retrieval quality failure: the local
+assistant's streamed answer to a tomato question invented planting dates and
+mixed in snap-bean instructions despite retrieving the 2026 Vegetable Crop
+Handbook. The response completed in 18.34 seconds with 428 completion tokens;
+the stream ended normally and sent the handbook source title in its final
+`sources` event. The captured Firefox view showed no visible citation, and the
+answer contradicted itself by later saying the context lacked the requested
+details. Treat semantic answer quality and user-visible attribution as
+unresolved; direct source access works, but the model must not be treated as an
+authoritative field reference. The API stream evidence is summarized in the
+customer validation report.
 
 The current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM using the
 verified 5.7 GB payload above. It records unattended installation and complete
