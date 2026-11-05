@@ -32,10 +32,11 @@ The clean earlier transfer report is
 The automated GUI flow ran again on source `327488c`. GNOME launched the picker,
 the real authentication dialog succeeded, the importer showed its success
 dialog, and the Source Library entry plus installed document checksums passed.
-The run still failed before service and reboot checks because the verifier
-incorrectly expected installer stdout from a GUI-launched process. That check
-has been removed; a clean end-to-end rerun is pending. Full report and screenshots:
-`/mnt/shared/fieldos-e2e/20261105T152842Z-3096889/report.md`.
+That run failed at a redundant stdout verifier. The verifier correction passed
+in a complete clean run on source `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe`:
+`/mnt/shared/fieldos-e2e/20261105T155548Z-3200639/report.md`. The clean run
+also verified the desktop launcher flow, source indexing, all eight browser map
+views, and two reboots.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
