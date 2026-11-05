@@ -94,11 +94,15 @@ class ContentPackImportUiTests(unittest.TestCase):
         self.assertEqual(action.findtext("defaults/allow_active"), "auth_admin")
         self.assertEqual(action.findtext("defaults/allow_any"), "no")
 
-    def test_offline_payload_includes_the_dialog_and_authentication_packages(self):
+    def test_offline_importer_uses_ubuntu_desktop_authentication_helper_without_upgrading_polkit(self):
         build = (ROOT / "build/prepare-payload.sh").read_text()
         firstboot = (ROOT / "installer/provisioning/firstboot.sh").read_text()
-        self.assertIn("zenity pkexec", build)
-        self.assertIn("zenity pkexec", firstboot)
+        self.assertIn("zenity", build)
+        self.assertIn("required_base_packages\":[\"zenity\",\"pkexec\"]", build)
+        self.assertIn("install \\\n  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity", firstboot)
+        self.assertIn("command -v pkexec", firstboot)
+        self.assertIn("command -v zenity", firstboot)
+        self.assertNotIn("qemu-guest-agent zenity pkexec", firstboot)
 
 
 if __name__ == "__main__":

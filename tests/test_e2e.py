@@ -706,6 +706,12 @@ autoinstall:
         return manifests
 
     def run_checks(self, reboot: bool = False) -> None:
+        self.check(
+            "installed graphical desktop survives offline provisioning",
+            "systemctl is-active --quiet gdm3.service && "
+            "test -x /usr/bin/gnome-shell && command -v zenity && command -v pkexec && "
+            "dpkg-query -W -f='${db:Status-Status}\\n' gdm3 gnome-shell | grep -qx installed",
+        )
         self.check("disconnected guest", "test -z \"$(ip -4 route show default)\" && ip -brief link")
         reference_manifests = self.reference_manifests_to_verify()
         if reference_manifests:
