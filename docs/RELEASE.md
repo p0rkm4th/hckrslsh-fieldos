@@ -12,12 +12,15 @@
 
 The customer-mode candidate completed interactive account and disk selection
 and installed to the disposable UEFI VM's `vda` disk with no virtual NIC. The
-installer's standard media-removal/restart handoff did not complete cleanly in
-this QEMU session. The ISO was removed through QMP and the VM was power-cycled
-from the host; the installed disk then booted to GDM without repair. The user
-logged into the branded GNOME desktop. This verifies installation and
-installed-disk boot, but the installer handoff is **PARTIAL** because it needed
-host intervention. Physical USB firmware behavior remains untested.
+The installer reached Ubuntu's standard “Please remove the installation
+medium, then press ENTER” prompt. In a fresh repeat run, the ISO was detached
+at that prompt and Enter was pressed. The VM then powered off; a normal host
+power-on booted the installed disk to GDM without repair. The user logged into
+the branded GNOME desktop in the earlier candidate validation. This verifies
+the installation and installed-disk boot, but the installer handoff remains
+**PARTIAL** because the VM did not restart itself after the prompt. Physical USB
+firmware behavior remains untested. Repeat handoff evidence:
+`/mnt/shared/fieldos-e2e/customer-handoff-9c59a5f-20261105/validation.md`.
 
 Firstboot reached `complete` at `2026-11-05T04:17:38Z`; all six bundled
 reference packs activated, and N.O.M.A.D. indexed nine documents as 689 chunks.
@@ -41,7 +44,7 @@ substitute for customer installer validation.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Fresh unattended offline install | PASS | Same source revision; report and test ISO hash in the E2E report above. |
-| Interactive customer install | PARTIAL | Interactive account and `vda` selection completed; installed disk booted and reached the branded desktop, but ISO removal and power cycle required host-side QMP/libvirt intervention. Physical USB test remains open. |
+| Interactive customer install | PARTIAL | Interactive account and `vda` selection completed; at Ubuntu's media-removal prompt, ejecting the ISO and pressing Enter powered off the VM. A normal power-on booted the installed disk without repair. Physical USB behavior and automatic VM restart remain open. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
 | Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
 | Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |

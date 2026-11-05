@@ -19,9 +19,11 @@ The current unpublished customer test candidate is
 source revision is `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`. A fresh
 interactive customer-mode install, offline service checks, a visible Nashville
 map render, local inference, embeddings, Kiwix retrieval, all six core packs,
-and two reboots were verified in a disposable UEFI VM. The installer handoff
-still required host-side ISO ejection and VM power cycling. Evidence is
-`/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
+and two reboots were verified in a disposable UEFI VM. In a repeat installer
+run, the standard media-removal prompt appeared; after ISO ejection and Enter,
+the VM powered off, and a normal power-on booted the installed disk. Evidence
+is in `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`
+and `/mnt/shared/fieldos-e2e/customer-handoff-9c59a5f-20261105/validation.md`.
 This remains private engineering test material, not a release: Ubuntu branding
 remains, and complete notice, trademark, source-offer, model, map, and content
 reviews are outstanding. Offline tests establish function and file integrity,
