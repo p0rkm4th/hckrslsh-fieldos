@@ -30,7 +30,7 @@
   "installation": {
     "target": "storage/references/documents",
     "requirements": [],
-    "optional": true
+    "optional": false
   },
   "authority": "authoritative-reference",
   "review": {

@@ -56,6 +56,35 @@ Planned pack categories are:
 - First aid
 - Regional maps, GPS, and GIS data
 
+## Wildlife and plant-reference licensing review
+
+The initial Tennessee wildlife and hazardous-plant review did not identify a
+complete guide with clearly documented redistribution rights. Do not add these
+candidates to a FieldOS bundle unless the rights gaps below are resolved:
+
+- University of Tennessee Extension PB 1586, *Poisonous Plants of the
+  Southeastern United States*, is a searchable 51-page regional reference, but
+  its official PDF does not state reuse terms and includes imagery whose rights
+  were not established. Obtain written permission covering the document and
+  images before redistribution: [official PDF](https://giles.tennessee.edu/wp-content/uploads/sites/194/2020/10/Ag-Poisonous-Plants-of-the-Southeastern-United-States.pdf).
+- UTIA SP627, *Identification and Control of Non-Native Invasive Forest Plants
+  in Tennessee*, is listed by UTIA, but its publication record does not provide
+  a redistribution license. Request written permission: [UTIA publication
+  record](https://solutions.tennessee.edu/publication/SP627/).
+- USDA Forest Service GTR SRS-119, *A Field Guide for the Identification of
+  Invasive Plants in Southern Forests*, covers 56 plants across 13 southern
+  states including Tennessee. Although USDA-authored text may be public domain,
+  the 126-page PDF contains credited third-party imagery, including an image
+  explicitly marked used by permission. The whole PDF is therefore not cleared
+  for redistribution; assess image rights or develop a separately reviewed
+  text-only derivative before use: [USFS publication record](https://research.fs.usda.gov/treesearch/35292).
+
+TWRA's [wildlife information pages](https://www.tn.gov/twra/wildlife) provide
+topic information but did not establish a single licensed, distributable field
+guide. This is a preliminary source review, not legal advice or clearance. Keep
+these works out of public release payloads until the required permissions and
+asset-level credits are recorded in a pack manifest.
+
 ## Southeastern vegetable production reference
 
 `us-southeastern-vegetable-growers` version `2026.1.1` is a Tennessee-relevant
@@ -266,18 +295,22 @@ requests acknowledgement and warns that some materials have separate rights.
 The pack retains CDC attribution and says no endorsement is implied. The
 manifest records source, license basis, checksum, review date, and its
 nonclinical-review limitation. This is a small orientation sheet and does not
-close FieldOS's first-aid or medical-reference gap. The pack remains optional
-until broader content and redistribution review are complete.
+close FieldOS's first-aid or medical-reference gap. It is now core in the
+source catalog but remains absent from the tested ISO pending a successor build
+and acceptance.
 
 ## CDC emergency kit checklist
 
-`us-cdc-keep-calm-prepared` version `1.0.0` is an optional, unchanged two-page
+`us-cdc-keep-calm-prepared` version `1.0.0` is an unchanged two-page
 CDC emergency-kit checklist. It covers household, workplace, school, vehicle,
 and additional family or pet supply considerations. It is a brief 2013
 preparedness checklist, not a complete all-hazards plan, first-aid guide, or
 medical reference. The exact [CDC STACKS record](https://stacks.cdc.gov/view/cdc/23954)
 identifies the item as Public Domain, gives its publication date and two-page
-extent, and provides the original PDF link. The bundled file is 138,605 bytes
+extent, and provides the original PDF link. The current source catalog marks
+this pack as core; it is absent from the previously tested `cc4aa38` ISO, so a
+successor payload/ISO must pass acceptance before it is described as installed.
+The bundled file is 138,605 bytes
 with SHA-256
 `d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`; its PDF
 text is extractable. In a separate offline copy-on-write guest test, the
@@ -285,8 +318,7 @@ archive was transferred from read-only media, appeared in Firefox's Source
 Library, opened as a two-page PDF, and indexed in N.O.M.A.D. as one chunk. The
 file, Source Library listing, and indexed row persisted through two reboots.
 The manifest records CDC attribution and makes clear that source and license
-review is not a clinical review. The pack is optional and is not part of the
-customer ISO baseline. Its portable archive is
+review is not a clinical review. Its portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0.tar.zst`
 (109,922 bytes; SHA-256
 `ebfb8bb14588f9af2521a3139420b17eb7db5e96014ad093526dba27d38f8617`). The
@@ -300,7 +332,7 @@ details are at
 
 ## MedlinePlus first-aid overview
 
-`us-medlineplus-first-aid` version `2026.07.22` is a portable, optional
+`us-medlineplus-first-aid` version `2026.07.22` is a portable
 3,086-byte text snapshot of the MedlinePlus **First Aid** health-topic summary.
 It covers when to call 911, general cuts-and-scrapes care, Poison Control,
 heat-related illness, and basic kit contents. The source page was last updated
@@ -316,8 +348,10 @@ third-party material, images, logos, and page chrome. The artifact SHA-256 is
 `32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893`. Its
 manifest attributes the source to MedlinePlus and NLM and disclaims endorsement.
 This is a U.S. public-domain review, not a statement about international rights.
+The current source catalog marks the pack as core; it is absent from the tested
+`cc4aa38` customer ISO until a successor payload and ISO pass acceptance.
 
-The pack is not part of the customer ISO baseline. Its portable archive is
+Its portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`
 (2,649 bytes; SHA-256
 `2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`). A
