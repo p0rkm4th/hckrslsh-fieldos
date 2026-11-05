@@ -20,28 +20,39 @@ This current snapshot supersedes status claims in the revision-specific historic
 
 ## Source changes after the validated ISO
 
-Current source includes the map-style patch that links OpenStreetMap
-contributors, Protomaps, and the ODbL, plus the full pinned MIT notice for
-Tangrams-derived sprites. The PMTiles CLI version/commit, container digest,
-source URLs, and per-region extraction commands are now pinned and checked by
-the payload verifier. The patch was exercised against the exact pinned style
-JSON and PMTiles 1.30.2 image; source tests pass. None of these changes has yet
-been included in a rebuilt payload or ISO, and the map attribution still needs
-browser verification. The exact artwork revision behind the modified sprites
-remains unresolved. Physical USB insertion/navigation is also unverified; the
-content-pack import test used read-only optical media.
+Pushed source revision `bd719c8` includes the map-style patch linking
+OpenStreetMap contributors, Protomaps, and the ODbL; a full pinned MIT notice
+for Tangrams-derived sprites; pinned PMTiles CLI, container, source, and
+extraction metadata; and eight core content packs. The PMTiles CLI version is
+1.30.2. The source catalog now promotes the CDC emergency-kit checklist and
+MedlinePlus first-aid overview. This does not change the accepted `cc4aa38` ISO
+listed above.
 
-Prior pushed source revision `2a216a2` passes `make check`, 96 unit tests, and
-validation of all 10 content-pack manifests. Its map attribution, updated
-extractor provenance, and importer guidance are source-level changes only;
-they have not been incorporated into the ISO identified above.
-The current source catalog also promotes the small CDC emergency-kit checklist
-and MedlinePlus first-aid overview to the core payload. This is a source change,
-not evidence that either pack is present in the tested `cc4aa38` ISO; a successor
-payload and ISO must be built and accepted first. The catalog, manifest, test,
-and documentation changes are pushed in `6ac2c01`; they passed `make check
-test` (96 unit tests) and `git diff --check`, but have not been included in an
-ISO.
+A new payload was built from that source at
+`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (6.56 GiB), SHA-256
+`a02a94515c463a21797b8f0718dd939fbd8567a56fbdaeecdd8ec31c86c875e8`.
+`zstd -t`, `build/verify_payload.py`, and an independent read-only inventory
+check passed. The archive contains all eight declared core packs; its
+Tennessee PMTiles file matches the pinned 145,267,908-byte source checksum and
+zoom 0–13 metadata. Attribution links and the ODbL/Tangrams notices are in the
+archive. The archive itself has no source-commit marker; its checksum is bound
+to the ISO through the ISO build manifest. The map's visible attribution still
+needs browser verification.
+
+The first interactive successor ISO composition from `bd719c8` wrote
+`fieldos-customer-bd719c8.iso`, then failed `build/verify-iso.sh` because the
+Start Here guide called the bundled 2023 NIOSH item a “heat-illness reference”
+without the verifier's “first-aid” descriptor. The source guide now uses the
+accurate phrase “NIOSH heat-illness first-aid reference”; the verifier was not
+relaxed. All 96 unit tests and source checks pass after the correction. That
+failed ISO is not accepted evidence; rebuild from the corrected, committed
+source before running customer installation acceptance. The precise failed
+attempt and cleanup are recorded in
+`/mnt/shared/fieldos-e2e/payload-build-20261105-bd719c8.md`.
+
+The exact artwork revision behind the modified sprites remains unresolved.
+Physical USB insertion/navigation is also unverified; prior content-pack import
+testing used read-only optical media.
 
 ## Historical source-specific acceptance records (prior revisions)
 
