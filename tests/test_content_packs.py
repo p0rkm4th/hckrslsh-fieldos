@@ -26,6 +26,8 @@ class ContentPackValidationTests(unittest.TestCase):
             core,
             [
                 "us-flood-safety",
+                "us-cdc-keep-calm-prepared",
+                "us-medlineplus-first-aid",
                 "us-niosh-heat-first-aid",
                 "us-southeastern-vegetable-growers",
                 "us-tornado-safety",

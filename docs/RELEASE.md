@@ -31,10 +31,17 @@ browser verification. The exact artwork revision behind the modified sprites
 remains unresolved. Physical USB insertion/navigation is also unverified; the
 content-pack import test used read-only optical media.
 
-Current source revision `ba07e9f` passes `make check`, 96 unit tests, and
+Prior pushed source revision `2a216a2` passes `make check`, 96 unit tests, and
 validation of all 10 content-pack manifests. Its map attribution, updated
 extractor provenance, and importer guidance are source-level changes only;
 they have not been incorporated into the ISO identified above.
+The current source catalog also promotes the small CDC emergency-kit checklist
+and MedlinePlus first-aid overview to the core payload. This is a source change,
+not evidence that either pack is present in the tested `cc4aa38` ISO; a successor
+payload and ISO must be built and accepted first. The latest worktree's catalog,
+manifest, test, and documentation changes also passed `make check test` (96
+unit tests) and `git diff --check`; they have not yet been pushed or included in
+an ISO.
 
 ## Historical source-specific acceptance records (prior revisions)
 

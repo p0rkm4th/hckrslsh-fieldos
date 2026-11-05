@@ -53,8 +53,10 @@ heat-illness, weather, and emergency reference packs. The water/food pack
 contains two unchanged CDC PDFs about emergency water treatment and food
 safety after a power outage. Firstboot indexes the CDC documents and NWS-based
 summaries in N.O.M.A.D.'s local source library. This is a starter set, not a
-comprehensive disaster library. The optional MedlinePlus first-aid overview
-is a separate transfer pack, not part of the ISO. The customer candidate
+comprehensive disaster library. The tested candidate does not contain the
+MedlinePlus first-aid overview or CDC emergency-kit checklist. The current
+source catalog marks both as core, but a successor ISO must be built and
+accepted before claiming these packs are installed. The customer candidate
 contains the pinned statewide Tennessee map described above. Fresh no-NIC E2E
 and interactive customer installation checks confirmed it is available
 offline and visibly renders in Firefox. The sample
@@ -120,11 +122,12 @@ The extensible pack format and planned categories are documented in
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate from `562fee9` installed and indexed all six core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
-starter set, not a complete emergency library. The catalog includes an
-optional one-page CDC practical-skills checklist and a short MedlinePlus
-first-aid overview. The former is a training prompt; the latter is a brief
-orientation, not procedural training or a medical manual. The 2026 Southeastern Vegetable Crop
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The tested customer candidate from `cc4aa38` installed and indexed all six core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
+starter set, not a complete emergency library. The current source catalog also
+includes the CDC emergency-kit checklist and short MedlinePlus first-aid
+overview as core packs, pending a successor ISO build and acceptance. The
+optional CDC practical-skills checklist is a training prompt; the MedlinePlus
+item is brief orientation, not procedural training or a medical manual. The 2026 Southeastern Vegetable Crop
 Handbook provides an attributed, searchable agriculture reference for
 Tennessee; it is included in the current ISO and indexed as 678 chunks. The
 NIOSH heat-illness text pack is also core and indexed as three chunks in the
