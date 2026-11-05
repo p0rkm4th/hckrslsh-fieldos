@@ -6,8 +6,8 @@ possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-packs.json`. The catalog contains the core reference
 packs and planned categories; this is not a comprehensive customer library.
 The Middle Tennessee map previously passed offline transfer and activation
-testing as a pack. The statewide Tennessee map is built into the current source
-payload and the `fieldos-customer-cc4aa38.iso` customer test image (SHA-256
+testing as a pack. The statewide Tennessee map is pinned by the current source
+manifest and is present in the `fieldos-customer-cc4aa38.iso` test image (SHA-256
 `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`). That
 image passed a fresh no-NIC interactive install, installer media handoff,
 installed-disk boot, Firefox rendering at eight Tennessee locations, and two

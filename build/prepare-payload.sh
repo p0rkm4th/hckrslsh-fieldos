@@ -182,7 +182,7 @@ MAP_SOURCE_URL=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))
   "$STAGE/manifests/protomaps-build.json")
 docker run --rm --network bridge \
   -v "$STAGE/content/maps/pmtiles:/maps" \
-    --entrypoint /usr/local/bin/pmtiles \
+  --entrypoint /usr/local/bin/pmtiles \
   "$NOMAD_IMAGE" \
   extract "$MAP_SOURCE_URL" /maps/world.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
 docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
@@ -195,8 +195,7 @@ while IFS=$'\t' read -r region_id region_file region_bbox minzoom maxzoom source
     MAP_SOURCE=/maps/world.pmtiles
     MAP_NETWORK=none
   elif [[ "$source" == "pinned-build" ]]; then
-    MAP_SOURCE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["source_build"]["url"])' \
-      "$ROOT/payload/manifests/maps.json")
+    MAP_SOURCE="$MAP_SOURCE_URL"
     MAP_NETWORK=bridge
   else
     echo "Unknown map source mode for $region_id: $source" >&2

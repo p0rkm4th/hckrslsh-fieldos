@@ -43,7 +43,7 @@ installation that visibly rendered eight Tennessee locations; reports and
 screenshots are listed in `docs/RELEASE.md`. The later source attribution fix
 is not yet included in an ISO. It is a
 local geographic reference, not turn-by-turn navigation, GPS positioning,
-trail guidance, or emergency advice. The `562fee9` tested ISO's map style
+trail guidance, or emergency advice. The `cc4aa38` tested ISO's map style
 shows Protomaps and links to the OpenStreetMap homepage, but does not visibly
 name contributors or link to the ODbL. The next source-built payload patches
 the style to show OpenStreetMap contributors, Protomaps, and an ODbL link; that
