@@ -38,10 +38,10 @@ they have not been incorporated into the ISO identified above.
 The current source catalog also promotes the small CDC emergency-kit checklist
 and MedlinePlus first-aid overview to the core payload. This is a source change,
 not evidence that either pack is present in the tested `cc4aa38` ISO; a successor
-payload and ISO must be built and accepted first. The latest worktree's catalog,
-manifest, test, and documentation changes also passed `make check test` (96
-unit tests) and `git diff --check`; they have not yet been pushed or included in
-an ISO.
+payload and ISO must be built and accepted first. The catalog, manifest, test,
+and documentation changes are pushed in `6ac2c01`; they passed `make check
+test` (96 unit tests) and `git diff --check`, but have not been included in an
+ISO.
 
 ## Historical source-specific acceptance records (prior revisions)
 
