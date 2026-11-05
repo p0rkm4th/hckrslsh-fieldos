@@ -4,12 +4,13 @@
 
 ## Current source and customer candidate
 
-- Current source revision: `c85efcd2243bf27a7f0978ef4c5ecddceeca4bdb` (`main`; this is a release-status documentation-only follow-up).
+- Current source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8` (`main`; release-status documentation-only follow-up).
 - Latest clean-source E2E tested source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (clean worktree at test time).
-- Customer candidate source revision: `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19` (the customer ISO below has not been rebuilt from current `main`).
-- Customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`
-- Customer ISO SHA-256: `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`
-- Customer-mode validation: `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`
+- Latest customer candidate source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
+- Latest customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`
+- Latest customer ISO SHA-256: `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`
+- Structural verification: PASS (`make verify`); fresh interactive install: FAIL before installation. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
+- Previous customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, SHA-256 `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`; interactive install/boot evidence: `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
 - Current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/report.md`
 - Current-source test ISO SHA-256: `339989c4224b0bc9735e8eaf7349d9a7a4caba6e27d224bf894c462081b99aa7` (test harness removed the ISO after the run).
 - Current-source offline payload: `/mnt/shared/fieldos-payload-29ff87b/offline-payload.tar.zst`, SHA-256 `41194c0e16015c10ed41d6b49cc9fb12684ebf39882a1878a188b3d7a33f18d9`; payload verification passed against current pack and map manifests.
@@ -37,6 +38,8 @@ vector. Firefox visibly rendered Nashville streets, labels, parks, and
 waterways at zoom 13 in the customer-mode install. Screenshot and diagnostics
 are beside the customer validation report.
 
+A fresh customer-mode ISO was built from current `main` (`ac319b3`) and passed structural verification, but its separate interactive installer test failed before installation. In a clean no-NIC UEFI VM the graphical installer detected the disposable 80 GiB `/dev/vda`, and its logs reported a usable disk, completed guided-storage probe, and allowed direct-install capability. The visible “Erase disk and install Ubuntu” selection nevertheless left Next disabled, including after keyboard and pointer input. No credentials were entered and the disk remained empty. The installer session and screenshots are preserved at `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/`; see its `validation.md`. This is an unresolved customer installer blocker. The recurring `multipathd` probe errors are not confirmed as causal.
+
 The current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM using the
 verified 5.7 GB payload above. It records unattended installation and complete
 firstboot provisioning, seven services, local CPU chat, embeddings, Kiwix
@@ -56,7 +59,7 @@ replace customer-mode installer validation.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Fresh unattended offline install | PASS | Clean source `82c7786`; report and test ISO SHA-256 above. |
-| Interactive customer install | PARTIAL | Interactive account and `vda` selection completed; at Ubuntu's media-removal prompt, ejecting the ISO and pressing Enter powered off the VM. A normal power-on booted the installed disk without repair. Physical USB behavior and automatic VM restart remain open. |
+| Interactive customer install | FAIL on latest candidate; prior candidate PARTIAL | `ac319b3` fresh test detected `/dev/vda` and allowed guided direct installation in the storage backend, but the UI kept Next disabled and did not start installation. The prior `9c59a5f` candidate installed and booted in a VM, but required host-assisted media handoff. Latest failure evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
 | Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
 | Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
