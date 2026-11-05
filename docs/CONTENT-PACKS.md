@@ -29,6 +29,14 @@ needs a fresh no-NIC run. Screenshot:
 The clean earlier transfer report is
 `/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
 
+The automated GUI flow ran again on source `327488c`. GNOME launched the picker,
+the real authentication dialog succeeded, the importer showed its success
+dialog, and the Source Library entry plus installed document checksums passed.
+The run still failed before service and reboot checks because the verifier
+incorrectly expected installer stdout from a GUI-launched process. That check
+has been removed; a clean end-to-end rerun is pending. Full report and screenshots:
+`/mnt/shared/fieldos-e2e/20261105T152842Z-3096889/report.md`.
+
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
 those manifests. Run `make validate-content-packs` to check catalog references,
