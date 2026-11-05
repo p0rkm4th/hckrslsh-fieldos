@@ -20,7 +20,10 @@ from OpenStreetMap. The tested `562fee9` ISO's inherited map style shows
 Protomaps and an OpenStreetMap homepage link, but does not visibly name
 contributors or link to the ODbL. The source build now patches that style to
 show contributor, Protomaps, and ODbL links; this change is not in the tested
-ISO and still needs browser verification in a rebuilt candidate.
+ISO and still needs browser verification in a rebuilt candidate. The source
+manifest pins the Protomaps source and metadata URLs, the N.O.M.A.D. image
+digest, and PMTiles CLI version/commit; `map-payload.json` will record exact
+extraction arguments and resulting file hashes on the next payload build.
 
 Fresh clean-source no-NIC E2E report:
 `/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`. Firefox screenshots
@@ -38,7 +41,10 @@ UEFI VM. Screenshots are in
 `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/`; physical USB behavior
 remains unverified. Full evidence is recorded in [`RELEASE.md`](RELEASE.md).
 
-The current customer candidate contains Project N.O.M.A.D.'s miniature English
+The latest tested customer candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso` (SHA-256
+`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`). It
+contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 1.7B Q4_K_M selected for CPU chat with the 0.6B model as fallback,

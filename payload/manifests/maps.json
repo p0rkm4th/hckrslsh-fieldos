@@ -4,11 +4,17 @@
   "attribution": "© OpenStreetMap contributors; Protomaps Basemap",
   "source_build": {
     "key": "20261102.pmtiles",
+    "url": "https://build.protomaps.com/20261102.pmtiles",
+    "metadata_url": "https://build-metadata.protomaps.dev/builds.json",
     "version": "4.15.2",
     "size": 139247504393,
     "md5sum": "9hvfHlpoO11WbCGWWKrDNg==",
     "b3sum": "86fc96ad110d085ea64db20cce8fe6cd88a5e382e5f988c8db9a9e8127ad7753",
     "uploaded": "2026-11-02T09:02:58.311Z"
+  },
+  "extractor": {
+    "version_output": "pmtiles 1.30.2, commit 636ea422190264e2a5d74b0996655a891d8a4a48, built at 2026-04-22T15:03:12Z",
+    "image": "ghcr.io/crosstalk-solutions/project-nomad:v1.35.1@sha256:1445a3eaba19801ce27435b7edc57fce74d9543601808d719b432e3bc7468ea1"
   },
   "regions": [
     {
