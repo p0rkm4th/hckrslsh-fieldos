@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "id": "us-medlineplus-first-aid",
+  "version": "2026.07.22",
+  "title": "First Aid Overview (MedlinePlus)",
+  "description": "A short, public-domain MedlinePlus health-topic summary covering when to call 911, minor cuts, Poison Control, heat illness, and basic first-aid-kit items. This is orientation, not a first-aid course or medical manual.",
+  "category": "first-aid-emergency",
+  "sources": [
+    {
+      "id": "medlineplus-first-aid-summary",
+      "name": "MedlinePlus: First Aid (health topic page summary; last updated 2026-07-22)",
+      "url": "https://medlineplus.gov/firstaid.html",
+      "license": "The NLM MedlinePlus reuse policy identifies summaries on health topic pages as public domain and permits reproduction and redistribution with attribution. The artifact contains only the page summary plus a clearly identified FieldOS attribution/scope note; source wording is copied without substantive change and whitespace/list formatting normalized. It excludes linked article text, third-party material, images, logos, and page chrome. Rights assessment is for U.S. public-domain use; international rights may differ.",
+      "attribution": "Source: MedlinePlus, National Library of Medicine, First Aid (health topic page summary), last updated 2026-07-22; accessed 2026-11-05. Summary text reproduced with whitespace/list formatting normalized. No NIH, NLM, or U.S. Government endorsement is implied.",
+      "accessed": "2026-11-05"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "medlineplus-first-aid-summary-20260722.txt",
+      "size_bytes": 3086,
+      "sha256": "32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893",
+      "source": "medlineplus-first-aid-summary",
+      "license": "Public-domain MedlinePlus health-topic summary under the NLM reuse policy, with a clearly separated FieldOS attribution and scope note; summary reproduced without substantive changes and formatting normalized. No linked/copyrighted or third-party material is included.",
+      "title": "MedlinePlus First Aid summary (updated 2026-07-22)",
+      "index_with_ai": false
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "Source, reuse policy, page update date, and extracted summary scope reviewed; no clinical review",
+    "reviewed_at": "2026-11-05",
+    "content_revision": "2026-07-22"
+  }
+}
