@@ -4,12 +4,12 @@
 
 ## Current source and customer candidate
 
-- Current source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8` (`main`; release-status documentation-only follow-up).
+- Customer ISO build source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
 - Latest clean-source E2E tested source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (clean worktree at test time).
 - Latest customer candidate source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
 - Latest customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`
 - Latest customer ISO SHA-256: `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`
-- Structural verification: PASS (`make verify`); fresh interactive install: FAIL before installation. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
+- Structural verification: PASS (`make verify`); fresh interactive UEFI VM installation, firstboot, services, and two reboots: PASS. The guest continued after the test detached the virtual ISO at Ubuntu's media-removal prompt and pressed Enter. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
 - Previous customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, SHA-256 `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`; interactive install/boot evidence: `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
 - Current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/report.md`
 - Current-source test ISO SHA-256: `339989c4224b0bc9735e8eaf7349d9a7a4caba6e27d224bf894c462081b99aa7` (test harness removed the ISO after the run).
@@ -38,7 +38,9 @@ vector. Firefox visibly rendered Nashville streets, labels, parks, and
 waterways at zoom 13 in the customer-mode install. Screenshot and diagnostics
 are beside the customer validation report.
 
-A fresh customer-mode ISO was built from current `main` (`ac319b3`) and passed structural verification, but its separate interactive installer test failed before installation. In a clean no-NIC UEFI VM the graphical installer detected the disposable 80 GiB `/dev/vda`, and its logs reported a usable disk, completed guided-storage probe, and allowed direct-install capability. The visible “Erase disk and install Ubuntu” selection nevertheless left Next disabled, including after keyboard and pointer input. No credentials were entered and the disk remained empty. The installer session and screenshots are preserved at `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/`; see its `validation.md`. This is an unresolved customer installer blocker. The recurring `multipathd` probe errors are not confirmed as causal.
+The customer ISO from `ac319b3` was installed interactively to the disposable no-NIC 80 GiB UEFI VM. The user selected `vda`, created a local account, reviewed the install plan, and reached Ubuntu's installation-complete screen. The virtual ISO was ejected at the normal media-removal prompt; after Enter, the guest booted from the installed disk to GDM without repair or a host power cycle. Firstboot reached `complete`, loaded the CPU model and embeddings, indexed nine reference documents, and started all seven containers. The user logged into the FieldOS-branded desktop and used N.O.M.A.D., Kiwix, and maps in Firefox. Two consecutive reboots retained the services, model files, map packs, and reference files. Eight Tennessee locations visibly rendered in the actual browser. The exact installer selection, completion, handoff, service output, and screenshots are in `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md` and adjacent files. This verifies the VM installation flow; physical USB and hardware behavior remain untested.
+
+The same customer VM exposed an AI retrieval quality failure: the local assistant's answer to a tomato question mixed in snap-bean instructions and showed no visible citations, despite all nine bundled files being indexed. Treat semantic answer quality as unresolved; direct source access works, but the model must not be treated as an authoritative field reference.
 
 The current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM using the
 verified 5.7 GB payload above. It records unattended installation and complete
@@ -59,19 +61,19 @@ replace customer-mode installer validation.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Fresh unattended offline install | PASS | Clean source `82c7786`; report and test ISO SHA-256 above. |
-| Interactive customer install | FAIL on latest candidate; prior candidate PARTIAL | `ac319b3` fresh test detected `/dev/vda` and allowed guided direct installation in the storage backend, but the UI kept Next disabled and did not start installation. The prior `9c59a5f` candidate installed and booted in a VM, but required host-assisted media handoff. Latest failure evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. |
+| Interactive customer install | PASS in UEFI VM | `ac319b3` installed interactively to disposable `vda`, booted from disk after virtual media ejection, and reached the branded desktop. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
 | Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
-| Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
+| Kiwix and source retrieval | PASS for direct source access; AI semantic answer PARTIAL | Customer Firefox opened the New York Times article from the 100-article fixture; all nine local documents reached indexed state. A crop-handbook chat returned unrelated snap-bean instructions without visible citations. The fixture is not a comprehensive library. |
 | Offline Source Library search | PASS, limited formats | Current-source guest rendered search and nine-document inventory; Node-backed test verifies matching and excerpts. Plain text up to 1 MiB is searchable on the page; PDFs and larger documents require browser Find. This is source discovery, not verified semantic Q&A. |
-| Tennessee maps | PASS in VMs | Customer Firefox visibly rendered Nashville; unattended E2E visibly rendered eight urban/rural locations. Map display is not routing or navigation; GPS is unverified. |
+| Tennessee maps | PASS in customer VM | Firefox visibly rendered Nashville, Memphis, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and rural West Tennessee from the regional archive. Map display is not routing or navigation; GPS is unverified. |
 | Optional offline content-pack import | PASS in VM; semantic retrieval FAIL | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots. A later isolated query test cited the planner but failed to extract its clearly printed primary-contact fields; see the supplemental report below. |
 | New optional CDC preparedness pack | PASS in isolated VM | The 2013 CDC two-page checklist is item-recorded Public Domain and has a checksum-pinned 109,922-byte archive. A separate no-NIC copy-on-write guest imported it from read-only media; Firefox showed the Source Library entry and rendered the PDF, N.O.M.A.D. indexed one chunk, and both survived two reboots. It remains outside the ISO. Evidence and screenshots: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/cdc-pack-20261105T140000Z/validation.md`. |
 | Reboot persistence | PASS, two consecutive reboots | Provisioning marker, all seven containers, N.O.M.A.D., Kiwix, reference index, and no-default-route state persisted after each reboot; chat also generated after reboot 1. E2E passed two reboot cycles. |
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |
 | Hardware adaptation | PARTIAL | CPU and fixture profiles tested. Physical hardware, GPU driver compatibility, and varied storage systems are unverified. |
 | Network-connected security | PARTIAL | Disconnected operation and container egress blocking tested; LAN-connected peer exposure test remains open. Docker socket consumers retain powerful host access. |
-| Field reference breadth | FAIL for broad field readiness | The optional household planner is directly readable offline, but the small model did not answer two direct questions about its indexed content. The core library remains limited and Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
+| Field reference breadth and grounded AI answers | FAIL for broad field readiness | The optional household planner is directly readable offline, but the small model has failed direct questions about indexed content and the latest crop query included unrelated advice without visible citations. Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
 | Redistribution review | BLOCKED | Exact Ubuntu, software, model, maps, and content license/attribution review is incomplete. Keep candidate binaries unpublished. |
 | Physical customer readiness | BLOCKED | Physical installation/hardware, LAN exposure, content breadth, and rights review remain. |
 
@@ -91,11 +93,12 @@ and artifact paths: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/semantic-r
 
 ## Current offline capabilities
 
-FieldOS provides a local assistant and embeddings, Kiwix, a small source
-library, and an offline statewide Tennessee map viewer. The customer-mode
-installer has been installed interactively in a no-NIC UEFI VM and tested
-through two reboots; its media handoff still needs a clean hands-off test. Kasm
-and Proxmox remain development tools, not product requirements.
+FieldOS provides a local assistant and embeddings, Kiwix, a small searchable
+source library, and an offline statewide Tennessee map viewer. The current
+customer-mode ISO has been installed interactively in a no-NIC UEFI VM and
+tested through two reboots. The virtual-media handoff completed after the ISO
+was ejected and Enter pressed; physical USB behavior remains untested. Kasm and
+Proxmox remain development tools, not product requirements.
 
 The local model is not an authority for emergency or medical decisions. It
 fails closed for configured safety-sensitive categories. The bundled sources
