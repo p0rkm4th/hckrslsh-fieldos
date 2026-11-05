@@ -14,14 +14,15 @@ still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
 The current unpublished customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`, SHA-256
-`bdfbe5c01f9960634f275e230c3a3957623f778c511c36a73ddf992a2f4e85bd`. Its
-source revision is `bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`. A fresh
-interactive customer-mode installation, offline service checks, Firefox maps
-at eight Tennessee locations, Kiwix, local inference, embeddings, and two
-reboots passed in a disposable UEFI VM. The report is
-`/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/report.md`. This is
-still private engineering test material, not a release: Ubuntu branding
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, SHA-256
+`4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`. Its
+source revision is `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`. A fresh
+interactive customer-mode install, offline service checks, a visible Nashville
+map render, local inference, embeddings, Kiwix retrieval, all six core packs,
+and two reboots were verified in a disposable UEFI VM. The installer handoff
+still required host-side ISO ejection and VM power cycling. Evidence is
+`/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
+This remains private engineering test material, not a release: Ubuntu branding
 remains, and complete notice, trademark, source-offer, model, map, and content
 reviews are outstanding. Offline tests establish function and file integrity,
 not redistribution rights. Do not distribute the ISO or payload until the
@@ -31,7 +32,7 @@ reviews below are complete.
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
 |---|---|---|---|
 | Ubuntu 26.04.1 Desktop ISO | Original ISO URL and SHA-256 are in `payload/manifests/ubuntu-26.04.1-desktop-amd64.json`; Canonical IPR policy: <https://ubuntu.com/legal/intellectual-property-policy> | Original ISO retained as build input | Resolve Ubuntu trademark/modified-image permission; inventory notices for every redistributed Ubuntu package and confirm source/offer obligations. |
-| Offline APT packages | The tested `bc7e4c1` customer ISO uses Docker, Compose, curl, zstd, qemu-guest-agent, and `vulkan-tools` from Ubuntu 26.04. The new content-pack desktop workflow adds `zenity` and `pkexec` to the requested offline package set; that updated payload and ISO still require build and acceptance tests. Package archive metadata is generated with the payload. | The previous offline acceptance completed firstboot; the statewide customer install is documented at `/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/report.md`. | Regenerate and review the detailed package-license inventory for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. Offline tests prove installation, not redistribution clearance. Ubuntu's Resolute package records identify `zenity` as graphical dialog support and `pkexec` as PolicyKit-authorized command execution: <https://packages.ubuntu.com/resolute/zenity>, <https://packages.ubuntu.com/resolute/pkexec>. |
+| Offline APT packages | The `9c59a5f` customer ISO installed its offline APT set, including Docker, Compose, curl, zstd, qemu-guest-agent, `vulkan-tools`, `zenity`, and `pkexec`. Package archive metadata is generated with the payload. | Firstboot completed in the customer candidate at `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`. | Regenerate and review the detailed package-license inventory for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. Offline tests prove installation, not redistribution clearance. Ubuntu's Resolute package records identify `zenity` as graphical dialog support and `pkexec` as PolicyKit-authorized command execution: <https://packages.ubuntu.com/resolute/zenity>, <https://packages.ubuntu.com/resolute/pkexec>. |
 | N.O.M.A.D. image | Project N.O.M.A.D. is Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest; all-layer SBOM and candidate notice inventory are retained under `/mnt/shared/fieldos-e2e/repository-review-233b980/`. The pinned image includes Debian `ghostscript`, `libgs10`, and `libgs10-common` version `10.0.0~dfsg-11+deb12u8`; `/usr/share/doc/ghostscript/copyright` identifies AGPL-3+. The current candidate's payload hash matches the prepared archive, whose file list includes `manifests/source-offers.json` and the three checksum-pinned Ghostscript source-offer files. | Review the bundled source offer and its notice, verify the signer trust chain, review its dependencies and all other SBOM components, and finish license-specific offer analysis. |
 | MySQL image | GPL-2.0 with MySQL's additional permissions; upstream licensing information: <https://github.com/mysql/mysql-server/blob/8.0/LICENSE> | Pinned OCI digest | Verify exact image version/layers, third-party component notices, and corresponding source/offer requirements. |
 | Redis image | The pinned image config reports `REDIS_VERSION=7.4.12`; Redis's [official licensing overview](https://redis.io/legal/licenses/) lists 7.4.x as RSALv2 or SSPLv1, not BSD-3-Clause. The earlier [licensing-change announcement](https://redis.io/blog/redis-adopts-dual-source-available-licensing/) records the change. | Local image ID matches the pinned digest in `payload/manifests/images.json`; `REDIS_VERSION` was read from the image config. Read-only image inspection is retained at `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`. | Redis's licensing overview describes RSALv2 as allowing distribution while prohibiting commercializing the software or providing it as a managed service that exposes Redis functionality; SSPLv1 has source obligations when providing a service. Applicability to a FieldOS appliance sold or distributed to customers is not determined here. Obtain license-specific review or evaluate Valkey, then rebuild and acceptance-test the offline payload. Valkey compatibility with pinned N.O.M.A.D. and the replacement image's own transitive licenses are unverified. |

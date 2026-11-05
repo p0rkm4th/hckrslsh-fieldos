@@ -5,9 +5,9 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
-## Statewide Tennessee map candidate, verified 2026-11-04
+## Statewide Tennessee map candidate, verified 2026-11-05
 
-The latest unattended test payload replaces the former 19.6 MB Middle
+The current payload replaces the former 19.6 MB Middle
 Tennessee extract with `tennessee-20261102-z13.pmtiles`, a 145,267,908-byte
 Protomaps vector-tile extract covering `-90.9,34.5,-81.0,37.25`, zoom 0–13.
 It covers Tennessee with a buffer into neighboring states and preserves the
@@ -20,21 +20,24 @@ from OpenStreetMap; the map UI displays `© OpenStreetMap contributors` and
 Protomaps attribution.
 
 Fresh clean-source no-NIC E2E report:
-`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`. Firefox screenshots
+`/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`. Firefox screenshots
 visibly show detailed streets, labels, waterways, and public/green space at
 Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
 and Big South Fork. Nonempty zoom-13 vector tiles at all eight locations were
 also checked. The world and U.S. overviews remain low resolution. This map does
 not supply routing, GPS positioning, trail data, or navigation. The statewide
-map is also present in the separately tested interactive customer ISO
-`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`. The exact
-checksum and eight-location browser evidence are recorded in [`RELEASE.md`](RELEASE.md).
+map is also present in the interactive customer ISO candidate
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`; the
+customer-mode install visibly rendered Nashville, though its installer handoff
+still needs a clean hands-off test. The exact checksum and eight-location
+browser evidence are recorded in [`RELEASE.md`](RELEASE.md).
 
 The current customer candidate contains Project N.O.M.A.D.'s miniature English
 Wikipedia ZIM, a low-zoom global Protomaps basemap (`world.pmtiles`) plus a
 low-zoom continental United States sample region (`fieldos-sample-us.pmtiles`),
 Ollama Qwen3 0.6B Q4_K_M for chat, `nomic-embed-text:v1.5` for embeddings, and
-the four core water, food, and emergency reference packs. The water/food pack
+six core water, food, agriculture, heat-illness, weather, and emergency
+reference packs. The water/food pack
 contains two unchanged CDC PDFs about emergency water treatment and food
 safety after a power outage. Firstboot indexes the CDC documents and NWS-based
 summaries in N.O.M.A.D.'s local source library. This is a starter set, not a
@@ -104,21 +107,21 @@ The extensible pack format and planned categories are documented in
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
 N.O.M.A.D.; the historical E2E and customer-mode
 evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `bc7e4c1` installed and indexed all four core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
+and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The current customer candidate at source `9c59a5f` installed and indexed all six core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
 starter set, not a complete emergency library. The catalog includes an
 optional one-page CDC practical-skills checklist, but it teaches no first-aid
-procedures and is not a medical manual. The optional 2026 Southeastern
-Vegetable Crop Handbook provides an attributed, searchable agriculture
-reference for Tennessee; it was transferred and indexed in the latest clean
-no-NIC E2E as 678 chunks, but remains separate from the ISO. The optional
-NIOSH heat-illness text pack was transferred and indexed as three chunks on
-the interactive customer test guest and survived a reboot; its browser view
-was not visually confirmed. Wildlife, broader agriculture, procedural
+procedures and is not a medical manual. The 2026 Southeastern Vegetable Crop
+Handbook provides an attributed, searchable agriculture reference for
+Tennessee; it is included in the current ISO and indexed as 678 chunks. The
+NIOSH heat-illness text pack is also core and indexed as three chunks in the
+interactive customer guest. Wildlife, broader agriculture, procedural
 first-aid, and comprehensive reference packs still need source selection,
 licensing review, and activation evidence.
 The statewide map is verified in both the unattended E2E and interactive
-customer installation. Optional agriculture and NIOSH packs are not in the
-customer ISO.
+customer installation. The current ISO includes both agriculture and NIOSH
+packs; all six core packs activated and were indexed in the customer VM. These
+references remain limited and do not close the broader agriculture or medical
+coverage gaps.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live

@@ -4,27 +4,30 @@
 
 ## Current source and customer candidate
 
-- Source revision: `1851e3491d6f7e28d53b73a6e02239d2ff681121` (`main`, clean and pushed).
-- Customer-mode ISO: `/mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso`
-- Customer ISO SHA-256: `9d43df4be724a9937eb931347279660226976d1a6914c235fcba9244e418a4a6`
-- Customer-mode acceptance report: `/mnt/shared/fieldos-e2e/customer-offline-1851e34/report.md`
-- Fresh unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T010513Z-1550530/report.md`
+- Source revision: `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19` (`main`, clean and pushed before validation).
+- Customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`
+- Customer ISO SHA-256: `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`
+- Customer-mode validation: `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`
+- Fresh unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`
 
-The customer-mode candidate completed an interactive account and disk-selection
-installation to a disposable UEFI VM with no virtual NIC. After installation,
-the virtual ISO was ejected at Ubuntu's standard media-removal prompt and the
-system booted from its installed disk. This confirms the virtual-disk handoff;
-physical USB firmware behavior remains untested. The test user logged into the
-branded GNOME desktop and completed the first-login welcome flow.
+The customer-mode candidate completed interactive account and disk selection
+and installed to the disposable UEFI VM's `vda` disk with no virtual NIC. The
+installer's standard media-removal/restart handoff did not complete cleanly in
+this QEMU session. The ISO was removed through QMP and the VM was power-cycled
+from the host; the installed disk then booted to GDM without repair. The user
+logged into the branded GNOME desktop. This verifies installation and
+installed-disk boot, but the installer handoff is **PARTIAL** because it needed
+host intervention. Physical USB firmware behavior remains untested.
 
-Firstboot reached `complete`. After two consecutive reboots, the account and a
-user-owned persistence sentinel remained, all seven N.O.M.A.D. containers
-returned, and the local APIs still worked. After the second reboot, N.O.M.A.D.
-health returned `ok`; CPU chat generated `FIELDOS_REBOOT2_OK`; the embedding
-model returned a 768-dimensional vector; Kiwix search returned a local article;
-and N.O.M.A.D. exposed a nonempty zoom-13 Tennessee tile. Firefox visibly
-rendered Nashville street, park, and waterway detail in the customer-mode
-install. Screenshots and diagnostics are beside the customer report.
+Firstboot reached `complete` at `2026-11-05T04:17:38Z`; all six bundled
+reference packs activated, and N.O.M.A.D. indexed nine documents as 689 chunks.
+All seven containers returned after two consecutive reboots. N.O.M.A.D. health,
+Kiwix catalogue/search, and no-default-route checks passed after each reboot.
+Before reboot, CPU chat generated `FIELDOS_CUSTOMER_OK`; after reboot 1 it
+generated `PERSISTENCE_OK`. The embedding model returned a 768-dimensional
+vector. Firefox visibly rendered Nashville streets, labels, parks, and
+waterways at zoom 13 in the customer-mode install. Screenshot and diagnostics
+are beside the customer validation report.
 
 The clean-source unattended E2E at the same source commit also passed. Its
 no-NIC report records offline installation and provisioning, local chat and
@@ -38,12 +41,12 @@ substitute for customer installer validation.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Fresh unattended offline install | PASS | Same source revision; report and test ISO hash in the E2E report above. |
-| Interactive customer install | PASS in disposable UEFI VM | Account and `vda` selected interactively; normal media-removal prompt handled by ejecting the test ISO; installed disk booted. Physical USB test remains open. |
+| Interactive customer install | PARTIAL | Interactive account and `vda` selection completed; installed disk booted and reached the branded desktop, but ISO removal and power cycle required host-side QMP/libvirt intervention. Physical USB test remains open. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
-| Local chat and embeddings | PASS | Customer VM after reboot 2: `FIELDOS_REBOOT2_OK`; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
-| Kiwix and source retrieval | PASS, narrow collection | Browser search displayed a bundled local result. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
+| Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
+| Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
 | Tennessee maps | PASS in VMs | Customer Firefox visibly rendered Nashville; unattended E2E visibly rendered eight urban/rural locations. Map display is not routing or navigation; GPS is unverified. |
-| Reboot persistence | PASS, two consecutive reboots | Customer account and test sentinel persisted; APIs, containers, chat, embeddings, Kiwix, and map tile passed after reboot 2. E2E also passed two reboot cycles. |
+| Reboot persistence | PASS, two consecutive reboots | Provisioning marker, all seven containers, N.O.M.A.D., Kiwix, reference index, and no-default-route state persisted after each reboot; chat also generated after reboot 1. E2E passed two reboot cycles. |
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |
 | Hardware adaptation | PARTIAL | CPU and fixture profiles tested. Physical hardware, GPU driver compatibility, and varied storage systems are unverified. |
 | Network-connected security | PARTIAL | Disconnected operation and container egress blocking tested; LAN-connected peer exposure test remains open. Docker socket consumers retain powerful host access. |
@@ -55,9 +58,9 @@ substitute for customer installer validation.
 
 FieldOS provides a local assistant and embeddings, Kiwix, a small source
 library, and an offline statewide Tennessee map viewer. The customer-mode
-installer has now been installed interactively in a no-NIC UEFI VM and tested
-through two reboots. Kasm and Proxmox remain development tools, not product
-requirements.
+installer has been installed interactively in a no-NIC UEFI VM and tested
+through two reboots; its media handoff still needs a clean hands-off test. Kasm
+and Proxmox remain development tools, not product requirements.
 
 The local model is not an authority for emergency or medical decisions. It
 fails closed for configured safety-sensitive categories. The bundled sources
