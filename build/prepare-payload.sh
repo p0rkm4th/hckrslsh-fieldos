@@ -74,7 +74,7 @@ echo "Downloading the pinned Ubuntu package closure in an Ubuntu 26.04 environme
 docker run --rm --platform linux/amd64 \
   -v "$STAGE/debs:/out" \
   ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c \
-  bash -euxc 'apt-get update; apt-get install --download-only --yes --no-install-recommends docker.io docker-compose-v2 curl zstd qemu-guest-agent vulkan-tools zenity policykit-1-gnome; cp /var/cache/apt/archives/*.deb /out/'
+  bash -euxc 'apt-get update; apt-get install --download-only --yes --no-install-recommends docker.io docker-compose-v2 curl zstd qemu-guest-agent vulkan-tools zenity; cp /var/cache/apt/archives/*.deb /out/'
 
 while IFS=$'\t' read -r name ref digest; do
   [[ -n "$ref" ]] || continue
@@ -361,7 +361,7 @@ cp "$ROOT/payload/manifests/source-offers.json" "$STAGE/manifests/"
 cp "$ROOT/payload/manifests/source-offers.json" "$STAGE/licenses/source-offers.json"
 cp "$ROOT/payload/manifests/maps.json" "$STAGE/manifests/"
 cp "$ROOT/payload/manifests/ubuntu-26.04.1-desktop-amd64.json" "$STAGE/manifests/"
-printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c","requested_packages":["docker.io","docker-compose-v2","curl","zstd","qemu-guest-agent","vulkan-tools","zenity","policykit-1-gnome"],"install_recommends":false,"required_base_packages":["zenity","pkexec","policykit-1-gnome"]}\n' \
+printf '{"version":"26.04","base_image":"ubuntu:26.04@sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c","requested_packages":["docker.io","docker-compose-v2","curl","zstd","qemu-guest-agent","vulkan-tools","zenity"],"install_recommends":false,"required_base_packages":["zenity","pkexec"]}\n' \
   > "$STAGE/manifests/package-request.json"
 
 echo "Creating deterministic compressed payload archive..."

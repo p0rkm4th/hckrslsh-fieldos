@@ -284,7 +284,10 @@ autoinstall:
         common = (
             "set -euo pipefail; device=$(blkid -t LABEL=FIELDOSPACK -o device); "
             "test -n \"$device\"; mkdir -p /mnt/fieldos-pack-test; "
-            "mount -o ro \"$device\" /mnt/fieldos-pack-test; "
+            "mounted=$(findmnt -rn -S \"$device\" -o TARGET | head -n 1 || true); "
+            "if [[ \"$mounted\" != /mnt/fieldos-pack-test ]]; then "
+            "[[ -z \"$mounted\" ]] || umount \"$mounted\"; "
+            "mount -o ro \"$device\" /mnt/fieldos-pack-test; fi; "
             "findmnt -rn -o OPTIONS /mnt/fieldos-pack-test | grep -qw ro; "
         )
         self.check("read-only content transfer media", common +
@@ -296,20 +299,14 @@ autoinstall:
         ).strip()
         if not wayland.startswith("wayland-"):
             raise TestFailure(f"No active Wayland session for content-pack GUI test: {wayland!r}")
-        self.check(
-            "graphical authorization agent",
-            "test -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 && "
-            f"pgrep -u {uid} -f '/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1' >/dev/null",
-        )
-        import_log = "/tmp/fieldos-content-pack-import-ui.log"
-        self.guest(
-            f"runtime=/run/user/{uid}; "
-            f"runuser -u fieldos -- env XDG_RUNTIME_DIR=$runtime "
-            "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus "
-            f"WAYLAND_DISPLAY={shlex.quote(wayland)} GDK_BACKEND=wayland "
-            "/usr/bin/python3 /opt/fieldos/scripts/fieldos-content-pack-import.py "
-            f">{import_log} 2>&1 </dev/null &"
-        )
+        # Launch the GUI from GNOME itself. Launching through the guest agent,
+        # even with copied Wayland and DBus variables, does not associate the
+        # pkexec caller with the active logind session used for authentication.
+        self.send_key("KEY_LEFTMETA")
+        time.sleep(0.7)
+        self.type_virtual_keyboard("fieldos install content pack")
+        time.sleep(1.0)
+        self.send_key("KEY_ENTER")
         picker = self.guest(
             f"for i in $(seq 1 60); do "
             f"pgrep -u {uid} -f 'zenity --file-selection' >/dev/null && echo PICKER_OPEN && exit 0; sleep 0.5; "
@@ -363,7 +360,7 @@ autoinstall:
         success = self.guest(
             f"for i in $(seq 1 240); do "
             f"pgrep -u {uid} -af 'zenity.*Offline content ready' >/dev/null && echo SUCCESS_DIALOG && exit 0; "
-            "sleep 1; done; tail -80 " + import_log + "; "
+            "sleep 1; done; "
             "pgrep -af 'zenity|pkexec|fieldos-content-pack-import' || true; exit 1",
             timeout=260,
         )
@@ -558,7 +555,7 @@ autoinstall:
     def type_virtual_keyboard(self, text: str) -> None:
         keymap = {char: f"KEY_{char.upper()}" for char in string.ascii_lowercase}
         keymap.update({char: f"KEY_{char}" for char in string.digits})
-        keymap.update({"/": "KEY_SLASH", ".": "KEY_DOT", "=": "KEY_EQUAL", "-": "KEY_MINUS"})
+        keymap.update({" ": "KEY_SPACE", "/": "KEY_SLASH", ".": "KEY_DOT", "=": "KEY_EQUAL", "-": "KEY_MINUS"})
         for char in text:
             if char == ":":
                 self.send_key("KEY_LEFTSHIFT", "KEY_SEMICOLON")
