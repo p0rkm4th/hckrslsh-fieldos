@@ -169,6 +169,24 @@ class ContentPackValidationTests(unittest.TestCase):
         catalog = ROOT / "payload/manifests/content-packs.json"
         self.assertIn("us-household-communications", validate_catalog(catalog))
 
+    def test_vegetable_handbook_credits_publisher_listed_authors(self):
+        manifest = json.loads(
+            (ROOT / "payload/content-packs/us-southeastern-vegetable-growers/manifest.json").read_text()
+        )
+        self.assertEqual(manifest["version"], "2026.1.1")
+        source = manifest["sources"][0]
+        for author in (
+            "Mark S. Reiter", "Tom P. Kuhar", "Kemper Sutton", "Laura Strawn",
+            "Douglas S. Higgins", "Steve L. Rideout", "Vijay Singh",
+        ):
+            with self.subTest(author=author):
+                self.assertIn(author, source["attribution"])
+        self.assertIn("Virginia Cooperative Extension", source["attribution"])
+        self.assertIn("Virginia Tech", source["attribution"])
+        self.assertIn("Virginia State University", source["attribution"])
+        self.assertIn("public use, reprint, or citation", source["license"])
+        self.assertIn("the author", source["license"])
+
     def test_invalid_geographic_bounds_are_rejected(self):
         catalog, _, _ = self.fixture(coverage={
             "name": "Invalid", "bbox": [-200, 40, -73, 41],
