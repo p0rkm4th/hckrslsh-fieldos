@@ -150,7 +150,7 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
         if not isinstance(artifact, dict):
             raise PackError(f"{label} must be an object")
         required(artifact, {"path", "size_bytes", "sha256", "source", "license"}, label)
-        if artifact.keys() - {"path", "size_bytes", "sha256", "source", "license"}:
+        if artifact.keys() - {"path", "size_bytes", "sha256", "source", "license", "title", "index_with_ai"}:
             raise PackError(f"{label} has unknown fields")
         relative = Path(nonempty(artifact["path"], f"{label} path"))
         if relative.is_absolute() or ".." in relative.parts:
@@ -162,6 +162,10 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
         if source_ref not in source_ids:
             raise PackError(f"{label} references undeclared source {source_ref!r}")
         nonempty(artifact["license"], f"{label} license")
+        if "title" in artifact:
+            nonempty(artifact["title"], f"{label} title")
+        if "index_with_ai" in artifact and not isinstance(artifact["index_with_ai"], bool):
+            raise PackError(f"{label} index_with_ai must be a boolean")
         expected_size = artifact["size_bytes"]
         if not isinstance(expected_size, int) or isinstance(expected_size, bool) or expected_size < 0:
             raise PackError(f"{label} size_bytes must be a non-negative integer")

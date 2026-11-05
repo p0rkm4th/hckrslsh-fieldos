@@ -316,11 +316,11 @@ def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str 
                 finally:
                     temporary.unlink(missing_ok=True)
             href = "documents/" + quote(f"{pack_id}/{version}/{rel.as_posix()}", safe="/")
-            label = html.escape(rel.name)
+            label = html.escape(str(artifact.get("title", rel.name)))
             body = ""
             if source_path.suffix.lower() == ".txt" and source_path.stat().st_size <= MAX_SOURCE_LIBRARY_TEXT_BYTES:
                 body = source_path.read_text(encoding="utf-8", errors="replace")
-            search_metadata = " ".join((*pack_metadata, rel.name, artifact.get("license", "")))
+            search_metadata = " ".join((*pack_metadata, label, rel.name, artifact.get("license", "")))
             entries.append(
                 '<li class="source-document" data-search="{}" data-body="{}">'
                 '<a href="{}">{}</a><p class="search-match" hidden></p></li>'.format(

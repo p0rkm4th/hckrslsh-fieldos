@@ -37,6 +37,24 @@
       "sha256": "0982174617e2b3405e966b0b1dc2838e3ce92dfad3185da3d450b525a62a7ebf",
       "source": "cdc-food-power-outage",
       "license": "Public Domain; exact CDC STACKS item identified above"
+    },
+    {
+      "path": "cdc-water-treatment-searchable.txt",
+      "size_bytes": 2786,
+      "sha256": "b9ec4958ed444035c7125ab85054419512e2d9423c9c1c90987e9cee67b2737b",
+      "source": "cdc-water-safety",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: CDC emergency water treatment PDF",
+      "index_with_ai": false
+    },
+    {
+      "path": "cdc-food-power-outage-searchable.txt",
+      "size_bytes": 4399,
+      "sha256": "c9b7943b30154778d5d34782f3eb7b0b1e2fced0967ade827fedd5b0f0bac452",
+      "source": "cdc-food-power-outage",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: CDC food safety after power outage PDF",
+      "index_with_ai": false
     }
   ],
   "geographic_coverage": null,
