@@ -15,6 +15,13 @@ reboots. The exact candidate, checksum, and reports are recorded in
 Other regional and specialist reference collections remain modular packs
 outside the core image.
 
+The optional MedlinePlus pack was also transferred from read-only ISO media and
+activated offline in a fresh no-NIC E2E guest on source `aeeeadd98d8fd7fb11baabb770028647e96cf1fb`.
+The archive and source-document checksums, Source Library links, and two reboot
+cycles passed. This validates the pack installer and content activation, not
+the separate graphical file-picker flow. Full evidence is in
+`/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
+
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
 those manifests. Run `make validate-content-packs` to check catalog references,
@@ -285,12 +292,17 @@ The pack is not part of the customer ISO baseline. Its portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`
 (2,649 bytes; SHA-256
 `2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`). A
-host-side isolated install verified the archive/checksum, generated a Source
-Library entry containing title, source, and attribution, and passed an
-idempotent reinstall check. The text is marked `index_with_ai: false`; it is
-available to deterministic Source Library search and direct reading, but is
-not uploaded to N.O.M.A.D.'s vector Knowledge Base. No GUI or customer-guest
-import test has yet been run for this new pack. Validation record:
+Host-side isolated installation passed checksum/schema checks, generated a
+Source Library entry, and passed an idempotent reinstall check. The pack then
+passed installation from read-only transfer media in a clean no-NIC guest:
+the installed and web-served document hashes matched, attribution and local
+document links appeared in the Source Library, and the installation persisted
+across two reboots. `index_with_ai: false` remains intentional: the summary is
+available for deterministic Source Library search and direct reading, and is
+not uploaded to N.O.M.A.D.'s vector Knowledge Base. The tested guest path called
+the pack installer directly; the separate desktop file-picker flow has not yet
+been exercised for this pack. Guest evidence:
+`/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`; host validation:
 `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22-validation.md`.
 
 ## Household emergency communications planner
