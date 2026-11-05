@@ -18,6 +18,7 @@ TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zst \
   /fieldos/hardware/nomad_initial_model.py \
+  /fieldos/models/manifest.json \
   /fieldos/installer/provisioning/patch-nomad-fieldos-copy.sh \
   /fieldos/installer/provisioning/patch-nomad-fieldos-copy.js \
   /fieldos/installer/provisioning/patch-nomad-rag-policy.sh \
