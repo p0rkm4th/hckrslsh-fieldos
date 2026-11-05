@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from hardware.select_profile import profile_for, select
+from hardware.nomad_initial_model import model_reference, seed_statement
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,6 +88,29 @@ class ProfileSelectionTests(unittest.TestCase):
         missing = select({"memory_gib": 64, "gpus": []}, MANIFEST, {SMALL}, manual_model=bigger)
         self.assertIsNone(too_small["chat_model"])
         self.assertIsNone(missing["chat_model"])
+
+    def test_validated_model_maps_to_nomad_ollama_reference(self):
+        medium = "qwen3-1.7b-q4_k_m"
+        self.assertEqual(
+            model_reference(ROOT / "models/manifest.json", medium),
+            "qwen3:1.7b-q4_K_M",
+        )
+
+    def test_initial_preference_preserves_an_existing_manual_choice(self):
+        sql = seed_statement("qwen3:1.7b-q4_K_M")
+        self.assertIn("INSERT INTO kv_store", sql)
+        self.assertIn("ON DUPLICATE KEY UPDATE `value` =", sql)
+        self.assertIn("IF(`value` IS NULL OR `value` = '', VALUES(`value`), `value`)", sql)
+        self.assertIn("SELECT `value` FROM kv_store", sql)
+
+    def test_firstboot_seeds_only_the_model_that_passed_generation(self):
+        firstboot = (ROOT / "installer/provisioning/firstboot.sh").read_text()
+        smoke = firstboot.index('if curl --fail --silent --show-error --max-time 180')
+        write_selection = firstboot.index('Path(sys.argv[2]).write_text')
+        preference = firstboot.index('hardware/nomad_initial_model.py')
+        self.assertLess(smoke, write_selection)
+        self.assertLess(write_selection, preference)
+        self.assertIn('--execute="$chat_model_sql"', firstboot)
 
 
 if __name__ == "__main__":

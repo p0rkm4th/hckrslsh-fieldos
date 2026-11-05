@@ -61,6 +61,13 @@ the payload or above the detected memory budget. The default firstboot path
 marks only CPU as validated; GPU configuration is not enabled just because a
 GPU appears in the detector output.
 
+After a model passes firstboot's local generation smoke test, FieldOS seeds
+N.O.M.A.D.'s supported `chat.lastModel` preference from that model's Ollama
+reference. The preference is inserted only when the setting is absent or NULL;
+an existing value is preserved. N.O.M.A.D. continues to save a user's manual
+model selection through its normal UI setting, and subsequent provisioning
+does not replace it.
+
 The current accepted customer ISO contains only Qwen3 0.6B. The source tree now
 pins Qwen3 1.7B Q4_K_M as the preferred bundled candidate for machines with
 enough memory and keeps 0.6B as fallback. An isolated CPU comparison against
