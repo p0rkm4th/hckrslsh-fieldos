@@ -7,6 +7,18 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class RegionalMapManifestTests(unittest.TestCase):
+    def test_map_source_and_extractor_are_exactly_pinned(self):
+        manifest = json.loads((ROOT / "payload/manifests/maps.json").read_text())
+        source = manifest["source_build"]
+        extractor = manifest["extractor"]
+        self.assertEqual(source["url"], f"https://build.protomaps.com/{source['key']}")
+        self.assertEqual(source["metadata_url"], "https://build-metadata.protomaps.dev/builds.json")
+        self.assertIn("pmtiles 1.30.2, commit 636ea422190264e2a5d74b0996655a891d8a4a48", extractor["version_output"])
+        self.assertTrue(extractor["image"].endswith("@sha256:1445a3eaba19801ce27435b7edc57fce74d9543601808d719b432e3bc7468ea1"))
+        builder = (ROOT / "build/prepare-payload.sh").read_text()
+        self.assertIn('"$NOMAD_IMAGE" version', builder)
+        self.assertIn('extract "$MAP_SOURCE_URL"', builder)
+
     def test_bundled_tennessee_map_covers_state_and_is_checksum_pinned(self):
         manifest = json.loads((ROOT / "payload/manifests/maps.json").read_text())
         region = next(item for item in manifest["regions"] if item["id"] == "tennessee-statewide")

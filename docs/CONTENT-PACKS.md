@@ -7,8 +7,9 @@ possible. The repository defines a versioned JSON manifest schema at
 packs and planned categories; this is not a comprehensive customer library.
 The Middle Tennessee map previously passed offline transfer and activation
 testing as a pack. The statewide Tennessee map is built into the current source
-payload and the `fieldos-customer-searchable-562fee9.iso` customer test image.
-That image passed a fresh no-NIC interactive install, installer media handoff,
+payload and the `fieldos-customer-cc4aa38.iso` customer test image (SHA-256
+`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`). That
+image passed a fresh no-NIC interactive install, installer media handoff,
 installed-disk boot, Firefox rendering at eight Tennessee locations, and two
 reboots. The exact candidate, checksum, and reports are recorded in
 [`RELEASE.md`](RELEASE.md). Physical USB behavior remains unverified.
@@ -112,7 +113,10 @@ checksum-pinned statewide Tennessee map. Redistribution review remains incomplet
 
 For a desktop import, open **FieldOS Install Content Pack** from Applications
 → Utilities, choose the `.tar.zst` archive, and approve the administrator
-authentication prompt. Keep the matching `.sha256` sidecar beside the archive.
+authentication prompt. Keep the exact matching sidecar
+`<archive-name>.tar.zst.sha256` beside the archive in the same USB folder.
+The virtual read-only media transfer passed; physical USB insertion and
+navigation through GNOME Files have not yet been tested.
 The launcher uses the same validator and installer described below; it asks
 N.O.M.A.D. to index reference documents after activation. This adds no new
 network service and exposes no remote administrative interface.

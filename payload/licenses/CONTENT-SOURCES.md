@@ -34,9 +34,14 @@ Tennessee map covers the full state plus a neighboring-state buffer (bounds
 `-90.9,34.5,-81.0,37.25`) at zoom levels 0–13. The 145,267,908-byte regional
 file has SHA-256
 `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`, extracted
-from pinned Protomaps build `20261102.pmtiles`. A fresh no-NIC E2E and a
-separate interactive customer installation visibly rendered eight Tennessee
-locations; reports and screenshots are listed in `docs/RELEASE.md`. It is a
+from pinned Protomaps build `20261102.pmtiles`. The source manifest pins the
+archive and metadata URLs, the N.O.M.A.D. image digest, and PMTiles CLI version
+and commit; each generated `map-payload.json` records extraction arguments and
+the derived file hash. The tested customer ISO from
+source `cc4aa38` passed a fresh no-NIC E2E and a separate interactive customer
+installation that visibly rendered eight Tennessee locations; reports and
+screenshots are listed in `docs/RELEASE.md`. The later source attribution fix
+is not yet included in an ISO. It is a
 local geographic reference, not turn-by-turn navigation, GPS positioning,
 trail guidance, or emergency advice. The `562fee9` tested ISO's map style
 shows Protomaps and links to the OpenStreetMap homepage, but does not visibly

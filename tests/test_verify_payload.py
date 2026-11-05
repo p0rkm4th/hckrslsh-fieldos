@@ -31,6 +31,33 @@ class OfflinePayloadVerificationTests(unittest.TestCase):
             check=True, capture_output=True,
         )
 
+    def make_map_payload(self, map_payload):
+        maps_manifest = json.loads((Path(__file__).resolve().parents[1] / "payload/manifests/maps.json").read_text())
+        members = [
+            "content-packs/core-1.2.3.tar.zst",
+            "content-packs/core-1.2.3.tar.zst.sha256",
+            "manifests/maps.json",
+            "manifests/map-payload.json",
+            "content/maps/pmtiles/world.pmtiles",
+        ]
+        members.extend(f"content/maps/pmtiles/{item['file']}" for item in maps_manifest["regions"])
+        staging = self.root / "map-staging"
+        for member in members:
+            path = staging / member
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if member == "manifests/maps.json":
+                content = json.dumps(maps_manifest)
+            elif member == "manifests/map-payload.json":
+                content = json.dumps(map_payload)
+            else:
+                content = "fixture"
+            path.write_text(content)
+        subprocess.run(
+            ["tar", "--use-compress-program=zstd", "-cf", str(self.payload),
+             "-C", str(staging), *members], check=True, capture_output=True,
+        )
+        return maps_manifest
+
     def test_accepts_payload_with_all_declared_core_pack_files(self):
         members = [
             "content-packs/core-1.2.3.tar.zst",
@@ -121,6 +148,70 @@ class OfflinePayloadVerificationTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "missing source map files"):
             verify_payload(self.payload, self.catalog, maps_manifest)
+
+    def test_map_payload_records_pinned_extractor_and_commands(self):
+        maps_manifest = json.loads((Path(__file__).resolve().parents[1] / "payload/manifests/maps.json").read_text())
+        regions = []
+        for item in maps_manifest["regions"]:
+            source = "/maps/world.pmtiles" if item["source"] == "world" else maps_manifest["source_build"]["url"]
+            regions.append({
+                **item,
+                "extraction_command": [
+                    "pmtiles", "extract", source, f"/maps/{item['file']}",
+                    f"--bbox={item['bbox']}", f"--minzoom={item['minzoom']}",
+                    f"--maxzoom={item['maxzoom']}",
+                ],
+                "derived_file": {
+                    "bytes": item.get("expected_size_bytes", 10),
+                    "sha256": item.get("expected_sha256", "b" * 64),
+                },
+            })
+        map_payload = {
+            "source_build": maps_manifest["source_build"],
+            "extractor": maps_manifest["extractor"],
+            "world_extraction_command": [
+                "pmtiles", "extract", maps_manifest["source_build"]["url"],
+                "/maps/world.pmtiles", "--bbox=-180,-85,180,85", "--maxzoom=5",
+            ],
+            "regions": regions,
+        }
+        embedded_manifest = self.root / "maps.json"
+        embedded_manifest.write_text(json.dumps(maps_manifest))
+        self.make_map_payload(map_payload)
+        self.assertEqual(
+            verify_payload(self.payload, self.catalog, embedded_manifest),
+            ["content-packs/core-1.2.3.tar.zst", "content-packs/core-1.2.3.tar.zst.sha256"],
+        )
+
+    def test_rejects_map_payload_with_stale_extraction_command(self):
+        maps_manifest = json.loads((Path(__file__).resolve().parents[1] / "payload/manifests/maps.json").read_text())
+        regions = []
+        for item in maps_manifest["regions"]:
+            source = "/maps/world.pmtiles" if item["source"] == "world" else maps_manifest["source_build"]["url"]
+            regions.append({
+                **item,
+                "extraction_command": ["pmtiles", "extract", source, f"/maps/{item['file']}",
+                                       f"--bbox={item['bbox']}", f"--minzoom={item['minzoom']}",
+                                       "--maxzoom=999"],
+                "derived_file": {
+                    "bytes": item.get("expected_size_bytes", 10),
+                    "sha256": item.get("expected_sha256", "b" * 64),
+                },
+            })
+        map_payload = {
+            "source_build": maps_manifest["source_build"],
+            "extractor": maps_manifest["extractor"],
+            "world_extraction_command": [
+                "pmtiles", "extract", maps_manifest["source_build"]["url"],
+                "/maps/world.pmtiles", "--bbox=-180,-85,180,85", "--maxzoom=5",
+            ],
+            "regions": regions,
+        }
+        embedded_manifest = self.root / "maps.json"
+        embedded_manifest.write_text(json.dumps(maps_manifest))
+        self.make_map_payload(map_payload)
+        with self.assertRaisesRegex(ValueError, "stale extraction command"):
+            verify_payload(self.payload, self.catalog, embedded_manifest)
 
 
 if __name__ == "__main__":

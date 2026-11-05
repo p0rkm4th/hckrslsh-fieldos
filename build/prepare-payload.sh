@@ -90,9 +90,17 @@ python3 "$ROOT/build/collect_image_notices.py" \
   --archive-dir "$STAGE/oci" \
   --output-dir "$STAGE/licenses/container-images"
 
-NOMAD_REF=ghcr.io/crosstalk-solutions/project-nomad:v1.35.1
-NOMAD_DIGEST=sha256:1445a3eaba19801ce27435b7edc57fce74d9543601808d719b432e3bc7468ea1
-docker run --rm --network none --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" --help >/dev/null
+NOMAD_IMAGE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["extractor"]["image"])' \
+  "$ROOT/payload/manifests/maps.json")
+EXPECTED_PMTILES_VERSION=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["extractor"]["version_output"])' \
+  "$ROOT/payload/manifests/maps.json")
+docker run --rm --network none --entrypoint /usr/local/bin/pmtiles \
+  "$NOMAD_IMAGE" version > "$STAGE/manifests/pmtiles-version.txt"
+ACTUAL_PMTILES_VERSION=$(cat "$STAGE/manifests/pmtiles-version.txt")
+[[ "$ACTUAL_PMTILES_VERSION" == "$EXPECTED_PMTILES_VERSION" ]] || {
+  echo "Pinned PMTiles extractor version mismatch: expected '$EXPECTED_PMTILES_VERSION', got '$ACTUAL_PMTILES_VERSION'" >&2
+  exit 1
+}
 
 echo "Fetching source-pinned Project N.O.M.A.D. reference and map styling..."
 git clone --depth 1 --branch v1.35.1 https://github.com/Crosstalk-Solutions/project-nomad.git "$STAGE/project-nomad"
@@ -148,11 +156,14 @@ cp "$ROOT/payload/licenses/CC-BY-SA-4.0.txt" "$STAGE/licenses/"
 cp "$ROOT/payload/licenses/ODbL-1.0.txt" "$STAGE/licenses/"
 
 echo "Resolving the current Protomaps build and extracting a low-zoom offline world map..."
-curl --fail --silent --show-error https://build-metadata.protomaps.dev/builds.json -o "$STAGE/manifests/protomaps-builds.json"
+MAPS_METADATA_URL=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["source_build"]["metadata_url"])' \
+  "$ROOT/payload/manifests/maps.json")
+curl --fail --silent --show-error "$MAPS_METADATA_URL" -o "$STAGE/manifests/protomaps-builds.json"
 python3 - "$STAGE/manifests/protomaps-builds.json" "$ROOT/payload/manifests/maps.json" > "$STAGE/manifests/protomaps-build.json" <<'PY'
 import json, sys
 items = json.load(open(sys.argv[1]))
-expected = json.load(open(sys.argv[2]))["source_build"]
+manifest = json.load(open(sys.argv[2]))
+expected = manifest["source_build"]
 matches = [item for item in items if item.get("key") == expected["key"]]
 if len(matches) != 1:
     raise SystemExit(f"Pinned Protomaps source build not found: {expected['key']}")
@@ -160,16 +171,22 @@ actual = matches[0]
 for field in ("version", "size", "md5sum", "b3sum", "uploaded"):
     if actual.get(field) != expected[field]:
         raise SystemExit(f"Pinned Protomaps metadata changed for {field}: {actual.get(field)!r}")
+expected_url = f"https://build.protomaps.com/{expected['key']}"
+if expected.get("url") != expected_url:
+    raise SystemExit(f"Pinned Protomaps source URL does not match build key: {expected.get('url')!r}")
+actual["url"] = expected["url"]
+actual["metadata_url"] = expected["metadata_url"]
 print(json.dumps(actual, indent=2))
 PY
-MAP_KEY=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["key"])' "$STAGE/manifests/protomaps-build.json")
+MAP_SOURCE_URL=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["url"])' \
+  "$STAGE/manifests/protomaps-build.json")
 docker run --rm --network bridge \
   -v "$STAGE/content/maps/pmtiles:/maps" \
-  --entrypoint /usr/local/bin/pmtiles \
-  "$NOMAD_REF@$NOMAD_DIGEST" \
-  extract "https://build.protomaps.com/$MAP_KEY" /maps/world.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
+    --entrypoint /usr/local/bin/pmtiles \
+  "$NOMAD_IMAGE" \
+  extract "$MAP_SOURCE_URL" /maps/world.pmtiles --bbox=-180,-85,180,85 --maxzoom=5
 docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
-  --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show /maps/world.pmtiles \
+  --entrypoint /usr/local/bin/pmtiles "$NOMAD_IMAGE" show /maps/world.pmtiles \
   > "$STAGE/manifests/world-map-metadata.txt"
 while IFS=$'\t' read -r region_id region_file region_bbox minzoom maxzoom source expected_bytes expected_sha256; do
   [[ -n "$region_id" ]] || continue
@@ -178,7 +195,8 @@ while IFS=$'\t' read -r region_id region_file region_bbox minzoom maxzoom source
     MAP_SOURCE=/maps/world.pmtiles
     MAP_NETWORK=none
   elif [[ "$source" == "pinned-build" ]]; then
-    MAP_SOURCE="https://build.protomaps.com/$MAP_KEY"
+    MAP_SOURCE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["source_build"]["url"])' \
+      "$ROOT/payload/manifests/maps.json")
     MAP_NETWORK=bridge
   else
     echo "Unknown map source mode for $region_id: $source" >&2
@@ -187,11 +205,11 @@ while IFS=$'\t' read -r region_id region_file region_bbox minzoom maxzoom source
   docker run --rm --network "$MAP_NETWORK" \
     -v "$STAGE/content/maps/pmtiles:/maps" \
     --entrypoint /usr/local/bin/pmtiles \
-    "$NOMAD_REF@$NOMAD_DIGEST" \
+    "$NOMAD_IMAGE" \
     extract "$MAP_SOURCE" "/maps/$region_file" \
     --bbox="$region_bbox" --minzoom="$minzoom" --maxzoom="$maxzoom"
   docker run --rm --network none -v "$STAGE/content/maps/pmtiles:/maps" \
-    --entrypoint /usr/local/bin/pmtiles "$NOMAD_REF@$NOMAD_DIGEST" show "/maps/$region_file" \
+    --entrypoint /usr/local/bin/pmtiles "$NOMAD_IMAGE" show "/maps/$region_file" \
     > "$STAGE/manifests/$(basename "$region_file" .pmtiles)-metadata.txt"
 done < <(python3 - "$ROOT/payload/manifests/maps.json" <<'PY'
 import json, sys
@@ -212,6 +230,8 @@ import sys
 map_root, manifest, build_manifest = map(pathlib.Path, sys.argv[1:])
 record = json.loads(manifest.read_text())
 build = json.loads(build_manifest.read_text())
+source_url = record["source_build"]["url"]
+extractor = record["extractor"]
 def file_record(path):
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -227,9 +247,15 @@ for item in record["regions"]:
     if item.get("expected_sha256") and result["sha256"] != item["expected_sha256"]:
         raise SystemExit(f"Map SHA-256 mismatch for {item['id']}: {result['sha256']}")
     source_archive = "world.pmtiles" if item["source"] == "world" else build["key"]
+    input_source = "/maps/world.pmtiles" if item["source"] == "world" else source_url
+    command = ["pmtiles", "extract", input_source, f"/maps/{item['file']}",
+               f"--bbox={item['bbox']}", f"--minzoom={item['minzoom']}",
+               f"--maxzoom={item['maxzoom']}"]
     regions.append({
         **item,
         "source_archive": source_archive,
+        "source_url": input_source,
+        "extraction_command": command,
         "derived_file": result,
         "license": record["license"],
         "attribution": record["attribution"],
@@ -238,6 +264,11 @@ for item in record["regions"]:
 print(json.dumps({
     "schema_version": 1,
     "source_build": build,
+    "extractor": extractor,
+    "world_extraction_command": [
+        "pmtiles", "extract", source_url, "/maps/world.pmtiles",
+        "--bbox=-180,-85,180,85", "--maxzoom=5",
+    ],
     "license": record["license"],
     "attribution": record["attribution"],
     "regions": regions,

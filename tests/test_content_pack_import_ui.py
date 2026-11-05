@@ -94,6 +94,11 @@ class ContentPackImportUiTests(unittest.TestCase):
         self.assertEqual(action.findtext("defaults/allow_active"), "auth_admin")
         self.assertEqual(action.findtext("defaults/allow_any"), "no")
 
+    def test_start_here_names_the_exact_checksum_sidecar(self):
+        guide = (ROOT / "installer/provisioning/fieldos-start-here.html").read_text()
+        self.assertIn("pack.tar.zst.sha256", guide)
+        self.assertIn("same folder", guide)
+
     def test_offline_importer_uses_ubuntu_desktop_authentication_helper_without_upgrading_polkit(self):
         build = (ROOT / "build/prepare-payload.sh").read_text()
         firstboot = (ROOT / "installer/provisioning/firstboot.sh").read_text()

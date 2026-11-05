@@ -55,6 +55,19 @@ def verify_payload(payload: Path, catalog_path: Path,
         regions = map_payload.get("regions")
         if not isinstance(regions, list):
             raise ValueError("offline payload map metadata does not describe the current region list")
+        if "extractor" in source_maps:
+            if map_payload.get("extractor") != source_maps["extractor"]:
+                raise ValueError("offline payload map metadata has a stale extractor pin")
+            embedded_build = map_payload.get("source_build", {})
+            for field in ("key", "url", "metadata_url", "version", "size", "md5sum", "b3sum", "uploaded"):
+                if embedded_build.get(field) != source_maps["source_build"].get(field):
+                    raise ValueError(f"offline payload map metadata has stale source-build field: {field}")
+            expected_world_command = [
+                "pmtiles", "extract", source_maps["source_build"]["url"],
+                "/maps/world.pmtiles", "--bbox=-180,-85,180,85", "--maxzoom=5",
+            ]
+            if map_payload.get("world_extraction_command") != expected_world_command:
+                raise ValueError("offline payload map metadata has a stale world extraction command")
         by_id = {item.get("id"): item for item in regions if isinstance(item, dict)}
         required_map_files = {"content/maps/pmtiles/world.pmtiles"}
         for source_region in source_maps.get("regions", []):
@@ -64,6 +77,19 @@ def verify_payload(payload: Path, catalog_path: Path,
             built_region = by_id.get(region_id)
             if not built_region or built_region.get("file") != region_file:
                 raise ValueError(f"offline payload map data is missing source region {region_id}")
+            if "extractor" in source_maps:
+                input_source = (
+                    "/maps/world.pmtiles" if source_region.get("source") == "world"
+                    else source_maps["source_build"]["url"]
+                )
+                expected_command = [
+                    "pmtiles", "extract", input_source, f"/maps/{region_file}",
+                    f"--bbox={source_region['bbox']}",
+                    f"--minzoom={source_region['minzoom']}",
+                    f"--maxzoom={source_region['maxzoom']}",
+                ]
+                if built_region.get("extraction_command") != expected_command:
+                    raise ValueError(f"offline payload map metadata has a stale extraction command for {region_id}")
             derived = built_region.get("derived_file", {})
             if (source_region.get("expected_size_bytes") and
                     derived.get("bytes") != source_region["expected_size_bytes"]):
