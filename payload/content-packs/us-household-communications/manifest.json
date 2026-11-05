@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "title": "Household Emergency Communications Plan",
   "description": "A printable, FieldOS-authored household planning worksheet informed by FEMA/Ready.gov guidance. It does not provide live communications, alerts, tracking, or emergency response.",
-  "category": "weather-disaster",
+  "category": "communications",
   "sources": [
     {
       "id": "ready-family-plan",
@@ -54,7 +54,7 @@
     "requirements": [],
     "optional": true
   },
-  "authority": "authoritative-reference",
+  "authority": "fieldos-authored",
   "review": {
     "reviewer": "FieldOS engineering source and content review",
     "reviewed_at": "2026-11-05",

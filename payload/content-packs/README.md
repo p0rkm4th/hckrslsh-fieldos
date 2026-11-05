@@ -17,9 +17,10 @@ their reviewer and content revision date. The repository catalog currently
 contains six core packs: CDC water/food references, NWS-based FieldOS summaries
 for tornadoes, hurricanes/winter storms, and floods, a NIOSH heat-illness
 reference, and a Southeastern vegetable production handbook. It also contains
-an optional one-page CDC emergency-health skills checklist (an orientation
-sheet, not procedural first-aid instruction) and an optional household
-emergency-communications planner. Only packs
+two optional CDC preparedness items: a one-page emergency-health skills
+orientation (not procedural first-aid instruction) and a two-page emergency
+kit checklist. The optional household communications planner is FieldOS
+authored and categorized separately from authoritative emergency guidance. Only packs
 listed in `core_packs` are embedded in the installer. The build also produces
 independent versioned archives for every listed pack, including core packs, so
 they can be transferred and installed on an existing system. Other planned

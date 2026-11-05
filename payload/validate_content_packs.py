@@ -18,9 +18,10 @@ CATEGORIES = {
     "water-food",
     "first-aid-emergency",
     "weather-disaster",
+    "communications",
     "maps-gis",
 }
-AUTHORITIES = {"authoritative-reference", "community-reference", "ai-generated", "mixed"}
+AUTHORITIES = {"authoritative-reference", "community-reference", "fieldos-authored", "ai-generated", "mixed"}
 PACK_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 PACK_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
