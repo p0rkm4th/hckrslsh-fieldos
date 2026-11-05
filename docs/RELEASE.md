@@ -31,7 +31,7 @@ browser verification. The exact artwork revision behind the modified sprites
 remains unresolved. Physical USB insertion/navigation is also unverified; the
 content-pack import test used read-only optical media.
 
-Source revision `9060660` passes `make check`, 96 unit tests, and
+Current source revision `ba07e9f` passes `make check`, 96 unit tests, and
 validation of all 10 content-pack manifests. Its map attribution, updated
 extractor provenance, and importer guidance are source-level changes only;
 they have not been incorporated into the ISO identified above.
