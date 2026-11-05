@@ -296,6 +296,19 @@ else:
 Path(sys.argv[2]).write_text(json.dumps(selection, indent=2) + "\n")
 PY
 rm -f "$STATE/model-selection-candidate.json"
+if [[ -n "$selected_id" ]]; then
+  echo "Setting N.O.M.A.D.'s initial chat model from the locally validated selection..."
+  chat_model_sql=$(python3 "$ROOT/hardware/nomad_initial_model.py" "$ROOT/models/manifest.json" "$selected_id")
+  saved_chat_model=$(docker exec -e MYSQL_PWD="$DB_PASSWORD" nomad_mysql \
+    mysql --protocol=tcp --host=127.0.0.1 --user=nomad_user --database=nomad \
+      --batch --skip-column-names --execute="$chat_model_sql")
+  [[ -n "$saved_chat_model" ]] || fatal "N.O.M.A.D. did not retain a chat model preference."
+  if [[ "$saved_chat_model" == "$ollama_ref" ]]; then
+    echo "N.O.M.A.D. initial chat preference: $saved_chat_model"
+  else
+    echo "Preserved the existing N.O.M.A.D. chat preference: $saved_chat_model"
+  fi
+fi
 curl --fail --silent http://127.0.0.1:11434/api/embed \
   -H 'Content-Type: application/json' \
   -d '{"model":"nomic-embed-text:v1.5","input":"offline embedding smoke test"}' \
