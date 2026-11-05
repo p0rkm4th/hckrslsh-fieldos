@@ -23,7 +23,14 @@ class ContentPackValidationTests(unittest.TestCase):
         core = [catalog_path.parent.joinpath(entry).resolve().parent.name for entry in catalog["core_packs"]]
         self.assertCountEqual(
             core,
-            ["us-flood-safety", "us-tornado-safety", "us-water-food-emergency", "us-weather-safety"],
+            [
+                "us-flood-safety",
+                "us-niosh-heat-first-aid",
+                "us-southeastern-vegetable-growers",
+                "us-tornado-safety",
+                "us-water-food-emergency",
+                "us-weather-safety",
+            ],
         )
 
     def fixture(self, category="agriculture", coverage=None, authority=None, review=None):
