@@ -57,14 +57,28 @@ installer validation.
 | Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
 | Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
 | Tennessee maps | PASS in VMs | Customer Firefox visibly rendered Nashville; unattended E2E visibly rendered eight urban/rural locations. Map display is not routing or navigation; GPS is unverified. |
-| Optional offline content-pack import | PASS in VM | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots; semantic retrieval query not tested. |
+| Optional offline content-pack import | PASS in VM; semantic retrieval FAIL | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots. A later isolated query test cited the planner but failed to extract its clearly printed primary-contact fields; see the supplemental report below. |
 | Reboot persistence | PASS, two consecutive reboots | Provisioning marker, all seven containers, N.O.M.A.D., Kiwix, reference index, and no-default-route state persisted after each reboot; chat also generated after reboot 1. E2E passed two reboot cycles. |
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |
 | Hardware adaptation | PARTIAL | CPU and fixture profiles tested. Physical hardware, GPU driver compatibility, and varied storage systems are unverified. |
 | Network-connected security | PARTIAL | Disconnected operation and container egress blocking tested; LAN-connected peer exposure test remains open. Docker socket consumers retain powerful host access. |
-| Field reference breadth | FAIL for broad field readiness | The optional household planner now passes guest install, index, Source Library, and reboot checks, but its semantic retrieval query is untested. The core library remains limited and Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
+| Field reference breadth | FAIL for broad field readiness | The optional household planner is directly readable offline, but the small model did not answer two direct questions about its indexed content. The core library remains limited and Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
 | Redistribution review | BLOCKED | Exact Ubuntu, software, model, maps, and content license/attribution review is incomplete. Keep candidate binaries unpublished. |
 | Physical customer readiness | BLOCKED | Physical installation/hardware, LAN exposure, content breadth, and rights review remain. |
+
+### Supplemental semantic retrieval check
+
+After the accepted `5720321` E2E, a disposable copy-on-write clone of that
+no-NIC VM was used to check whether N.O.M.A.D. could answer two direct
+questions about the optional household communications planner. Both answers
+failed to extract the requested contact fields despite listing the planner
+among their sources. This is a retrieval/answer-quality failure; indexing and
+installation still pass. In the clone's Firefox session, the installed
+planner document itself opened from the local Source Library document route
+and visibly rendered its blank name, phone/contact, and city/state fields.
+That confirms direct source access, not successful in-app search or reliable
+AI retrieval. The original acceptance disk was not modified. Full observations
+and artifact paths: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/semantic-retrieval-report.md`.
 
 ## Current offline capabilities
 
