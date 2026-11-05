@@ -2,24 +2,24 @@
 
 ## Customer installation
 
-**Current unpublished customer-mode test candidate (2026-11-04):**
-`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`, source
-`bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`, SHA-256
-`bdfbe5c01f9960634f275e230c3a3957623f778c511c36a73ddf992a2f4e85bd`.
-Interactive identity and target disk selection, offline installation,
-firstboot, local services, and installed-disk boot passed in a disposable
-no-NIC UEFI VM. Local chat, embeddings, Kiwix search, and Firefox map rendering
-at eight Tennessee locations were verified. Two reboots preserved services,
-map and knowledge availability, provisioning state, and user data. Detailed
-report, logs, and screenshots:
-`/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/report.md`.
+**Current unpublished customer-mode test candidate (2026-11-05):**
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso`, source
+`1851e3491d6f7e28d53b73a6e02239d2ff681121`, SHA-256
+`9d43df4be724a9937eb931347279660226976d1a6914c235fcba9244e418a4a6`.
+Interactive identity and target-disk selection, disconnected installation,
+firstboot, installed-disk boot after the normal media-removal prompt, and two
+reboot checks passed in a disposable no-NIC UEFI VM. After the second reboot,
+local chat, embeddings, Kiwix search, map-tile access, and all seven containers
+were verified; Firefox visibly rendered Nashville map detail and the FieldOS
+Command Center. The detailed report and screenshots are at
+`/mnt/shared/fieldos-e2e/customer-offline-1851e34/report.md`.
 
-In this QEMU run, the ISO remained in the boot path after the initial restart.
-After the virtual media was ejected and the VM powered on again, Ubuntu booted
-from the installed disk without repair. Remove USB installation media when
-prompted and power the computer back on if Ubuntu shuts down. Physical USB
-installation and handoff have not been tested. This image is engineering test
-material, not an approved public release; see [`RELEASE.md`](RELEASE.md).
+The test controller ejected the virtual ISO at Ubuntu's standard “remove the
+installation medium” prompt. This tested the installed-disk boot path without
+repair; physical USB behavior remains unverified. The candidate is unpublished
+engineering test material, not an approved public release. Physical hardware,
+network-connected security, content breadth, and redistribution review remain
+open; see [`RELEASE.md`](RELEASE.md).
 
 Build a customer-mode test ISO with:
 
@@ -45,10 +45,10 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 
 ## Verifying the candidate
 
-Before testing, compare the ISO SHA-256 with the value above:
+Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network
