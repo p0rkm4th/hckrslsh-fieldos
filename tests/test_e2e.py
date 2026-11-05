@@ -831,7 +831,7 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
             "assert 'fieldos-wallpaper.svg' in defaults and 'fieldos-start-here.desktop' in defaults and 'fieldos-nomad.desktop' in defaults, 'GNOME defaults omit FieldOS wallpaper or dock entries'\n"
             "guide = Path('/usr/share/doc/fieldos/START-HERE.html').read_text()\n"
             "assert 'Ready offline in this test edition' in guide and 'separate internet-connected update session' in guide, 'offline guide does not explain bundled features and updates'\n"
-            "assert 'fieldos-content-packs.py install' in guide and 'USB-NAME' in guide, 'Start Here does not explain offline map-pack import'\n"
+            "assert 'FieldOS Install Content Pack' in guide and 'USB' in guide and '.sha256' in guide, 'Start Here does not explain graphical offline content-pack import'\n"
             "print({'branding_files': len(paths), 'dconf_profile': True, 'compiled_defaults': True, 'offline_guide': True})\n"
             "PY",
         )
