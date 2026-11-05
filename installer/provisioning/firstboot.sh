@@ -99,10 +99,14 @@ apt_offline=(
 )
 apt-get "${apt_offline[@]}" update
 apt-get "${apt_offline[@]}" --yes --no-install-recommends install \
-  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity
+  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity policykit-1-gnome
 rm -f /etc/apt/sources.list.d/fieldos-offline.list
 if ! command -v zenity >/dev/null 2>&1 || ! command -v pkexec >/dev/null 2>&1; then
   echo "Required Ubuntu Desktop components zenity and pkexec are missing; refusing an incomplete FieldOS desktop install." >&2
+  exit 1
+fi
+if [[ ! -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ]]; then
+  echo "The graphical PolicyKit authentication agent is missing; offline content imports will not work." >&2
   exit 1
 fi
 if [[ -e /dev/virtio-ports/org.qemu.guest_agent.0 ]]; then

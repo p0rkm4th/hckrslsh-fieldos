@@ -296,6 +296,11 @@ autoinstall:
         ).strip()
         if not wayland.startswith("wayland-"):
             raise TestFailure(f"No active Wayland session for content-pack GUI test: {wayland!r}")
+        self.check(
+            "graphical authorization agent",
+            "test -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 && "
+            f"pgrep -u {uid} -f '/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1' >/dev/null",
+        )
         import_log = "/tmp/fieldos-content-pack-import-ui.log"
         self.guest(
             f"runtime=/run/user/{uid}; "
