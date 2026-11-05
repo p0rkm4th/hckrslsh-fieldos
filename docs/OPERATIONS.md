@@ -12,6 +12,13 @@ seeds runtime files, selects and validates a model, and starts the Compose
 services. Firstboot is guarded by a lock and a completion marker. Check its
 result before retrying:
 
+On a fresh installation, GNOME waits until firstboot succeeds. Initial setup
+can take several minutes while the 5+ GiB offline payload is checked, loaded,
+and the bundled model is smoke-tested. If the desktop does not appear, use
+Ctrl+Alt+F3 at the local console to reach a text login and inspect the status
+and logs below. A failed firstboot intentionally keeps the graphical session
+closed so the assistant cannot be opened before model validation completes.
+
 The generated Compose credentials are written to a temporary file and
 renamed atomically. Each provisioning attempt enforces root ownership and
 mode `0600` on the existing `.env` file without replacing its contents.
@@ -28,7 +35,12 @@ the reported cause, then rerun the idempotent unit:
 ```sh
 sudo systemctl reset-failed fieldos-firstboot.service
 sudo systemctl start fieldos-firstboot.service
+sudo systemctl reset-failed graphical.target
+sudo systemctl start graphical.target
 ```
+
+Run the last two commands only after firstboot reports success. Alternatively,
+reboot after the service completes; the normal graphical boot then proceeds.
 
 On a minimal-memory system where no bundled chat model fits the configured
 reserve, provisioning completes in reference-only mode and records that result

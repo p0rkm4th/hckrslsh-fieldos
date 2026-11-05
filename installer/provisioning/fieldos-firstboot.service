@@ -1,6 +1,7 @@
 [Unit]
 Description=Complete Hckrslsh FieldOS local provisioning
 After=docker.service
+Before=graphical.target
 Wants=docker.service
 ConditionPathExists=/opt/fieldos/payload/offline-payload.tar.zst
 
@@ -11,4 +12,4 @@ RemainAfterExit=yes
 TimeoutStartSec=0
 
 [Install]
-WantedBy=multi-user.target
+RequiredBy=graphical.target

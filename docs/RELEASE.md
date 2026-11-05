@@ -1,8 +1,12 @@
 # Release readiness and evidence
 
-**Current status (2026-11-05): interactive installation, offline firstboot, installed-disk boot, and two-reboot service validation passed on the current customer ISO in a disposable no-NIC UEFI VM. The installer reached the standard virtual-media removal prompt and shut down normally; a regular power-on booted the installed disk. Seamless automatic restart and physical USB/hardware behavior remain unverified. This ISO is not approved for public binary distribution, emergency use, or medical use.**
+**Current status (2026-11-05): candidate `8020fd3` passed interactive customer installation, offline firstboot, installed-disk boot, and two-reboot service validation in a disposable no-NIC UEFI VM. Its SHA-256 is `57ac5a1a501497f9a2e4eaaa5c4144d925cfef2a6713f310516bd1b4a3d0791e`; evidence is `/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md`. The tested desktop selected Qwen3 0.6B even though firstboot validated 1.7B. Isolated source changes in `fix/model-selection-handoff` seed N.O.M.A.D.'s initial model setting and delay GNOME until firstboot finishes, but are not included in this ISO and have not been VM-validated. This is not a release approval. Physical USB/hardware behavior, connected-LAN exposure, and redistribution clearance remain unverified; do not distribute the ISO or recommend FieldOS for emergency or medical use.**
 
-## Latest customer ISO acceptance
+The acceptance report below for `cc4aa38` is a historical record and is
+superseded by the newer `8020fd3` result above. The isolated model-default and
+graphical-startup changes are source-only until rebuilt and tested.
+
+## Earlier customer ISO acceptance: `cc4aa38`
 
 - Source revision: `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start).
 - Customer ISO: `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`.

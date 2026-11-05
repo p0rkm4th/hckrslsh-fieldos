@@ -2,20 +2,21 @@
 
 ## Customer installation
 
-**Current customer-mode candidate (2026-11-05; VM installation PASS):**
-`/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, source
-`cc4aa38f3debd078b877589355221e94821bd160`, SHA-256
-`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`.
-Interactive disk/account selection and installation completed in a fresh
-no-NIC 80 GiB UEFI VM. At Ubuntu's “Please remove the installation medium,
-then press ENTER” prompt, the guest's virtual CD tray was already open. Enter
-caused a clean guest shutdown; an ordinary VM power-on then booted the installed
-disk with no ISO attached. No reset or repair was used. Offline firstboot,
-application checks, map rendering, and two post-install reboots passed. Fully
-automatic restart without the ordinary power-on after the prompt, physical USB
-handoff, and physical hardware remain unverified. Full current evidence:
-[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
-`/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/`.
+**Latest tested customer-mode candidate (2026-11-05; VM installation and two-reboot validation PASS):**
+`/mnt/shared/fieldos-releases/fieldos-customer-8020fd3.iso`, source
+`8020fd3`, SHA-256
+`57ac5a1a501497f9a2e4eaaa5c4144d925cfef2a6713f310516bd1b4a3d0791e`.
+Interactive disk/account selection, offline firstboot, installed-disk boot,
+and two post-install reboots passed in a fresh no-NIC UEFI VM. The desktop
+selected Qwen3 0.6B although firstboot validated Qwen3 1.7B. The isolated
+source fix that seeds N.O.M.A.D.'s setting and gates GNOME startup is not in
+this ISO and has not been VM-tested. Automatic restart without the ordinary
+power-on after Ubuntu's media-removal prompt, physical USB handoff, and
+physical hardware remain unverified. Do not treat this candidate as a release.
+Evidence: `/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md`.
+
+The detailed `cc4aa38` record in [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md)
+is retained as historical evidence and does not describe the latest candidate.
 
 **Previous customer-mode installation PASS (2026-11-05; historical):**
 `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, source
@@ -90,7 +91,11 @@ loads container images, validates the local model, and indexes bundled source
 documents. Progress and failures are recorded in
 `/var/log/fieldos-firstboot.log` and
 `/var/lib/fieldos/provisioning-status.json`. Do not interrupt power during
-firstboot.
+firstboot. GNOME starts only after firstboot succeeds, so an initial desktop
+delay of several minutes is expected while the local model is validated. If
+the desktop does not appear, press Ctrl+Alt+F3 at the local console to reach a
+text login and follow the recovery instructions in
+[`OPERATIONS.md`](OPERATIONS.md#first-boot).
 
 Sign in to the account selected during installation. **FieldOS Command Center**
 opens N.O.M.A.D. at `http://localhost:8080`; **FieldOS Start Here** explains
