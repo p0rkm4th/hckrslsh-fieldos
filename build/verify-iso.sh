@@ -56,10 +56,14 @@ if sys.argv[2] == "customer" and manifest["source_dirty"]:
 PY
 grep -q 'START-HERE.html' "$TMP/provisioning-fieldos-start-here.desktop" \
   || { echo "FieldOS offline welcome launcher is incomplete" >&2; exit 1; }
-grep -q 'Ready offline in this test edition' "$TMP/provisioning-fieldos-start-here.html" \
+grep -q 'Ready offline in this edition' "$TMP/provisioning-fieldos-start-here.html" \
   || { echo "FieldOS offline content guide is missing its bundled-content section" >&2; exit 1; }
 grep -q 'separate internet-connected update session' "$TMP/provisioning-fieldos-start-here.html" \
   || { echo "FieldOS offline content guide is missing its update boundary" >&2; exit 1; }
+grep -q 'NIOSH heat-illness first-aid reference' "$TMP/provisioning-fieldos-start-here.html" \
+  || { echo "FieldOS offline content guide omits the bundled heat-illness reference" >&2; exit 1; }
+grep -q '2026 Southeastern vegetable crop handbook' "$TMP/provisioning-fieldos-start-here.html" \
+  || { echo "FieldOS offline content guide omits the bundled agriculture reference" >&2; exit 1; }
 grep -q 'FieldOS Install Content Pack' "$TMP/provisioning-fieldos-start-here.html" \
   || { echo "FieldOS offline content guide is missing the pack installer workflow" >&2; exit 1; }
 grep -q "picture-uri='file:///usr/share/backgrounds/fieldos/fieldos-wallpaper.svg'" \
