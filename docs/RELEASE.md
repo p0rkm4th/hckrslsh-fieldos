@@ -4,12 +4,14 @@
 
 ## Current source and customer candidate
 
-- Customer ISO build source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
+- Current source revision: `562fee9` (`origin/main` at the time of the 2026-11-05 test).
+- Latest customer-mode build: `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, SHA-256 `4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
+- Fresh interactive install attempt: **FAIL**. Ubuntu showed `/dev/vda` in `lsblk`/`fdisk`, but the installer offered no target disk and kept Next disabled; no writes were made. Evidence and screenshots: `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
+- Last passing customer-mode VM candidate remains `ac319b3aa1c458295bd2672f7608f146870a2df8`, ISO `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`, SHA-256 `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`. Its successful validation is historical evidence for that exact ISO, not this newer candidate.
+- Previous passing customer ISO build source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
 - Latest clean-source E2E tested source revision: `dc6d823bd8427c9193588e5460c28a7e4b20aad8` (clean worktree at test time).
-- Latest customer candidate source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
-- Latest customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`
-- Latest customer ISO SHA-256: `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`
-- Structural verification: PASS (`make verify`); fresh interactive UEFI VM installation, firstboot, services, and two reboots: PASS. The guest continued after the test detached the virtual ISO at Ubuntu's media-removal prompt and pressed Enter. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
+- Previous passing customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`, SHA-256 `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`.
+- That previous ISO passed structural verification (`make verify`), fresh interactive UEFI VM installation, firstboot, services, and two reboots. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
 - Previous customer-mode candidate `fieldos-customer-offline-9c59a5f.iso` was retired after `ac319b3` passed; its SHA-256 sidecar and interactive install evidence remain. The binary retirement audit is `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261105-customer-isos.txt`.
 - Latest current-source unattended E2E report: `/mnt/shared/fieldos-e2e/searchable-sidecars-20261105/20261105T095217Z-2608514/report.md`
 - Test-only ISO SHA-256: `77a7408739d302f312ea2a16e1beb875469bb1a55936c149715d55733681ea25` (test harness removed it after the run).
@@ -25,9 +27,11 @@ handbook date task, 1.7B returned the correct East/West spring and fall ranges
 and refused two facts absent from the excerpt; 0.6B omitted the West dates in
 the same focused check. The initial prompt showed that 1.7B can still format
 answers poorly, and this test did not exercise N.O.M.A.D.'s retrieval, visible
-citations, or a FieldOS installation. The customer ISO above still contains
-only 0.6B; the current test payload contains both models. The 1.7B CPU
-selection and initialization/generation smoke passed in the `dc6d823` no-NIC
+citation behavior, or a FieldOS installation. The earlier passing `ac319b3`
+customer ISO contains only 0.6B; the current test payload and newer customer
+build contain both models. The newer ISO has not completed installation, so
+its runtime model configuration is unverified. The 1.7B CPU selection and
+initialization/generation smoke passed in the `dc6d823` no-NIC
 E2E, but the selected model failed a real RAG question as described below.
 
 **Update (2026-11-05):** The exact `adc8551` source passed a clean no-NIC
@@ -54,8 +58,10 @@ the map. Two reboots passed. A post-run guest check confirmed five handbook
 text ranges installed; the Source Library page contains the tomato date rows
 and frost-free-date qualification, and no searchable companion was uploaded
 to N.O.M.A.D. The optional content-transfer branch was skipped. This is
-test-only evidence, not a rebuilt customer-mode ISO or semantic AI grounding
-acceptance. The earlier AI/RAG failure remains open.
+test-only evidence, not semantic AI grounding acceptance. A newer customer
+ISO has since been built from `562fee9`, but its interactive installation
+failed at disk selection as recorded at the top of this report. The earlier
+AI/RAG failure remains open.
 
 An earlier `9c59a5f` customer candidate required a host power-on after the
 media-removal prompt; that predecessor's handoff remains partial. The newer
@@ -63,7 +69,7 @@ media-removal prompt; that predecessor's handoff remains partial. The newer
 the installed disk without repair. Physical USB firmware behavior remains
 untested.
 
-The customer ISO from `ac319b3` was installed interactively to the disposable no-NIC 80 GiB UEFI VM. The user selected `vda`, created a local account, reviewed the install plan, and reached Ubuntu's installation-complete screen. The virtual ISO was ejected at the normal media-removal prompt; after Enter, the guest booted from the installed disk to GDM without repair or a host power cycle. Firstboot reached `complete`, loaded the CPU model and embeddings, indexed nine reference documents, and started all seven containers. The user logged into the FieldOS-branded desktop and used N.O.M.A.D., Kiwix, and maps in Firefox. Two consecutive reboots retained the services, model files, map packs, and reference files. Eight Tennessee locations visibly rendered in the actual browser. The exact installer selection, completion, handoff, service output, and screenshots are in `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md` and adjacent files. This verifies the VM installation flow; physical USB and hardware behavior remain untested.
+The previous `ac319b3` customer ISO was installed interactively to the disposable no-NIC 80 GiB UEFI VM. The user selected `vda`, created a local account, reviewed the install plan, and reached Ubuntu's installation-complete screen. The virtual ISO was ejected at the normal media-removal prompt; after Enter, the guest booted from the installed disk to GDM without repair or a host power cycle. Firstboot reached `complete`, loaded the CPU model and embeddings, indexed nine reference documents, and started all seven containers. The user logged into the FieldOS-branded desktop and used N.O.M.A.D., Kiwix, and maps in Firefox. Two consecutive reboots retained the services, model files, map packs, and reference files. Eight Tennessee locations visibly rendered in the actual browser. Evidence is in `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. This validates that exact earlier ISO; the newer `562fee9` customer build failed before installation and has not been exercised after install. Physical USB and hardware behavior remain untested.
 
 The same customer VM exposed an AI retrieval quality failure: the local
 assistant's streamed answer to a tomato question invented planting dates and
@@ -96,9 +102,9 @@ replace customer-mode installer validation.
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
 | Fresh unattended offline install | PASS | Clean source `dc6d823`; report and test ISO SHA-256 above. |
-| Interactive customer install | PASS in UEFI VM | `ac319b3` installed interactively to disposable `vda`, booted from disk after virtual media ejection, and reached the branded desktop. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. |
+| Interactive customer install | PARTIAL; latest build FAIL | Earlier `ac319b3` passed to desktop and two reboots. New `562fee9` build booted, but the UI offered no target although `/dev/vda` was present; no writes occurred. Evidence: `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`; prior pass: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. Physical USB behavior remains unverified. |
 | Offline firstboot and services | PASS in test payload | Firstboot completed, selected and validated Qwen3 1.7B on CPU, and started seven services; services persisted through two reboots. Physical GPU acceleration is unverified. |
-| Local chat and embeddings | PASS in test VM; customer ISO unchanged | New test payload validated selected Qwen3 1.7B generation during firstboot; E2E inference smoke and 768-dimensional embeddings passed. The preserved customer ISO still bundles 0.6B. Physical GPU acceleration is unverified. |
+| Local chat and embeddings | PASS in test VM; latest customer runtime unverified | New test payload validated selected Qwen3 1.7B initialization/generation and 768-dimensional embeddings. The newer customer ISO contains both model payloads but could not be installed to validate runtime selection. Physical GPU acceleration is unverified. |
 | Kiwix and source retrieval | PASS for direct source access; AI semantic answer PARTIAL | Customer Firefox opened the New York Times article from the 100-article fixture; all nine local documents reached indexed state. A crop-handbook chat returned unrelated snap-bean instructions without visible citations. The fixture is not a comprehensive library. |
 | Offline Source Library search | PASS, limited formats | New guest rendered the Source Library; 16 files were listed. Five handbook text ranges and selected CDC companions are searchable up to the 1 MiB limit, with original PDFs linked. Guest check verified handbook dates/qualification in page text and no companion AI uploads; Node test verifies search matching/excerpts. This is source discovery, not verified semantic Q&A. |
 | Tennessee maps | PASS in fresh test VM and customer VM | Eight actual Firefox screenshots in the latest E2E visibly show detailed statewide urban maps and sparse rural Big South Fork features. Map display is not routing or navigation; GPS is unverified. |
@@ -128,12 +134,13 @@ and artifact paths: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/semantic-r
 
 ## Current offline capabilities
 
-FieldOS provides a local assistant and embeddings, Kiwix, a small searchable
-source library, and an offline statewide Tennessee map viewer. The current
-customer-mode ISO has been installed interactively in a no-NIC UEFI VM and
-tested through two reboots. The virtual-media handoff completed after the ISO
-was ejected and Enter pressed; physical USB behavior remains untested. Kasm and
-Proxmox remain development tools, not product requirements.
+FieldOS has a successful prior customer-mode install (`ac319b3`) with local
+assistant, embeddings, Kiwix, Source Library, and offline statewide Tennessee
+maps, tested through two reboots in a no-NIC UEFI VM. The newer `562fee9`
+customer-mode ISO was built and structurally verified, but its installer did
+not offer the visible virtual disk; it is not install-accepted. Physical USB
+behavior remains untested. Kasm and Proxmox remain development tools, not
+product requirements.
 
 The local model is not an authority for emergency or medical decisions. It
 fails closed for configured safety-sensitive categories. The bundled sources

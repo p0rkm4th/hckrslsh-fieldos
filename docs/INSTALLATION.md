@@ -2,7 +2,15 @@
 
 ## Customer installation
 
-**Current unpublished customer-mode test candidate (2026-11-05):**
+**Latest customer-mode build (2026-11-05; install attempt failed):**
+`/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, source
+`562fee9`, SHA-256
+`4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
+The ISO boots, but the interactive installer did not offer its visible 80 GiB
+`/dev/vda` as an install target and left Next disabled. No disk writes occurred.
+See `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
+
+**Previous customer-mode VM pass (2026-11-05; not this newer build):**
 `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, source
 `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`, SHA-256
 `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`.
