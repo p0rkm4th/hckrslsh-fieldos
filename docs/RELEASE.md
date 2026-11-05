@@ -5,18 +5,18 @@
 ## Current source and customer candidate
 
 - Customer ISO build source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
-- Latest clean-source E2E tested source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (clean worktree at test time).
+- Latest clean-source E2E tested source revision: `dc6d823bd8427c9193588e5460c28a7e4b20aad8` (clean worktree at test time).
 - Latest customer candidate source revision: `ac319b3aa1c458295bd2672f7608f146870a2df8`.
 - Latest customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`
 - Latest customer ISO SHA-256: `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`
 - Structural verification: PASS (`make verify`); fresh interactive UEFI VM installation, firstboot, services, and two reboots: PASS. The guest continued after the test detached the virtual ISO at Ubuntu's media-removal prompt and pressed Enter. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
 - Previous customer-mode candidate `fieldos-customer-offline-9c59a5f.iso` was retired after `ac319b3` passed; its SHA-256 sidecar and interactive install evidence remain. The binary retirement audit is `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261105-customer-isos.txt`.
-- Current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/report.md`
-- Current-source test ISO SHA-256: `339989c4224b0bc9735e8eaf7349d9a7a4caba6e27d224bf894c462081b99aa7` (test harness removed the ISO after the run).
-- Current-source offline payload: `/mnt/shared/fieldos-payload-29ff87b/offline-payload.tar.zst`, SHA-256 `41194c0e16015c10ed41d6b49cc9fb12684ebf39882a1878a188b3d7a33f18d9`; payload verification passed against current pack and map manifests.
+- Latest current-source unattended E2E report: `/mnt/shared/fieldos-e2e/searchable-sidecars-20261105/20261105T095217Z-2608514/report.md`
+- Test-only ISO SHA-256: `77a7408739d302f312ea2a16e1beb875469bb1a55936c149715d55733681ea25` (test harness removed it after the run).
+- Latest verified offline payload: `/mnt/shared/fieldos-payload-searchable-20261105/offline-payload.tar.zst`, SHA-256 `b8f798477aae21468d86afd4d44df9cbf1d8cbc16463e358d5fc98aac0787403` (6.6 GiB).
 - Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
 
-### Pending hardware-adaptive model update
+### Adaptive model update (CPU tested; semantic quality unresolved)
 
 The source tree now pins Qwen3 1.7B Q4_K_M as a bundled candidate, with the
 0.6B model retained as fallback. A same-context CPU comparison is recorded at
@@ -25,9 +25,10 @@ handbook date task, 1.7B returned the correct East/West spring and fall ranges
 and refused two facts absent from the excerpt; 0.6B omitted the West dates in
 the same focused check. The initial prompt showed that 1.7B can still format
 answers poorly, and this test did not exercise N.O.M.A.D.'s retrieval, visible
-citations, the selected VM profile, or a FieldOS installation. The current ISO
-above still contains only 0.6B. The updated model payload and clean no-NIC E2E
-must pass before this model can be described as accepted in FieldOS.
+citations, or a FieldOS installation. The customer ISO above still contains
+only 0.6B; the current test payload contains both models. The 1.7B CPU
+selection and initialization/generation smoke passed in the `dc6d823` no-NIC
+E2E, but the selected model failed a real RAG question as described below.
 
 **Update (2026-11-05):** The exact `adc8551` source passed a clean no-NIC
 automated E2E at `/mnt/shared/fieldos-e2e/qwen17-model-20261105/20261105T091345Z-2568109/report.md`.
@@ -76,8 +77,8 @@ unresolved; direct source access works, but the model must not be treated as an
 authoritative field reference. The API stream evidence is summarized in the
 customer validation report.
 
-The current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM using the
-verified 5.7 GB payload above. It records unattended installation and complete
+The previous current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM
+using the then-verified 5.7 GB payload. It recorded unattended installation and complete
 firstboot provisioning, seven services, local CPU chat, embeddings, Kiwix
 catalogue/search, source indexing and AI safety refusals, eight actual Firefox
 map screenshots, container-egress blocking, and two reboot/persistence cycles.
@@ -94,13 +95,13 @@ replace customer-mode installer validation.
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline install | PASS | Clean source `82c7786`; report and test ISO SHA-256 above. |
+| Fresh unattended offline install | PASS | Clean source `dc6d823`; report and test ISO SHA-256 above. |
 | Interactive customer install | PASS in UEFI VM | `ac319b3` installed interactively to disposable `vda`, booted from disk after virtual media ejection, and reached the branded desktop. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. |
-| Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
-| Local chat and embeddings | PASS for the current ISO | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. The source-tree 1.7B candidate awaits a rebuilt offline installation test. |
+| Offline firstboot and services | PASS in test payload | Firstboot completed, selected and validated Qwen3 1.7B on CPU, and started seven services; services persisted through two reboots. Physical GPU acceleration is unverified. |
+| Local chat and embeddings | PASS in test VM; customer ISO unchanged | New test payload validated selected Qwen3 1.7B generation during firstboot; E2E inference smoke and 768-dimensional embeddings passed. The preserved customer ISO still bundles 0.6B. Physical GPU acceleration is unverified. |
 | Kiwix and source retrieval | PASS for direct source access; AI semantic answer PARTIAL | Customer Firefox opened the New York Times article from the 100-article fixture; all nine local documents reached indexed state. A crop-handbook chat returned unrelated snap-bean instructions without visible citations. The fixture is not a comprehensive library. |
-| Offline Source Library search | PASS, limited formats | Current-source guest rendered search and nine-document inventory; Node-backed test verifies matching and excerpts. Plain text up to 1 MiB is searchable on the page; PDFs and larger documents require browser Find. This is source discovery, not verified semantic Q&A. |
-| Tennessee maps | PASS in customer VM | Firefox visibly rendered Nashville, Memphis, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and rural West Tennessee from the regional archive. Map display is not routing or navigation; GPS is unverified. |
+| Offline Source Library search | PASS, limited formats | New guest rendered the Source Library; 16 files were listed. Five handbook text ranges and selected CDC companions are searchable up to the 1 MiB limit, with original PDFs linked. Guest check verified handbook dates/qualification in page text and no companion AI uploads; Node test verifies search matching/excerpts. This is source discovery, not verified semantic Q&A. |
+| Tennessee maps | PASS in fresh test VM and customer VM | Eight actual Firefox screenshots in the latest E2E visibly show detailed statewide urban maps and sparse rural Big South Fork features. Map display is not routing or navigation; GPS is unverified. |
 | Optional offline content-pack import | PASS in VM; semantic retrieval FAIL | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots. A later isolated query test cited the planner but failed to extract its clearly printed primary-contact fields; see the supplemental report below. |
 | New optional CDC preparedness pack | PASS in isolated VM | The 2013 CDC two-page checklist is item-recorded Public Domain and has a checksum-pinned 109,922-byte archive. A separate no-NIC copy-on-write guest imported it from read-only media; Firefox showed the Source Library entry and rendered the PDF, N.O.M.A.D. indexed one chunk, and both survived two reboots. It remains outside the ISO. Evidence and screenshots: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/cdc-pack-20261105T140000Z/validation.md`. |
 | Reboot persistence | PASS, two consecutive reboots | Provisioning marker, all seven containers, N.O.M.A.D., Kiwix, reference index, and no-default-route state persisted after each reboot; chat also generated after reboot 1. E2E passed two reboot cycles. |
