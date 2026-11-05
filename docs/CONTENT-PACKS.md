@@ -112,8 +112,11 @@ asset-level credits are recorded in a pack manifest.
 
 ## Southeastern vegetable production reference
 
-`us-southeastern-vegetable-growers` version `2026.1.1` is a Tennessee-relevant
-agriculture pack included in the current core payload. It contains the unmodified, searchable
+`us-southeastern-vegetable-growers` source manifest version `2026.1.2` is a
+Tennessee-relevant agriculture pack. It declares textual regional scope as the
+Southeastern United States, including Tennessee; this does not make the handbook
+a Tennessee-specific calendar. The current tested ISOs predate this manifest
+update. It contains the unmodified, searchable
 397-page 2026 Southeastern U.S. Vegetable Crop Handbook (3,991,344 bytes;
 SHA-256
 `f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c`). The
@@ -121,7 +124,7 @@ handbook's official publication page lists the last revision as January 2026,
 describes the included crop, soil, pest, planting-date, fertilizer, and food
 safety topics, and states that Virginia Cooperative Extension materials may
 be publicly used, reprinted, or cited with specified institutional and author
-credit. The version `2026.1.1` attribution lists the seven authors named on the
+credit. The pack attribution lists the seven authors named on the
 publisher page: Mark S. Reiter, Tom P. Kuhar, Kemper Sutton, Laura Strawn,
 Douglas S. Higgins, Steve L. Rideout, and Vijay Singh. It also credits senior
 editor A. L. Wszelaki, Virginia Cooperative Extension, Virginia Tech, and
@@ -132,8 +135,9 @@ publication page](https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html). This i
 regional commercial-vegetable reference, not a complete farm manual, livestock
 guide, or Tennessee-specific calendar. The source record advises that local
 markets, weather, and location can require changed practices or planting dates.
-It remains independently packaged for transfer, although the current ISO
-includes it in the core payload. Searchability was checked
+It remains independently packaged for transfer. No archive has been rebuilt
+for manifest version `2026.1.2`; the recorded archive below is version
+`2026.1.1`. Searchability was checked
 by extracting 1.8 MB of text from the PDF. A fresh no-NIC E2E imported the
 archive from read-only transfer media, activated its Source Library link, and
 indexed the document in N.O.M.A.D. as 678 chunks. It survived two guest
@@ -142,10 +146,9 @@ USB interface. The portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-southeastern-vegetable-growers-2026.1.1.tar.zst`
 (3,737,859 bytes; SHA-256
 `67ba6be8136afcdfbe14642675520369fc04b8f5a44bbf39d36da31a69a175a9`).
-The earlier `2026.1` archive remains as a historical package. The current
-customer ISO and its installed copy still contain the previous `2026.1`
-metadata; rebuild and acceptance-test a new ISO before claiming that this fix
-is present there.
+The earlier `2026.1` archive remains as a historical package. The recorded customer ISOs predate the `2026.1.2` metadata; the new scope
+field is source-only until a versioned archive/payload and ISO are built and
+tested.
 E2E evidence: `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`.
 
 Each populated pack has its own stable ID and version. Its manifest records
@@ -357,24 +360,26 @@ details are at
 
 ## MedlinePlus first-aid overview
 
-`us-medlineplus-first-aid` version `2026.07.22` is a portable
-3,086-byte text snapshot of the MedlinePlus **First Aid** health-topic summary.
+`us-medlineplus-first-aid` source manifest version `2026.07.22.1` describes
+a portable 3,086-byte text snapshot of the MedlinePlus **First Aid** health-topic summary.
 It covers when to call 911, general cuts-and-scrapes care, Poison Control,
 heat-related illness, and basic kit contents. The source page was last updated
 2026-07-22. Its 436-word summary is not a complete first-aid manual, course,
 or clinical review; the pack includes a separate FieldOS note identifying the
 snapshot date and limits.
 
-The [NLM reuse policy](https://medlineplus.gov/about/using/usingcontent/)
-specifically identifies summaries on health-topic pages as public domain and
-permits reproduction with attribution. The pack includes only that summary,
+The source manifest now includes both the First Aid page and the [NLM reuse
+policy](https://medlineplus.gov/about/using/usingcontent/) as separate source
+records. The policy specifically identifies summaries on health-topic pages as
+public domain and permits reproduction with attribution. The pack includes only that summary,
 with whitespace/list formatting normalized; it excludes linked article text,
 third-party material, images, logos, and page chrome. The artifact SHA-256 is
 `32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893`. Its
 manifest attributes the source to MedlinePlus and NLM and disclaims endorsement.
 This is a U.S. public-domain review, not a statement about international rights.
-The current source catalog marks the pack as core; it is absent from the tested
-`cc4aa38` customer ISO until a successor payload and ISO pass acceptance.
+The current source catalog marks the pack as core. The archive and guest
+evidence below are for the earlier `2026.07.22` pack version; the policy-source
+metadata update has not been repackaged or tested in an ISO.
 
 Its portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`
@@ -427,9 +432,19 @@ embedded in the customer ISO. Evidence:
 
 ## Flood safety reference pack
 
-`us-flood-safety` version 1.0.0 contains a short FieldOS-edited summary of NWS flood preparedness and response pages. It describes pre-event planning and basic actions while water is rising, identifies its gaps, and links the original NWS sources. The text is an editorial summary, not an official NWS/NOAA publication; it provides no current warning, forecast, local flood-zone data, or route planning. The source list records NOAA reuse guidance, attribution, and non-endorsement language. No third-party images are included. Full project redistribution review remains open.
+`us-flood-safety` source manifest version 1.0.1 records a short FieldOS-edited
+summary of NWS flood preparedness and response pages. It describes pre-event
+planning and basic actions while water is rising, identifies its gaps, and links
+the original NWS sources. The 1.0.1 artifact metadata explicitly links the
+summary to both NWS before-flood and during-flood source records, retaining
+`source` as the primary source for older readers. No 1.0.1 archive has been
+built. The text is an editorial summary, not an official NWS/NOAA publication;
+it provides no current warning, forecast, local flood-zone data, or route
+planning. The source list records NOAA reuse guidance, attribution, and
+non-endorsement language. No third-party images are included. Full project
+redistribution review remains open.
 
-The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. An earlier no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; that run used an uncommitted worktree and is integration evidence, not a clean-source release acceptance. The pack is now a core pack in the source catalog. The current clean-source six-pack unattended E2E and interactive customer candidate both activated and indexed flood references; current results are recorded in [`RELEASE.md`](RELEASE.md).
+The recorded portable archive is the earlier version 1.0.0 at `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. An earlier no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; that run used an uncommitted worktree and is integration evidence, not a clean-source release acceptance. The pack is now a core pack in the source catalog. The current clean-source six-pack unattended E2E and interactive customer candidate both activated and indexed flood references; current results are recorded in [`RELEASE.md`](RELEASE.md).
 
 ## NIOSH heat-illness first-aid text
 

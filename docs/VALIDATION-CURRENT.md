@@ -1,13 +1,14 @@
 # Historical customer ISO validation: `cc4aa38`
 
-This file records the earlier `cc4aa38` run and is not the latest customer
-candidate. The later `8020fd3` candidate passed interactive installation,
-offline firstboot, installed-disk boot, and two reboots, but its desktop chose
-Qwen3 0.6B while firstboot validated 1.7B. See [`RELEASE.md`](RELEASE.md) and
-`/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md` for the latest
-status. Current source adds the preference handoff and requires firstboot
-before the display manager and graphical target; these changes are not yet
-built into or validated in an ISO.
+This file records the historical `cc4aa38` run and is not the latest customer
+candidate. Candidate `8c81d64` is newer, but its fresh no-NIC interactive
+installation is blocked at Subiquity storage setup: `/dev/vda` is visible and
+Next remains disabled. No installed OS, firstboot, service, or reboot result
+exists for that candidate. Diagnostics are at
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. The last
+completed install test, `8020fd3`, passed VM install and two reboots but its UI
+selected Qwen3 0.6B while firstboot validated 1.7B. Current model handoff and
+graphical-startup changes are not validated by either ISO.
 
 **Run date:** 2026-11-05  
 **Source:** `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start; same commit as `origin/main`)  

@@ -5,6 +5,19 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
+## Current installation status (2026-11-05)
+
+The newest ISO candidate is source `8c81d64`,
+`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`). Its
+fresh interactive no-NIC UEFI installation is blocked in Subiquity storage
+setup; no installed system or content activation was verified from that ISO.
+Evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+The `cc4aa38` installation and content claims below describe a historical ISO,
+not the newest candidate or current source manifests. The last later completed
+install test (`8020fd3`) also had a model-default mismatch. Do not infer that
+current source pack metadata is present in either tested ISO.
+
 ## Statewide Tennessee map candidate, verified 2026-11-05
 
 The current payload replaces the former 19.6 MB Middle
@@ -41,7 +54,7 @@ UEFI VM. Screenshots are in
 `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/`; physical USB behavior
 remains unverified. Full evidence is recorded in [`RELEASE.md`](RELEASE.md).
 
-The latest tested customer candidate is
+The historical `cc4aa38` customer candidate was
 `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso` (SHA-256
 `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`). It
 contains Project N.O.M.A.D.'s miniature English

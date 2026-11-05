@@ -113,6 +113,8 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
         raise PackError(f"pack version must be a safe filename component in {manifest_path}")
     nonempty(manifest["title"], "pack title")
     nonempty(manifest["description"], "pack description")
+    if "geographic_scope" in manifest:
+        nonempty(manifest["geographic_scope"], "geographic_scope")
     category = manifest["category"]
     if not isinstance(category, str) or category not in CATEGORIES:
         raise PackError(f"unsupported category in pack {pack_id}")
@@ -150,7 +152,7 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
         if not isinstance(artifact, dict):
             raise PackError(f"{label} must be an object")
         required(artifact, {"path", "size_bytes", "sha256", "source", "license"}, label)
-        if artifact.keys() - {"path", "size_bytes", "sha256", "source", "license", "title", "index_with_ai"}:
+        if artifact.keys() - {"path", "size_bytes", "sha256", "source", "sources", "license", "title", "index_with_ai"}:
             raise PackError(f"{label} has unknown fields")
         relative = Path(nonempty(artifact["path"], f"{label} path"))
         if relative.is_absolute() or ".." in relative.parts:
@@ -161,6 +163,18 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
         source_ref = nonempty(artifact["source"], f"{label} source")
         if source_ref not in source_ids:
             raise PackError(f"{label} references undeclared source {source_ref!r}")
+        if "sources" in artifact:
+            related_sources = artifact["sources"]
+            if (not isinstance(related_sources, list) or not related_sources or
+                    any(not isinstance(item, str) or not item.strip() for item in related_sources)):
+                raise PackError(f"{label} sources must be a non-empty array of source IDs")
+            if len(related_sources) != len(set(related_sources)):
+                raise PackError(f"{label} sources must not contain duplicates")
+            undeclared = sorted(set(related_sources) - source_ids)
+            if undeclared:
+                raise PackError(f"{label} references undeclared sources: {', '.join(undeclared)}")
+            if source_ref not in related_sources:
+                raise PackError(f"{label} primary source must be included in sources")
         nonempty(artifact["license"], f"{label} license")
         if "title" in artifact:
             nonempty(artifact["title"], f"{label} title")
@@ -222,7 +236,8 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
     authority = manifest["authority"]
     if manifest.keys() - {
         "schema_version", "id", "version", "title", "description", "category",
-        "sources", "artifacts", "geographic_coverage", "installation", "authority", "review",
+        "sources", "artifacts", "geographic_coverage", "geographic_scope",
+        "installation", "authority", "review",
     }:
         raise PackError(f"pack {pack_id} has unknown fields")
     if authority is not None and (not isinstance(authority, str) or authority not in AUTHORITIES):

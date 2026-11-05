@@ -1,10 +1,8 @@
 # Release readiness and evidence
 
-**Current status (2026-11-05): candidate `8020fd3` passed interactive customer installation, offline firstboot, installed-disk boot, and two-reboot service validation in a disposable no-NIC UEFI VM. Its SHA-256 is `57ac5a1a501497f9a2e4eaaa5c4144d925cfef2a6713f310516bd1b4a3d0791e`; evidence is `/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md`. The tested desktop selected Qwen3 0.6B even though firstboot validated 1.7B. Current source seeds N.O.M.A.D.'s selected model and requires firstboot before the display manager and graphical target, but is not included in this ISO and has not been VM-validated. This is not a release approval. Physical USB/hardware behavior, connected-LAN exposure, and redistribution clearance remain unverified; do not distribute the ISO or recommend FieldOS for emergency or medical use.**
+**Current status (2026-11-05): source `8c81d64` produced an unvalidated customer ISO candidate at `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. A fresh no-NIC interactive UEFI install is blocked at Subiquity storage setup: `/dev/vda` is visible, but Next remains disabled. The run is not an installation PASS; diagnostics are `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. The last completed install acceptance is historical candidate `8020fd3` (below); its desktop selected Qwen3 0.6B although firstboot validated 1.7B. Current source changes and provenance metadata are not included in the tested 8c81d64 ISO. This is not a release approval. Physical USB/hardware behavior, connected-LAN exposure, and redistribution clearance remain unverified; do not distribute the ISO or recommend FieldOS for emergency or medical use.**
 
-The acceptance report below for `cc4aa38` is a historical record and is
-superseded by the newer `8020fd3` result above. The model-default and
-graphical-startup changes are source-only until rebuilt and tested.
+The `cc4aa38` and `8020fd3` records below are historical test evidence. Neither validates the newer `8c81d64` candidate or the current source changes.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 
