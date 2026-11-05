@@ -8,11 +8,12 @@
 `57ac5a1a501497f9a2e4eaaa5c4144d925cfef2a6713f310516bd1b4a3d0791e`.
 Interactive disk/account selection, offline firstboot, installed-disk boot,
 and two post-install reboots passed in a fresh no-NIC UEFI VM. The desktop
-selected Qwen3 0.6B although firstboot validated Qwen3 1.7B. The isolated
-source fix that seeds N.O.M.A.D.'s setting and gates GNOME startup is not in
-this ISO and has not been VM-tested. Automatic restart without the ordinary
-power-on after Ubuntu's media-removal prompt, physical USB handoff, and
-physical hardware remain unverified. Do not treat this candidate as a release.
+selected Qwen3 0.6B although firstboot validated Qwen3 1.7B. Source commits
+`dcf0631` and `a079f34` seed N.O.M.A.D.'s preference and gate GNOME startup;
+they are not in this ISO and have not been VM-tested. Automatic restart
+without the ordinary power-on after Ubuntu's media-removal prompt, physical
+USB handoff, and physical hardware remain unverified. Do not treat this
+candidate as a release.
 Evidence: `/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md`.
 
 The detailed `cc4aa38` record in [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md)

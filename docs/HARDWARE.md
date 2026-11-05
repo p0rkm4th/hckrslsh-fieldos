@@ -63,17 +63,21 @@ GPU appears in the detector output.
 
 After a model passes firstboot's local generation smoke test, FieldOS seeds
 N.O.M.A.D.'s supported `chat.lastModel` preference from that model's Ollama
-reference. The preference is inserted only when the setting is absent or NULL;
-an existing value is preserved. N.O.M.A.D. continues to save a user's manual
-model selection through its normal UI setting, and subsequent provisioning
-does not replace it.
+reference if the setting is absent, NULL, or empty. An existing nonempty value
+is preserved. The firstboot unit is configured to block GNOME startup until
+this preference is written, so the UI cannot save its initial default first;
+this startup gate still needs fresh-VM validation.
+N.O.M.A.D. continues to save a user's manual model selection through its
+normal UI setting, and subsequent provisioning does not replace it. The source
+change is committed but has not yet been included in an ISO or VM-validated.
 
-The current accepted customer ISO contains only Qwen3 0.6B. The source tree now
-pins Qwen3 1.7B Q4_K_M as the preferred bundled candidate for machines with
-enough memory and keeps 0.6B as fallback. An isolated CPU comparison against
-the same handbook excerpt showed better exact date extraction from 1.7B, but it
-did not exercise N.O.M.A.D.'s live retrieval, the 8 GiB install profile, or a
-customer installation. Evidence is in
+The tested `8020fd3` candidate bundles Qwen3 1.7B Q4_K_M and 0.6B; firstboot
+selected and validated 1.7B in the VM, while N.O.M.A.D.'s UI initially chose
+0.6B. The source tree pins 1.7B as the preferred bundled candidate for
+machines with enough memory and keeps 0.6B as fallback. An isolated CPU
+comparison against the same handbook excerpt showed better exact date
+extraction from 1.7B, but it did not exercise N.O.M.A.D.'s live retrieval, the
+8 GiB install profile, or a customer installation. Evidence is in
 `/mnt/shared/fieldos-model-eval-20261105/benchmark.json`; the candidate becomes
 an accepted FieldOS model only after payload validation and a fresh offline
 installation run.

@@ -12,9 +12,10 @@ seeds runtime files, selects and validates a model, and starts the Compose
 services. Firstboot is guarded by a lock and a completion marker. Check its
 result before retrying:
 
-On a fresh installation, GNOME waits until firstboot succeeds. Initial setup
-can take several minutes while the 5+ GiB offline payload is checked, loaded,
-and the bundled model is smoke-tested. If the desktop does not appear, use
+On a fresh installation, GNOME waits until firstboot succeeds. Setup took
+about 11 minutes in the 6-vCPU acceptance VM while the 5+ GiB offline payload
+was checked and loaded, models were validated, and reference files were
+indexed. Slower CPUs can take longer. If the desktop does not appear, use
 Ctrl+Alt+F3 at the local console to reach a text login and inspect the status
 and logs below. A failed firstboot intentionally keeps the graphical session
 closed so the assistant cannot be opened before model validation completes.
