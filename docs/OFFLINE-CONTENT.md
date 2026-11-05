@@ -121,9 +121,12 @@ Tennessee; it is included in the current ISO and indexed as 678 chunks. The
 NIOSH heat-illness text pack is also core and indexed as three chunks in the
 interactive customer guest. Wildlife, broader agriculture, procedural
 first-aid, and comprehensive reference packs still need source selection,
-licensing review, and activation evidence. The MedlinePlus pack passed isolated
-host-side archive and Source Library activation checks but has not been tested
-in the customer desktop or a rebuilt ISO.
+licensing review, and activation evidence. The MedlinePlus pack passed offline
+read-only-media import, Source Library activation, checksum, and two-reboot
+checks in a fresh unattended guest on source `aeeeadd98d8fd7fb11baabb770028647e96cf1fb`.
+The test invoked the pack installer directly; the desktop file-picker flow was
+not exercised. It remains optional and outside the customer ISO. Evidence:
+`/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
 The statewide map is verified in both the unattended E2E and interactive
 customer installation. The current ISO includes both agriculture and NIOSH
 packs; all six core packs activated and were indexed in the customer VM. These

@@ -4,17 +4,18 @@
 
 ## Current source and customer candidate
 
-- Repository revision before this documentation update: `4532c0677eaaabbedfdff51906c5a9d879cd9955`.
+- Repository revision before this documentation update: `aeeeadd98d8fd7fb11baabb770028647e96cf1fb`.
 - Customer ISO source revision: `562fee9b93c53679f57fd25af49fd79fc61a2d95` (clean, embedded build manifest).
 - Latest customer-mode build: `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, SHA-256 `4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
 - Fresh interactive customer install: **PASS in a disposable VM**. The installer allowed selection of target `vda`, destructive-action confirmation, and local account setup; installation and media handoff completed, and the guest booted from the installed disk with the ISO detached. Firstboot completed offline; the branded desktop and apps worked; two consecutive guest reboots preserved user data and services. The initial apparent “disabled Next button/no target” report was a GUI interaction error; a correctly delivered click advanced the installer. Full evidence: `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
 - VM limits: UEFI, 6 vCPU, 12 GiB RAM, 80 GiB disposable qcow2, no NIC. This does not validate physical USB firmware behavior or general physical hardware compatibility.
 - Prior customer-mode candidate `ac319b3aa1c458295bd2672f7608f146870a2df8` remains preserved as historical baseline: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`, SHA-256 `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`; report: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
-- Latest clean-source E2E tested source revision: `dc6d823bd8427c9193588e5460c28a7e4b20aad8` (clean worktree at test time).
+- Latest clean-source E2E tested source revision: `aeeeadd98d8fd7fb11baabb770028647e96cf1fb` (clean worktree at test time).
 - Previous customer-mode candidate `fieldos-customer-offline-9c59a5f.iso` was retired after `ac319b3` passed; its SHA-256 sidecar and interactive install evidence remain. The binary retirement audit is `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261105-customer-isos.txt`.
-- Latest current-source unattended E2E report: `/mnt/shared/fieldos-e2e/searchable-sidecars-20261105/20261105T095217Z-2608514/report.md`
-- Test-only ISO SHA-256: `77a7408739d302f312ea2a16e1beb875469bb1a55936c149715d55733681ea25` (test harness removed it after the run).
-- Latest verified offline payload: `/mnt/shared/fieldos-payload-searchable-20261105/offline-payload.tar.zst`, SHA-256 `b8f798477aae21468d86afd4d44df9cbf1d8cbc16463e358d5fc98aac0787403` (6.6 GiB).
+- Latest current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md` (installation, local services, eight Firefox map views, optional offline pack import, and two reboots passed).
+- Test-only ISO SHA-256: `fdac92a70988cc975e8486ad5da27666123cacde1183dede1abf56c88467ab33` (removed by the harness after the run).
+- Latest verified offline payload: `/mnt/shared/fieldos-payload-aeeeadd/offline-payload.tar.zst`, SHA-256 `f7bc22211c3e442c4ba56eb44ec8cce56bbd2c8a9e6d39af4e37b2dde12cd7e1` (6.6 GiB).
+- Optional MedlinePlus pack archive: `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`, SHA-256 `2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`.
 - Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
 
 ### Adaptive model update (CPU tested; semantic quality unresolved)
@@ -80,32 +81,40 @@ unresolved; direct source access works, but the model must not be treated as an
 authoritative field reference. The API stream evidence is summarized in the
 customer validation report.
 
-The previous current-source E2E at `82c7786` passed in a fresh no-NIC UEFI VM
-using the then-verified 5.7 GB payload. It recorded unattended installation and complete
-firstboot provisioning, seven services, local CPU chat, embeddings, Kiwix
-catalogue/search, source indexing and AI safety refusals, eight actual Firefox
-map screenshots, container-egress blocking, and two reboot/persistence cycles.
-The installed Source Library page visibly rendered its offline search field and
-nine-document inventory. Unit tests exercise the generated search JavaScript
-for matching, excerpts, and empty results. The optional transfer-pack branch
-was skipped in this run; the household communications and CDC packs each have
-separate no-NIC transfer/index/browser/reboot evidence. The test-only ISO was
-removed after the run, while its report, logs, screenshots, and stopped guest
-disk remain in `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/`. This does not
-replace customer-mode installer validation.
+A previous current-source E2E at `82c7786` also passed in a fresh no-NIC UEFI VM
+with the optional transfer-pack branch skipped. Its report, logs, screenshots,
+and stopped guest disk remain in `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/`.
+
+**Latest-source unattended acceptance (2026-11-05):** Clean revision
+`aeeeadd98d8fd7fb11baabb770028647e96cf1fb` passed a fresh unattended install in
+a no-NIC UEFI VM. All seven services started; Ollama generation, embeddings,
+Kiwix, reference indexing, external container-egress blocking, and Firefox map
+rendering at Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson,
+Johnson City, and Big South Fork passed. The optional MedlinePlus pack was
+mounted from read-only transfer media, checksum-verified, added to the Source
+Library, served at its local document path, and persisted through two reboots.
+The test called the pack installer directly, so it does not validate the
+separate graphical file-picker interaction. Evidence, including screenshots
+and logs: `/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
+After this run, `make check` and all 85 unit tests passed on the updated
+worktree; the catalog test explicitly includes the new optional pack.
+The test-only ISO (SHA-256
+`fdac92a70988cc975e8486ad5da27666123cacde1183dede1abf56c88467ab33`) was
+removed after the run. This acceptance is separate from the interactive
+customer-install test above.
 
 ## Acceptance matrix
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
-| Fresh unattended offline install | PASS | Clean source `dc6d823`; report and test ISO SHA-256 above. |
+| Fresh unattended offline install | PASS | Clean source `aeeeadd`; report and test ISO SHA-256 above. |
 | Interactive customer install | PASS in disposable VM | Fresh 80 GiB no-NIC UEFI install from `562fee9`; target/user selection, erase confirmation, normal media handoff, installed-disk boot, and branded desktop verified. Physical USB behavior remains unverified. |
 | Offline firstboot and services | PASS in customer VM | Firstboot status `complete`; all seven containers started. After two guest reboots, N.O.M.A.D. health returned `{"status":"ok"}` and services, references, maps, and user data persisted. Physical GPU acceleration is unverified. |
 | Local chat and embeddings | PASS in customer VM; AI quality limited | Selected Qwen3 1.7B CPU model returned `FIELDOS_CUSTOMER_BOOT_OK` after reboot 2. Embeddings returned a nonempty 768-dimensional vector. N.O.M.A.D. chat returned `FIELDOS_NOMAD_OK`, but attached weather references to a generic phrase; grounded citations remain unreliable. |
 | Kiwix and source retrieval | PASS for direct retrieval; limited library | Firefox opened a locally served New York Times article from the 100-article fixture. N.O.M.A.D. indexed all nine local reference documents (689 embedded chunks). The fixture is not comprehensive and AI semantic retrieval remains unreliable. |
 | Offline Source Library search | PASS, limited formats | New guest rendered the Source Library; 16 files were listed. Five handbook text ranges and selected CDC companions are searchable up to the 1 MiB limit, with original PDFs linked. Guest check verified handbook dates/qualification in page text and no companion AI uploads; Node test verifies search matching/excerpts. This is source discovery, not verified semantic Q&A. |
 | Tennessee maps | PASS in fresh test VM and customer VM | Eight customer-VM Firefox screenshots visibly rendered Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big South Fork at zoom 13. Rural detail is sparse. Map display is not routing or navigation; GPS is unverified. |
-| Optional offline content-pack import | PASS in VM; semantic retrieval FAIL | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots. A later isolated query test cited the planner but failed to extract its clearly printed primary-contact fields; see the supplemental report below. |
+| Optional offline content-pack import | PASS through installer; GUI flow not separately tested | `us-medlineplus-first-aid` transferred from read-only media, checksum-verified, installed, listed and linked in the Source Library, and persisted through two reboots in the current E2E. This pack is intentionally excluded from AI indexing. The graphical picker was not exercised in this run. Prior communications-pack semantic retrieval remains unreliable; see the supplemental report below. |
 | New optional CDC preparedness pack | PASS in isolated VM | The 2013 CDC two-page checklist is item-recorded Public Domain and has a checksum-pinned 109,922-byte archive. A separate no-NIC copy-on-write guest imported it from read-only media; Firefox showed the Source Library entry and rendered the PDF, N.O.M.A.D. indexed one chunk, and both survived two reboots. It remains outside the ISO. Evidence and screenshots: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/cdc-pack-20261105T140000Z/validation.md`. |
 | Reboot persistence | PASS, two consecutive reboots | On the customer VM, boot ID changed twice. A user-created file (SHA-256 `4a4f0732febf6de0ed7a32c8ff76dd0de3607e59795649af0ad70235e68a8b07`), maps, references, firstboot completion, and all seven services persisted; N.O.M.A.D. health recovered after each boot and selected-model generation passed after reboot 2. The VM's initial libvirt `on_reboot=destroy` setting was corrected to `restart` before the counted cycles. |
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |

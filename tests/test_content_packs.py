@@ -16,7 +16,7 @@ class ContentPackValidationTests(unittest.TestCase):
         self.assertEqual(
             validate_catalog(catalog_path),
             ["us-basic-emergency-health", "us-cdc-keep-calm-prepared", "us-flood-safety",
-             "us-household-communications",
+             "us-household-communications", "us-medlineplus-first-aid",
              "us-niosh-heat-first-aid", "us-southeastern-vegetable-growers", "us-tornado-safety",
              "us-water-food-emergency", "us-weather-safety"],
         )

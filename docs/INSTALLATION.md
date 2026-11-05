@@ -2,15 +2,19 @@
 
 ## Customer installation
 
-**Latest customer-mode build (2026-11-05; install attempt failed):**
+**Latest customer-mode build (2026-11-05; VM installation PASS):**
 `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, source
 `562fee9`, SHA-256
 `4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
-The ISO boots, but the interactive installer did not offer its visible 80 GiB
-`/dev/vda` as an install target and left Next disabled. No disk writes occurred.
-See `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
+Interactive account and target-disk selection, destructive-action confirmation,
+normal virtual-media handoff, installed-disk boot, and offline firstboot all
+passed in a fresh no-NIC 80 GiB UEFI VM. The branded desktop, local AI,
+embeddings, Kiwix, and statewide map worked; two consecutive reboots preserved
+services and user data. Eight Tennessee map locations rendered in Firefox.
+Physical USB behavior and physical hardware remain unverified. Evidence and
+screenshots: `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
 
-**Previous customer-mode VM pass (2026-11-05; not this newer build):**
+**Earlier customer-mode VM pass (2026-11-05; superseded):**
 `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, source
 `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`, SHA-256
 `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`.
@@ -55,7 +59,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network
