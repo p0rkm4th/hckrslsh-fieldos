@@ -134,8 +134,11 @@ checksum-verified and included in their pack manifests, searchable from the
 local Source Library, and excluded from duplicate N.O.M.A.D. AI indexing.
 Searchability does not fix semantic RAG ranking: the tested model retrieved
 unrelated crop tables for a tomato-date question. Use the companion to locate
-the original page and verify it directly. The companion additions require a
-new payload and installation test before they are release-accepted.
+the original page and verify it directly. The `dc6d823` clean-source payload
+and no-NIC E2E confirmed the companions install and appear in the Source
+Library; a post-run guest check found the East/West tomato dates and frost-free
+qualification in the library text and confirmed they were not uploaded to the
+AI index. This validates source discovery, not the model's semantic answers.
 
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live
