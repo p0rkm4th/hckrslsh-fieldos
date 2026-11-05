@@ -250,9 +250,11 @@ The latest current-source no-NIC E2E transferred the archive on read-only
 optical media, verified and installed it, generated a Source Library entry,
 and indexed its document as three chunks in N.O.M.A.D. Firefox visibly opened
 the local Source Library. The pack's installed files and generated index
-survived two reboots. This validates activation and indexing, not a semantic
-N.O.M.A.D. retrieval query for the worksheet. The pack remains optional and
-is not embedded in the customer ISO. Evidence:
+survived two reboots. A later isolated query check failed to retrieve simple
+contact fields from the indexed worksheet, although Firefox could open the
+original text directly. Treat the pack as locally readable; do not rely on
+chat retrieval to extract its fields. The pack remains optional and is not
+embedded in the customer ISO. Evidence:
 `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/report.md` and
 `reference-library-render.png` in the same directory.
 
