@@ -226,6 +226,31 @@ nonclinical-review limitation. This is a small orientation sheet and does not
 close FieldOS's first-aid or medical-reference gap. The pack remains optional
 until broader content and redistribution review are complete.
 
+## CDC emergency kit checklist
+
+`us-cdc-keep-calm-prepared` version `1.0.0` is an optional, unchanged two-page
+CDC emergency-kit checklist. It covers household, workplace, school, vehicle,
+and additional family or pet supply considerations. It is a brief 2013
+preparedness checklist, not a complete all-hazards plan, first-aid guide, or
+medical reference. The exact [CDC STACKS record](https://stacks.cdc.gov/view/cdc/23954)
+identifies the item as Public Domain, gives its publication date and two-page
+extent, and provides the original PDF link. The bundled file is 138,605 bytes
+with SHA-256
+`d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`; its PDF
+text is extractable. N.O.M.A.D. supports PDF indexing, but this new pack has
+not yet been installed or tested through its Knowledge Base. The manifest
+records CDC attribution and makes clear that source and license review is not
+a clinical review. The pack is optional and is not part of the customer ISO
+baseline. Its portable archive is
+`/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0.tar.zst`
+(109,922 bytes; SHA-256
+`ebfb8bb14588f9af2521a3139420b17eb7db5e96014ad093526dba27d38f8617`). The
+existing offline installer was exercised against this archive on the build
+host: checksum validation, immutable installation, checksum recheck, generated
+Source Library entry, and local original-document link all passed. A guest
+desktop import, N.O.M.A.D. indexing, and semantic retrieval have not yet been
+tested for this pack.
+
 ## Household emergency communications planner
 
 `us-household-communications` version `1.0.0` is a 6,411-byte,

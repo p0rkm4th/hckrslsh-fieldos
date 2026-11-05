@@ -15,7 +15,7 @@ class ContentPackValidationTests(unittest.TestCase):
         catalog_path = ROOT / "payload/manifests/content-packs.json"
         self.assertEqual(
             validate_catalog(catalog_path),
-            ["us-basic-emergency-health", "us-flood-safety",
+            ["us-basic-emergency-health", "us-cdc-keep-calm-prepared", "us-flood-safety",
              "us-household-communications",
              "us-niosh-heat-first-aid", "us-southeastern-vegetable-growers", "us-tornado-safety",
              "us-water-food-emergency", "us-weather-safety"],
@@ -145,6 +145,29 @@ class ContentPackValidationTests(unittest.TestCase):
                     "content_revision": "2026-10-15"},
         )
         self.assertEqual(validate_catalog(catalog), ["fixture-reference"])
+
+    def test_cdc_checklist_metadata_pins_source_public_domain_and_artifact(self):
+        manifest = json.loads(
+            (ROOT / "payload/content-packs/us-cdc-keep-calm-prepared/manifest.json").read_text()
+        )
+        self.assertEqual(manifest["authority"], "authoritative-reference")
+        self.assertIn("Public Domain", manifest["sources"][0]["license"])
+        self.assertEqual(
+            manifest["artifacts"][0]["sha256"],
+            "d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319",
+        )
+        catalog = ROOT / "payload/manifests/content-packs.json"
+        self.assertIn("us-cdc-keep-calm-prepared", validate_catalog(catalog))
+
+    def test_authored_communications_planner_is_not_mislabeled_as_authoritative(self):
+        manifest = json.loads(
+            (ROOT / "payload/content-packs/us-household-communications/manifest.json").read_text()
+        )
+        self.assertEqual(manifest["category"], "communications")
+        self.assertEqual(manifest["authority"], "fieldos-authored")
+        self.assertIn("Original FieldOS-authored text", manifest["artifacts"][0]["license"])
+        catalog = ROOT / "payload/manifests/content-packs.json"
+        self.assertIn("us-household-communications", validate_catalog(catalog))
 
     def test_invalid_geographic_bounds_are_rejected(self):
         catalog, _, _ = self.fixture(coverage={

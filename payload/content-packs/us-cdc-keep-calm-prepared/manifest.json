@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "us-cdc-keep-calm-prepared",
+  "version": "1.0.0",
+  "title": "CDC Keep Calm and Be Prepared",
+  "description": "A two-page CDC emergency-kit checklist. It is a brief preparedness aid, not a complete disaster plan or medical reference.",
+  "category": "first-aid-emergency",
+  "sources": [
+    {
+      "id": "cdc-keep-calm",
+      "name": "CDC STACKS: Keep calm and be prepared (2013; item cdc:23954)",
+      "url": "https://stacks.cdc.gov/view/cdc/23954",
+      "license": "The exact CDC STACKS item record identifies the item as Public Domain.",
+      "attribution": "Centers for Disease Control and Prevention, Office of Public Health Preparedness and Response. Reproduced unmodified; CDC attribution retained. No endorsement is implied.",
+      "accessed": "2026-11-05"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "keep-calm-and-be-prepared-cdc-2013.pdf",
+      "size_bytes": 138605,
+      "sha256": "d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319",
+      "source": "cdc-keep-calm",
+      "license": "Public Domain per the exact CDC STACKS item record; original PDF is unmodified."
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS source and metadata review; not a clinical review",
+    "reviewed_at": "2026-11-05",
+    "content_revision": "2013-08-29"
+  }
+}
