@@ -18,6 +18,24 @@
 
 This current snapshot supersedes status claims in the revision-specific historical records below.
 
+## Source changes after the validated ISO
+
+Current source includes the map-style patch that links OpenStreetMap
+contributors, Protomaps, and the ODbL, plus the full pinned MIT notice for
+Tangrams-derived sprites. The PMTiles CLI version/commit, container digest,
+source URLs, and per-region extraction commands are now pinned and checked by
+the payload verifier. The patch was exercised against the exact pinned style
+JSON and PMTiles 1.30.2 image; source tests pass. None of these changes has yet
+been included in a rebuilt payload or ISO, and the map attribution still needs
+browser verification. The exact artwork revision behind the modified sprites
+remains unresolved. Physical USB insertion/navigation is also unverified; the
+content-pack import test used read-only optical media.
+
+Source revision `9060660` passes `make check`, 96 unit tests, and
+validation of all 10 content-pack manifests. Its map attribution, updated
+extractor provenance, and importer guidance are source-level changes only;
+they have not been incorporated into the ISO identified above.
+
 ## Historical source-specific acceptance records (prior revisions)
 
 - Prior E2E source revision recorded here: `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe` (clean worktree during E2E; report below).
