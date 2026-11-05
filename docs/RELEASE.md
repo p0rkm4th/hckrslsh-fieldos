@@ -10,7 +10,7 @@
 - Latest customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`
 - Latest customer ISO SHA-256: `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`
 - Structural verification: PASS (`make verify`); fresh interactive UEFI VM installation, firstboot, services, and two reboots: PASS. The guest continued after the test detached the virtual ISO at Ubuntu's media-removal prompt and pressed Enter. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
-- Previous customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, SHA-256 `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`; interactive install/boot evidence: `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
+- Previous customer-mode candidate `fieldos-customer-offline-9c59a5f.iso` was retired after `ac319b3` passed; its SHA-256 sidecar and interactive install evidence remain. The binary retirement audit is `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261105-customer-isos.txt`.
 - Current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/report.md`
 - Current-source test ISO SHA-256: `339989c4224b0bc9735e8eaf7349d9a7a4caba6e27d224bf894c462081b99aa7` (test harness removed the ISO after the run).
 - Current-source offline payload: `/mnt/shared/fieldos-payload-29ff87b/offline-payload.tar.zst`, SHA-256 `41194c0e16015c10ed41d6b49cc9fb12684ebf39882a1878a188b3d7a33f18d9`; payload verification passed against current pack and map manifests.
