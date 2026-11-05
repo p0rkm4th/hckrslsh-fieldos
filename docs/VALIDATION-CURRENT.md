@@ -5,7 +5,8 @@ candidate. The later `8020fd3` candidate passed interactive installation,
 offline firstboot, installed-disk boot, and two reboots, but its desktop chose
 Qwen3 0.6B while firstboot validated 1.7B. See [`RELEASE.md`](RELEASE.md) and
 `/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md` for the latest
-status. The isolated source fix is not yet built into or validated in an ISO.
+status. Source commits `dcf0631` and `a079f34` add the preference handoff and
+graphical-startup gate; they are not yet built into or validated in an ISO.
 
 **Run date:** 2026-11-05  
 **Source:** `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start; same commit as `origin/main`)  
