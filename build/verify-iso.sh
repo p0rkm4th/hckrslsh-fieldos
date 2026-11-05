@@ -26,7 +26,6 @@ for path in /fieldos/build-manifest.json /fieldos/payload/offline-payload.tar.zs
   /fieldos/installer/provisioning/fieldos-content-pack-import.desktop \
   /fieldos/installer/provisioning/fieldos-content-pack-import-root \
   /fieldos/installer/provisioning/fieldos-content-pack-import.policy \
-  /fieldos/installer/provisioning/fieldos-polkit-agent.desktop \
   /fieldos/installer/provisioning/fieldos-sources.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.desktop \
   /fieldos/installer/provisioning/fieldos-start-here.html \

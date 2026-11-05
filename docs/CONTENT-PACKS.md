@@ -18,8 +18,15 @@ outside the core image.
 The optional MedlinePlus pack was also transferred from read-only ISO media and
 activated offline in a fresh no-NIC E2E guest on source `aeeeadd98d8fd7fb11baabb770028647e96cf1fb`.
 The archive and source-document checksums, Source Library links, and two reboot
-cycles passed. This validates the pack installer and content activation, not
-the separate graphical file-picker flow. Full evidence is in
+cycles passed. This validates the pack installer and content activation. A later
+manual diagnostic on source `ed21454d19a71e4e42b29b5a81866bab53df7bb1`
+launched the desktop importer from GNOME search, authenticated through GNOME's
+prompt, and displayed the success dialog. That E2E run had already failed its
+automated gate and was manually intervened in, so this is diagnostic evidence,
+not a clean GUI E2E pass. The automation now launches through GNOME search and
+needs a fresh no-NIC run. Screenshot:
+`/mnt/shared/fieldos-e2e/20261105T142957Z-3004889/manual-ui-import-final.png`.
+The clean earlier transfer report is
 `/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
@@ -91,14 +98,6 @@ authentication prompt. Keep the matching `.sha256` sidecar beside the archive.
 The launcher uses the same validator and installer described below; it asks
 N.O.M.A.D. to index reference documents after activation. This adds no new
 network service and exposes no remote administrative interface.
-
-A 2026-11-05 acceptance run found that the original offline package set omitted
-a graphical PolicyKit authentication agent, causing `pkexec` to fail before
-showing a password prompt. The source now includes Ubuntu's
-`policykit-1-gnome` package and a FieldOS autostart entry because Ubuntu's
-package entry excludes GNOME sessions. Provisioning and E2E check the agent
-configuration and process. Fresh GUI import acceptance is still pending; see
-[`RELEASE.md`](RELEASE.md) for both failure records and current status.
 
 For operator use, verify and add a bundle with:
 

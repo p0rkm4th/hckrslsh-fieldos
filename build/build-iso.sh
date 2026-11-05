@@ -90,7 +90,6 @@ install -m 0644 "$ROOT/installer/provisioning/fieldos-start-here.desktop" "$WORK
 install -m 0644 "$ROOT/installer/provisioning/fieldos-start-here.html" "$WORK/fieldos/installer/provisioning/fieldos-start-here.html"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-content-pack-import.desktop" "$WORK/fieldos/installer/provisioning/fieldos-content-pack-import.desktop"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-content-pack-import.policy" "$WORK/fieldos/installer/provisioning/fieldos-content-pack-import.policy"
-install -m 0644 "$ROOT/installer/provisioning/fieldos-polkit-agent.desktop" "$WORK/fieldos/installer/provisioning/fieldos-polkit-agent.desktop"
 install -m 0755 "$ROOT/installer/provisioning/fieldos-content-pack-import-root" "$WORK/fieldos/installer/provisioning/fieldos-content-pack-import-root"
 install -m 0644 "$ROOT/installer/provisioning/fieldos-sources.desktop" "$WORK/fieldos/installer/provisioning/fieldos-sources.desktop"
 install -m 0755 "$ROOT/installer/provisioning/install-branding.sh" "$WORK/fieldos/installer/provisioning/install-branding.sh"

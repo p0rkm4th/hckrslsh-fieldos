@@ -94,21 +94,27 @@ class ContentPackImportUiTests(unittest.TestCase):
         self.assertEqual(action.findtext("defaults/allow_active"), "auth_admin")
         self.assertEqual(action.findtext("defaults/allow_any"), "no")
 
-    def test_offline_importer_bundles_and_installs_graphical_polkit_agent(self):
+    def test_offline_importer_uses_ubuntu_desktop_authentication_helper_without_upgrading_polkit(self):
         build = (ROOT / "build/prepare-payload.sh").read_text()
         firstboot = (ROOT / "installer/provisioning/firstboot.sh").read_text()
-        branding = (ROOT / "installer/provisioning/install-branding.sh").read_text()
-        desktop = (ROOT / "installer/provisioning/fieldos-polkit-agent.desktop").read_text()
         self.assertIn("zenity", build)
-        self.assertIn("policykit-1-gnome", build)
-        self.assertIn("required_base_packages\":[\"zenity\",\"pkexec\",\"policykit-1-gnome\"]", build)
-        self.assertIn("install \\\n  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity policykit-1-gnome", firstboot)
+        self.assertIn("required_base_packages\":[\"zenity\",\"pkexec\"]", build)
+        self.assertIn("install \\\n  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity", firstboot)
         self.assertIn("command -v pkexec", firstboot)
         self.assertIn("command -v zenity", firstboot)
-        self.assertIn("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", firstboot)
-        self.assertIn("/etc/xdg/autostart/fieldos-polkit-agent.desktop", branding)
-        self.assertIn("Exec=/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", desktop)
-        self.assertNotIn("OnlyShowIn=", desktop)
+        self.assertNotIn("qemu-guest-agent zenity pkexec", firstboot)
+
+    def test_e2e_launches_importer_through_logged_in_gnome_session(self):
+        e2e = (ROOT / "tests/test_e2e.py").read_text()
+        self.assertIn('self.type_virtual_keyboard("fieldos install content pack")', e2e)
+        self.assertIn('self.send_key("KEY_LEFTMETA")', e2e)
+        self.assertIn('" ": "KEY_SPACE"', e2e)
+        self.assertNotIn("/usr/bin/python3 /opt/fieldos/scripts/fieldos-content-pack-import.py", e2e)
+
+    def test_e2e_reuses_or_relocates_the_desktop_auto_mounted_pack_media(self):
+        e2e = (ROOT / "tests/test_e2e.py").read_text()
+        self.assertIn(r'findmnt -rn -S \"$device\" -o TARGET', e2e)
+        self.assertIn(r'[[ \"$mounted\" != /mnt/fieldos-pack-test ]]', e2e)
 
 
 if __name__ == "__main__":

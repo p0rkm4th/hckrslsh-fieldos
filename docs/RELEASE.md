@@ -13,7 +13,17 @@
 - Latest clean-source E2E tested source revision: `aeeeadd98d8fd7fb11baabb770028647e96cf1fb` (clean worktree at test time).
 - Previous customer-mode candidate `fieldos-customer-offline-9c59a5f.iso` was retired after `ac319b3` passed; its SHA-256 sidecar and interactive install evidence remain. The binary retirement audit is `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261105-customer-isos.txt`.
 - Latest current-source unattended E2E report: `/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md` (installation, local services, eight Firefox map views, optional offline pack import, and two reboots passed).
-- On source `0d3a2b324e52f90848f5f9cdc7c8d52a360a611f`, the package was installed offline, but the agent was still not launched. Ubuntu's package autostart entry excludes GNOME, so the E2E agent guard failed after all eight map views passed. Evidence: `/mnt/shared/fieldos-e2e/20261105T140417Z-2934923/report.md`. A FieldOS GNOME autostart entry is now added; this second fix also requires a clean E2E run.
+- Three later GUI-import attempts on sources `41573f2`, `0d3a2b3`, and
+  `ed21454` completed offline installation and rendered all eight Tennessee
+  browser views, then failed the automated content-import gate before reboot
+  checks. The harness had started the importer through QEMU Guest Agent instead
+  of GNOME's logged-in session. On the `ed21454` guest, a manual desktop launch
+  authenticated and installed the pack, but this was an intervened diagnostic,
+  not a clean E2E PASS. The local harness correction now opens the existing
+  launcher through GNOME search and needs a fresh no-NIC run. Reports remain in
+  `/mnt/shared/fieldos-e2e/20261105T133000Z-2879177/`,
+  `/mnt/shared/fieldos-e2e/20261105T140417Z-2934923/`, and
+  `/mnt/shared/fieldos-e2e/20261105T142957Z-3004889/`.
 - Test-only ISO SHA-256: `fdac92a70988cc975e8486ad5da27666123cacde1183dede1abf56c88467ab33` (removed by the harness after the run).
 - Latest verified offline payload: `/mnt/shared/fieldos-payload-aeeeadd/offline-payload.tar.zst`, SHA-256 `f7bc22211c3e442c4ba56eb44ec8cce56bbd2c8a9e6d39af4e37b2dde12cd7e1` (6.6 GiB).
 - Optional MedlinePlus pack archive: `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`, SHA-256 `2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`.
