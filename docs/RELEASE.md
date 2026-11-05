@@ -1,18 +1,33 @@
 # Release readiness and evidence
 
-**Status: interactive customer installation and VM feature checks passed; not approved for public binary distribution, emergency use, or medical use. Physical-device testing and redistribution clearance remain open.**
+**Current status (2026-11-05): the current customer ISO works offline after installation, but the interactive installer required a diagnostic VM reset at its Restart Now handoff. Customer installation is PARTIAL, not a clean PASS. The ISO is not approved for public binary distribution, emergency use, or medical use.**
 
-## Current source and customer candidate
+## Latest customer ISO acceptance
 
-- Latest source revision: `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe` (clean worktree during E2E; report below).
+- Source revision: `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start).
+- Customer ISO: `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`.
+- SHA-256: `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`.
+- `make check test`: PASS, 87 unit tests; 10 content-pack manifests validated.
+- `make verify ISO=...`: PASS; BIOS/UEFI boot records, customer setup, offline APT, and payload presence verified.
+- Interactive UEFI install to a disposable 80 GiB disk: installer allowed disk and identity selection and confirmed destructive install. The installer did not restart the guest automatically; a diagnostic `virsh reset` was required. The ISO was detached, installed Ubuntu booted from disk, and offline firstboot completed. This intervention means the interactive-install gate remains PARTIAL.
+- Post-install operations: all seven services started; selected CPU model generated text; 768-dimensional embeddings returned; nine reference documents/689 chunks indexed; Kiwix article search succeeded; Firefox visibly rendered zoom-13 maps for all eight Tennessee test locations; two subsequent reboots preserved a user-data marker, map bytes, services, inference, embeddings, and Kiwix search.
+- N.O.M.A.D. answer quality remains limited: local chat attached a source but did not answer a soil-pH query from it. A separate harmless UI prompt received an overbroad refusal and irrelevant weather references. Direct reference access is more reliable than model answers.
+- Full current report and evidence: [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`.
+- Remaining gates: reproduce/fix unattended installer handoff, physical USB and hardware tests, connected-network exposure review, useful broad content, semantic quality, and redistribution clearance.
+
+This current snapshot supersedes status claims in the revision-specific historical records below.
+
+## Historical source-specific acceptance records (prior revisions)
+
+- Prior E2E source revision recorded here: `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe` (clean worktree during E2E; report below).
 - Customer ISO source revision: `562fee9b93c53679f57fd25af49fd79fc61a2d95` (clean, embedded build manifest).
-- Latest customer-mode build: `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, SHA-256 `4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
+- Prior customer-mode build recorded here: `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, SHA-256 `4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
 - Fresh interactive customer install: **PASS in a disposable VM**. The installer allowed selection of target `vda`, destructive-action confirmation, and local account setup; installation and media handoff completed, and the guest booted from the installed disk with the ISO detached. Firstboot completed offline; the branded desktop and apps worked; two consecutive guest reboots preserved user data and services. The initial apparent “disabled Next button/no target” report was a GUI interaction error; a correctly delivered click advanced the installer. Full evidence: `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
 - VM limits: UEFI, 6 vCPU, 12 GiB RAM, 80 GiB disposable qcow2, no NIC. This does not validate physical USB firmware behavior or general physical hardware compatibility.
 - Prior customer-mode candidate `ac319b3aa1c458295bd2672f7608f146870a2df8` remains preserved as historical baseline: `/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`, SHA-256 `1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`; report: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`.
-- Latest clean-source unattended E2E: source `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe`; test ISO SHA-256 `6824a8ab41da257bfa4a98661aaf4ce2a332315111f8577802bf5d4f8eb7c10b`; report `/mnt/shared/fieldos-e2e/20261105T155548Z-3200639/report.md`. The fresh no-NIC install passed provisioning, local inference and embeddings, Kiwix, source indexing, container egress blocking, eight Firefox map views, GUI pack import and attribution checks, and two reboot cycles.
+- Prior clean-source unattended E2E: source `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe`; test ISO SHA-256 `6824a8ab41da257bfa4a98661aaf4ce2a332315111f8577802bf5d4f8eb7c10b`; report `/mnt/shared/fieldos-e2e/20261105T155548Z-3200639/report.md`. The fresh no-NIC install passed provisioning, local inference and embeddings, Kiwix, source indexing, container egress blocking, eight Firefox map views, GUI pack import and attribution checks, and two reboot cycles.
 - Previous customer-mode candidate `fieldos-customer-offline-9c59a5f.iso` was retired after `ac319b3` passed; its SHA-256 sidecar and interactive install evidence remain. The binary retirement audit is `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261105-customer-isos.txt`.
-- Previous E2E reports remain historical evidence; the latest result is the `8c9870b` run above.
+- These E2E reports are historical evidence; the current customer-mode result is recorded above and in `VALIDATION-CURRENT.md`.
 - Four later GUI-import attempts on sources `41573f2`, `0d3a2b3`, `ed21454`,
   and `327488c` completed offline installation and rendered all eight Tennessee
   browser views, then failed the automated content-import gate before reboot
@@ -30,13 +45,13 @@
   `/mnt/shared/fieldos-e2e/20261105T142957Z-3004889/`, and
   `/mnt/shared/fieldos-e2e/20261105T152842Z-3096889/`.
 - Test-only ISO SHA-256: `fdac92a70988cc975e8486ad5da27666123cacde1183dede1abf56c88467ab33` (removed by the harness after the run).
-- Latest verified offline payload: `/mnt/shared/fieldos-payload-aeeeadd/offline-payload.tar.zst`, SHA-256 `f7bc22211c3e442c4ba56eb44ec8cce56bbd2c8a9e6d39af4e37b2dde12cd7e1` (6.6 GiB).
+- Offline payload used by that prior E2E: `/mnt/shared/fieldos-payload-aeeeadd/offline-payload.tar.zst`, SHA-256 `f7bc22211c3e442c4ba56eb44ec8cce56bbd2c8a9e6d39af4e37b2dde12cd7e1` (6.6 GiB).
 - Optional MedlinePlus pack archive: `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`, SHA-256 `2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`.
 - Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
 
-### Adaptive model update (CPU tested; semantic quality unresolved)
+### Historical adaptive model update (CPU tested; semantic quality unresolved)
 
-The source tree now pins Qwen3 1.7B Q4_K_M as the selected bundled CPU model, with the
+That source tree pinned Qwen3 1.7B Q4_K_M as the selected bundled CPU model, with the
 0.6B model retained as fallback. A same-context CPU comparison is recorded at
 `/mnt/shared/fieldos-model-eval-20261105/benchmark.json`. On the Tennessee
 handbook date task, 1.7B returned the correct East/West spring and fall ranges
@@ -101,7 +116,7 @@ A previous current-source E2E at `82c7786` also passed in a fresh no-NIC UEFI VM
 with the optional transfer-pack branch skipped. Its report, logs, screenshots,
 and stopped guest disk remain in `/mnt/shared/fieldos-e2e/20261105T063912Z-2352718/`.
 
-**Latest-source unattended acceptance (2026-11-05):** Clean revision
+**Historical clean-source unattended acceptance (2026-11-05):** Clean revision
 `aeeeadd98d8fd7fb11baabb770028647e96cf1fb` passed a fresh unattended install in
 a no-NIC UEFI VM. All seven services started; Ollama generation, embeddings,
 Kiwix, reference indexing, external container-egress blocking, and Firefox map
@@ -119,7 +134,7 @@ The test-only ISO (SHA-256
 removed after the run. This acceptance is separate from the interactive
 customer-install test above.
 
-## Acceptance matrix
+## Historical acceptance matrix (prior revisions; see latest result above)
 
 | Gate | Status | Evidence / remaining work |
 |---|---|---|
@@ -156,12 +171,13 @@ and artifact paths: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/semantic-r
 
 ## Current offline capabilities
 
-FieldOS has a fresh customer-mode install from the `562fee9` ISO with local
-assistant, embeddings, Kiwix, searchable references, and statewide Tennessee
-maps, tested through two reboots in a no-NIC UEFI VM. The exact ISO and VM
-evidence are listed above. Physical USB behavior and compatibility across
-hardware remain untested. Kasm and Proxmox remain development tools, not
-product requirements.
+The current `cc4aa38` customer-mode candidate has been installed in a no-NIC
+UEFI VM. Local AI generation, embeddings, Kiwix, the Tennessee map, and the
+branded Command Center were opened or exercised after installation; two guest
+reboots preserved their services and data. The installer handoff required a
+manual VM reset, so this is not a clean installation PASS. Physical USB
+behavior and compatibility across hardware remain untested. Kasm and Proxmox
+remain development tools, not product requirements.
 
 The local model is not an authority for emergency or medical decisions. It
 fails closed for configured safety-sensitive categories. The bundled sources
