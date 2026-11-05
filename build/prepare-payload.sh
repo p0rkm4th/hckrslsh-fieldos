@@ -259,7 +259,18 @@ for attempt in $(seq 1 60); do
   docker exec "$MODEL_CONTAINER" ollama list >/dev/null 2>&1 && break
   sleep 2
 done
-docker exec "$MODEL_CONTAINER" ollama pull qwen3:0.6b-q4_K_M
+mapfile -t BUNDLED_CHAT_MODELS < <(python3 - "$ROOT/models/manifest.json" <<'PY'
+import json
+import sys
+manifest = json.load(open(sys.argv[1], encoding="utf-8"))
+for model in manifest["chat_models"]:
+    if model.get("bundled_in_test_iso"):
+        print(model["ollama_ref"])
+PY
+)
+for model_ref in "${BUNDLED_CHAT_MODELS[@]}"; do
+  docker exec "$MODEL_CONTAINER" ollama pull "$model_ref"
+done
 docker exec "$MODEL_CONTAINER" ollama pull nomic-embed-text:v1.5
 docker exec "$MODEL_CONTAINER" ollama list > "$STAGE/manifests/ollama-models.txt"
 python3 - "$STAGE/content/ollama" "$ROOT/models/manifest.json" > "$STAGE/manifests/model-payload.json" <<'PY'
@@ -302,12 +313,18 @@ docker run --rm --network none \
   -v "$STAGE/content/ollama:/data" \
   --entrypoint /bin/sh "$OLLAMA_REF@$OLLAMA_DIGEST" \
   -c 'rm -rf /data/cache /data/id_ed25519 /data/id_ed25519.pub; chmod -R a+rX /data/models'
-cat > "$STAGE/model-ids.json" <<'EOF'
-{
-  "chat": ["qwen3-0.6b-q4_k_m"],
-  "embedding": ["nomic-embed-text-v1.5"]
-}
-EOF
+python3 - "$ROOT/models/manifest.json" "$STAGE/manifests/model-payload.json" \
+  > "$STAGE/model-ids.json" <<'PY'
+import json
+import sys
+manifest = json.load(open(sys.argv[1], encoding="utf-8"))
+payload = json.load(open(sys.argv[2], encoding="utf-8"))
+present = {record["id"] for record in payload["models"]}
+print(json.dumps({
+    "chat": [model["id"] for model in manifest["chat_models"] if model["id"] in present],
+    "embedding": [model["id"] for model in manifest["embedding_models"] if model["id"] in present],
+}, indent=2))
+PY
 
 cat > "$STAGE/licenses/CONTAINER-IMAGES.md" <<'EOF'
 # Container image notices

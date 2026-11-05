@@ -13,22 +13,19 @@ the policy says to remove/replace those marks and recompile. This candidate
 still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
-The current unpublished customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, SHA-256
-`4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`. Its
-source revision is `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`. A fresh
-interactive customer-mode install, offline service checks, a visible Nashville
-map render, local inference, embeddings, Kiwix retrieval, all six core packs,
-and two reboots were verified in a disposable UEFI VM. In a repeat installer
-run, the standard media-removal prompt appeared; after ISO ejection and Enter,
-the VM powered off, and a normal power-on booted the installed disk. Evidence
-is in `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`
-and `/mnt/shared/fieldos-e2e/customer-handoff-9c59a5f-20261105/validation.md`.
-This remains private engineering test material, not a release: Ubuntu branding
-remains, and complete notice, trademark, source-offer, model, map, and content
-reviews are outstanding. Offline tests establish function and file integrity,
-not redistribution rights. Do not distribute the ISO or payload until the
-reviews below are complete.
+The latest interactive customer test candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`, SHA-256
+`1d01fd5aedb7e408d856ab87c0e884202c5e78382ba75aab817ea9f84faa9432`, built
+from `ac319b3aa1c458295bd2672f7608f146870a2df8`. A fresh no-NIC UEFI VM install,
+firstboot, offline services, customer-selected account and disk, installed-disk
+boot, two reboots, local inference, embeddings, Kiwix, statewide maps, and the
+six core reference packs were verified. Detailed evidence is in
+`/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. This remains
+private engineering test material, not a release: Ubuntu branding remains,
+and complete notice, trademark, source-offer, model, map, and content reviews
+are outstanding. Offline tests establish function and file integrity, not
+redistribution rights. Do not distribute the ISO or payload until the reviews
+below are complete.
 ## Current artifact inventory
 
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
@@ -40,6 +37,7 @@ reviews below are complete.
 | Redis image | The pinned image config reports `REDIS_VERSION=7.4.12`; Redis's [official licensing overview](https://redis.io/legal/licenses/) lists 7.4.x as RSALv2 or SSPLv1, not BSD-3-Clause. The earlier [licensing-change announcement](https://redis.io/blog/redis-adopts-dual-source-available-licensing/) records the change. | Local image ID matches the pinned digest in `payload/manifests/images.json`; `REDIS_VERSION` was read from the image config. Read-only image inspection is retained at `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`. | Redis's licensing overview describes RSALv2 as allowing distribution while prohibiting commercializing the software or providing it as a managed service that exposes Redis functionality; SSPLv1 has source obligations when providing a service. Applicability to a FieldOS appliance sold or distributed to customers is not determined here. Obtain license-specific review or evaluate Valkey, then rebuild and acceptance-test the offline payload. Valkey compatibility with pinned N.O.M.A.D. and the replacement image's own transitive licenses are unverified. |
 | Dozzle, Ollama, Qdrant, Kiwix images | Direct licenses are recorded in `payload/manifests/images.json` and upstream links in `CONTAINER-IMAGES.md` | Pinned OCI digests | Generate/review SBOMs for the exact images; include transitive notices and any corresponding source required by the applicable licenses. |
 | Qwen3 0.6B chat model | Apache-2.0 model page: <https://huggingface.co/Qwen/Qwen3-0.6B> | `models/manifest.json` pins the Ollama manifest SHA-256 and quantized model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
+| Qwen3 1.7B Q4_K_M chat model candidate | Ollama reports Apache-2.0; model card: <https://ollama.com/library/qwen3/tags> | Pulled from `qwen3:1.7b-q4_K_M`; manifest SHA-256 `8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7`, model layer SHA-256 `3d0b790534fe4b79525fc3692950408dca41171676ed7e21db57af5c65ef6ab6` (1,359,279,776 bytes). Ollama's license layer hash matches the 0.6B model. Isolated CPU evaluation is recorded at `/mnt/shared/fieldos-model-eval-20261105/benchmark.json`. | Candidate only; the prior accepted ISO does not contain it. Review the exact source revision and full redistribution terms, then verify inclusion in a fresh payload and offline install before release. |
 | Nomic Embed Text v1.5 | Apache-2.0 model page: <https://huggingface.co/nomic-ai/nomic-embed-text-v1.5> | `models/manifest.json` pins the Ollama manifest SHA-256 and model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes. Current guest's source/license documents match the repo checksums. | Archive-level provenance and attribution are present; article/media-level license review remains open. |
 | Protomaps world and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | Source and current candidate include the official ODbL text at `payload/licenses/ODbL-1.0.txt` (SHA-256 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`) and install it under `/usr/share/doc/fieldos/`; the payload and installed copies were verified in the current guest. Map build key, bounds, zoom, size/checksum and UI attribution are also recorded. | The current unattended guest compared bundled and installed ODbL text hashes; the interactive candidate uses the same pinned payload. Repeat exact-image verification and review the derivative database and displayed attribution before any distribution. |
