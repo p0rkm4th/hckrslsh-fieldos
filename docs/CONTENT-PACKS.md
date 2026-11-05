@@ -226,6 +226,32 @@ nonclinical-review limitation. This is a small orientation sheet and does not
 close FieldOS's first-aid or medical-reference gap. The pack remains optional
 until broader content and redistribution review are complete.
 
+## Household emergency communications planner
+
+`us-household-communications` version `1.0.0` is a 6,411-byte,
+FieldOS-authored text worksheet informed by FEMA/Ready.gov family planning
+guidance and NWS information about NOAA Weather Radio. It helps a household
+record primary and backup contacts, meeting locations, alternate channels,
+school or caregiver contacts, access needs, and a review date. It warns that
+communications can fail, recommends paper copies and privacy-conscious data
+handling, and does not collect or store the user's personal plan. This is not
+an official FEMA form, live alert service, or emergency communications
+system. It contains no copied FEMA text, branding, artwork, or template.
+
+The authored text is licensed under the project Apache-2.0 license. FEMA and
+NWS pages are listed as factual references only; no source files are bundled.
+Source links, review date, and the exact artifact checksum are in
+`payload/content-packs/us-household-communications/manifest.json`. Its portable
+archive is built alongside the other optional packs with `make content-packs`.
+The archived pack is 4,037 bytes with SHA-256
+`3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812` at
+`/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`.
+The host-side installer validated and listed it in an isolated root and
+generated the local Source Library index with the source citations and document
+link. It remains optional and is not embedded in the customer ISO. Browser
+visibility and N.O.M.A.D. retrieval in an installed guest have not yet been
+verified for this new pack.
+
 ## Flood safety reference pack
 
 `us-flood-safety` version 1.0.0 contains a short FieldOS-edited summary of NWS flood preparedness and response pages. It describes pre-event planning and basic actions while water is rising, identifies its gaps, and links the original NWS sources. The text is an editorial summary, not an official NWS/NOAA publication; it provides no current warning, forecast, local flood-zone data, or route planning. The source list records NOAA reuse guidance, attribution, and non-endorsement language. No third-party images are included. Full project redistribution review remains open.
