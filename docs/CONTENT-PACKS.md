@@ -249,7 +249,8 @@ existing offline installer was exercised against this archive on the build
 host: checksum validation, immutable installation, checksum recheck, generated
 Source Library entry, and local original-document link all passed. A guest
 desktop import, N.O.M.A.D. indexing, and semantic retrieval have not yet been
-tested for this pack.
+tested for this pack. Host-side validation details are at
+`/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0-validation.md`.
 
 ## Household emergency communications planner
 
