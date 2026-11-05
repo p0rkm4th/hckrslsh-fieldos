@@ -38,11 +38,18 @@ from pinned Protomaps build `20261102.pmtiles`. A fresh no-NIC E2E and a
 separate interactive customer installation visibly rendered eight Tennessee
 locations; reports and screenshots are listed in `docs/RELEASE.md`. It is a
 local geographic reference, not turn-by-turn navigation, GPS positioning,
-trail guidance, or emergency advice. The map interface attributes
-OpenStreetMap contributors and Protomaps. The full ODbL 1.0 text is at
+trail guidance, or emergency advice. The `562fee9` tested ISO's map style
+shows Protomaps and links to the OpenStreetMap homepage, but does not visibly
+name contributors or link to the ODbL. The next source-built payload patches
+the style to show OpenStreetMap contributors, Protomaps, and an ODbL link; that
+change requires a fresh browser check before any claim that it is verified.
+The full ODbL 1.0 text is at
 `/usr/share/doc/fieldos/ODbL-1.0.txt`; the attribution notice and source-build
-details are alongside it and in the map interface. The ODbL applies to the
-database rights; individual content may have additional rights.
+details are in the installed documentation. The payload also carries the
+pinned N.O.M.A.D. Maps README, the Noto font OFL, and the MIT notice for
+Tangrams-derived sprites. The exact source artwork revision for those modified
+sprites is not identified by upstream. The ODbL applies to the database
+rights; individual content may have additional rights.
 
 ## National Weather Service tornado-safety reference
 
