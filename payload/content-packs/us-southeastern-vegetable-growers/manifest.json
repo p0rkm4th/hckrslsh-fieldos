@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "us-southeastern-vegetable-growers",
-  "version": "2026.1",
+  "version": "2026.1.1",
   "title": "2026 Southeastern U.S. Vegetable Crop Handbook",
   "description": "A searchable 397-page production handbook for commercial vegetable growers across the southeastern U.S., including Tennessee. Recommendations are regional guidelines and may need local adaptation.",
   "category": "agriculture",
@@ -10,8 +10,8 @@
       "id": "sevew-2026-handbook",
       "name": "Southeastern Vegetable Extension Workers, 2026 Vegetable Crop Handbook for Southeastern United States",
       "url": "https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html",
-      "license": "Virginia Cooperative Extension states its materials are available for public use, reprint, or citation without further permission when credited to the author, Virginia Cooperative Extension, Virginia Tech, and Virginia State University. The handbook is reproduced unmodified with its contributor and photo credits intact.",
-      "attribution": "Southeastern Vegetable Extension Workers, 2026 Vegetable Crop Handbook for Southeastern United States, 27th edition. Senior editor A. L. Wszelaki, University of Tennessee. Published by Virginia Cooperative Extension, Virginia Tech, and Virginia State University. Reproduced unmodified; no endorsement by these institutions is implied.",
+      "license": "Virginia Cooperative Extension permits public use, reprint, or citation without further permission when the use includes credit to the author and to Virginia Cooperative Extension, Virginia Tech, and Virginia State University. This pack credits all seven authors listed on the publication page. The handbook is reproduced unmodified with its contributor and photo credits intact.",
+      "attribution": "Authors as published: Mark S. Reiter, Tom P. Kuhar, Kemper Sutton, Laura Strawn, Douglas S. Higgins, Steve L. Rideout, and Vijay Singh. 2026 Southeastern U.S. Vegetable Crop Handbook for Southeastern United States, 27th edition. Senior editor A. L. Wszelaki, University of Tennessee. Published by Virginia Cooperative Extension, Virginia Tech, and Virginia State University. Reproduced unmodified; no endorsement by these institutions is implied.",
       "accessed": "2026-11-04"
     }
   ],
