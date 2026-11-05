@@ -7,11 +7,11 @@ possible. The repository defines a versioned JSON manifest schema at
 packs and planned categories; this is not a comprehensive customer library.
 The Middle Tennessee map previously passed offline transfer and activation
 testing as a pack. The statewide Tennessee map is built into the current source
-payload and customer ISO candidate. It passed a fresh no-NIC unattended E2E
-with visible Firefox rendering at eight locations and two reboots; the
-interactive customer install rendered Nashville, though its installer
-media-handoff test needed host intervention. The exact candidate, checksum,
-and reports are recorded in [`RELEASE.md`](RELEASE.md).
+payload and the `fieldos-customer-searchable-562fee9.iso` customer test image.
+That image passed a fresh no-NIC interactive install, installer media handoff,
+installed-disk boot, Firefox rendering at eight Tennessee locations, and two
+reboots. The exact candidate, checksum, and reports are recorded in
+[`RELEASE.md`](RELEASE.md). Physical USB behavior remains unverified.
 Other regional and specialist reference collections remain modular packs
 outside the core image.
 
@@ -261,6 +261,37 @@ archive then passed the isolated guest integration above. No AI semantic
 question-answering test was run for this checklist. Host-side validation
 details are at
 `/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0-validation.md`.
+
+## MedlinePlus first-aid overview
+
+`us-medlineplus-first-aid` version `2026.07.22` is a portable, optional
+3,086-byte text snapshot of the MedlinePlus **First Aid** health-topic summary.
+It covers when to call 911, general cuts-and-scrapes care, Poison Control,
+heat-related illness, and basic kit contents. The source page was last updated
+2026-07-22. Its 436-word summary is not a complete first-aid manual, course,
+or clinical review; the pack includes a separate FieldOS note identifying the
+snapshot date and limits.
+
+The [NLM reuse policy](https://medlineplus.gov/about/using/usingcontent/)
+specifically identifies summaries on health-topic pages as public domain and
+permits reproduction with attribution. The pack includes only that summary,
+with whitespace/list formatting normalized; it excludes linked article text,
+third-party material, images, logos, and page chrome. The artifact SHA-256 is
+`32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893`. Its
+manifest attributes the source to MedlinePlus and NLM and disclaims endorsement.
+This is a U.S. public-domain review, not a statement about international rights.
+
+The pack is not part of the customer ISO baseline. Its portable archive is
+`/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`
+(2,649 bytes; SHA-256
+`2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`). A
+host-side isolated install verified the archive/checksum, generated a Source
+Library entry containing title, source, and attribution, and passed an
+idempotent reinstall check. The text is marked `index_with_ai: false`; it is
+available to deterministic Source Library search and direct reading, but is
+not uploaded to N.O.M.A.D.'s vector Knowledge Base. No GUI or customer-guest
+import test has yet been run for this new pack. Validation record:
+`/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22-validation.md`.
 
 ## Household emergency communications planner
 
