@@ -94,15 +94,16 @@ class ContentPackImportUiTests(unittest.TestCase):
         self.assertEqual(action.findtext("defaults/allow_active"), "auth_admin")
         self.assertEqual(action.findtext("defaults/allow_any"), "no")
 
-    def test_offline_importer_uses_ubuntu_desktop_authentication_helper_without_upgrading_polkit(self):
+    def test_offline_importer_bundles_and_installs_graphical_polkit_agent(self):
         build = (ROOT / "build/prepare-payload.sh").read_text()
         firstboot = (ROOT / "installer/provisioning/firstboot.sh").read_text()
         self.assertIn("zenity", build)
-        self.assertIn("required_base_packages\":[\"zenity\",\"pkexec\"]", build)
-        self.assertIn("install \\\n  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity", firstboot)
+        self.assertIn("policykit-1-gnome", build)
+        self.assertIn("required_base_packages\":[\"zenity\",\"pkexec\",\"policykit-1-gnome\"]", build)
+        self.assertIn("install \\\n  docker.io docker-compose-v2 curl zstd qemu-guest-agent zenity policykit-1-gnome", firstboot)
         self.assertIn("command -v pkexec", firstboot)
         self.assertIn("command -v zenity", firstboot)
-        self.assertNotIn("qemu-guest-agent zenity pkexec", firstboot)
+        self.assertIn("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1", firstboot)
 
 
 if __name__ == "__main__":

@@ -92,6 +92,13 @@ The launcher uses the same validator and installer described below; it asks
 N.O.M.A.D. to index reference documents after activation. This adds no new
 network service and exposes no remote administrative interface.
 
+A 2026-11-05 acceptance run found that the original offline package set omitted
+a graphical PolicyKit authentication agent, causing `pkexec` to fail before
+showing a password prompt. The source now includes Ubuntu's
+`policykit-1-gnome` package and checks for its agent during provisioning. The
+fresh GUI import acceptance run is still pending; see [`RELEASE.md`](RELEASE.md)
+for the failure evidence and current status.
+
 For operator use, verify and add a bundle with:
 
 ```sh
