@@ -2,20 +2,17 @@
 
 ## Customer installation
 
-**Latest tested customer-mode candidate (2026-11-05; VM installation and two-reboot validation PASS):**
-`/mnt/shared/fieldos-releases/fieldos-customer-8020fd3.iso`, source
-`8020fd3`, SHA-256
-`57ac5a1a501497f9a2e4eaaa5c4144d925cfef2a6713f310516bd1b4a3d0791e`.
-Interactive disk/account selection, offline firstboot, installed-disk boot,
-and two post-install reboots passed in a fresh no-NIC UEFI VM. The desktop
-selected Qwen3 0.6B although firstboot validated Qwen3 1.7B. Current source
-seeds the validated model preference and requires firstboot before the display
-manager and graphical target; these changes are not in this ISO and have not
-been VM-tested. Automatic restart
-without the ordinary power-on after Ubuntu's media-removal prompt, physical
-USB handoff, and physical hardware remain unverified. Do not treat this
-candidate as a release.
-Evidence: `/mnt/shared/fieldos-e2e/customer-8020fd3-20261105/validation.md`.
+**Latest customer-mode ISO candidate (2026-11-05; installation BLOCKED, not accepted):**
+`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, source
+`8c81d64`, SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`.
+A fresh no-NIC UEFI run reached Subiquity storage setup; `/dev/vda` was visible
+but Next remained disabled, so installation did not complete and no installed
+system was validated. Diagnostics:
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+The last completed customer-mode install test is `8020fd3` below; it is a
+historical PASS with a model-default mismatch, not validation of this candidate.
+Do not treat the 8c81d64 candidate as a release.
 
 The detailed `cc4aa38` record in [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md)
 is retained as historical evidence and does not describe the latest candidate.

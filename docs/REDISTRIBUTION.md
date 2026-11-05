@@ -13,18 +13,17 @@ the policy says to remove/replace those marks and recompile. This candidate
 still contains Ubuntu branding. No Canonical permission or complete debranding
 is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
 
-The latest accepted interactive customer test candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, SHA-256
-`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`, built
-from source `cc4aa38f3debd078b877589355221e94821bd160`. A fresh no-NIC UEFI VM
-installation, firstboot, offline services, interactive account/disk selection,
-installed-disk boot, two reboots, local model generation, embeddings, Kiwix,
-statewide maps, and six core reference packs were verified. Detailed evidence
-is in `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/validation.md`.
-Source revisions after this ISO add map attribution and promote two reviewed
-reference packs to core; they are not in this tested binary. It remains private
-engineering test material, not a release: Ubuntu branding remains, and complete
-notice, trademark, source-offer, model, map, and content reviews are outstanding.
+The newest built candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`, from
+source `8c81d64`. Its fresh interactive no-NIC UEFI installation is blocked
+at Subiquity storage setup; it is not an accepted install or release artifact.
+Diagnostics: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+The last completed installation evidence is for `8020fd3`, but that ISO has a
+model-default mismatch and does not validate the newer source or current pack
+metadata. The earlier `cc4aa38` record is historical. The ISO remains private
+engineering test material: Ubuntu branding remains, and complete notice,
+trademark, source-offer, model, map, and content reviews are outstanding.
 Offline tests establish function and file integrity, not redistribution rights.
 Do not distribute the ISO or payload until the reviews below are complete.
 ## Current artifact inventory

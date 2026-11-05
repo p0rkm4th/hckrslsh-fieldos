@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "us-flood-safety",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "U.S. Flood Safety Overview",
   "description": "Offline FieldOS-edited summary based on National Weather Service flood preparedness and response pages. No live warnings, forecasts, local flood-zone data, or route planning.",
   "category": "weather-disaster",
@@ -37,6 +37,7 @@
       "size_bytes": 2900,
       "sha256": "25692b8e5b39ba777f3f2b8a0ab3dc4e6bd4a59c531a7b09c17c420740c8c73b",
       "source": "nws-flood-during",
+      "sources": ["nws-flood-before", "nws-flood-during"],
       "license": "FieldOS-authored edited summary based on attributed U.S. federal NWS pages; Apache-2.0 project content, subject to source attribution and no-endorsement conditions."
     }
   ],
