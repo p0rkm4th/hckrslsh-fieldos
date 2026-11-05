@@ -121,6 +121,13 @@ conflicting destination leaves existing application data untouched. If
 indexing fails, firstboot records failure rather than claiming provisioning is
 complete; source documents remain available in the Source Library.
 
+The Source Library's on-page search is deterministic and works offline. It
+searches pack titles, descriptions, source/attribution metadata, and the full
+text of plain-text documents up to 1 MiB. PDF and longer documents remain
+linked as originals; open them and use the browser's Find command to search
+within the document. Search results are document links and text excerpts, not
+AI answers.
+
 The core starter reference pack is `us-water-food-emergency` version 1.0.0.
 It contains two unchanged CDC PDFs: “Make Water Safe During an Emergency” and
 “Eat Safe Food After a Power Outage.” Their source records are CDC STACKS
