@@ -3,23 +3,18 @@
 ## Customer installation
 
 **Current unpublished customer-mode test candidate (2026-11-05):**
-`/mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso`, source
-`1851e3491d6f7e28d53b73a6e02239d2ff681121`, SHA-256
-`9d43df4be724a9937eb931347279660226976d1a6914c235fcba9244e418a4a6`.
-Interactive identity and target-disk selection, disconnected installation,
-firstboot, installed-disk boot after the normal media-removal prompt, and two
-reboot checks passed in a disposable no-NIC UEFI VM. After the second reboot,
-local chat, embeddings, Kiwix search, map-tile access, and all seven containers
-were verified; Firefox visibly rendered Nashville map detail and the FieldOS
-Command Center. The detailed report and screenshots are at
-`/mnt/shared/fieldos-e2e/customer-offline-1851e34/report.md`.
-
-The test controller ejected the virtual ISO at Ubuntu's standard “remove the
-installation medium” prompt. This tested the installed-disk boot path without
-repair; physical USB behavior remains unverified. The candidate is unpublished
-engineering test material, not an approved public release. Physical hardware,
-network-connected security, content breadth, and redistribution review remain
-open; see [`RELEASE.md`](RELEASE.md).
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, source
+`9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`, SHA-256
+`4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`.
+Interactive account and target-disk selection completed in a disposable no-NIC
+UEFI VM; firstboot finished and the installed disk booted to the branded
+desktop. All six core packs indexed, local chat and embeddings worked, Kiwix
+returned a local result, Firefox rendered Nashville at zoom 13, and services
+persisted across two reboots. Ubuntu's media-removal/restart handoff required
+host-side ISO ejection and a VM power cycle, so customer installer acceptance
+remains partial. Evidence and screenshots:
+`/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/validation.md`.
+Physical USB behavior remains unverified.
 
 Build a customer-mode test ISO with:
 
@@ -48,7 +43,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network

@@ -1,37 +1,34 @@
 # Field-use assessment: disaster-preparedness scenarios
 
-Date: 2026-11-04  
+Date: 2026-11-05
 Assessment: **Not suitable as a standalone disaster-preparedness computer.**
 
-This review checks the fresh customer desktop, bundled applications, offline content, and recorded guest tests. The candidate showed its FieldOS wallpaper and dock; Firefox visibly opened Kiwix and the Nashville map, and the source-library page responded. Start Here and Command Center shortcuts were visible but were not separately launched in this exact install. This is a content-coverage review, not a clinical, emergency-response, or field trial.
+This review checks the fresh customer desktop, bundled applications, offline content, and recorded guest tests. The candidate showed its FieldOS wallpaper and dock; Firefox visibly rendered the Nashville map. Kiwix search returned a local result and the source-library index responded over loopback. Start Here and Command Center shortcuts were visible but were not separately launched in this exact install. This is a content-coverage review, not a clinical, emergency-response, or field trial.
 
 ## Tested installation and interface
 
 The latest clean no-NIC unattended test is from source commit
-`b5d6f748c9efdb0f4345c5fe92533b882c7e2856`. It installed, completed firstboot,
-ran seven services, generated local inference, loaded embeddings, imported and
-indexed the optional 2026 vegetable handbook as 678 chunks, searched Kiwix and
-the source library, visibly rendered the statewide map in Firefox at eight
-locations, and passed two reboots. Report and screenshots:
-`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`; test ISO
-SHA-256: `71821434553d6b0b26b0f87cfa6f857ed6a38b97e80e8b357d69f966e4e4217a`.
-The statewide map is also present in the separately tested customer ISO. The
-optional handbook remains outside the ISO.
+`9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`. It installed, completed firstboot,
+ran seven services, generated local inference, loaded embeddings, indexed the
+core reference documents, searched Kiwix and the source library, visibly
+rendered the statewide map in Firefox at eight locations, and passed two
+reboots. Report and screenshots:
+`/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`.
 
-The latest customer-mode ISO was built from clean source commit
-`bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`:
-`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`, SHA-256
-`bdfbe5c01f9960634f275e230c3a3957623f778c511c36a73ddf992a2f4e85bd`. A fresh
-interactive no-NIC install selected a disposable virtual disk and user, booted
-the installed EFI disk, completed four-pack provisioning, and passed local AI,
-embeddings, Kiwix search, visible zoom-13 map rendering at eight Tennessee
-locations, and two reboots. Evidence is in
-`/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/report.md`. At
-media handoff Ubuntu powered off after the remove-media prompt; a subsequent VM
-power-on booted the installed disk without repair. Physical USB behavior is
-untested.
+The latest customer-mode ISO candidate was built from source commit
+`9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`:
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, SHA-256
+`4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`. Interactive
+account and disk selection, no-NIC installation, firstboot, the branded desktop,
+all six content packs, local AI, embeddings, Kiwix search, a zoom-13 Nashville
+browser render, and two reboots were verified. Report and screenshots are in
+`/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/`. Ubuntu's standard
+media-removal/restart handoff required host-side ISO ejection and VM power
+cycling before the installed disk booted. The installation itself succeeded,
+but customer installer acceptance remains partial until this handoff completes
+without host intervention. Physical USB behavior is untested.
 
-The current customer image contains the four-pack core payload. Neither test VM
+The current customer image contains the six-pack core payload. Neither test VM
 had a network adapter. These results do not test physical USB media handoff,
 external weather alerts, physical GPS, or broad geographic coverage.
 
@@ -45,16 +42,16 @@ external weather alerts, physical GPS, or broad geographic coverage.
 | Hurricane or winter storm | Three NWS-derived FieldOS summaries in `us-weather-safety` 1.0.1 were installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No forecasts or alerts are provided. |
 | Wildfire or evacuation | No dedicated wildfire source is bundled. The AI guard refused one tested wildfire prompt, but prior tests found alternate wording can bypass the keyword guard. | **Not dependable.** A refusal is not safety certification or evacuation guidance. |
 | Flood | The FieldOS-edited NWS summary in `us-flood-safety` 1.0.0 was installed and indexed from the core payload in both unattended and current interactive no-NIC tests. | **Source available.** No current flood alerts, flood-zone data, or safe routing are provided. |
-| Injury or medical emergency | An optional CDC checklist names skills but gives no procedures. A separate optional NIOSH heat-illness source was transferred, indexed as 3 chunks, and persisted after reboot in the customer test guest; its new browser view was not confirmed. Neither optional pack is in the ISO, and no general first-aid or trauma manual is bundled. | **Not covered by the ISO.** The NIOSH source is narrow and worker-focused; do not rely on the AI for medical decisions. |
+| Injury or medical emergency | The ISO includes a narrow NIOSH heat-illness text reference (3 indexed chunks); an optional CDC checklist names skills but gives no procedures. No general first-aid or trauma manual is bundled. | **Very limited source available.** The NIOSH source is worker-focused; do not rely on the AI for medical decisions. |
 | Communications outage | No radio operation, emergency communications, or contact-plan reference was found in the bundled source set. | **Not covered.** |
-| Travel, navigation, or loss of GPS | Both the latest unattended image and interactive customer installation visibly render detailed zoom-13 maps at eight Tennessee urban and rural locations; world/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
-| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. The optional 2026 Southeastern vegetable handbook imported and indexed in E2E as 678 chunks but is not part of the customer ISO. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
+| Travel, navigation, or loss of GPS | The latest unattended image visibly renders zoom-13 maps at eight urban and rural Tennessee locations; the customer install visibly rendered Nashville. World/U.S. maps are overview-only through zoom 5. There is no verified GPS positioning, route calculation, trail data, or offline navigation. | **Useful statewide map viewer, not navigation.** GPS and routing remain unverified. |
+| Broad reference lookup | Kiwix opens and returns search results, but the included English Wikipedia ZIM is a 100-article test fixture. The 2026 Southeastern vegetable handbook is now bundled and indexed as 678 chunks. | **Functional but too small** for broad technical, agricultural, medical, or preparedness research. |
 
 ## AI and source-library behavior
 
 The bundled Qwen3 0.6B model generates a real general response offline. The five tested high-risk prompt categories (food outage, tornado shelter, chemical water treatment, wildfire evacuation, and severe bleeding) returned a fixed notice directing the user to original sources, with no citations. The UI itself worked, but this means the AI is not an emergency-response feature. The keyword guard is incomplete and can be bypassed with alternate phrasing; a blocked prompt is not proof that an unblocked answer is safe. The original source files remain the authority where provided.
 
-The Source Library and Kiwix provide access to locally stored content, but content is sparse. The flood pack appeared in the browser source index after transfer and its document was indexed by N.O.M.A.D.; the generated page is visually plain and metadata-heavy. The optional agriculture handbook was transferred and indexed as 678 chunks in the latest VM test. Start Here accurately describes many limits and explains optional pack transfer; reference-pack installation currently requires terminal commands, which is a barrier for a nontechnical field user.
+The Source Library and Kiwix provide access to locally stored content, but content is sparse. In the latest interactive customer install, all six core packs activated and their nine source documents indexed as 689 chunks. The generated source index is plain and metadata-heavy. Start Here explains many limits and optional pack transfer; reference-pack installation still needs a nontechnical, fully graphical workflow.
 
 ## Verdict and release implications
 

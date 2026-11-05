@@ -4,12 +4,11 @@ FieldOS is an offline capable x86-64 field computer built on Ubuntu Desktop
 and [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad).
 It bundles the container images, local AI models, a 100-article Wikipedia
 fixture, low-zoom overview maps, and a zoom-13 statewide Tennessee map,
-CDC water/food references, and attributed FieldOS-edited NWS tornado, flood,
-hurricane, and winter-storm summaries for offline use. The owner uses
+six searchable reference packs, and attributed FieldOS-edited NWS tornado,
+flood, hurricane, and winter-storm summaries for offline use. The core packs
+also include a narrow NIOSH heat-illness reference and a Southeastern vegetable
+crop handbook. The owner uses
 N.O.M.A.D. as the main interface.
-An optional, separately transferable 2026 Southeastern vegetable-growing
-handbook is cataloged and transfer/index tested; it is not part of the core or
-customer ISO.
 This is still an engineering prototype, not a complete emergency or navigation
 appliance.
 
@@ -20,9 +19,9 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest customer-mode test candidate is `/mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso`, built from clean source commit `1851e3491d6f7e28d53b73a6e02239d2ff681121`; SHA-256 `9d43df4be724a9937eb931347279660226976d1a6914c235fcba9244e418a4a6`. Interactive identity and disk selection, no-network installation, installed-disk boot, firstboot, and two reboot checks passed in a disposable UEFI VM. After reboot two, local chat, 768-dimensional embeddings, Kiwix search, and the Tennessee map tile were verified. Firefox visibly rendered Nashville detail and the FieldOS Command Center. A clean unattended no-NIC E2E from the same source also passed, including eight visible map locations and container egress checks.
+The current customer-mode engineering candidate is `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, built from clean source commit `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19`; SHA-256 `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`. In a fresh no-NIC UEFI VM, interactive account and disk selection completed, the installed disk booted, firstboot completed, all six packs indexed as nine documents/689 chunks, and the branded desktop appeared. Chat, embeddings, Kiwix retrieval, a zoom-13 Nashville map render, and two reboot checks passed. The installer media-removal/restart handoff required host-side ISO ejection and a VM power cycle, so the customer installer gate remains **PARTIAL** pending a hands-off handoff test. A separate clean unattended no-NIC E2E from the same commit passed, including eight visible map locations and container-egress checks. Reports and screenshots are listed in [`docs/RELEASE.md`](docs/RELEASE.md) and retained at `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/` and `/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/`.
 
-These results establish engineering test acceptance in VMs, not physical hardware support or release readiness. Physical USB behavior, hardware/GPU variety, LAN exposure review, broader field reference coverage, and redistribution clearance remain open. This is not an emergency or medical appliance; do not rely on the local model for safety-critical decisions. Detailed source revisions, checksums, reports, and limitations are in [`docs/RELEASE.md`](docs/RELEASE.md); the interactive install report and screenshots are at `/mnt/shared/fieldos-e2e/customer-offline-1851e34/`.
+These results establish engineering test acceptance in VMs, not physical hardware support or release readiness. Physical USB behavior, hardware/GPU variety, LAN exposure review, broader field reference coverage, and redistribution clearance remain open. This is not an emergency or medical appliance; do not rely on the local model for safety-critical decisions. Detailed source revisions, checksums, reports, and limitations are in [`docs/RELEASE.md`](docs/RELEASE.md); the interactive install report and screenshots are at `/mnt/shared/fieldos-e2e/customer-offline-9c59a5f-20261105/`.
 
 ## Build and test
 
@@ -36,7 +35,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
@@ -68,8 +67,8 @@ Start with the [documentation guide](docs/README.md), then read
 [installation](docs/INSTALLATION.md), [architecture](docs/ARCHITECTURE.md),
 [operations and troubleshooting](docs/OPERATIONS.md), [hardware support](docs/HARDWARE.md),
 and [offline content/licensing](docs/OFFLINE-CONTENT.md). The
-[content-pack architecture](docs/CONTENT-PACKS.md) includes a small bundled
-water/food source pack and planned categories. Review [security boundaries](docs/SECURITY.md)
+[content-pack architecture](docs/CONTENT-PACKS.md) documents the six core
+reference packs and planned categories. Review [security boundaries](docs/SECURITY.md)
 before changing exposed ports or Docker access.
 
 ## Security and redistribution

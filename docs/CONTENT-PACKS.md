@@ -6,11 +6,12 @@ possible. The repository defines a versioned JSON manifest schema at
 `payload/manifests/content-packs.json`. The catalog contains the core reference
 packs and planned categories; this is not a comprehensive customer library.
 The Middle Tennessee map previously passed offline transfer and activation
-testing as a pack. A newer statewide Tennessee map candidate is built into the
-current source payload. It passed a fresh no-NIC unattended E2E with visible
-Firefox rendering at eight locations and two reboots. The newer map has not
-been included in a separately tested interactive customer ISO. The exact
-candidate, checksum, and report are recorded in [`RELEASE.md`](RELEASE.md).
+testing as a pack. The statewide Tennessee map is built into the current source
+payload and customer ISO candidate. It passed a fresh no-NIC unattended E2E
+with visible Firefox rendering at eight locations and two reboots; the
+interactive customer install rendered Nashville, though its installer
+media-handoff test needed host intervention. The exact candidate, checksum,
+and reports are recorded in [`RELEASE.md`](RELEASE.md).
 Other regional and specialist reference collections remain modular packs
 outside the core image.
 
@@ -33,8 +34,8 @@ Planned pack categories are:
 
 ## Southeastern vegetable production reference
 
-`us-southeastern-vegetable-growers` version `2026.1` is an optional
-Tennessee-relevant agriculture pack. It contains the unmodified, searchable
+`us-southeastern-vegetable-growers` version `2026.1` is a Tennessee-relevant
+agriculture pack included in the current core payload. It contains the unmodified, searchable
 397-page 2026 Southeastern U.S. Vegetable Crop Handbook (3,991,344 bytes;
 SHA-256
 `f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c`). The
@@ -48,7 +49,8 @@ page](https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html). This is a
 regional commercial-vegetable reference, not a complete farm manual, livestock
 guide, or Tennessee-specific calendar. The source record advises that local
 markets, weather, and location can require changed practices or planting dates.
-It is optional and not part of the ISO core payload. Searchability was checked
+It remains independently packaged for transfer, although the current ISO
+includes it in the core payload. Searchability was checked
 by extracting 1.8 MB of text from the PDF. A fresh no-NIC E2E imported the
 archive from read-only transfer media, activated its Source Library link, and
 indexed the document in N.O.M.A.D. as 678 chunks. It survived two guest
@@ -140,10 +142,10 @@ configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
 
-## Optional severe-weather content
+## Severe-weather content
 
-`us-weather-safety` version 1.0.1 is a portable reference pack, not part of the
-core installer. It contains three clearly labeled editorial summaries based
+`us-weather-safety` version 1.0.1 is a portable reference pack included in the
+current core installer. It contains three clearly labeled editorial summaries based
 on National Weather Service guidance for hurricane threats, winter-storm
 preparation, and actions during a winter storm. Each document links its exact
 NWS source, states that it is an edited FieldOS summary rather than official
@@ -157,10 +159,9 @@ third-party credits. This is a limited reference set, not an all-hazards plan.
 Build its removable-media archive with `make content-packs`. The current
 archive is `/mnt/shared/fieldos-payload/content-packs/us-weather-safety-1.0.1.tar.zst`
 (SHA-256 `9be415ad975ef8ef5ef2bd483254dac6ca2b400bfc594ec4309db6205e3b1e1c`).
-The pack is registered as optional and intentionally excluded from `core_packs`, so it does
-not increase the installer ISO size. After transfer, install it with the
-commands above; FieldOS verifies the archive and checksums, publishes the
-source documents, and asks N.O.M.A.D. to index them. The source library remains
+The pack also has a removable-media archive. When installed separately,
+FieldOS verifies the archive and checksums, publishes the source documents,
+and asks N.O.M.A.D. to index them. The source library remains
 available directly even when AI chat is unavailable or refuses emergency
 questions. The clean-source transfer test at commit `d865333` passed using virtual optical transfer media (not physical USB) as part of the
 full acceptance run: all three documents were installed, checksummed, indexed,
@@ -182,11 +183,11 @@ the National Weather Service's “What to Do During a Tornado” page. Its sourc
 NOAA reuse basis, attribution, access date, and conversion limits are recorded
 in its manifest and document. It adds narrow tornado guidance, not a first-aid
 or comprehensive all-hazards library. The current customer candidate includes
-the statewide Tennessee map. The optional Southeastern vegetable handbook
-and NIOSH heat-illness transcription have source review and pack-level
-activation evidence, but broader livestock, wildlife, procedural first-aid,
-and comprehensive reference coverage still needs development and licensing
-review.
+the statewide Tennessee map. The Southeastern vegetable handbook and NIOSH
+heat-illness transcription are now core payload packs and were activated and
+indexed in the current customer guest. Broader livestock, wildlife, procedural
+first-aid, and comprehensive reference coverage still need development and
+licensing review.
 
 The test harness accepts `FIELDOS_TEST_CONTENT_PACK=/path/to/bundle.tar.zst`.
 It places that archive and checksum on a second, read-only ISO attached to the
@@ -229,11 +230,11 @@ until broader content and redistribution review are complete.
 
 `us-flood-safety` version 1.0.0 contains a short FieldOS-edited summary of NWS flood preparedness and response pages. It describes pre-event planning and basic actions while water is rising, identifies its gaps, and links the original NWS sources. The text is an editorial summary, not an official NWS/NOAA publication; it provides no current warning, forecast, local flood-zone data, or route planning. The source list records NOAA reuse guidance, attribution, and non-endorsement language. No third-party images are included. Full project redistribution review remains open.
 
-The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. An earlier no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; that run used an uncommitted worktree and is integration evidence, not a clean-source release acceptance. The pack is now a core pack in the source catalog. A clean-source E2E at `7e2674e` verified the four-pack core payload, including flood and weather, after two reboots. The separate customer-mode ISO still needs rebuilding and interactive testing.
+The portable archive is `/mnt/shared/fieldos-payload/content-packs/us-flood-safety-1.0.0.tar.zst`, SHA-256 `a8540ec40b5964f46c5fb0a2b3ff9f73afa601b96194a621bb91280605dbd470`. An earlier no-NIC E2E transferred it from a read-only ISO, validated and installed it, displayed it in the Firefox Source Library, indexed its two chunks in N.O.M.A.D., and confirmed persistence through two reboots. Report: `/mnt/shared/fieldos-e2e/20261104T132809Z-3606267/report.md`; that run used an uncommitted worktree and is integration evidence, not a clean-source release acceptance. The pack is now a core pack in the source catalog. The current clean-source six-pack unattended E2E and interactive customer candidate both activated and indexed flood references; current results are recorded in [`RELEASE.md`](RELEASE.md).
 
-## Optional NIOSH heat-illness first-aid text
+## NIOSH heat-illness first-aid text
 
-`us-niosh-heat-first-aid` version `2024.1` is an optional, text-only searchable
+`us-niosh-heat-first-aid` version `2024.1` is a text-only searchable
 transcription of NIOSH Publication 2024-100, *Heat Stress: First Aid for Heat
 Illness*. The exact [CDC Stacks record](https://stacks.cdc.gov/view/cdc/138337)
 marks the 2023 source item Public Domain. The original two-page PDF contains
@@ -248,17 +249,13 @@ emergency guidance and professional care.
 
 The plain-text artifact is 6,593 bytes, SHA-256
 `51c4b1f22ce0d7402ce02c05d436bd4e92e132d5c3b04e930cfc794d6a3c3165`. Its
-optional archive is
+portable archive is
 `/mnt/shared/fieldos-content-staging/niosh-heat-first-aid-2024/bundle/content-packs/us-niosh-heat-first-aid-2024.1.tar.zst`,
 4,136 bytes, SHA-256
 `761fc09ba843a69591021e820050eabdaa7cf98f004f3e0d6bfc698cee7f35df`. It is
-registered as optional and is not included in the installer payload. The
-customer-mode test guest accepted it from read-only optical transfer media
-with networking absent; the local Source Library listed and served the full
-document (HTTP 200), and N.O.M.A.D. indexed it with three embedded chunks.
-This verifies the existing pack activation path for this text document, not a
-physical USB workflow or clinical correctness. The local activation evidence
-is `/mnt/shared/fieldos-e2e/customer-statewide-bc7e4c1/niosh-pack-activation.md`.
+included in the current core payload and customer ISO candidate; the
+interactive customer guest indexed it as three chunks. This does not establish
+clinical correctness or complete first-aid coverage.
 
 ## Reference quality and retrieval
 
@@ -281,10 +278,10 @@ checksum-pinned statewide Tennessee map with a neighboring-state buffer (bounds
 file is extracted from the pinned 2026-11-02 Protomaps build using bounded HTTP
 range requests. The source manifest records expected size and SHA-256,
 ODbL/OSM attribution, bounds, and zoom range. The fresh no-NIC E2E report
-(`/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`) records visible
+(`/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`) records visible
 Firefox map views for eight locations and persistence across two reboots. The
-separate interactive customer installation also rendered this map at all eight
-locations. See
+current interactive customer installation visibly rendered Nashville at
+zoom 13; its validation report records the installer handoff caveat. See
 [`RELEASE.md`](RELEASE.md) for checksums and exact evidence paths.
 
 This map is a geographic reference, not turn-by-turn navigation, trail,
