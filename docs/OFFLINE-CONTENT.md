@@ -16,8 +16,11 @@ zoom 0–5 world and U.S. overview maps. The source is Protomaps build
 `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
 Source metadata, bounds, expected size, and checksum are pinned in
 `payload/manifests/maps.json`. The data is an ODbL 1.0 Produced Work derived
-from OpenStreetMap; the map UI displays `© OpenStreetMap contributors` and
-Protomaps attribution.
+from OpenStreetMap. The tested `562fee9` ISO's inherited map style shows
+Protomaps and an OpenStreetMap homepage link, but does not visibly name
+contributors or link to the ODbL. The source build now patches that style to
+show contributor, Protomaps, and ODbL links; this change is not in the tested
+ISO and still needs browser verification in a rebuilt candidate.
 
 Fresh clean-source no-NIC E2E report:
 `/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`. Firefox screenshots

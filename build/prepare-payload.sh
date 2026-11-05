@@ -124,6 +124,7 @@ if digest != record["sha256"] or size != record["size_bytes"]:
 print(json.dumps(manifest, indent=2) + "\n")
 PY
 cp "$STAGE/project-nomad-maps/nomad-base-styles.json" "$STAGE/content/maps/"
+"$PYTHON" "$ROOT/build/patch_map_attribution.py" "$STAGE/content/maps/nomad-base-styles.json"
 cp -a "$STAGE/project-nomad-maps/basemaps-assets/." "$STAGE/content/maps/basemaps-assets/"
 mkdir -p "$STAGE/licenses/project-nomad" "$STAGE/licenses/project-nomad-maps"
 cp "$STAGE/project-nomad/LICENSE" "$STAGE/licenses/project-nomad/"
@@ -136,6 +137,7 @@ OpenStreetMap and subject to ODbL 1.0. See UPSTREAM-README.md and the separate
 font license for the upstream notices and attribution.
 EOF
 cp "$STAGE/project-nomad-maps/basemaps-assets/fonts/OFL.txt" "$STAGE/licenses/project-nomad-maps/"
+cp "$ROOT/payload/licenses/TANGRAMS-ICONS-MIT.txt" "$STAGE/licenses/project-nomad-maps/"
 printf '%s\n' \
   'Wikipedia content is © its contributors and licensed under the applicable Creative Commons Attribution-ShareAlike terms.' \
   'The miniature ZIM comes from Project N.O.M.A.D. v1.35.1 source: install/wikipedia_en_100_mini_2026-01.zim.' \
