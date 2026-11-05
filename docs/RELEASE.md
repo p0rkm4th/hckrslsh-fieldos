@@ -4,8 +4,8 @@
 
 ## Current source and customer candidate
 
-- Current repository revision: `605a631` (`main`, clean and pushed).
-- Latest E2E tested source revision: `5720321b362c99fc7d86935c5e4bd1da9d91cb02`; `605a631` only updates documentation and preserves that evidence.
+- Current source/content revision: `c4deb18e63e1fdc1f02d552ecc1ff3ac24436216` (`main`; documentation follow-up may advance `main` without changing payloads).
+- Latest E2E tested source revision: `5720321b362c99fc7d86935c5e4bd1da9d91cb02`; `c4deb18` adds an optional content pack and corrects optional-pack classification but has not been installed in a guest or rebuilt into an ISO.
 - Customer candidate source revision: `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19` (the customer ISO below has not been rebuilt from current `main`).
 - Customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`
 - Customer ISO SHA-256: `4e9800fc6facf698d2408579b42375e9d6fc31fbd38896ff2e68ada6d2654c74`
@@ -58,6 +58,7 @@ installer validation.
 | Kiwix and source retrieval | PASS, narrow collection | Customer VM searched and returned `The_New_York_Times`; nine local documents reached indexed state. The included English Wikipedia archive is a 100-article fixture, not a comprehensive library. |
 | Tennessee maps | PASS in VMs | Customer Firefox visibly rendered Nashville; unattended E2E visibly rendered eight urban/rural locations. Map display is not routing or navigation; GPS is unverified. |
 | Optional offline content-pack import | PASS in VM; semantic retrieval FAIL | `us-household-communications` transferred, checksum-verified, installed, shown in the Source Library, indexed, and persisted across two reboots. A later isolated query test cited the planner but failed to extract its clearly printed primary-contact fields; see the supplemental report below. |
+| New optional CDC preparedness pack | PARTIAL | The 2013 CDC two-page checklist is item-recorded Public Domain and has a checksum-pinned 109,922-byte portable archive. The offline installer activated it in a temporary host test root and generated a local Source Library entry; guest desktop import and N.O.M.A.D. indexing remain untested. |
 | Reboot persistence | PASS, two consecutive reboots | Provisioning marker, all seven containers, N.O.M.A.D., Kiwix, reference index, and no-default-route state persisted after each reboot; chat also generated after reboot 1. E2E passed two reboot cycles. |
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |
 | Hardware adaptation | PARTIAL | CPU and fixture profiles tested. Physical hardware, GPU driver compatibility, and varied storage systems are unverified. |
