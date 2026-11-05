@@ -4,7 +4,7 @@
 
 ## Current source and customer candidate
 
-- Current source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (`main`; release-status documentation may advance `main` without changing tested implementation).
+- Current source revision: `c85efcd2243bf27a7f0978ef4c5ecddceeca4bdb` (`main`; this is a release-status documentation-only follow-up).
 - Latest clean-source E2E tested source revision: `82c7786c8086fe0f7d8aa3855cdd304de3be95c8` (clean worktree at test time).
 - Customer candidate source revision: `9c59a5f63cf6a2b35b7489a45cf53c0fc93d2f19` (the customer ISO below has not been rebuilt from current `main`).
 - Customer-mode ISO candidate: `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`
