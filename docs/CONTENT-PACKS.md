@@ -85,6 +85,31 @@ guide. This is a preliminary source review, not legal advice or clearance. Keep
 these works out of public release payloads until the required permissions and
 asset-level credits are recorded in a pack manifest.
 
+## High-value references awaiting rights clearance
+
+- The National Center for Home Food Preservation hosts the USDA *Complete
+  Guide to Home Canning*, 2015 revision, as eight chapter PDFs. This would fill
+  a major food-preservation gap, but the guide is a cooperative USDA/UGA
+  publication with many contributors and no explicit whole-document
+  redistribution grant was found. Request written permission from the relevant
+  publishers and confirm image rights before packaging the PDFs or an edited
+  derivative. Preserve its edition and safety limits if cleared:
+  [NCHFP guide overview](https://nchfp.uga.edu/resources/entry/about-the-usda-guide-to-home-canning-2015-revision),
+  [2015 introduction](https://nchfp.uga.edu/papers/guide/INTRO_HomeCanrev0715.pdf).
+- USDA NRCS's 2021 *Cropland In-Field Soil Health Assessment Guide* is relevant
+  to field use, but its acknowledgements credit multiple outside sources and
+  say photos were used with permission. The complete illustrated PDF is not
+  cleared for FieldOS redistribution; ask NRCS for reuse scope or develop a
+  rights-reviewed text-only derivative. It is a field-assessment aid, not a
+  soil laboratory test or complete fertility guide:
+  [official PDF](https://www.nrcs.usda.gov/sites/default/files/2022-10/Cropland_InField_Soil_Health_Assessment_Guide.pdf).
+- EPA's *Emergency Disinfection of Drinking Water* is a possible sanitation
+  supplement, but an item-specific redistribution grant was not established in
+  the review. The existing CDC emergency-water reference already addresses
+  important treatment limits; do not add the EPA PDF until its rights and a
+  specific coverage gap are confirmed:
+  [EPA publication page](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water-0).
+
 ## Southeastern vegetable production reference
 
 `us-southeastern-vegetable-growers` version `2026.1.1` is a Tennessee-relevant
