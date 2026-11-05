@@ -16,6 +16,19 @@
 - Current-source offline payload: `/mnt/shared/fieldos-payload-29ff87b/offline-payload.tar.zst`, SHA-256 `41194c0e16015c10ed41d6b49cc9fb12684ebf39882a1878a188b3d7a33f18d9`; payload verification passed against current pack and map manifests.
 - Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
 
+### Pending hardware-adaptive model update
+
+The source tree now pins Qwen3 1.7B Q4_K_M as a bundled candidate, with the
+0.6B model retained as fallback. A same-context CPU comparison is recorded at
+`/mnt/shared/fieldos-model-eval-20261105/benchmark.json`. On the Tennessee
+handbook date task, 1.7B returned the correct East/West spring and fall ranges
+and refused two facts absent from the excerpt; 0.6B omitted the West dates in
+the same focused check. The initial prompt showed that 1.7B can still format
+answers poorly, and this test did not exercise N.O.M.A.D.'s retrieval, visible
+citations, the selected VM profile, or a FieldOS installation. The current ISO
+above still contains only 0.6B. The updated model payload and clean no-NIC E2E
+must pass before this model can be described as accepted in FieldOS.
+
 An earlier `9c59a5f` customer candidate required a host power-on after the
 media-removal prompt; that predecessor's handoff remains partial. The newer
 `ac319b3` candidate below completed the virtual-media handoff and booted from
@@ -57,7 +70,7 @@ replace customer-mode installer validation.
 | Fresh unattended offline install | PASS | Clean source `82c7786`; report and test ISO SHA-256 above. |
 | Interactive customer install | PASS in UEFI VM | `ac319b3` installed interactively to disposable `vda`, booted from disk after virtual media ejection, and reached the branded desktop. Physical USB behavior remains unverified. Evidence: `/mnt/shared/fieldos-e2e/customer-ac319b3-20261105/validation.md`. |
 | Offline firstboot and services | PASS | Firstboot `complete`; seven containers returned after the second reboot. |
-| Local chat and embeddings | PASS | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. |
+| Local chat and embeddings | PASS for the current ISO | Customer VM generated `FIELDOS_CUSTOMER_OK`, then `PERSISTENCE_OK` after reboot 1; embedding vector length 768. CPU path tested; physical GPU acceleration is unverified. The source-tree 1.7B candidate awaits a rebuilt offline installation test. |
 | Kiwix and source retrieval | PASS for direct source access; AI semantic answer PARTIAL | Customer Firefox opened the New York Times article from the 100-article fixture; all nine local documents reached indexed state. A crop-handbook chat returned unrelated snap-bean instructions without visible citations. The fixture is not a comprehensive library. |
 | Offline Source Library search | PASS, limited formats | Current-source guest rendered search and nine-document inventory; Node-backed test verifies matching and excerpts. Plain text up to 1 MiB is searchable on the page; PDFs and larger documents require browser Find. This is source discovery, not verified semantic Q&A. |
 | Tennessee maps | PASS in customer VM | Firefox visibly rendered Nashville, Memphis, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and rural West Tennessee from the regional archive. Map display is not routing or navigation; GPS is unverified. |
@@ -67,7 +80,7 @@ replace customer-mode installer validation.
 | Network disconnected operation | PASS in VM | No virtual NIC, no guest physical interface, zero default routes. Docker internal bridges remain for local services. |
 | Hardware adaptation | PARTIAL | CPU and fixture profiles tested. Physical hardware, GPU driver compatibility, and varied storage systems are unverified. |
 | Network-connected security | PARTIAL | Disconnected operation and container egress blocking tested; LAN-connected peer exposure test remains open. Docker socket consumers retain powerful host access. |
-| Field reference breadth and grounded AI answers | FAIL for broad field readiness | The optional household planner is directly readable offline, but the small model has failed direct questions about indexed content and the latest crop query included unrelated advice without visible citations. Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
+| Field reference breadth and grounded AI answers | FAIL for broad field readiness | The installed 0.6B model failed questions about indexed content. An isolated same-context 1.7B model check improved exact handbook extraction but does not verify N.O.M.A.D. retrieval or user-visible citations. Kiwix is a small fixture; broad medical, wildlife, outdoor, and technical coverage is incomplete. |
 | Redistribution review | BLOCKED | Exact Ubuntu, software, model, maps, and content license/attribution review is incomplete. Keep candidate binaries unpublished. |
 | Physical customer readiness | BLOCKED | Physical installation/hardware, LAN exposure, content breadth, and rights review remain. |
 

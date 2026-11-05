@@ -35,8 +35,12 @@
       "backends": ["cpu", "cuda", "rocm", "vulkan"],
       "license": "Apache-2.0",
       "license_url": "https://ollama.com/library/qwen3/tags",
+      "payload_identity": "Ollama manifest and model layer pinned by SHA-256 below",
+      "ollama_manifest_sha256": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+      "model_blob_sha256": "3d0b790534fe4b79525fc3692950408dca41171676ed7e21db57af5c65ef6ab6",
+      "model_blob_bytes": 1359279776,
       "quality_priority": 20,
-      "bundled_in_test_iso": false
+      "bundled_in_test_iso": true
     },
     {
       "id": "qwen3-4b-instruct-2507-q4_k_m",

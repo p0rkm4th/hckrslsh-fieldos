@@ -27,9 +27,10 @@ and Big South Fork. Nonempty zoom-13 vector tiles at all eight locations were
 also checked. The world and U.S. overviews remain low resolution. This map does
 not supply routing, GPS positioning, trail data, or navigation. The statewide
 map is also present in the interactive customer ISO candidate
-`/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`; the
-customer-mode install visibly rendered Nashville, though its installer handoff
-still needs a clean hands-off test. The exact checksum and eight-location
+`/mnt/shared/fieldos-releases/fieldos-customer-offline-ac319b3.iso`. That
+customer-mode install completed virtual-media handoff, booted its installed
+disk, visibly rendered all eight locations, and passed two reboots in a no-NIC
+UEFI VM. Physical USB behavior remains unverified. The exact checksum and
 browser evidence are recorded in [`RELEASE.md`](RELEASE.md).
 
 The current customer candidate contains Project N.O.M.A.D.'s miniature English

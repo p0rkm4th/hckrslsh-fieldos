@@ -61,6 +61,16 @@ the payload or above the detected memory budget. The default firstboot path
 marks only CPU as validated; GPU configuration is not enabled just because a
 GPU appears in the detector output.
 
+The current accepted customer ISO contains only Qwen3 0.6B. The source tree now
+pins Qwen3 1.7B Q4_K_M as the preferred bundled candidate for machines with
+enough memory and keeps 0.6B as fallback. An isolated CPU comparison against
+the same handbook excerpt showed better exact date extraction from 1.7B, but it
+did not exercise N.O.M.A.D.'s live retrieval, the 8 GiB install profile, or a
+customer installation. Evidence is in
+`/mnt/shared/fieldos-model-eval-20261105/benchmark.json`; the candidate becomes
+an accepted FieldOS model only after payload validation and a fresh offline
+installation run.
+
 Fixture tests cover memory bands and available-memory detection, physical-core
 counting, model fallback, available payload IDs, manual override validation,
 mixed GPU vendors/VRAM matching, CPU features, and available VRAM calculation.

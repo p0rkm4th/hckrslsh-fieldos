@@ -24,9 +24,15 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertIsNone(result["embedding_model"])
 
     def test_small_model_selected_when_it_fits(self):
-        result = select({"memory_gib": 8, "gpus": []}, MANIFEST, {SMALL})
+        result = select({"memory_gib": 6, "gpus": []}, MANIFEST)
         self.assertEqual(result["chat_model"], SMALL)
         self.assertEqual(result["chat_backend"], "cpu")
+
+    def test_bundled_medium_model_is_preferred_when_it_fits_with_small_fallback(self):
+        medium = "qwen3-1.7b-q4_k_m"
+        result = select({"memory_gib": 8, "gpus": []}, MANIFEST)
+        self.assertEqual(result["chat_model"], medium)
+        self.assertEqual(result["fallback_model_ids"], [SMALL])
 
     def test_fallback_uses_largest_bundled_model_that_fits(self):
         small = SMALL
