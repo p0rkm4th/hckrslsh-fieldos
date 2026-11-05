@@ -41,12 +41,20 @@ the Qdrant top matches were unrelated crop passages. The automated PASS is
 operational only. Do not use AI as a trusted answer source. This source has
 not yet produced a replacement customer-mode ISO.
 
-**Update (2026-11-05):** Checksum-pinned `pdftotext -layout` companions are
-being added for the crop handbook and selected CDC PDFs. These support direct
-offline Source Library search while preserving the original PDFs. They are
-explicitly excluded from duplicate N.O.M.A.D. indexing. The changes below the
-`adc8551` E2E checkpoint are pending tests, payload build, and a new clean-source
-acceptance run; they are not yet release accepted.
+**Searchable-source update (2026-11-05):** Source
+`dc6d823bd8427c9193588e5460c28a7e4b20aad8` passed `make check`, 85 unit tests,
+payload verification, and a new clean-source no-NIC E2E. Report:
+`/mnt/shared/fieldos-e2e/searchable-sidecars-20261105/20261105T095217Z-2608514/report.md`.
+The test ISO SHA-256 was `77a7408739d302f312ea2a16e1beb875469bb1a55936c149715d55733681ea25`
+(temporary ISO removed after test); payload SHA-256 is
+`b8f798477aae21468d86afd4d44df9cbf1d8cbc16463e358d5fc98aac0787403`. All eight
+Tennessee Firefox screenshots are saved beside the report and visibly show
+the map. Two reboots passed. A post-run guest check confirmed five handbook
+text ranges installed; the Source Library page contains the tomato date rows
+and frost-free-date qualification, and no searchable companion was uploaded
+to N.O.M.A.D. The optional content-transfer branch was skipped. This is
+test-only evidence, not a rebuilt customer-mode ISO or semantic AI grounding
+acceptance. The earlier AI/RAG failure remains open.
 
 An earlier `9c59a5f` customer candidate required a host power-on after the
 media-removal prompt; that predecessor's handoff remains partial. The newer
