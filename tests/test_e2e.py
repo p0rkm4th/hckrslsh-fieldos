@@ -667,6 +667,8 @@ autoinstall:
         served = self.check(
             "reference library served from local N.O.M.A.D. web UI",
             f"curl --fail --silent --show-error '{index_url}' | grep -F 'FieldOS Source Library' && "
+            f"curl --fail --silent --show-error '{index_url}' | grep -F 'id=\"source-search\"' && "
+            f"curl --fail --silent --show-error '{index_url}' | grep -F 'data-body=' && "
             f"curl --fail --silent --show-error -o /dev/null -w 'DOCUMENT_HTTP=%{{http_code}}' '{document_url}'",
         )
         if "DOCUMENT_HTTP=200" not in served:

@@ -26,6 +26,7 @@ from validate_content_packs import PackError, validate_catalog, validate_manifes
 DEFAULT_ROOT = Path("/var/lib/fieldos")
 DEFAULT_SCHEMA = Path("/opt/fieldos/payload/manifests/content-pack.schema.json")
 RESERVE_BYTES = 256 * 1024 * 1024
+MAX_SOURCE_LIBRARY_TEXT_BYTES = 1024 * 1024
 MAX_FILES = 100_000
 
 
@@ -260,14 +261,20 @@ def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str 
             continue
         pack_title = html.escape(str(installed.get("title", pack_id)))
         description = html.escape(str(installed.get("description", "")))
-        entries.append(f"<section><h2>{pack_title}</h2><p>{description}</p><ul>")
+        pack_metadata = [str(installed.get("title", pack_id)), str(installed.get("description", ""))]
+        source_entries = []
         for source in installed.get("sources", []):
             name = html.escape(str(source.get("name", "Source")))
             url = html.escape(str(source.get("url", "")), quote=True)
             attribution = html.escape(str(source.get("attribution", "")))
             license_name = html.escape(str(source.get("license", "")))
-            entries.append(f"<li>{name}: {attribution} <small>({license_name}; {url})</small></li>")
-        entries.append("</ul><ul>")
+            source_entries.append(f"<li>{name}: {attribution} <small>({license_name}; {url})</small></li>")
+            pack_metadata.extend((str(source.get("name", "")), str(source.get("attribution", "")),
+                                  str(source.get("license", ""))))
+        entries.append(
+            f'<section class="reference-pack"><h2>{pack_title}</h2><p>{description}</p>'
+            f'<ul class="source-details">{"".join(source_entries)}</ul><ul class="document-list">'
+        )
         for artifact in installed.get("artifacts", []):
             rel = PurePosixPath(artifact["path"])
             source_path = manifest_path.parent.joinpath(*rel.parts)
@@ -310,8 +317,56 @@ def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str 
                     temporary.unlink(missing_ok=True)
             href = "documents/" + quote(f"{pack_id}/{version}/{rel.as_posix()}", safe="/")
             label = html.escape(rel.name)
-            entries.append(f'<li><a href="{href}">{label}</a></li>')
+            body = ""
+            if source_path.suffix.lower() == ".txt" and source_path.stat().st_size <= MAX_SOURCE_LIBRARY_TEXT_BYTES:
+                body = source_path.read_text(encoding="utf-8", errors="replace")
+            search_metadata = " ".join((*pack_metadata, rel.name, artifact.get("license", "")))
+            entries.append(
+                '<li class="source-document" data-search="{}" data-body="{}">'
+                '<a href="{}">{}</a><p class="search-match" hidden></p></li>'.format(
+                    html.escape(search_metadata, quote=True), html.escape(body, quote=True),
+                    html.escape(href, quote=True), label,
+                )
+            )
         entries.append("</ul></section>")
+
+    search_script = """<script>
+(() => {
+  const input = document.getElementById('source-search');
+  const status = document.getElementById('source-search-status');
+  const documents = [...document.querySelectorAll('.source-document')];
+  const packs = [...document.querySelectorAll('.reference-pack')];
+  const normalize = (value) => value.normalize('NFKC').toLowerCase();
+  const update = () => {
+    const terms = normalize(input.value).trim().split(/\\s+/).filter(Boolean);
+    let visible = 0;
+    for (const item of documents) {
+      const body = item.dataset.body || '';
+      const text = normalize(`${item.dataset.search || ''} ${body}`);
+      const matches = terms.every((term) => text.includes(term));
+      item.hidden = !matches;
+      if (matches) visible += 1;
+      const excerpt = item.querySelector('.search-match');
+      excerpt.hidden = true;
+      excerpt.textContent = '';
+      if (matches && terms.length && body) {
+        const words = body.split(/\\s+/);
+        const position = words.findIndex((word) => terms.some((term) => normalize(word).includes(term)));
+        if (position >= 0) {
+          excerpt.textContent = `Match: ${words.slice(Math.max(0, position - 14), position + 36).join(' ')}`;
+          excerpt.hidden = false;
+        }
+      }
+    }
+    for (const pack of packs) {
+      pack.hidden = ![...pack.querySelectorAll('.source-document')].some((item) => !item.hidden);
+    }
+    status.textContent = terms.length ? `${visible} matching document${visible === 1 ? '' : 's'}` : `${visible} installed document${visible === 1 ? '' : 's'}`;
+  };
+  input.addEventListener('input', update);
+  update();
+})();
+</script>"""
 
     page = "\n".join([
         "<!doctype html>", '<html lang="en"><head><meta charset="utf-8">',
@@ -320,7 +375,12 @@ def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str 
         "<h1>FieldOS Source Library</h1>",
         "<p>These are source documents, not AI-generated answers. Check each source's date and instructions.</p>",
         "<p>FieldOS is independent and is not endorsed by the publishers listed here. The original materials are reproduced unchanged and are available at no charge from their agencies; use current local authority guidance when it differs.</p>",
+        '<label for="source-search">Search installed offline sources</label>',
+        '<input id="source-search" type="search" size="48" autocomplete="off" aria-describedby="source-search-help" placeholder="Search topics, titles, or source names">',
+        '<p id="source-search-help">Search checks titles, source details, and plain-text documents up to 1 MiB. Open PDFs and longer documents, then use the browser\'s Find command to search inside them.</p>',
+        '<p id="source-search-status" role="status" aria-live="polite"></p>',
         *(entries or ["<p>No reference-document packs are installed.</p>"]),
+        search_script,
         "</body></html>",
     ]) + "\n"
     fd, temporary_name = tempfile.mkstemp(prefix=".fieldos-reference-", dir=references_root)

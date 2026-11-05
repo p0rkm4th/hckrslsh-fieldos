@@ -2,6 +2,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import re
 import shutil
 import subprocess
 import tarfile
@@ -218,6 +219,67 @@ class ContentPackBundleTests(unittest.TestCase):
         self.assertIn("already installed:", second)
         self.assertIn("water-guide.pdf", index.read_text())
         self.assertEqual(published.read_bytes(), artifact.read_bytes())
+
+    def test_source_library_search_filters_plain_text_documents_offline(self):
+        artifact = self.pack / "communications-plan.txt"
+        content = "Primary out-of-area contact: write down name, phone, and city/state.\n"
+        artifact.write_text(content, encoding="utf-8")
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["title"] = "Household Communications Plan"
+        manifest["description"] = "A local planning worksheet."
+        manifest["installation"]["target"] = "storage/references/documents"
+        manifest["artifacts"] = [{
+            "path": artifact.name, "size_bytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "source": "fixture-source", "license": "CC0-1.0",
+        }]
+        manifest_path.write_text(json.dumps(manifest))
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+
+        CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        page = (self.install_root / "storage/references/index.html").read_text()
+        self.assertIn('<label for="source-search">Search installed offline sources</label>', page)
+        self.assertIn('data-body="Primary out-of-area contact: write down name, phone, and city/state.', page)
+        self.assertIn("Open PDFs and longer documents", page)
+        self.assertIn("documents/fixture-reference/1.0.0/communications-plan.txt", page)
+
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("Node.js is unavailable for the Source Library search behavior check")
+        search_script = re.search(r"<script>\s*(.*?)\s*</script>", page, re.DOTALL).group(1)
+        harness = r"""
+const assert = require('node:assert/strict')
+const documents = [
+  { dataset: { search: 'Household Communications Plan', body: 'Primary out-of-area contact: write down name, phone, and city/state.' }, hidden: false, match: { hidden: true, textContent: '' }, querySelector() { return this.match } },
+  { dataset: { search: 'Winter Storm Safety', body: 'Prepare for cold weather and power outages.' }, hidden: false, match: { hidden: true, textContent: '' }, querySelector() { return this.match } },
+]
+const packs = [{ hidden: false, querySelectorAll() { return documents } }]
+const input = { value: '', addEventListener(event, handler) { this.handler = handler } }
+const status = { textContent: '' }
+global.document = {
+  getElementById(id) { return id === 'source-search' ? input : status },
+  querySelectorAll(selector) { return selector === '.source-document' ? documents : packs },
+}
+"""
+        assertions = r"""
+input.value = 'primary out-of-area contact'
+input.handler()
+assert.equal(status.textContent, '1 matching document')
+assert.equal(documents[0].hidden, false)
+assert.equal(documents[1].hidden, true)
+assert.match(documents[0].match.textContent, /write down name, phone/)
+input.value = 'winter'
+input.handler()
+assert.equal(status.textContent, '1 matching document')
+assert.equal(documents[0].hidden, true)
+assert.equal(documents[1].hidden, false)
+input.value = 'no such local source'
+input.handler()
+assert.equal(status.textContent, '0 matching documents')
+assert.equal(packs[0].hidden, true)
+"""
+        subprocess.run([node, "-e", harness + "\n;\n" + search_script + "\n" + assertions], check=True)
 
     def test_reference_activation_refuses_to_replace_operator_index(self):
         artifact = self.pack / "guide.pdf"
