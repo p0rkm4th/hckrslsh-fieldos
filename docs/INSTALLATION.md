@@ -2,17 +2,32 @@
 
 ## Customer installation
 
-**Latest customer-mode build (2026-11-05; VM installation PASS):**
+**Current customer-mode candidate (2026-11-05; VM installation PASS):**
+`/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, source
+`cc4aa38f3debd078b877589355221e94821bd160`, SHA-256
+`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`.
+Interactive disk/account selection and installation completed in a fresh
+no-NIC 80 GiB UEFI VM. At Ubuntu's “Please remove the installation medium,
+then press ENTER” prompt, the guest's virtual CD tray was already open. Enter
+caused a clean guest shutdown; an ordinary VM power-on then booted the installed
+disk with no ISO attached. No reset or repair was used. Offline firstboot,
+application checks, map rendering, and two post-install reboots passed. Fully
+automatic restart without the ordinary power-on after the prompt, physical USB
+handoff, and physical hardware remain unverified. Full current evidence:
+[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
+`/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/`.
+
+**Previous customer-mode installation PASS (2026-11-05; historical):**
 `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, source
 `562fee9`, SHA-256
 `4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
 Interactive account and target-disk selection, destructive-action confirmation,
-normal virtual-media handoff, installed-disk boot, and offline firstboot all
-passed in a fresh no-NIC 80 GiB UEFI VM. The branded desktop, local AI,
-embeddings, Kiwix, and statewide map worked; two consecutive reboots preserved
-services and user data. Eight Tennessee map locations rendered in Firefox.
-Physical USB behavior and physical hardware remain unverified. Evidence and
-screenshots: `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
+normal virtual-media handoff, installed-disk boot, and offline firstboot passed
+in a fresh no-NIC 80 GiB UEFI VM. The branded desktop, local AI, embeddings,
+Kiwix, and statewide map worked; two consecutive reboots preserved services
+and user data. This is evidence for a previous ISO, not the current candidate.
+Evidence and screenshots:
+`/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`.
 
 **Earlier customer-mode VM pass (2026-11-05; superseded):**
 `/mnt/shared/fieldos-releases/fieldos-customer-offline-9c59a5f.iso`, source
@@ -59,7 +74,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network

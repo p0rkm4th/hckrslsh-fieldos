@@ -1,6 +1,6 @@
 # Release readiness and evidence
 
-**Current status (2026-11-05): the current customer ISO works offline after installation, but the interactive installer required a diagnostic VM reset at its Restart Now handoff. Customer installation is PARTIAL, not a clean PASS. The ISO is not approved for public binary distribution, emergency use, or medical use.**
+**Current status (2026-11-05): interactive installation, offline firstboot, installed-disk boot, and two-reboot service validation passed on the current customer ISO in a disposable no-NIC UEFI VM. The installer reached the standard virtual-media removal prompt and shut down normally; a regular power-on booted the installed disk. Seamless automatic restart and physical USB/hardware behavior remain unverified. This ISO is not approved for public binary distribution, emergency use, or medical use.**
 
 ## Latest customer ISO acceptance
 
@@ -9,11 +9,11 @@
 - SHA-256: `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`.
 - `make check test`: PASS, 87 unit tests; 10 content-pack manifests validated.
 - `make verify ISO=...`: PASS; BIOS/UEFI boot records, customer setup, offline APT, and payload presence verified.
-- Interactive UEFI install to a disposable 80 GiB disk: installer allowed disk and identity selection and confirmed destructive install. The installer did not restart the guest automatically; a diagnostic `virsh reset` was required. The ISO was detached, installed Ubuntu booted from disk, and offline firstboot completed. This intervention means the interactive-install gate remains PARTIAL.
-- Post-install operations: all seven services started; selected CPU model generated text; 768-dimensional embeddings returned; nine reference documents/689 chunks indexed; Kiwix article search succeeded; Firefox visibly rendered zoom-13 maps for all eight Tennessee test locations; two subsequent reboots preserved a user-data marker, map bytes, services, inference, embeddings, and Kiwix search.
+- Interactive UEFI install to a disposable 80 GiB disk: target and identity were selected and destructive install confirmed. Ubuntu reached “Please remove the installation medium, then press ENTER”; the guest tray was open. Enter caused a normal shutdown; ordinary `virsh start` booted installed `vda` with no ISO source. No reset or repair was used. Interactive installation and installed-disk boot pass in this VM; automatic restart and physical USB handoff remain unverified.
+- Post-install operations: all seven services started; selected CPU model generated text after reboot 2; 768-dimensional embeddings returned; nine reference documents/689 chunks indexed; Firefox Source Library search returned three flood-related documents; Kiwix article search succeeded; Firefox visibly rendered zoom-13 maps at Nashville in the clean retest and all eight Tennessee test locations in a separate installation of the exact same ISO checksum; two reboots preserved a user-data marker, map bytes, services, inference, embeddings, and Kiwix search.
 - N.O.M.A.D. answer quality remains limited: local chat attached a source but did not answer a soil-pH query from it. A separate harmless UI prompt received an overbroad refusal and irrelevant weather references. Direct reference access is more reliable than model answers.
-- Full current report and evidence: [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`.
-- Remaining gates: reproduce/fix unattended installer handoff, physical USB and hardware tests, connected-network exposure review, useful broad content, semantic quality, and redistribution clearance.
+- Full current report and evidence: [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md), `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/`, and the same-checksum statewide map run `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`.
+- Remaining gates: physical USB and hardware tests, connected-network exposure review, useful broad content, semantic quality, and redistribution clearance.
 
 This current snapshot supersedes status claims in the revision-specific historical records below.
 
@@ -172,12 +172,14 @@ and artifact paths: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/semantic-r
 ## Current offline capabilities
 
 The current `cc4aa38` customer-mode candidate has been installed in a no-NIC
-UEFI VM. Local AI generation, embeddings, Kiwix, the Tennessee map, and the
-branded Command Center were opened or exercised after installation; two guest
-reboots preserved their services and data. The installer handoff required a
-manual VM reset, so this is not a clean installation PASS. Physical USB
-behavior and compatibility across hardware remain untested. Kasm and Proxmox
-remain development tools, not product requirements.
+UEFI VM. The installer reached the standard media-removal prompt and shut down
+cleanly after Enter; an ordinary VM power-on booted the installed disk without
+reset or repair. Local AI generation, embeddings, Kiwix, the Tennessee map,
+Source Library, and branded Command Center were exercised after installation;
+two guest reboots preserved services and data. This validates the interactive
+install and disk boot in this VM profile. Seamless automatic restart, physical
+USB behavior, and compatibility across hardware remain untested. Kasm and
+Proxmox remain development tools, not product requirements.
 
 The local model is not an authority for emergency or medical decisions. It
 fails closed for configured safety-sensitive categories. The bundled sources

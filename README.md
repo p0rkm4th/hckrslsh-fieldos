@@ -19,13 +19,15 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Repository revision: `cc4aa38f3debd078b877589355221e94821bd160`.
+Candidate ISO source revision: `cc4aa38f3debd078b877589355221e94821bd160`.
+Repository documentation may be newer; check `git rev-parse HEAD` for its
+current revision.
 
-Current customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, SHA-256 `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`. On 2026-11-05, the ISO passed structural verification and the installed system passed offline service, local inference, embedding, Kiwix, browser-map, and two-reboot checks in a disposable UEFI VM. However, the installer’s **Restart Now** did not boot automatically; a diagnostic VM reset was needed before the installed disk booted. The customer install gate is therefore **PARTIAL**, not a clean pass. The ISO remains an unpublished test candidate.
+Current customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, SHA-256 `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`. A fresh no-NIC UEFI VM installation passed interactive target/account selection, destructive confirmation, firstboot, installed-disk boot, functional checks, and two reboots. Ubuntu displayed its standard media-removal prompt; Enter shut the guest down normally, and an ordinary VM power-on booted from the installed disk without reset or repair. This verifies customer installation and disk boot in a VM; seamless automatic restart and physical USB/hardware behavior remain unverified. The ISO is still an unpublished test candidate.
 
-The installed system selected Qwen3 1.7B Q4_K_M on CPU and generated real responses; the embedding model returned 768-dimensional vectors. Kiwix opened and searched its bundled 100-article Wikipedia fixture. Firefox visibly rendered zoom-13 Tennessee maps at Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big South Fork. Nine installed reference files (689 chunks) were indexed, but semantic answers and citations remain unreliable. Rural map detail is sparse; routing and GPS positioning are not provided.
+The installed system selected Qwen3 1.7B Q4_K_M on CPU and generated a response after the second reboot; the embedding model returned 768-dimensional vectors. Kiwix opened and searched its bundled 100-article Wikipedia fixture. Firefox visibly rendered zoom-13 Tennessee maps at Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big South Fork. Nine installed reference files (689 chunks) were indexed and the Source Library returned three flood-related matches, but semantic answers and citations remain unreliable. Rural map detail is sparse; routing and GPS positioning are not provided.
 
-`make check test` passed 87 tests, and `make verify ISO=...` confirmed BIOS/UEFI boot records, customer setup, offline APT, and payload presence. See the [current validation report](docs/VALIDATION-CURRENT.md) and [release readiness](docs/RELEASE.md). Detailed logs and screenshots are preserved under `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`.
+`make check test` passed 87 tests, and `make verify ISO=...` confirmed BIOS/UEFI boot records, customer setup, offline APT, and payload presence. See the [current validation report](docs/VALIDATION-CURRENT.md) and [release readiness](docs/RELEASE.md). Clean handoff evidence is under `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/`; the eight-location map screenshots are in `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`.
 
 Physical installation and varied hardware, GPU acceleration, GPS, connected-LAN exposure, broader reference coverage, semantic retrieval quality, and redistribution clearance remain open. FieldOS is not an emergency or medical appliance; do not rely on the local model for safety-critical decisions.
 ## Build and test
@@ -40,7 +42,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
