@@ -237,19 +237,22 @@ identifies the item as Public Domain, gives its publication date and two-page
 extent, and provides the original PDF link. The bundled file is 138,605 bytes
 with SHA-256
 `d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`; its PDF
-text is extractable. N.O.M.A.D. supports PDF indexing, but this new pack has
-not yet been installed or tested through its Knowledge Base. The manifest
-records CDC attribution and makes clear that source and license review is not
-a clinical review. The pack is optional and is not part of the customer ISO
-baseline. Its portable archive is
+text is extractable. In a separate offline copy-on-write guest test, the
+archive was transferred from read-only media, appeared in Firefox's Source
+Library, opened as a two-page PDF, and indexed in N.O.M.A.D. as one chunk. The
+file, Source Library listing, and indexed row persisted through two reboots.
+The manifest records CDC attribution and makes clear that source and license
+review is not a clinical review. The pack is optional and is not part of the
+customer ISO baseline. Its portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0.tar.zst`
 (109,922 bytes; SHA-256
 `ebfb8bb14588f9af2521a3139420b17eb7db5e96014ad093526dba27d38f8617`). The
 existing offline installer was exercised against this archive on the build
 host: checksum validation, immutable installation, checksum recheck, generated
-Source Library entry, and local original-document link all passed. A guest
-desktop import, N.O.M.A.D. indexing, and semantic retrieval have not yet been
-tested for this pack. Host-side validation details are at
+Source Library entry, and local original-document link all passed. This
+archive then passed the isolated guest integration above. No AI semantic
+question-answering test was run for this checklist. Host-side validation
+details are at
 `/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0-validation.md`.
 
 ## Household emergency communications planner
