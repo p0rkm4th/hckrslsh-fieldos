@@ -20,27 +20,10 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-FieldOS remains an engineering test candidate, not an approved emergency or
-navigation appliance. The latest interactive customer-mode ISO is
-`/mnt/shared/fieldos-releases/fieldos-customer-statewide-bc7e4c1.iso`, built
-from clean commit `bc7e4c1c3d0ec79519cc41b7c6ce1cd3a702b10c`; SHA-256
-`bdfbe5c01f9960634f275e230c3a3957623f778c511c36a73ddf992a2f4e85bd`. In a
-disposable no-NIC UEFI VM, interactive disk/account selection, installation,
-offline firstboot, local AI, embeddings, Kiwix, statewide Tennessee map views,
-and two reboot checks passed. The latest clean-source unattended E2E also
-passed at source `b5d6f748c9efdb0f4345c5fe92533b882c7e2856`. Exact logs,
-screenshots, source revision and remaining limitations are recorded in
-[`docs/RELEASE.md`](docs/RELEASE.md).
+The latest customer-mode test candidate is `/mnt/shared/fieldos-releases/fieldos-customer-offline-1851e34.iso`, built from clean source commit `1851e3491d6f7e28d53b73a6e02239d2ff681121`; SHA-256 `9d43df4be724a9937eb931347279660226976d1a6914c235fcba9244e418a4a6`. Interactive identity and disk selection, no-network installation, installed-disk boot, firstboot, and two reboot checks passed in a disposable UEFI VM. After reboot two, local chat, 768-dimensional embeddings, Kiwix search, and the Tennessee map tile were verified. Firefox visibly rendered Nashville detail and the FieldOS Command Center. A clean unattended no-NIC E2E from the same source also passed, including eight visible map locations and container egress checks.
 
-The detailed Tennessee map covers the state and a neighboring-state buffer at
-zoom 0–13. The core reference library is still limited. An optional 2026
-Southeastern vegetable handbook and a narrow NIOSH heat-illness reference have
-been transferred and indexed in test guests; neither optional pack is in the
-current ISO. The NIOSH reference survived a reboot, but its new browser view
-has not been visually confirmed. Physical hardware, GPS, LAN-connected
-security, broader field references, and redistribution clearance remain
-unverified or incomplete. Do not rely on the local model for medical or
-emergency decisions.
+These results establish engineering test acceptance in VMs, not physical hardware support or release readiness. Physical USB behavior, hardware/GPU variety, LAN exposure review, broader field reference coverage, and redistribution clearance remain open. This is not an emergency or medical appliance; do not rely on the local model for safety-critical decisions. Detailed source revisions, checksums, reports, and limitations are in [`docs/RELEASE.md`](docs/RELEASE.md); the interactive install report and screenshots are at `/mnt/shared/fieldos-e2e/customer-offline-1851e34/`.
+
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,
