@@ -57,7 +57,7 @@ Planned pack categories are:
 
 ## Southeastern vegetable production reference
 
-`us-southeastern-vegetable-growers` version `2026.1` is a Tennessee-relevant
+`us-southeastern-vegetable-growers` version `2026.1.1` is a Tennessee-relevant
 agriculture pack included in the current core payload. It contains the unmodified, searchable
 397-page 2026 Southeastern U.S. Vegetable Crop Handbook (3,991,344 bytes;
 SHA-256
@@ -66,9 +66,14 @@ handbook's official publication page lists the last revision as January 2026,
 describes the included crop, soil, pest, planting-date, fertilizer, and food
 safety topics, and states that Virginia Cooperative Extension materials may
 be publicly used, reprinted, or cited with specified institutional and author
-credit. The intact PDF preserves the handbook's full contributor and photo
-credits. Source and reuse record: [Virginia Cooperative Extension publication
-page](https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html). This is a
+credit. The version `2026.1.1` attribution lists the seven authors named on the
+publisher page: Mark S. Reiter, Tom P. Kuhar, Kemper Sutton, Laura Strawn,
+Douglas S. Higgins, Steve L. Rideout, and Vijay Singh. It also credits senior
+editor A. L. Wszelaki, Virginia Cooperative Extension, Virginia Tech, and
+Virginia State University. The Source Library renders that manifest
+attribution. The intact PDF preserves the handbook's full contributor and
+photo credits. Source and reuse record: [Virginia Cooperative Extension
+publication page](https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html). This is a
 regional commercial-vegetable reference, not a complete farm manual, livestock
 guide, or Tennessee-specific calendar. The source record advises that local
 markets, weather, and location can require changed practices or planting dates.
@@ -79,9 +84,13 @@ archive from read-only transfer media, activated its Source Library link, and
 indexed the document in N.O.M.A.D. as 678 chunks. It survived two guest
 reboots. This validates the existing transfer workflow, not a nontechnical
 USB interface. The portable archive is
-`/mnt/shared/fieldos-content-packs/content-packs/us-southeastern-vegetable-growers-2026.1.tar.zst`
-(3,273,118 bytes; SHA-256
-`e7dd06a657973a15bd75a1d9986ec774aef7f0b86c1f88ce4e4b25416cac7e30`).
+`/mnt/shared/fieldos-content-packs/content-packs/us-southeastern-vegetable-growers-2026.1.1.tar.zst`
+(3,737,859 bytes; SHA-256
+`67ba6be8136afcdfbe14642675520369fc04b8f5a44bbf39d36da31a69a175a9`).
+The earlier `2026.1` archive remains as a historical package. The current
+customer ISO and its installed copy still contain the previous `2026.1`
+metadata; rebuild and acceptance-test a new ISO before claiming that this fix
+is present there.
 E2E evidence: `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`.
 
 Each populated pack has its own stable ID and version. Its manifest records

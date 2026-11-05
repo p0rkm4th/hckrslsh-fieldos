@@ -20,8 +20,8 @@ build outputs and are excluded from Git.
 ## Current status
 
 Candidate ISO source revision: `cc4aa38f3debd078b877589355221e94821bd160`.
-Repository documentation may be newer; check `git rev-parse HEAD` for its
-current revision.
+The repository includes newer documentation and content metadata updates that
+are not yet present in this ISO; check release notes before using it.
 
 Current customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, SHA-256 `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`. A fresh no-NIC UEFI VM installation passed interactive target/account selection, destructive confirmation, firstboot, installed-disk boot, functional checks, and two reboots. Ubuntu displayed its standard media-removal prompt; Enter shut the guest down normally, and an ordinary VM power-on booted from the installed disk without reset or repair. This verifies customer installation and disk boot in a VM; seamless automatic restart and physical USB/hardware behavior remain unverified. The ISO is still an unpublished test candidate.
 
