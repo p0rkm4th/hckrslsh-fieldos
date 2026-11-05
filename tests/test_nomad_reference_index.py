@@ -79,6 +79,15 @@ class NomadReferenceIndexTests(unittest.TestCase):
             }],
         }
         (pack / "manifest.json").write_text(json.dumps(manifest))
+        companion = pack / "searchable-companion.txt"
+        companion.write_text("Search aid; indexed only in the Source Library.\n")
+        manifest["artifacts"].append({
+            "path": companion.name,
+            "size_bytes": companion.stat().st_size,
+            "sha256": hashlib.sha256(companion.read_bytes()).hexdigest(),
+            "index_with_ai": False,
+        })
+        (pack / "manifest.json").write_text(json.dumps(manifest))
 
     def tearDown(self):
         self.server.shutdown()
@@ -94,6 +103,16 @@ class NomadReferenceIndexTests(unittest.TestCase):
         self.assertEqual(second, first)
         self.assertEqual(FakeNomadHandler.uploads, 1)
         self.assertEqual(FakeNomadHandler.files[0]["collection"], INDEXER.COLLECTION)
+        self.assertEqual(len(INDEXER.list_documents(self.root)), 1)
+
+    def test_non_ai_companion_is_still_checksum_validated(self):
+        manifest_path = self.root / "content-packs/test-pack/1.0.0/manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        companion = manifest["artifacts"][1]
+        path = manifest_path.parent / companion["path"]
+        path.write_text("tampered search aid")
+        with self.assertRaisesRegex(INDEXER.IndexError, "manifest validation"):
+            INDEXER.list_documents(self.root)
 
     def test_refuses_manifest_checksum_mismatch(self):
         manifest_path = self.root / "content-packs/test-pack/1.0.0/manifest.json"

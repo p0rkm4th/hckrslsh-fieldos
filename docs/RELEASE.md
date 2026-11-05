@@ -29,6 +29,25 @@ citations, the selected VM profile, or a FieldOS installation. The current ISO
 above still contains only 0.6B. The updated model payload and clean no-NIC E2E
 must pass before this model can be described as accepted in FieldOS.
 
+**Update (2026-11-05):** The exact `adc8551` source passed a clean no-NIC
+automated E2E at `/mnt/shared/fieldos-e2e/qwen17-model-20261105/20261105T091345Z-2568109/report.md`.
+The 6.6 GiB offline payload is
+`/mnt/shared/fieldos-payload-qwen17-20261105/offline-payload.tar.zst`, SHA-256
+`d29645ff8f4b8d2aaf30c498fc8b517ac5bf00c514a706aa6906911be481c430`.
+Installation, CPU inference smoke, embeddings, Kiwix, statewide map views, and
+two reboots passed. A post-run real N.O.M.A.D. query against the selected
+1.7B model failed semantic grounding: it returned incorrect tomato dates and
+the Qdrant top matches were unrelated crop passages. The automated PASS is
+operational only. Do not use AI as a trusted answer source. This source has
+not yet produced a replacement customer-mode ISO.
+
+**Update (2026-11-05):** Checksum-pinned `pdftotext -layout` companions are
+being added for the crop handbook and selected CDC PDFs. These support direct
+offline Source Library search while preserving the original PDFs. They are
+explicitly excluded from duplicate N.O.M.A.D. indexing. The changes below the
+`adc8551` E2E checkpoint are pending tests, payload build, and a new clean-source
+acceptance run; they are not yet release accepted.
+
 An earlier `9c59a5f` customer candidate required a host power-on after the
 media-removal prompt; that predecessor's handoff remains partial. The newer
 `ac319b3` candidate below completed the virtual-media handoff and booted from

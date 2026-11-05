@@ -30,6 +30,15 @@
       "sha256": "f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966",
       "source": "cdc-practical-skills",
       "license": "Public Domain per the exact CDC STACKS item record; original PDF is unmodified."
+    },
+    {
+      "path": "cdc-practical-skills-searchable.txt",
+      "size_bytes": 2548,
+      "sha256": "750dc9b8275f3208465af3d6de1b3c131f856fe9ffae825fabbdc473b5a5bae8",
+      "source": "cdc-practical-skills",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: CDC practical skills PDF",
+      "index_with_ai": false
     }
   ],
   "geographic_coverage": null,

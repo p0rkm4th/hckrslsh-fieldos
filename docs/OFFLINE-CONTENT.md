@@ -124,6 +124,19 @@ packs; all six core packs activated and were indexed in the customer VM. These
 references remain limited and do not close the broader agriculture or medical
 coverage gaps.
 
+For direct source discovery, the 2026 crop handbook and selected CDC PDFs now
+have small `pdftotext -layout` search companions in their content packs. The
+handbook is split into five page ranges so each stays within the Source
+Library's existing 1 MiB text-search limit. The original PDFs remain the
+authoritative documents and open from the Source Library; companions are
+machine-generated navigation aids, with layout loss possible. They are
+checksum-verified and included in their pack manifests, searchable from the
+local Source Library, and excluded from duplicate N.O.M.A.D. AI indexing.
+Searchability does not fix semantic RAG ranking: the tested model retrieved
+unrelated crop tables for a tomato-date question. Use the companion to locate
+the original page and verify it directly. The companion additions require a
+new payload and installation test before they are release-accepted.
+
 Model candidates are tracked in `models/manifest.json`. Content and package
 inputs are tracked in `payload/manifests/`; license texts and attributions live
 under `payload/licenses/`. An artifact is not approved merely because its

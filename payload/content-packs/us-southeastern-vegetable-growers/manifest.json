@@ -22,6 +22,51 @@
       "sha256": "f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c",
       "source": "sevew-2026-handbook",
       "license": "Reproduced unmodified under the publisher's public-use/reprint terms; attribution and contributor/photo credits retained."
+    },
+    {
+      "path": "handbook-searchable-pdf-pages-001-080.txt",
+      "size_bytes": 564694,
+      "sha256": "8060ed7b27052ba30a8a246c6467f62bdbe4fbc8d8ff48523ae218b6f44f5b47",
+      "source": "sevew-2026-handbook",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: handbook PDF pages 1–80",
+      "index_with_ai": false
+    },
+    {
+      "path": "handbook-searchable-pdf-pages-081-160.txt",
+      "size_bytes": 539831,
+      "sha256": "abac2223a993001e1a949bfad97432d8a0dfcd3bb3bcfd89d0735ba19278ee76",
+      "source": "sevew-2026-handbook",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: handbook PDF pages 81–160",
+      "index_with_ai": false
+    },
+    {
+      "path": "handbook-searchable-pdf-pages-161-240.txt",
+      "size_bytes": 636846,
+      "sha256": "0c6d60bc53256abe2d75140a319792888ba75ef2f93e12ecf4a94763e82961a5",
+      "source": "sevew-2026-handbook",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: handbook PDF pages 161–240",
+      "index_with_ai": false
+    },
+    {
+      "path": "handbook-searchable-pdf-pages-241-320.txt",
+      "size_bytes": 758942,
+      "sha256": "e7240e420d249a4f6373296721649022a8d736f7a45e09ff6c57512ad11b1e96",
+      "source": "sevew-2026-handbook",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: handbook PDF pages 241–320",
+      "index_with_ai": false
+    },
+    {
+      "path": "handbook-searchable-pdf-pages-321-397.txt",
+      "size_bytes": 771106,
+      "sha256": "628c93ed52954c9d948a597ea124fde15516144b1ef9eb6b69af9e417797b0da",
+      "source": "sevew-2026-handbook",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: handbook PDF pages 321–397",
+      "index_with_ai": false
     }
   ],
   "geographic_coverage": null,

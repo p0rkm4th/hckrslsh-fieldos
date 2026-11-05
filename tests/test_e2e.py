@@ -912,6 +912,8 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         for reference_manifest in reference_manifests:
             pack_prefix = f"fieldos-{reference_manifest['id']}-{reference_manifest['version']}-"
             for artifact in reference_manifest.get("artifacts", []):
+                if artifact.get("index_with_ai", True) is False:
+                    continue
                 expected_prefix = pack_prefix + Path(artifact["path"]).name + "-"
                 row = next((item for item in rag_rows
                             if str(item.get("fileName", "")).startswith(expected_prefix)), None)

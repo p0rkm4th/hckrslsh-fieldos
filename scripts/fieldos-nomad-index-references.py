@@ -78,6 +78,8 @@ def list_documents(storage_root: Path) -> list[tuple[str, Path, str]]:
             digest = digest_hash.hexdigest()
             if path.stat().st_size != artifact.get("size_bytes") or digest != artifact.get("sha256"):
                 raise IndexError(f"Reference artifact failed manifest validation: {path.name}")
+            if artifact.get("index_with_ai", True) is False:
+                continue
             safe_name = re.sub(r"[^a-zA-Z0-9._-]", "_", f"fieldos-{pack_id}-{version}-{path.name}")
             found.append((safe_name, path, digest))
     return found

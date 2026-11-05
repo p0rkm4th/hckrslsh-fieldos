@@ -22,6 +22,15 @@
       "sha256": "d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319",
       "source": "cdc-keep-calm",
       "license": "Public Domain per the exact CDC STACKS item record; original PDF is unmodified."
+    },
+    {
+      "path": "cdc-keep-calm-searchable.txt",
+      "size_bytes": 1933,
+      "sha256": "7d7cf2398af712db6b41b76fbdace254b8b77fdab396fec91ab5c84f08912253",
+      "source": "cdc-keep-calm",
+      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
+      "title": "Searchable text companion: CDC preparedness checklist PDF",
+      "index_with_ai": false
     }
   ],
   "geographic_coverage": null,

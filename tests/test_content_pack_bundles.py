@@ -233,6 +233,7 @@ class ContentPackBundleTests(unittest.TestCase):
             "path": artifact.name, "size_bytes": artifact.stat().st_size,
             "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
             "source": "fixture-source", "license": "CC0-1.0",
+            "title": "Searchable text companion", "index_with_ai": False,
         }]
         manifest_path.write_text(json.dumps(manifest))
         archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
@@ -241,6 +242,7 @@ class ContentPackBundleTests(unittest.TestCase):
         page = (self.install_root / "storage/references/index.html").read_text()
         self.assertIn('<label for="source-search">Search installed offline sources</label>', page)
         self.assertIn('data-body="Primary out-of-area contact: write down name, phone, and city/state.', page)
+        self.assertIn("Searchable text companion", page)
         self.assertIn("Open PDFs and longer documents", page)
         self.assertIn("documents/fixture-reference/1.0.0/communications-plan.txt", page)
 
