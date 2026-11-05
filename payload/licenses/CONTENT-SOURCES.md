@@ -1,6 +1,6 @@
 # FieldOS offline content sources and limits
 
-This is the source and attribution guide for the current test payload. It is
+This is the source and attribution guide for the FieldOS payload. It is
 also installed in `/usr/share/doc/fieldos/CONTENT-SOURCES.md` and available
 from the Applications menu as **FieldOS Content Sources and Limits**.
 
@@ -70,25 +70,52 @@ listed in `/opt/fieldos/models/manifest.json`; license texts are available in
 
 AI answers are generated output, not authoritative reference documents. They
 can be incomplete or incorrect. Open the underlying reference article and
-check its source and revision information. FieldOS includes CDC water/food
-documents and NWS-based tornado, flood, hurricane, and winter-storm references.
-An optional NIOSH heat-illness first-aid text pack can be installed from
-removable media, but it is narrow, worker-focused, and has not had clinical
-review. The core library is not comprehensive. Do not rely on AI as medical,
+check its source and revision information. FieldOS includes CDC water/food documents and NWS-based tornado, flood,
+hurricane, and winter-storm references, plus a narrow NIOSH heat-illness first
+aid reference and a regional vegetable production handbook. The core library
+is not comprehensive. Do not rely on AI as medical,
 emergency, or safety guidance.
 
-## Optional NIOSH heat-illness reference
+## NIOSH heat-illness first-aid reference
 
 An independently transferable, text-only pack transcribes NIOSH Publication
 2024-100, *Heat Stress: First Aid for Heat Illness* (October 2023). The exact
 [CDC Stacks record](https://stacks.cdc.gov/view/cdc/138337) marks the item
 Public Domain. Its original photographs credited to iStock and Thinkstock and
 CDC agency marks are omitted; source text is retained with layout normalized.
-The original is available without charge from the linked record. This is a
-narrow, worker-focused source, not a clinical review, a general first-aid
-manual, or current emergency direction. The pack is optional and is not
-included in the customer ISO. Its installed manifest provides the artifact
-checksum and full attribution.
+CDC reuse guidance requires source attribution, a no-endorsement disclaimer,
+unchanged substantive text, and notice that the source is available without
+charge. The transcription preserves those conditions in its header. The text
+is 6,593 bytes; SHA-256
+`51c4b1f22ce0d7402ce02c05d436bd4e92e132d5c3b04e930cfc794d6a3c3165`. This
+is a narrow, worker-focused source, not a clinical review, general first-aid
+manual, or substitute for current emergency direction. The exact CDC use terms
+are at <https://www.cdc.gov/other/agencymaterials.html>.
+
+## Regional vegetable production reference
+
+The core source set includes the unmodified 2026 Southeastern U.S. Vegetable
+Crop Handbook (3,991,344 bytes; SHA-256
+`f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c`). The
+publisher says the handbook was last revised January 2026 and covers crop
+varieties, planting dates, soils and fertilizer, pest management, irrigation,
+postharvest handling, and food safety. Virginia Cooperative Extension permits
+public use, reprinting, and citation when credit is given to the authors,
+Virginia Cooperative Extension, Virginia Tech, and Virginia State University.
+The original PDF and all contributor/photo credits are preserved. Its regional
+recommendations may not fit every Tennessee farm; it is not a complete
+agriculture or livestock manual. Source and reuse terms:
+<https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html>.
+
+## Optional CDC emergency-health checklist
+
+The optional `us-basic-emergency-health` pack contains CDC's 2019 one-page
+*Prepare Your Health: Practical Skills* checklist. The original is unmodified,
+294,644 bytes, SHA-256
+`f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966`. The
+exact CDC STACKS item is marked Public Domain. It identifies practical skills
+to learn but does not teach first-aid procedures. Its source metadata and CDC
+attribution are in the installed manifest and Source Library.
 
 ## Software notices
 
@@ -109,8 +136,8 @@ contents.
 ## Additional packs
 
 The content-pack format supports independently sourced and licensed additions.
-The statewide Tennessee map is included in the current customer candidate.
-The Southeastern vegetable handbook and NIOSH heat-illness text are optional
-packs and are not in that ISO. Packs require separate source, redistribution,
+The statewide Tennessee map is included in the customer candidate. The next
+core payload adds the 2026 vegetable handbook and NIOSH heat-illness text; the
+exact ISO that contains them must pass its own acceptance run. Packs require separate source, redistribution,
 and field-use review. GPS integration and broader wildlife, outdoor, livestock,
 food-preservation, and emergency references remain incomplete.
