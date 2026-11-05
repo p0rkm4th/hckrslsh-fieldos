@@ -74,8 +74,11 @@ Start with the [documentation guide](docs/README.md), then read
 [installation](docs/INSTALLATION.md), [architecture](docs/ARCHITECTURE.md),
 [operations and troubleshooting](docs/OPERATIONS.md), [hardware support](docs/HARDWARE.md),
 and [offline content/licensing](docs/OFFLINE-CONTENT.md). The
-[content-pack architecture](docs/CONTENT-PACKS.md) documents the six core
-reference packs and planned categories. Review [security boundaries](docs/SECURITY.md)
+[content-pack architecture](docs/CONTENT-PACKS.md) documents the eight core
+reference packs in the current source catalog and planned categories. The last
+accepted `cc4aa38` ISO contains the previous six-pack set; the CDC emergency-kit
+and MedlinePlus first-aid additions await a successor build and acceptance.
+Review [security boundaries](docs/SECURITY.md)
 before changing exposed ports or Docker access.
 
 ## Security and redistribution
