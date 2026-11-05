@@ -341,7 +341,9 @@ autoinstall:
             raise TestFailure("The selected archive remained in the GNOME file picker")
         prompt = self.guest(
             f"for i in $(seq 1 45); do "
-            "pgrep -u " + str(uid) + " -af 'pkexec.*fieldos-content-pack-import-root' "
+            # pkexec is setuid-root while it waits; match the logged-in
+            # caller's real UID rather than its effective UID.
+            "pgrep -U " + str(uid) + " -af 'pkexec.*fieldos-content-pack-import-root' "
             ">/dev/null && echo AUTH_REQUESTED && exit 0; sleep 1; done; "
             "pgrep -af 'zenity|pkexec|fieldos-content-pack-import' || true; exit 1",
             timeout=55,
