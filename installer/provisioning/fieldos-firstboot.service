@@ -1,9 +1,8 @@
 [Unit]
 Description=Complete Hckrslsh FieldOS local provisioning
 After=docker.service
-Before=graphical.target
+Before=display-manager.service graphical.target
 Wants=docker.service
-ConditionPathExists=/opt/fieldos/payload/offline-payload.tar.zst
 
 [Service]
 Type=oneshot
@@ -12,4 +11,4 @@ RemainAfterExit=yes
 TimeoutStartSec=0
 
 [Install]
-RequiredBy=graphical.target
+RequiredBy=display-manager.service graphical.target

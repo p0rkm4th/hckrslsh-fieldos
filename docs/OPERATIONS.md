@@ -19,6 +19,8 @@ indexed. Slower CPUs can take longer. If the desktop does not appear, use
 Ctrl+Alt+F3 at the local console to reach a text login and inspect the status
 and logs below. A failed firstboot intentionally keeps the graphical session
 closed so the assistant cannot be opened before model validation completes.
+Missing or corrupt payload files count as provisioning failures instead of
+skipping firstboot.
 
 The generated Compose credentials are written to a temporary file and
 renamed atomically. Each provisioning attempt enforces root ownership and
