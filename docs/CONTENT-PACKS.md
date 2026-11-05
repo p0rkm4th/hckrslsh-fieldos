@@ -246,11 +246,15 @@ archive is built alongside the other optional packs with `make content-packs`.
 The archived pack is 4,037 bytes with SHA-256
 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812` at
 `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`.
-The host-side installer validated and listed it in an isolated root and
-generated the local Source Library index with the source citations and document
-link. It remains optional and is not embedded in the customer ISO. Browser
-visibility and N.O.M.A.D. retrieval in an installed guest have not yet been
-verified for this new pack.
+The latest current-source no-NIC E2E transferred the archive on read-only
+optical media, verified and installed it, generated a Source Library entry,
+and indexed its document as three chunks in N.O.M.A.D. Firefox visibly opened
+the local Source Library. The pack's installed files and generated index
+survived two reboots. This validates activation and indexing, not a semantic
+N.O.M.A.D. retrieval query for the worksheet. The pack remains optional and
+is not embedded in the customer ISO. Evidence:
+`/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/report.md` and
+`reference-library-render.png` in the same directory.
 
 ## Flood safety reference pack
 
