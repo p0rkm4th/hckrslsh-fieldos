@@ -128,12 +128,14 @@ def run_gui() -> int:
     output: list[str] = []
     reference_activated = False
     map_activated = False
+    zim_activated = False
     assert worker.stdout is not None
     try:
         for line in worker.stdout:
             line = line.rstrip()
             reference_activated |= "activated reference documents" in line
             map_activated |= "activated map" in line
+            zim_activated |= "Kiwix ZIM archives" in line
             output.append(line)
             if len(output) > 40:
                 output.pop(0)
@@ -167,6 +169,8 @@ def run_gui() -> int:
         message = "Reference documents were installed and indexed. Open FieldOS Source Library to read the originals."
     elif map_activated:
         message = "The map pack was installed. Open or reload Maps to select the new region."
+    elif zim_activated:
+        message = "The offline archive was installed and registered with Kiwix. Open or reload the offline reference library."
     else:
         message = "The pack passed validation and was installed. Its manifest may require a compatible FieldOS application."
     show_dialog("info", "Offline content ready", message)

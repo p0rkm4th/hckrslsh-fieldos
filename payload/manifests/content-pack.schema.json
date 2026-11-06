@@ -63,7 +63,7 @@
     "installation": {
       "type": "object", "required": ["target", "requirements"],
       "properties": {
-        "target": {"enum": ["storage/maps/pmtiles", "storage/references/documents", "storage/content-packs"]},
+        "target": {"enum": ["storage/maps/pmtiles", "storage/references/documents", "storage/zim", "storage/content-packs"]},
         "requirements": {"type": "array", "items": {"type": "string"}},
         "optional": {"type": "boolean", "default": true}
       },
