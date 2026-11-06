@@ -25,7 +25,7 @@ metadata is newer for MedlinePlus (`2026.07.22.1`) and Southeastern
 (`2026.1.2`); those updates are not in this ISO.
 
 Current-source core archives were rebuilt from `f7b1962` under
-`/mnt/shared/fieldos-content-packs/source-f7b1962/content-packs/`. All eight
+`~/Workspaces/hckrslsh-fieldos-artifacts/source-f7b1962/content-packs/`. All eight
 passed `zstd -t` and their SHA-256 sidecars passed `sha256sum -c`. These are
 transfer/build artifacts, not a rebuilt or accepted ISO, and they do not close
 the separate rights review.
@@ -158,7 +158,7 @@ guide, or Tennessee-specific calendar. The source record advises that local
 markets, weather, and location can require changed practices or planting dates.
 It remains independently packaged for transfer. A `2026.1.2` archive was
 built and verified under
-`/mnt/shared/fieldos-content-packs/source-f7b1962/content-packs/`; the archive
+`~/Workspaces/hckrslsh-fieldos-artifacts/source-f7b1962/content-packs/`; the archive
 below is historical version `2026.1.1`. Searchability was checked
 by extracting 1.8 MB of text from the PDF. A fresh no-NIC E2E imported the
 archive from read-only transfer media, activated its Source Library link, and
@@ -201,17 +201,20 @@ N.O.M.A.D. to index reference documents after activation. This adds no new
 network service and exposes no remote administrative interface.
 
 Kiwix remains limited to the bundled 100-article Wikipedia test ZIM in the
-accepted `8c81d64` ISO. Source commit `a1257f2` includes an optional ZIM-pack import
-adapter: it accepts only `.zim` artifacts, verifies manifest size and SHA-256,
+accepted `8c81d64` ISO. Source commit `a1257f2`, corrected by `0f83517`, includes
+an optional ZIM-pack import adapter: it accepts only `.zim` artifacts, verifies manifest size and SHA-256,
 hard-links verified immutable pack data into the persistent Kiwix directory
 (with a space-checked copy fallback), updates a temporary Kiwix XML library
 using the pinned local image with networking disabled, and atomically publishes
 the updated library. The server's existing `--monitorLibrary` option should
 pick up that change. Unit tests cover registration, idempotence, conflict and
-failure handling, and hard-link reuse. This source change has not yet been
-tested with the real pinned Kiwix image or in a guest browser, and it is not in
-the accepted ISO. Do not describe optional ZIM import as runtime-verified until
-that integration check passes.
+failure handling, and hard-link reuse. A targeted test on the exact pinned
+image passed real `kiwix-manage` registration and `kiwix-serve` retrieval on an
+internal-only Docker network; a second import was observed in the live OPDS
+catalog and its article route returned content. Evidence is at
+`/mnt/shared/fieldos-e2e/kiwix-zim-runtime-20261106/report.md`. The guest
+desktop/browser import workflow has not been tested, and this code is not in
+the accepted ISO.
 
 For operator use, verify and add a bundle with:
 
@@ -415,7 +418,8 @@ This is a U.S. public-domain review, not a statement about international rights.
 The current source catalog marks the pack as core. The `8c81d64` candidate
 source records version `2026.07.22`; source version `2026.07.22.1` adds the
 policy page as a source record without changing the text artifact. The current
-archive was rebuilt under `/mnt/shared/fieldos-content-packs/source-f7b1962/`,
+archive was rebuilt under
+`~/Workspaces/hckrslsh-fieldos-artifacts/source-f7b1962/`,
 but that updated metadata has not been tested in an ISO. The guest acceptance
 log does not record direct Source Library activation for this pack; its
 `index_with_ai: false` setting excludes it from the vector-index count.

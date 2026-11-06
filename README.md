@@ -41,10 +41,12 @@ Library and persisted across a further reboot. This was a VM test, not physical
 USB validation.
 
 The candidate build passed 110 tests and `make verify ISO=...` at acceptance
-time. Later source commit `a1257f2` adds optional Kiwix ZIM-pack activation;
-the source tree now passes 114 tests, but this code is not in the candidate ISO
-and has not yet been runtime-tested with Kiwix. The ISO remains a private
-engineering image. Physical hardware, GPU
+time. Later source commit `a1257f2` adds optional Kiwix ZIM-pack activation and
+`0f83517` fixes the exact Kiwix image's relative library-path format;
+the source tree now passes 115 tests, but this code is not in the candidate ISO.
+It was runtime-tested with the exact Kiwix image in an isolated local
+container; guest desktop/browser import remains unverified. The ISO remains a
+private engineering image. Physical hardware, GPU
 acceleration, GPS, network-enabled/LAN exposure, broad reference coverage, AI
 retrieval quality, and redistribution clearance remain open. FieldOS is not an
 emergency or medical appliance; do not rely on the local model for
