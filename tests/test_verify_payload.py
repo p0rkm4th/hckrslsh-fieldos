@@ -71,6 +71,16 @@ class OfflinePayloadVerificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing required core pack files"):
             verify_payload(self.payload, self.catalog)
 
+    def test_rejects_superseded_core_pack_archive_when_current_version_exists(self):
+        self.make_payload([
+            "content-packs/core-1.2.3.tar.zst",
+            "content-packs/core-1.2.3.tar.zst.sha256",
+            "content-packs/core-1.2.2.tar.zst",
+            "content-packs/core-1.2.2.tar.zst.sha256",
+        ])
+        with self.assertRaisesRegex(ValueError, "stale or unapproved content-pack files"):
+            verify_payload(self.payload, self.catalog)
+
     def test_rejects_generated_ollama_key_files(self):
         members = [
             "content-packs/core-1.2.3.tar.zst",

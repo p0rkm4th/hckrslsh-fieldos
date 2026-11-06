@@ -45,6 +45,17 @@ def verify_payload(payload: Path, catalog_path: Path,
     missing = sorted(set(expected) - set(listing))
     if missing:
         raise ValueError("offline payload is missing required core pack files: " + ", ".join(missing))
+    archived_packs = {
+        name for name in listing
+        if name.startswith("content-packs/")
+        and (name.endswith(".tar.zst") or name.endswith(".tar.zst.sha256"))
+    }
+    extra = sorted(archived_packs - set(expected))
+    if extra:
+        raise ValueError(
+            "offline payload contains stale or unapproved content-pack files: "
+            + ", ".join(extra)
+        )
     if maps_manifest_path is not None:
         source_maps = json.loads(maps_manifest_path.read_text(encoding="utf-8"))
         embedded_maps = _archive_json(payload, "manifests/maps.json")
