@@ -36,6 +36,14 @@ offline functional and two-reboot checks. FieldOS is not yet customer-release
 ready because physical-hardware validation, connected-network security
 testing, meaningful library breadth, and redistribution review remain open.
 
+**Source-only update (`a1257f2`):** The working tree adds optional Kiwix ZIM
+content-pack activation. `make check test` passes 114 tests, including unit
+coverage for checksum-validated archives, Kiwix XML registration, idempotence,
+conflicts, rollback, and hard-link reuse. The accepted ISO above predates this
+change; the pinned Kiwix runtime and browser workflow have not yet been tested
+with an imported ZIM pack. This is implementation progress, not a new ISO or
+acceptance result.
+
 ## Historical customer ISO validation: `cc4aa38`
 
 This section preserves the historical `cc4aa38` report. Its following

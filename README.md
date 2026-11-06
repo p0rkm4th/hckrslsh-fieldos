@@ -40,8 +40,11 @@ household communications pack through the desktop UI; it appeared in the Source
 Library and persisted across a further reboot. This was a VM test, not physical
 USB validation.
 
-`make check test` passed 110 tests and `make verify ISO=...` passed for this
-candidate. The ISO remains a private engineering image. Physical hardware, GPU
+The candidate build passed 110 tests and `make verify ISO=...` at acceptance
+time. Later source commit `a1257f2` adds optional Kiwix ZIM-pack activation;
+the source tree now passes 114 tests, but this code is not in the candidate ISO
+and has not yet been runtime-tested with Kiwix. The ISO remains a private
+engineering image. Physical hardware, GPU
 acceleration, GPS, network-enabled/LAN exposure, broad reference coverage, AI
 retrieval quality, and redistribution clearance remain open. FieldOS is not an
 emergency or medical appliance; do not rely on the local model for
