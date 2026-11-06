@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "us-cdc-food-safety",
+  "version": "2023.04.14.1",
+  "title": "CDC Food Safety: 10 Dangerous Mistakes (2023)",
+  "description": "CDC's 2023 fact sheet describing ten common food-handling mistakes. The original PDF retains its illustrations; a searchable text companion is included. The factsheet links to more detailed material that is not included in this pack and is not a comprehensive food-preservation, canning, or power-outage guide. Check current official guidance when available.",
+  "category": "water-food",
+  "sources": [
+    {
+      "id": "cdc-food-safety-mistakes-2023",
+      "name": "CDC Stacks: Food Safety: 10 Dangerous Food Safety Mistakes [2023]",
+      "url": "https://stacks.cdc.gov/view/cdc/129474",
+      "license": "CDC Stacks identifies this exact item as Public Domain. The item is retained unchanged as a PDF, with a derived text search aid. CDC's agency-materials policy requires attribution, prominent non-endorsement, and notice that CDC material is available at no charge. U.S. government work; final bundle-level commercial redistribution review remains open.",
+      "attribution": "Source: Centers for Disease Control and Prevention (CDC), National Center for Emerging and Zoonotic Infectious Diseases, Division of Foodborne, Waterborne, and Environmental Diseases, Food Safety: 10 Dangerous Food Safety Mistakes (April 14, 2023). Available from CDC Stacks at no charge; CDC Stacks marks the item Public Domain. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
+      "accessed": "2026-11-06"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "cdc-ten-dangerous-food-safety-mistakes-2023.pdf",
+      "size_bytes": 1687901,
+      "sha256": "c0fde54fa10ce42490850f13993415c642ccccfa90dbbf87a4235b2893680240",
+      "source": "cdc-food-safety-mistakes-2023",
+      "license": "CDC original PDF, preserved unchanged; CDC Stacks record identifies this exact item as Public Domain.",
+      "title": "Original CDC factsheet PDF (2023; includes graphics)",
+      "index_with_ai": false
+    },
+    {
+      "path": "cdc-ten-dangerous-food-safety-mistakes-2023-searchable.txt",
+      "size_bytes": 7121,
+      "sha256": "1f69790d39f1b3805ce9e70b6e96c6d1123d44f773562163e6196a432670a919",
+      "source": "cdc-food-safety-mistakes-2023",
+      "license": "Searchable text extraction from the accompanying Public Domain CDC PDF. Extraction may lose layout and text contained only in graphics; consult the PDF for the full fact sheet.",
+      "title": "Searchable text companion (derived from original PDF)",
+      "index_with_ai": false
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": true
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering source and rights review",
+    "reviewed_at": "2026-11-06",
+    "content_revision": "2023-04-14"
+  }
+}

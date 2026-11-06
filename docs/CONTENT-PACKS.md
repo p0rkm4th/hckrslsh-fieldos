@@ -2,9 +2,10 @@
 
 FieldOS keeps reference content modular where practical. The versioned manifest
 schema is `payload/manifests/content-pack.schema.json`; the source catalog is
-`payload/manifests/content-packs.json`. The accepted customer candidate contains
-eight core packs plus optional packs and planned categories. This is a useful
-starter collection, not a comprehensive customer library.
+`payload/manifests/content-packs.json`. The current source catalog declares nine core packs and three optional packs;
+the ISO baseline bundles the nine core packs while optional archives are
+transferable separately. This is a useful starter collection, not a
+comprehensive customer library.
 
 The current customer-mode engineering candidate is
 `fieldos-customer-test-valkey-129da89.iso` (SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`). It passed
@@ -279,6 +280,37 @@ disaster-preparedness library. Consult current local guidance. Source-tree
 configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
+
+## CDC food-safety mistakes factsheet (optional transfer pack)
+
+`us-cdc-food-safety` version `2023.04.14.1` is an optional, independently
+installable pack. It contains CDC's original five-page *Food Safety: 10
+Dangerous Food Safety Mistakes* factsheet and a searchable text companion. The
+factsheet covers cooking, cross-contamination, thawing, time at room
+temperature, produce washing, handwashing, risk groups, and food spoilage. Its
+charts and illustrations remain in the PDF; the text extraction is only a
+search aid. It is dated April 14, 2023, links to more detailed resources that
+are not bundled, and is not a comprehensive food-preservation, canning, or
+power-outage manual.
+
+The [CDC Stacks record](https://stacks.cdc.gov/view/cdc/129474) marks this exact
+item Public Domain, identifies the publisher and date, and provides a SHA-512
+checksum matching the unchanged local PDF. CDC's [agency-materials policy](https://www.cdc.gov/Other/imagereuse.html)
+requires attribution, a prominent non-endorsement disclaimer, and notice that
+the source is available at no charge; those are recorded in the pack manifest
+and generated Source Library. This is a source-specific U.S. rights review,
+not clearance of the entire FieldOS distribution. The content is not indexed
+for AI; users access the attributed PDF and searchable text directly.
+
+The archive built from source `a88aece` plus this pack is
+`/mnt/shared/fieldos-content-review-a88aece/content-packs/us-cdc-food-safety-2023.04.14.1.tar.zst`
+(912 KiB; SHA-256
+`6326e5eb910ef5ad1f7260507ce83722f54ba28b71afc4cc5f0d9a58450abd8c`). `zstd
+-t`, the checksum sidecar, and a temporary-root install using the production
+content-pack installer passed. The installer generated a local Source Library
+entry linking both files; reinstall was idempotent. A desktop file-picker import
+of this exact archive and inclusion in the standard ISO have not yet been
+verified.
 
 ## Private-well emergency reference (unattended test ISO validated)
 
