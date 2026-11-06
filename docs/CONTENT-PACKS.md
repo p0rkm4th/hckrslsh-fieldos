@@ -11,12 +11,13 @@ The latest customer candidate is `fieldos-customer-5abae15.iso` (SHA-256
 passed fresh interactive no-NIC installation, firstboot, and two reboots; the
 installed desktop rendered the statewide Tennessee map and exercised local
 source search and Kiwix retrieval. See [current validation](VALIDATION-CURRENT.md).
-A separate clean-payload no-NIC E2E at source `42bcad3` rendered all eight
-required Tennessee locations in Firefox and also passed two reboots. Its report
-is `/mnt/shared/fieldos-e2e/20261106T043231Z-184238/report.md`. These remain VM
-tests; physical USB behavior is unverified. The current worktree adds a CDC
-private-well pack as a ninth core pack, but no ISO or payload has yet been built
-or tested with it.
+A clean-source no-NIC E2E from `d04f450` passed with the CDC private-well pack
+as a ninth core pack. Firefox rendered all eight Tennessee locations; the new
+reference appeared in the Source Library, and two reboots passed. Test ISO
+SHA-256 is `6a3fef4deba8b8ade1f1e04df15b2da97665a777fb19c120fc4bcea97e81a624`;
+the report is `/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md`.
+This is an unattended test ISO; the interactive customer ISO remains the
+earlier `5abae15` candidate. Physical USB behavior is unverified.
 
 The `8c81d64` ISO source contains all eight then-current core pack manifests.
 Guest runtime records confirm the CDC emergency-kit checklist was indexed as
@@ -284,9 +285,9 @@ configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
 
-## Private-well emergency reference (pending ISO validation)
+## Private-well emergency reference (unattended test ISO validated)
 
-The current source worktree adds `us-cdc-private-wells` version `1.0.0`, a
+Source revision `d04f450` adds `us-cdc-private-wells` version `1.0.0`, a
 15,338-byte searchable text rendition of CDC's *How to Disinfect Wells After
 an Emergency* (May 29, 2025), SHA-256
 `d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6`. It
@@ -303,15 +304,18 @@ statement, no substantive edits, and notice that the material is available
 from CDC at no charge; the pack records those terms and is text-only. Rights
 review supports reuse of this CDC-authored text under that policy, but does not
 constitute legal advice or clear unrelated FieldOS payloads. This pack is now
-listed as a core pack in the source catalog; it has not been included in a
-payload or ISO, or tested in an installed guest. Its independently transferable
-archive was built and checksum-verified at
+listed as a core pack in the source catalog and passed clean-source offline
+installation and reboot checks as part of an unattended test ISO. The current
+interactive customer ISO does not contain it. Its independently transferable
+archive is at
 `/mnt/shared/fieldos-content-packs/us-cdc-private-wells-2026.1.0/content-packs/us-cdc-private-wells-1.0.0.tar.zst`
 (5,758 bytes; SHA-256
 `e9f088235420ace9ffaa71b9c162e095ac817a78f1ece8cb4a14775b1541aac4`). The
 archive passed `zstd -t`, member listing, and a temporary-root install through
 the production pack installer; the installed file hash matched the manifest.
-This does not yet prove desktop/browser activation in a FieldOS guest.
+The E2E browser screenshot shows the entry, description, CDC attribution, and
+offline document links in FieldOS Source Library. This does not establish
+commercial redistribution clearance or a comprehensive private-well manual.
 
 ## Severe-weather content
 

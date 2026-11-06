@@ -36,6 +36,20 @@ validates access to the included small corpus; it does not make the mini ZIM or
 or survival library. Redistribution clearance and per-item review remain
 incomplete; do not publish this ISO.
 
+## New core reference in test ISO `d04f450`
+
+The clean-source unattended E2E from commit `d04f450` includes CDC's
+text-only private-well emergency reference as a ninth core pack. Firstboot
+completed, and the Source Library HTML and Firefox screenshot show its title,
+coverage notes, CDC attribution, warnings, and local document link. The exact
+offline document URL returned bytes matching the manifest SHA-256
+`d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6` after two
+reboots. The pack was not indexed into AI embeddings (`index_with_ai: false`);
+users can search and read the original text in Source Library. Evidence is in
+`/mnt/shared/fieldos-e2e/20261106T072733Z-566287/`. This reference is not in the
+interactive customer ISO `5abae15`, which still requires a current-source
+customer-mode rebuild and separate interactive install test.
+
 ## Statewide Tennessee map candidate, verified 2026-11-05
 
 The current payload replaces the former 19.6 MB Middle

@@ -6,9 +6,26 @@ The current customer candidate is `/mnt/shared/fieldos-releases/fieldos-customer
 
 A fresh no-NIC interactive customer install from this exact ISO completed, booted from the installed disk, finished firstboot, and passed two reboot checks. Detailed steps, outcomes, and screenshots are at `/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`.
 
+## Latest clean-source unattended E2E
+
+Source `d04f450b0d520a0e92a08c4862f7373406234a05` passed a fresh, clean-worktree
+unattended installation with no virtual NIC. The test ISO SHA-256 is
+`6a3fef4deba8b8ade1f1e04df15b2da97665a777fb19c120fc4bcea97e81a624`; its
+prepared payload SHA-256 is
+`ad0e28863afbddd94b65ecd9d0cc8101ee0119cdfe7a1a33b9054f895f63eae`. The run
+report, firstboot logs, and screenshots are in
+`/mnt/shared/fieldos-e2e/20261106T072733Z-566287/`. The Source Library browser
+screenshot shows the private-well entry and CDC attribution. A direct guest-
+loopback HTTP retrieval after reboot 2 matched the manifest SHA-256; details
+are in `private-well-source-retrieval.txt`. The runner removed the test ISO
+after completion; its guest disk is retained and shut off. This is unattended
+test-ISO evidence and does not replace the separate customer-mode installation
+result above.
+
 | Area | Current result | Evidence and limits |
 |---|---|---|
-| Source checks | PASS | `make check test`: 126 tests passed on source `5abae15`. |
+| Source checks | PASS | `make check test`: 126 tests passed; `payload/validate_content_packs.py` accepts 11 catalog packs on source `d04f450`. |
+| Fresh unattended no-NIC E2E | PASS | Clean worktree, source `d04f450`, test ISO SHA-256 above. Offline install and provisioning, seven services, local chat and embeddings, references, Kiwix, all eight Tennessee Firefox map renders, and two reboots passed. The CDC private-well core pack is present in the Source Library. Optional transfer-media check was skipped because the pack was already bundled as core. |
 | Clean-source customer ISO | PASS, structural | Full customer ISO built from clean source; BIOS/UEFI boot records, interactive customer setup, offline APT, and payload checks passed. ISO hash above. |
 | Customer interactive install and disk boot | PASS in disposable UEFI VM | Identity and target `vda` were selected; erase confirmed; install completed. At the standard handoff prompt, the guest ejected the CD and shut down on Enter; an ordinary power-on booted the installed disk with the ISO detached. Physical USB handoff and automatic restart remain unverified. |
 | Offline provisioning | PASS | Firstboot status `complete`, systemd result success / exit 0; seven service containers running; ten source documents indexed (690 chunks). |
@@ -19,7 +36,7 @@ A fresh no-NIC interactive customer install from this exact ISO completed, boote
 | Embeddings | PASS | Bundled embedding model returned a 768-dimensional vector after reboot 2. |
 | Tennessee maps | PASS, actual browser click/render | The Command Center Maps card opened a statewide Tennessee view with visible roads, towns, and waterways at zoom 7. The click and visible map rendering repeated after reboot 2. Zoom-13 detail and eight-location screenshots are verified in earlier same-payload browser runs; see the historical evidence below. The map is not routing or GPS navigation. |
 | Kiwix | PASS, fixture limited | From the Kiwix catalog, Firefox opened the bundled `Wikipedia 100` ZIM, searched its contents for “United States” (59 results), and opened “List of states and territories of the United States” offline. Screenshot evidence: `/mnt/shared/fieldos-e2e/customer-5abae15-interactive/kiwix-search-united-states-article.png` and `kiwix-article-united-states.png`. This 100-article archive is only a test fixture, not a substantial encyclopedia. |
-| Source Library | PASS, limited corpus | Start Here’s “Source Library” link opened the local library in Firefox. The page displayed 19 document entries; searching “flood” showed three matching documents, including the FieldOS flood-safety overview and source attribution. N.O.M.A.D. separately indexed ten local files / 690 chunks. Screenshot: `/mnt/shared/fieldos-e2e/customer-5abae15-interactive/source-library-search-flood.png`. An earlier direct address-bar attempt showed `NS_ERROR_OFFLINE`; the supported Start Here link workflow was then verified successfully. |
+| Source Library | PASS, limited corpus | On customer ISO `5abae15`, Start Here’s link opened the local library; 19 entries appeared and “flood” returned three attributed matches. On E2E test ISO `d04f450`, the new private-well entry appeared with CDC attribution, and the offline document endpoint returned the manifest-matching SHA-256 after reboot 2. Screenshots and supplemental retrieval evidence are in the run folders above. |
 | Persistence | PASS, two post-install reboot cycles | All seven containers, N.O.M.A.D. health, generation, embeddings, map, and local data were checked after the second reboot. The user-data marker SHA-256 remained identical across three boot IDs. See the exact IDs and hash in the run report. |
 | Connected-network security | NOT TESTED | No NIC was attached during this run. LAN exposure and outbound egress with a NIC remain open. |
 | Physical hardware / GPU / GPS | NOT TESTED | Disposable VM only. |
