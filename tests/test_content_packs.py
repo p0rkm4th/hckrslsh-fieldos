@@ -75,7 +75,7 @@ class ContentPackValidationTests(unittest.TestCase):
                 "license": "CC0-1.0",
             }],
             "geographic_coverage": coverage,
-            "installation": {"target": "references/fixture-reference", "requirements": []},
+            "installation": {"target": "storage/content-packs", "requirements": []},
             "authority": authority or "community-reference",
         }
         if geographic_scope is not None:

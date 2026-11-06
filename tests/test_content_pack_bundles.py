@@ -8,6 +8,8 @@ import subprocess
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from build.build_content_packs import build_archives
@@ -184,6 +186,117 @@ class ContentPackBundleTests(unittest.TestCase):
         with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "refusing to replace existing map content"):
             CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
         self.assertEqual(existing.read_bytes(), b"keep the user's data")
+
+    def configure_zim_pack(self, artifact_names=("reference.zim",)):
+        artifacts = []
+        for name in artifact_names:
+            artifact = self.pack / name
+            artifact.parent.mkdir(parents=True, exist_ok=True)
+            artifact.write_bytes(f"synthetic zim payload: {name}".encode())
+            artifacts.append({
+                "path": name, "size_bytes": artifact.stat().st_size,
+                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                "source": "fixture-source", "license": "CC0-1.0",
+            })
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["title"] = "Offline Kiwix fixture"
+        manifest["description"] = "Synthetic ZIM activation test fixture."
+        manifest["installation"]["target"] = "storage/zim"
+        manifest["artifacts"] = artifacts
+        manifest_path.write_text(json.dumps(manifest))
+        return build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+
+    def kiwix_manage_fake(self, fail_action=None):
+        zim_root = self.install_root / "storage/zim"
+        def run(command, text, capture_output, check):
+            image_index = command.index(CONTENT_PACKS.KIWIX_IMAGE)
+            library_path = zim_root / Path(command[image_index + 1]).name
+            action = command[image_index + 2]
+            if action == fail_action:
+                return subprocess.CompletedProcess(command, 1, "", "synthetic kiwix-manage failure")
+            if action == "add":
+                if not library_path.exists():
+                    library_path.write_text("<library/>", encoding="utf-8")
+                tree = ET.parse(library_path)
+                root = tree.getroot()
+                paths = command[image_index + 3:]
+                if len(paths) != 1:
+                    return subprocess.CompletedProcess(command, 1, "", "expected one ZIM path")
+                book = ET.SubElement(root, "book")
+                ET.SubElement(book, "id").text = Path(paths[0]).stem
+                ET.SubElement(book, "path").text = paths[0]
+                tree.write(library_path, encoding="unicode")
+                return subprocess.CompletedProcess(command, 0, "", "")
+            self.fail(f"unexpected kiwix-manage action: {action}")
+        return run
+
+    def test_zim_pack_activates_in_kiwix_library_and_is_idempotent(self):
+        archive = self.configure_zim_pack(("reference.zim", "nested/second.zim"))
+        with patch.object(CONTENT_PACKS.subprocess, "run", side_effect=self.kiwix_manage_fake()) as run:
+            first = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+            self.assertIn("activated Kiwix ZIM archives", first)
+            zim_root = self.install_root / "storage/zim"
+            zim_file = zim_root / "reference.zim"
+            installed_file = self.install_root / "content-packs/fixture-reference/1.0.0/reference.zim"
+            self.assertEqual(zim_file.read_bytes(), b"synthetic zim payload: reference.zim")
+            self.assertEqual(zim_file.stat().st_mode & 0o777, 0o644)
+            self.assertEqual(zim_file.stat().st_ino, installed_file.stat().st_ino,
+                             "same-filesystem activation should hard-link, not duplicate, the ZIM")
+            self.assertEqual((zim_root / "nested/second.zim").read_bytes(), b"synthetic zim payload: nested/second.zim")
+            library = ET.parse(zim_root / "kiwix-library.xml").getroot()
+            self.assertEqual(
+                {book.findtext("path") for book in library.findall("book")},
+                {"/data/reference.zim", "/data/nested/second.zim"},
+            )
+            second = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+            self.assertIn("Kiwix ZIM archives already active", second)
+            add_calls = [call for call in run.call_args_list
+                         if call.args[0][call.args[0].index(CONTENT_PACKS.KIWIX_IMAGE) + 2] == "add"]
+            self.assertEqual(len(add_calls), 2)
+
+    def test_zim_pack_preserves_existing_library_and_refuses_filename_conflict(self):
+        archive = self.configure_zim_pack()
+        zim_root = self.install_root / "storage/zim"
+        zim_root.mkdir(parents=True)
+        library = zim_root / "kiwix-library.xml"
+        library.write_text("<library><book><id>existing</id><path>/data/existing.zim</path></book></library>")
+        original_library = library.read_bytes()
+        (zim_root / "reference.zim").write_bytes(b"operator's existing archive")
+        with patch.object(CONTENT_PACKS.subprocess, "run", side_effect=self.kiwix_manage_fake()):
+            with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "refusing to replace existing ZIM content"):
+                CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertEqual(library.read_bytes(), original_library)
+        self.assertEqual((zim_root / "reference.zim").read_bytes(), b"operator's existing archive")
+
+    def test_zim_pack_failure_leaves_existing_library_unchanged_and_removes_new_archive(self):
+        archive = self.configure_zim_pack()
+        zim_root = self.install_root / "storage/zim"
+        zim_root.mkdir(parents=True)
+        library = zim_root / "kiwix-library.xml"
+        original = b"<library><book><id>existing</id><path>/data/existing.zim</path></book></library>"
+        library.write_bytes(original)
+        with patch.object(CONTENT_PACKS.subprocess, "run", side_effect=self.kiwix_manage_fake(fail_action="add")):
+            with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "Kiwix library update failed"):
+                CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+        self.assertEqual(library.read_bytes(), original)
+        self.assertFalse((zim_root / "reference.zim").exists())
+
+    def test_zim_pack_rejects_non_zim_artifacts(self):
+        artifact = self.pack / "not-a-zim.txt"
+        artifact.write_text("not a ZIM archive", encoding="utf-8")
+        manifest_path = self.pack / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["installation"]["target"] = "storage/zim"
+        manifest["artifacts"] = [{
+            "path": artifact.name, "size_bytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "source": "fixture-source", "license": "CC0-1.0",
+        }]
+        manifest_path.write_text(json.dumps(manifest))
+        archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
+        with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "Kiwix packs may contain only ZIM artifacts"):
+            CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
 
     def test_reference_documents_activate_in_local_source_index(self):
         artifact = self.pack / "water-guide.pdf"

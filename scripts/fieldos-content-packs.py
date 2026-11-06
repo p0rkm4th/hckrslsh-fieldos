@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import errno
+import fcntl
 import hashlib
 import json
 import os
@@ -12,6 +14,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import xml.etree.ElementTree as ET
 import html
 from urllib.parse import quote
 from pathlib import Path, PurePosixPath
@@ -28,6 +31,10 @@ DEFAULT_SCHEMA = Path("/opt/fieldos/payload/manifests/content-pack.schema.json")
 RESERVE_BYTES = 256 * 1024 * 1024
 MAX_SOURCE_LIBRARY_TEXT_BYTES = 1024 * 1024
 MAX_FILES = 100_000
+KIWIX_IMAGE = (
+    "ghcr.io/kiwix/kiwix-serve:3.8.1@"
+    "sha256:a80b64909744930d79be14542048d1fbf11f1fdd9ffe6712ef8c9cd3aa1740dd"
+)
 
 
 class InstallError(RuntimeError):
@@ -163,6 +170,10 @@ def verify_extracted_pack(stage: Path, pack_id: str, schema: Path) -> tuple[Path
         artifacts = manifest["artifacts"]
         if not artifacts or any(Path(item["path"]).suffix.lower() not in {".pdf", ".txt"} for item in artifacts):
             raise InstallError("reference-document packs may contain only PDF and TXT artifacts")
+    if manifest["installation"]["target"] == "storage/zim":
+        artifacts = manifest["artifacts"]
+        if not artifacts or any(Path(item["path"]).suffix.lower() != ".zim" for item in artifacts):
+            raise InstallError("Kiwix packs may contain only ZIM artifacts")
     return pack_root, manifest
 
 
@@ -228,6 +239,167 @@ def activate_map_pack(pack_root: Path, manifest: dict, root: Path) -> str | None
         return f"activated map: {destination}"
     finally:
         temporary.unlink(missing_ok=True)
+
+
+def kiwix_manage(zim_root: Path, library_name: str, *arguments: str) -> str:
+    command = [
+        "docker", "run", "--rm", "--pull=never", "--network", "none", "--user", "0:0",
+        "-v", f"{zim_root}:/data", "--entrypoint", "kiwix-manage", KIWIX_IMAGE,
+        f"/data/{library_name}", *arguments,
+    ]
+    result = subprocess.run(command, text=True, capture_output=True, check=False)
+    if result.returncode:
+        detail = (result.stderr or result.stdout or "kiwix-manage failed").strip()
+        raise InstallError(f"Kiwix library update failed: {detail[-1200:]}")
+    return result.stdout
+
+
+def kiwix_library_paths(library: Path) -> set[str]:
+    """Read archive paths from Kiwix's OPDS/XML library without CLI output assumptions."""
+    paths: set[str] = set()
+    try:
+        root = ET.parse(library).getroot()
+    except (OSError, ET.ParseError) as exc:
+        raise InstallError(f"Kiwix library is not valid XML: {exc}") from exc
+    for element in root.iter():
+        if element.tag.rsplit("}", 1)[-1].lower() == "path" and element.text:
+            paths.add(element.text.strip())
+        for key, value in element.attrib.items():
+            if key.rsplit("}", 1)[-1].lower() in {"href", "path"}:
+                paths.add(value.strip())
+    return paths
+
+
+def activate_zim_pack(pack_root: Path, manifest: dict, root: Path,
+                      reserve_bytes: int = RESERVE_BYTES) -> str | None:
+    """Atomically publish ZIM files and update Kiwix's monitored library."""
+    if manifest["installation"]["target"] != "storage/zim":
+        return None
+    artifacts = manifest["artifacts"]
+    if not artifacts or any(Path(item["path"]).suffix.lower() != ".zim" for item in artifacts):
+        raise InstallError("Kiwix packs may contain only ZIM artifacts")
+
+    storage_root = root / "storage"
+    zim_root = storage_root / "zim"
+    if storage_root.is_symlink() or zim_root.is_symlink():
+        raise InstallError("Kiwix storage directories must not be symbolic links")
+    zim_root.mkdir(mode=0o755, parents=True, exist_ok=True)
+    library = zim_root / "kiwix-library.xml"
+    if library.is_symlink():
+        raise InstallError("refusing to update a symbolic-link Kiwix library")
+
+    lock_path = zim_root / ".fieldos-kiwix-library.lock"
+    created: list[Path] = []
+    with lock_path.open("a", encoding="ascii") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        try:
+            destinations: list[tuple[Path, str]] = []
+            for artifact in artifacts:
+                relative = PurePosixPath(artifact["path"])
+                source = pack_root.joinpath(*relative.parts)
+                if source.is_symlink() or not source.is_file():
+                    raise InstallError("ZIM artifact must be a regular file")
+                if source.stat().st_size != artifact["size_bytes"] or file_sha256(source) != artifact["sha256"]:
+                    raise InstallError(f"ZIM artifact failed manifest validation: {source.name}")
+                destination = zim_root.joinpath(*relative.parts)
+                try:
+                    destination.resolve(strict=False).relative_to(zim_root.resolve(strict=True))
+                except ValueError as exc:
+                    raise InstallError("ZIM artifact destination escapes Kiwix storage") from exc
+                current = zim_root
+                for part in relative.parts[:-1]:
+                    current /= part
+                    if current.is_symlink():
+                        raise InstallError(f"ZIM destination path contains a symbolic link: {current}")
+                destination.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
+                if destination.is_symlink():
+                    raise InstallError(f"ZIM destination must not be a symbolic link: {destination}")
+                if destination.exists():
+                    if not destination.is_file() or file_sha256(destination) != artifact["sha256"]:
+                        raise InstallError(f"refusing to replace existing ZIM content: {destination}")
+                else:
+                    try:
+                        # Both locations are normally on the same FieldOS state
+                        # filesystem. Reuse the verified immutable payload bytes.
+                        os.link(source, destination)
+                        created.append(destination)
+                    except OSError as link_error:
+                        # Some filesystems or mount policies disallow hard links.
+                        # Only then copy, after reserving room for the extra file.
+                        if link_error.errno not in {
+                            errno.EXDEV, errno.EPERM, errno.EOPNOTSUPP,
+                            getattr(errno, "ENOTSUP", errno.EOPNOTSUPP), errno.EMLINK,
+                        }:
+                            raise
+                        required = artifact["size_bytes"] + reserve_bytes
+                        available = shutil.disk_usage(destination.parent).free
+                        if available < required:
+                            raise InstallError(
+                                f"insufficient free space for ZIM copy fallback: need {required} bytes, "
+                                f"have {available}"
+                            ) from link_error
+                        fd, temporary_name = tempfile.mkstemp(prefix=".fieldos-zim-", dir=destination.parent)
+                        temporary = Path(temporary_name)
+                        try:
+                            with os.fdopen(fd, "wb") as output, source.open("rb") as input_stream:
+                                shutil.copyfileobj(input_stream, output, length=1024 * 1024)
+                                output.flush()
+                                os.fsync(output.fileno())
+                            if file_sha256(temporary) != artifact["sha256"]:
+                                raise InstallError("ZIM artifact changed while activating")
+                            # kiwix-serve reads this root-installed archive from
+                            # a read-only volume, so ensure it is world-readable.
+                            temporary.chmod(0o644)
+                            os.link(temporary, destination)
+                            created.append(destination)
+                        finally:
+                            temporary.unlink(missing_ok=True)
+                destinations.append((destination, "/data/" + relative.as_posix()))
+
+            library_fd, library_temporary_name = tempfile.mkstemp(
+                prefix=".fieldos-kiwix-library-", suffix=".xml", dir=zim_root
+            )
+            os.close(library_fd)
+            library_temporary = Path(library_temporary_name)
+            library_temporary.unlink()
+            try:
+                if library.exists():
+                    shutil.copyfile(library, library_temporary)
+                    existing_paths = kiwix_library_paths(library_temporary)
+                else:
+                    existing_paths = set()
+                missing = [kiwix_path for _destination, kiwix_path in destinations
+                           if kiwix_path not in existing_paths]
+                for kiwix_path in missing:
+                    # kiwix-manage add accepts one archive path per invocation.
+                    kiwix_manage(zim_root, library_temporary.name, "add", kiwix_path)
+                if not library_temporary.is_file():
+                    raise InstallError("kiwix-manage did not create a library file")
+                try:
+                    ET.parse(library_temporary)
+                except ET.ParseError as exc:
+                    raise InstallError(f"kiwix-manage produced an invalid library: {exc}") from exc
+                confirmed_paths = kiwix_library_paths(library_temporary)
+                absent = [path for _destination, path in destinations if path not in confirmed_paths]
+                if absent:
+                    raise InstallError("Kiwix library did not register: " + ", ".join(absent))
+                if not missing:
+                    return "Kiwix ZIM archives already active: " + ", ".join(
+                        destination.name for destination, _path in destinations
+                    )
+                library_temporary.chmod(0o644)
+                os.replace(library_temporary, library)
+                return "activated Kiwix ZIM archives: " + ", ".join(
+                    destination.name for destination, _path in destinations
+                )
+            finally:
+                library_temporary.unlink(missing_ok=True)
+        except Exception:
+            for path in created:
+                path.unlink(missing_ok=True)
+            raise
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
 def activate_reference_pack(pack_root: Path, manifest: dict, root: Path) -> str | None:
@@ -441,6 +613,7 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
             if (recorded_hash.is_file() and recorded_hash.read_text(encoding="ascii").strip() == bundle_hash
                     and installed_pack_valid(final, manifest)):
                 activation = activate_map_pack(final, manifest, root)
+                activation = activation or activate_zim_pack(final, manifest, root, reserve_bytes)
                 activation = activation or activate_reference_pack(final, manifest, root)
                 suffix = f"; {activation}" if activation else ""
                 return f"already installed: {pack_id} {version}{suffix}"
@@ -454,6 +627,7 @@ def install_bundle(archive: Path, root: Path = DEFAULT_ROOT,
         except FileExistsError as exc:
             raise InstallError(f"refusing to replace concurrently installed pack: {final}") from exc
         activation = activate_map_pack(final, manifest, root)
+        activation = activation or activate_zim_pack(final, manifest, root, reserve_bytes)
         activation = activation or activate_reference_pack(final, manifest, root)
         suffix = f"; {activation}" if activation else ""
         return f"installed: {pack_id} {version} at {final}{suffix}"

@@ -21,6 +21,12 @@ CATEGORIES = {
     "communications",
     "maps-gis",
 }
+INSTALL_TARGETS = {
+    "storage/maps/pmtiles",
+    "storage/references/documents",
+    "storage/zim",
+    "storage/content-packs",
+}
 AUTHORITIES = {"authoritative-reference", "community-reference", "fieldos-authored", "ai-generated", "mixed"}
 PACK_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 PACK_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
@@ -227,6 +233,8 @@ def validate_manifest(manifest_path: Path, payload_root: Path) -> str:
     target = Path(nonempty(installation["target"], f"installation target in {pack_id}"))
     if target.is_absolute() or ".." in target.parts:
         raise PackError(f"installation target in {pack_id} must be a relative path without traversal")
+    if installation["target"] not in INSTALL_TARGETS:
+        raise PackError(f"unsupported installation target in {pack_id}: {installation['target']!r}")
     requirements = installation["requirements"]
     if not isinstance(requirements, list) or any(not isinstance(item, str) or not item.strip() for item in requirements):
         raise PackError(f"installation requirements in {pack_id} must be an array of non-empty strings")
