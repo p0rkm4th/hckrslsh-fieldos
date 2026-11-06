@@ -20,30 +20,31 @@ build outputs and are excluded from Git.
 ## Current status
 
 The current private customer-mode candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
-(source `aedc5705915d4ff57bad18e535b602eace7310b8`, SHA-256
-`538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`). Structural
-verification and a fresh interactive install to a disposable 80 GiB UEFI VM
-disk with no NIC passed. Firstboot, branded desktop, local CPU chat and
-embeddings, Kiwix retrieval, source indexing, and a visible zoom-13 Nashville
-map worked; services and user data persisted across two reboots. At Ubuntu's
-standard virtual-media prompt the guest powered off after Enter/eject, then
-booted normally from the installed disk on power-on. Physical USB handoff is
-untested. Detailed evidence is in
-[`docs/VALIDATION-CURRENT.md`](docs/VALIDATION-CURRENT.md) and
-`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
+`/mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso`
+(source `b67ee122124f3f897957b64426cfc6b831fee418`, SHA-256
+`29725549f4071455b5582e134939079f19b2d39deba89d3b17eab991b488c0a6`). It
+passed structural verification and a fresh interactive install in a disposable
+80 GiB UEFI VM with no NIC. Firstboot and the branded desktop completed; local
+CPU chat, 768-dimensional embeddings, Kiwix article retrieval, source indexing,
+and a visible zoom-13 Nashville map worked. Two guest-initiated reboots
+preserved the user-data marker and seven services; chat, embeddings, Kiwix, and
+the map payload responded after the second reboot. At Ubuntu's standard
+virtual-media prompt the guest powered off after Enter/eject, then booted
+normally from the installed disk on power-on. Physical USB handoff is untested.
+Detailed evidence is in [`docs/VALIDATION-CURRENT.md`](docs/VALIDATION-CURRENT.md)
+and `/mnt/shared/fieldos-e2e/customer-b67ee12-interactive/validation.md`.
 
-The fresh unattended E2E also passed: offline installation, local
-inference/embeddings, Kiwix, source indexing, eight actual Firefox Tennessee
-map views, egress isolation, and two reboots. Report:
-`/mnt/shared/fieldos-e2e/current-31a244c/20261106T111141Z-909878/report.md`.
-Its worktree was dirty only for documentation corrections that were committed
-as `aedc570`; the customer ISO above was built cleanly from that commit. These
-are VM results, not physical-device validation. This is not a public
-release: redistribution clearance, attached-network security testing, physical
-hardware, useful broad reference coverage, and AI retrieval quality remain
-open. Wikipedia 100 remains a fixture; do not use the local model as a
-safety-critical authority.
+A fresh unattended E2E from the same source also passed offline installation,
+local inference/embeddings, offline reference retrieval, Kiwix, eight actual
+Firefox Tennessee map views, container-egress isolation, optional content-pack
+transfer/import, and two reboots. Report:
+`/mnt/shared/fieldos-e2e/20261106T130335Z-1217572/report.md` (test ISO SHA-256
+`6f5cb44bdf04c291f8460d23eb8e0ccdcc2dd6bd77faa6f75b59a9b7471eb89f`). These
+are VM results, not physical-device validation. This is not a public release:
+redistribution clearance, connected-LAN exposure testing, physical hardware,
+broader reference coverage, and AI retrieval quality remain open. Wikipedia
+100 remains a fixture; do not use the local model as a safety-critical
+authority.
 
 ## Build and test
 
@@ -57,7 +58,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

@@ -1,44 +1,33 @@
 # Release readiness and evidence
 
-The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. The current source tree now contains text-only, version-bumped CDC pack revisions, but they have not been composed into an ISO or accepted in a guest. The accepted ISO still contains earlier illustrated CDC PDFs. Current source validation passes 128 tests and all 12 content-pack manifests.
+## Current private customer-mode engineering candidate
 
-**Current private customer-mode engineering candidate:**
-`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
-SHA-256: `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`
-Payload SHA-256:
-`a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB).
-The embedded manifest is clean and pins the source revision, Ubuntu ISO, and
-payload checksum. Structural verification passed. A fresh interactive customer
-install passed in a disposable no-NIC UEFI VM; firstboot completed; the branded
-desktop, actual local CPU inference and embeddings, Kiwix article, indexed
-references, and visible zoom-13 Nashville map worked. Two reboots preserved
-services and a local data marker. Evidence:
-`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
-At Ubuntu's standard remove-media prompt, Enter powered the guest off after the
-virtual CD had been ejected; a normal power-on with only the installed disk
-booted without repair. Physical USB handoff is untested.
+Source revision: `b67ee122124f3f897957b64426cfc6b831fee418` (clean at test/build).
+Customer ISO:
+`/mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso`
+SHA-256: `29725549f4071455b5582e134939079f19b2d39deba89d3b17eab991b488c0a6`.
+The ISO structure and embedded payload were verified. A fresh interactive,
+no-NIC UEFI installation completed; user identity and target disk were selected,
+firstboot completed, and the installed disk booted after ordinary media
+handoff. The branded desktop's local chat, embeddings, Kiwix retrieval, and
+zoom-13 Nashville map worked. Two guest-initiated reboots preserved the user
+data marker and seven services; inference, embeddings, Kiwix catalog, and map
+payload responded after the second reboot. Detailed evidence:
+`/mnt/shared/fieldos-e2e/customer-b67ee12-interactive/validation.md`.
 
-The fresh unattended no-NIC E2E separately passed all eight Tennessee browser
-map renders, local AI and reference checks, container egress blocking, and two
-reboots. Its report is
-`/mnt/shared/fieldos-e2e/current-31a244c/20261106T111141Z-909878/report.md`.
-The test ISO was built before documentation-only corrections were committed as
-`aedc570`; runtime and installer code did not change. Its optional pack
-transfer test was skipped. The customer-mode and unattended tests are distinct.
+A separate clean-source unattended E2E from the same commit passed offline
+installation, content-pack transfer and import, local inference, embeddings,
+Source Library retrieval, Kiwix, eight Firefox map views, egress blocking, and
+two reboots. Report:
+`/mnt/shared/fieldos-e2e/20261106T130335Z-1217572/report.md`; test ISO SHA-256
+`6f5cb44bdf04c291f8460d23eb8e0ccdcc2dd6bd77faa6f75b59a9b7471eb89f`.
 
-The current source pack update removes five CDC PDFs containing visible agency
-marks and replaces the four affected packs with checksum-pinned text artifacts.
-Their archives pass integrity and temporary-root Source Library activation
-checks, but no desktop import, reboot, ISO build, or fresh acceptance test has
-yet verified the revised pack set. The accepted ISO above remains a private
-historical engineering candidate, not evidence for the current source.
-
-**Not release approved.** This is a private engineering candidate, not a
-redistribution-cleared customer release. Wikipedia 100 and the ten indexed
-source documents are limited. Physical hardware/USB, GPU/GPS, and
-attached-network security behavior remain unverified; final redistribution
-review is incomplete. Do not publish the ISO as a customer release until these
-gates pass.
+**Not release approved.** Physical USB and hardware compatibility, GPU/GPS,
+connected-LAN exposure, broader trusted content and AI retrieval quality, and
+redistribution clearance remain incomplete. Wikipedia 100 is a test fixture.
+Do not publish customer binaries or present the local model as a safety-critical
+authority. Preserve the customer candidate and test evidence until a successor
+passes equivalent gates.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 
