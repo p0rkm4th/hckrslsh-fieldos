@@ -1,35 +1,28 @@
 {
   "schema_version": 1,
   "id": "us-cdc-keep-calm-prepared",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "CDC Keep Calm and Be Prepared",
-  "description": "A two-page CDC emergency-kit checklist. It is a brief preparedness aid, not a complete disaster plan or medical reference.",
+  "description": "CDC Keep Calm and Be Prepared checklist text-only extraction. Original visual layout and graphic-only context are not included; use the source citation to identify the document and its limits.",
   "category": "first-aid-emergency",
   "sources": [
     {
       "id": "cdc-keep-calm",
       "name": "CDC STACKS: Keep calm and be prepared (2013; item cdc:23954)",
       "url": "https://stacks.cdc.gov/view/cdc/23954",
-      "license": "The exact CDC STACKS item record identifies the item as Public Domain.",
-      "attribution": "Centers for Disease Control and Prevention, Office of Public Health Preparedness and Response. Reproduced unmodified; CDC attribution retained. No endorsement is implied.",
+      "license": "CDC STACKS identifies this exact source item as Public Domain. The listed artifact is a text-only pdftotext extraction; agency marks, photographs, and graphics from the PDF are excluded. Formatting and visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC reuse guidance requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "attribution": "Source: CDC STACKS: Keep calm and be prepared (2013; item cdc:23954). Text-only extraction; original graphics, photographs, and agency marks are omitted. Available from CDC at no charge. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
       "accessed": "2026-11-05"
     }
   ],
   "artifacts": [
     {
-      "path": "keep-calm-and-be-prepared-cdc-2013.pdf",
-      "size_bytes": 138605,
-      "sha256": "d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319",
-      "source": "cdc-keep-calm",
-      "license": "Public Domain per the exact CDC STACKS item record; original PDF is unmodified."
-    },
-    {
       "path": "cdc-keep-calm-searchable.txt",
       "size_bytes": 1933,
       "sha256": "7d7cf2398af712db6b41b76fbdace254b8b77fdab396fec91ab5c84f08912253",
       "source": "cdc-keep-calm",
-      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
-      "title": "Searchable text companion: CDC preparedness checklist PDF",
+      "license": "CDC STACKS identifies the exact source item as Public Domain. This artifact is a text-only pdftotext extraction; the original PDF's agency marks, photographs, and graphics are excluded, and formatting or visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC's agency-materials policy requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "title": "CDC Keep Calm and Be Prepared checklist text-only extraction",
       "index_with_ai": false
     }
   ],
@@ -42,7 +35,7 @@
   "authority": "authoritative-reference",
   "review": {
     "reviewer": "FieldOS source and metadata review; not a clinical review",
-    "reviewed_at": "2026-11-05",
+    "reviewed_at": "2026-11-06",
     "content_revision": "2013-08-29"
   }
 }

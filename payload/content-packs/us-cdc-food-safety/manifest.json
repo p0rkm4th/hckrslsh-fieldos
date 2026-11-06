@@ -1,37 +1,28 @@
 {
   "schema_version": 1,
   "id": "us-cdc-food-safety",
-  "version": "2023.04.14.1",
+  "version": "2023.04.14.2",
   "title": "CDC Food Safety: 10 Dangerous Mistakes (2023)",
-  "description": "CDC's 2023 fact sheet describing ten common food-handling mistakes. The original PDF retains its illustrations; a searchable text companion is included. The factsheet links to more detailed material that is not included in this pack and is not a comprehensive food-preservation, canning, or power-outage guide. Check current official guidance when available.",
+  "description": "CDC food-safety fact sheet text-only extraction. Original visual layout and graphic-only context are not included; use the source citation to identify the document and its limits.",
   "category": "water-food",
   "sources": [
     {
       "id": "cdc-food-safety-mistakes-2023",
       "name": "CDC Stacks: Food Safety: 10 Dangerous Food Safety Mistakes [2023]",
       "url": "https://stacks.cdc.gov/view/cdc/129474",
-      "license": "CDC Stacks identifies this exact item as Public Domain. The item is retained unchanged as a PDF, with a derived text search aid. CDC's agency-materials policy requires attribution, prominent non-endorsement, and notice that CDC material is available at no charge. U.S. government work; final bundle-level commercial redistribution review remains open.",
-      "attribution": "Source: Centers for Disease Control and Prevention (CDC), National Center for Emerging and Zoonotic Infectious Diseases, Division of Foodborne, Waterborne, and Environmental Diseases, Food Safety: 10 Dangerous Food Safety Mistakes (April 14, 2023). Available from CDC Stacks at no charge; CDC Stacks marks the item Public Domain. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
+      "license": "CDC STACKS identifies this exact source item as Public Domain. The listed artifact is a text-only pdftotext extraction; agency marks, photographs, and graphics from the PDF are excluded. Formatting and visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC reuse guidance requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "attribution": "Source: CDC Stacks: Food Safety: 10 Dangerous Food Safety Mistakes [2023]. Text-only extraction; original graphics, photographs, and agency marks are omitted. Available from CDC at no charge. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
       "accessed": "2026-11-06"
     }
   ],
   "artifacts": [
     {
-      "path": "cdc-ten-dangerous-food-safety-mistakes-2023.pdf",
-      "size_bytes": 1687901,
-      "sha256": "c0fde54fa10ce42490850f13993415c642ccccfa90dbbf87a4235b2893680240",
-      "source": "cdc-food-safety-mistakes-2023",
-      "license": "CDC original PDF, preserved unchanged; CDC Stacks record identifies this exact item as Public Domain.",
-      "title": "Original CDC factsheet PDF (2023; includes graphics)",
-      "index_with_ai": false
-    },
-    {
       "path": "cdc-ten-dangerous-food-safety-mistakes-2023-searchable.txt",
-      "size_bytes": 7121,
-      "sha256": "1f69790d39f1b3805ce9e70b6e96c6d1123d44f773562163e6196a432670a919",
+      "size_bytes": 7188,
+      "sha256": "41c4ddf15d107123b2898cc9d1044b5438c20aef95e0812eca6918ab88eec603",
       "source": "cdc-food-safety-mistakes-2023",
-      "license": "Searchable text extraction from the accompanying Public Domain CDC PDF. Extraction may lose layout and text contained only in graphics; consult the PDF for the full fact sheet.",
-      "title": "Searchable text companion (derived from original PDF)",
+      "license": "CDC STACKS identifies the exact source item as Public Domain. This artifact is a text-only pdftotext extraction; the original PDF's agency marks, photographs, and graphics are excluded, and formatting, image context, and external hyperlink targets may be lost. The source text extraction marks omitted CDC links as not bundled. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC's agency-materials policy requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "title": "CDC food-safety fact sheet text-only extraction",
       "index_with_ai": false
     }
   ],

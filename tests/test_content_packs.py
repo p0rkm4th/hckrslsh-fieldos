@@ -183,18 +183,41 @@ class ContentPackValidationTests(unittest.TestCase):
         )
         self.assertEqual(validate_catalog(catalog), ["fixture-reference"])
 
-    def test_cdc_checklist_metadata_pins_source_public_domain_and_artifact(self):
+    def test_cdc_checklist_metadata_pins_source_public_domain_and_text_artifact(self):
         manifest = json.loads(
             (ROOT / "payload/content-packs/us-cdc-keep-calm-prepared/manifest.json").read_text()
         )
         self.assertEqual(manifest["authority"], "authoritative-reference")
         self.assertIn("Public Domain", manifest["sources"][0]["license"])
         self.assertEqual(
-            manifest["artifacts"][0]["sha256"],
-            "d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319",
+            manifest["artifacts"][0]["path"], "cdc-keep-calm-searchable.txt"
         )
+        self.assertEqual(
+            manifest["artifacts"][0]["sha256"],
+            "7d7cf2398af712db6b41b76fbdace254b8b77fdab396fec91ab5c84f08912253",
+        )
+        self.assertIn("agency marks", manifest["artifacts"][0]["license"])
+        self.assertIn("excluded", manifest["artifacts"][0]["license"])
         catalog = ROOT / "payload/manifests/content-packs.json"
         self.assertIn("us-cdc-keep-calm-prepared", validate_catalog(catalog))
+
+    def test_cdc_pack_bundles_exclude_branded_original_pdfs(self):
+        for pack_id in (
+            "us-basic-emergency-health",
+            "us-cdc-keep-calm-prepared",
+            "us-cdc-food-safety",
+            "us-water-food-emergency",
+        ):
+            with self.subTest(pack=pack_id):
+                pack = ROOT / "payload/content-packs" / pack_id
+                manifest = json.loads((pack / "manifest.json").read_text())
+                self.assertTrue(manifest["artifacts"])
+                for artifact in manifest["artifacts"]:
+                    self.assertEqual(Path(artifact["path"]).suffix.lower(), ".txt")
+                    self.assertTrue((pack / artifact["path"]).is_file())
+                    self.assertIn("agency marks", artifact["license"])
+                    self.assertIn("excluded", artifact["license"])
+                self.assertFalse(list(pack.glob("*.pdf")))
 
     def test_medlineplus_pack_records_the_policy_basis_separately(self):
         manifest = json.loads(

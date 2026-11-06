@@ -1,59 +1,45 @@
 {
   "schema_version": 1,
   "id": "us-water-food-emergency",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "U.S. Emergency Water and Food Safety",
-  "description": "Two CDC source documents for emergency drinking-water treatment and food safety after a power outage. This is a small starter set, not a complete disaster library.",
+  "description": "CDC emergency water and food-safety text-only extractions. Original visual layout and graphic-only context are not included; use the source citation to identify the document and its limits.",
   "category": "water-food",
   "sources": [
     {
       "id": "cdc-water-safety",
       "name": "CDC STACKS: Make Water Safe During an Emergency (2022; current PDF checksum-verified)",
       "url": "https://stacks.cdc.gov/view/cdc/128149",
-      "license": "U.S. government work; CDC STACKS record marks the item Public Domain",
-      "attribution": "Centers for Disease Control and Prevention (CDC), reproduced unmodified; freely available from CDC STACKS.",
+      "license": "CDC STACKS identifies this exact source item as Public Domain. The listed artifact is a text-only pdftotext extraction; agency marks, photographs, and graphics from the PDF are excluded. Formatting and visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC reuse guidance requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "attribution": "Source: CDC STACKS: Make Water Safe During an Emergency (2022; current PDF checksum-verified). Text-only extraction; original graphics, photographs, and agency marks are omitted. Available from CDC at no charge. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
       "accessed": "2026-11-04"
     },
     {
       "id": "cdc-food-power-outage",
       "name": "CDC STACKS: Eat Safe Food After a Power Outage (2020; checksum-identical to CDC's 2025 PDF)",
       "url": "https://stacks.cdc.gov/view/cdc/88473",
-      "license": "U.S. government work; CDC STACKS record marks the item Public Domain",
-      "attribution": "Centers for Disease Control and Prevention (CDC), reproduced unmodified; freely available from CDC STACKS.",
+      "license": "CDC STACKS identifies this exact source item as Public Domain. The listed artifact is a text-only pdftotext extraction; agency marks, photographs, and graphics from the PDF are excluded. Formatting and visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC reuse guidance requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "attribution": "Source: CDC STACKS: Eat Safe Food After a Power Outage (2020; checksum-identical to CDC's 2025 PDF). Text-only extraction; original graphics, photographs, and agency marks are omitted. Available from CDC at no charge. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
       "accessed": "2026-11-04"
     }
   ],
   "artifacts": [
     {
-      "path": "cdc-water-treatment.pdf",
-      "size_bytes": 730926,
-      "sha256": "c39b55b4d8f3dd40ecd2b13175f7661b52dfc6e73e4a24ef189de64fb9d513b1",
-      "source": "cdc-water-safety",
-      "license": "Public Domain; exact CDC STACKS item identified above"
-    },
-    {
-      "path": "cdc-food-power-outage.pdf",
-      "size_bytes": 1675372,
-      "sha256": "0982174617e2b3405e966b0b1dc2838e3ce92dfad3185da3d450b525a62a7ebf",
-      "source": "cdc-food-power-outage",
-      "license": "Public Domain; exact CDC STACKS item identified above"
-    },
-    {
       "path": "cdc-water-treatment-searchable.txt",
-      "size_bytes": 2786,
-      "sha256": "b9ec4958ed444035c7125ab85054419512e2d9423c9c1c90987e9cee67b2737b",
+      "size_bytes": 2787,
+      "sha256": "8c55b298bc66b7bbde439ecdf940320f14f58695b20626e864eddded45caca16",
       "source": "cdc-water-safety",
-      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
-      "title": "Searchable text companion: CDC emergency water treatment PDF",
+      "license": "CDC STACKS identifies the exact source item as Public Domain. This artifact is a text-only pdftotext extraction; the original PDF's agency marks, photographs, and graphics are excluded, and formatting or visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC's agency-materials policy requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "title": "CDC emergency water and food-safety text-only extractions",
       "index_with_ai": false
     },
     {
       "path": "cdc-food-power-outage-searchable.txt",
       "size_bytes": 4399,
-      "sha256": "c9b7943b30154778d5d34782f3eb7b0b1e2fced0967ade827fedd5b0f0bac452",
+      "sha256": "82e3793cfcb6287d40b16b722447953907b560ba954393b962ca270e6ca8911a",
       "source": "cdc-food-power-outage",
-      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
-      "title": "Searchable text companion: CDC food safety after power outage PDF",
+      "license": "CDC STACKS identifies the exact source item as Public Domain. This artifact is a text-only pdftotext extraction; the original PDF's agency marks, photographs, and graphics are excluded, and formatting or visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC's agency-materials policy requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "title": "CDC emergency water and food-safety text-only extractions",
       "index_with_ai": false
     }
   ],
@@ -66,7 +52,7 @@
   "authority": "authoritative-reference",
   "review": {
     "reviewer": "FieldOS engineering content review",
-    "reviewed_at": "2026-11-04",
+    "reviewed_at": "2026-11-06",
     "content_revision": "2025-11-24"
   }
 }

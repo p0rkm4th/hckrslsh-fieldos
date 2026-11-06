@@ -20,6 +20,13 @@ redistribution are unverified; this is not a cleared release.
 The candidate embeds payload SHA-256
 `a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB),
 recorded in its build manifest.
+
+Current source pack manifests have since replaced CDC-branded illustrated PDFs
+with four version-bumped text-only packs. Those archives pass checksum/archive
+validation and temporary-root Source Library activation, but the accepted ISO
+above still carries the earlier PDF versions. A fresh ISO build and offline
+customer acceptance are required before claiming the updated content is on the
+installed system.
 It provides the world overview, zoom 0–5, and statewide Tennessee vector map,
 zoom 0–13, plus the small Kiwix `Wikipedia 100` fixture and ten indexed source
 documents. The map opens a Tennessee overview by default; zoom-13 vector tiles are available
