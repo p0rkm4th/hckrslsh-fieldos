@@ -7,21 +7,22 @@ artifact is missing or its checksum differs.
 
 ## Current installation status (2026-11-06)
 
-The current customer-mode test ISO was built from source `5abae15` at
-`/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso` (SHA-256
-`8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`). A fresh
-interactive install on a disposable no-NIC UEFI VM completed, booted from its
-installed disk, indexed the bundled source documents, and passed two reboot
-checks. The Command Center Maps tile was clicked in Firefox and visibly opened
-the statewide Tennessee view, including after reboot 2. Full evidence:
-`/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`.
+The current private customer-mode test ISO is source `129da89` at
+`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`
+(SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`).
+Interactive no-NIC install, firstboot, map interaction, local apps, and two
+reboots passed in a disposable UEFI VM. Separate same-source E2E visibly
+rendered eight Tennessee locations. Full evidence is in
+[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md). Physical USB/hardware and
+redistribution are unverified; this is not a cleared release.
 
-The default payload remains `/mnt/shared/fieldos-payload/offline-payload.tar.zst`
-(SHA-256 `751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9`).
+The current candidate embeds payload SHA-256
+`a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB),
+recorded in its build manifest.
 It provides the world overview, zoom 0–5, and statewide Tennessee vector map,
 zoom 0–13, plus the small Kiwix `Wikipedia 100` fixture and ten indexed source
-documents. The user's map tile now opens a zoom-7 Tennessee overview by
-default; higher-detail zooms remain available. This is a geographic reference,
+documents. The map opens a Tennessee overview by default; zoom-13 vector tiles are available
+across the statewide extract. This is a geographic reference,
 not turn-by-turn routing or GPS positioning.
 
 Follow-up browser testing clarified the earlier apparent access failures.
