@@ -223,9 +223,11 @@ class ContentPackBundleTests(unittest.TestCase):
                 paths = command[image_index + 3:]
                 if len(paths) != 1:
                     return subprocess.CompletedProcess(command, 1, "", "expected one ZIM path")
-                book = ET.SubElement(root, "book")
+                # Kiwix 3.8.1 records a path attribute relative to the library
+                # directory, even when kiwix-manage receives /data/<archive>.
+                relative_path = Path(paths[0]).relative_to("/data").as_posix()
+                book = ET.SubElement(root, "book", path=relative_path)
                 ET.SubElement(book, "id").text = Path(paths[0]).stem
-                ET.SubElement(book, "path").text = paths[0]
                 tree.write(library_path, encoding="unicode")
                 return subprocess.CompletedProcess(command, 0, "", "")
             self.fail(f"unexpected kiwix-manage action: {action}")
@@ -246,8 +248,8 @@ class ContentPackBundleTests(unittest.TestCase):
             self.assertEqual((zim_root / "nested/second.zim").read_bytes(), b"synthetic zim payload: nested/second.zim")
             library = ET.parse(zim_root / "kiwix-library.xml").getroot()
             self.assertEqual(
-                {book.findtext("path") for book in library.findall("book")},
-                {"/data/reference.zim", "/data/nested/second.zim"},
+                {book.attrib["path"] for book in library.findall("book")},
+                {"reference.zim", "nested/second.zim"},
             )
             second = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
             self.assertIn("Kiwix ZIM archives already active", second)
@@ -297,6 +299,19 @@ class ContentPackBundleTests(unittest.TestCase):
         archive = build_archives(self.payload / "manifests/content-packs.json", self.output)[0]
         with self.assertRaisesRegex(CONTENT_PACKS.InstallError, "Kiwix packs may contain only ZIM artifacts"):
             CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+
+    def test_kiwix_library_paths_normalizes_real_relative_book_path_attributes(self):
+        self.install_root.mkdir(parents=True, exist_ok=True)
+        library = self.install_root / "kiwix-relative-library.xml"
+        library.write_text(
+            '<library><book id="fixture" path="nested/reference.zim" title="Fixture" />'
+            '<book id="absolute" path="/data/absolute.zim" /></library>',
+            encoding="utf-8",
+        )
+        self.assertEqual(
+            CONTENT_PACKS.kiwix_library_paths(library),
+            {"/data/nested/reference.zim", "/data/absolute.zim"},
+        )
 
     def test_reference_documents_activate_in_local_source_index(self):
         artifact = self.pack / "water-guide.pdf"

@@ -255,18 +255,27 @@ def kiwix_manage(zim_root: Path, library_name: str, *arguments: str) -> str:
 
 
 def kiwix_library_paths(library: Path) -> set[str]:
-    """Read archive paths from Kiwix's OPDS/XML library without CLI output assumptions."""
+    """Read Kiwix book paths, normalizing its relative paths to the mounted data root."""
     paths: set[str] = set()
     try:
         root = ET.parse(library).getroot()
     except (OSError, ET.ParseError) as exc:
         raise InstallError(f"Kiwix library is not valid XML: {exc}") from exc
-    for element in root.iter():
-        if element.tag.rsplit("}", 1)[-1].lower() == "path" and element.text:
-            paths.add(element.text.strip())
-        for key, value in element.attrib.items():
-            if key.rsplit("}", 1)[-1].lower() in {"href", "path"}:
-                paths.add(value.strip())
+    for book in root.iter():
+        if book.tag.rsplit("}", 1)[-1].lower() != "book":
+            continue
+        values = [value for key, value in book.attrib.items()
+                  if key.rsplit("}", 1)[-1].lower() == "path"]
+        values.extend(element.text.strip() for element in book
+                      if element.tag.rsplit("}", 1)[-1].lower() == "path" and element.text)
+        for value in values:
+            value = value.strip()
+            # kiwix-manage 3.8.1 writes paths relative to the library file even
+            # when it was given /data/<name>. Interpret those paths in the
+            # same mount used by kiwix-serve and the pack importer.
+            if value and not value.startswith("/"):
+                value = "/data/" + PurePosixPath(value).as_posix()
+            paths.add(value)
     return paths
 
 
