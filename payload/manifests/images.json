@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "captured_at": "2026-11-02",
+  "captured_at": "2026-11-06",
   "platform": "linux/amd64",
   "images": [
     {"name": "nomad", "ref": "ghcr.io/crosstalk-solutions/project-nomad:v1.35.1", "digest": "sha256:1445a3eaba19801ce27435b7edc57fce74d9543601808d719b432e3bc7468ea1", "license": "Apache-2.0"},
     {"name": "mysql", "ref": "mysql:8.0", "digest": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b", "license": "GPL-2.0"},
-    {"name": "redis", "ref": "redis:7-alpine", "digest": "sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f", "license": "RSALv2 OR SSPLv1", "observed_version": "7.4.12", "license_url": "https://redis.io/blog/redis-adopts-dual-source-available-licensing/"},
+    {"name": "valkey", "ref": "valkey/valkey:8.0-alpine", "digest": "sha256:19f0b3d350f5e6de618086d79ecdc9c474ab159bebb16ed95a92e4211562fee5", "license": "BSD-3-Clause", "observed_version": "8.0.12", "license_url": "https://github.com/valkey-io/valkey"},
     {"name": "dozzle", "ref": "amir20/dozzle:v10.0", "digest": "sha256:d383abf0fee72a8037d6ec6474424e56d752a52208e0ed70f4805e9d86a77830", "license": "MIT"},
     {"name": "ollama", "ref": "ollama/ollama:0.33.3", "digest": "sha256:32931b46719f673c05fdbaa81ccb26da18ea4a1c57590a754874ab28ba269eb2", "license": "MIT"},
     {"name": "qdrant", "ref": "qdrant/qdrant:v1.16", "digest": "sha256:0425e3e03e7fd9b3dc95c4214546afe19de2eb2e28ca621441a56663ac6e1f46", "license": "Apache-2.0"},

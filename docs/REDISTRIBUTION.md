@@ -33,11 +33,19 @@ exceptions for third-party material, and requires attribution, a prominent
 non-endorsement disclaimer, no substantive changes, and notice that the source
 is available at no charge. This is an engineering rights assessment, not legal
 advice or full commercial distribution clearance. The Wikipedia ZIM, Ubuntu
-marks, Redis image, all container transitive components, map assets, model
-terms, notices, and source offers still have unresolved review items. Do not
+marks, all container transitive components (including the Valkey image layers),
+map assets, model terms, notices, and source offers still have unresolved
+review items. Do not
 publish or distribute the candidate until those reviews are resolved.
 
 ## Current artifact inventory
+
+The tested `f250cc1` ISO contains Redis `7.4.12` (RSALv2 or SSPLv1). The
+current source tree now pins Valkey `8.0.12` as a replacement candidate after
+an isolated N.O.M.A.D. startup/client smoke test. That change has not yet been
+included in a newly built or fully accepted ISO. The source candidate does not
+retroactively change the contents or redistribution status of the tested ISO.
+
 
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
 |---|---|---|---|
@@ -45,7 +53,8 @@ publish or distribute the candidate until those reviews are resolved.
 | Offline APT packages | The `562fee9` customer ISO installed its offline APT set, including Docker, Compose, curl, zstd, qemu-guest-agent, `vulkan-tools`, `zenity`, and `pkexec`. Package archive metadata is generated with the payload. | Firstboot completed in the customer candidate at `/mnt/shared/fieldos-e2e/customer-searchable-562fee9/validation.md`. | Review the detailed package-license inventory for the exact release artifact, including notices, trusted source metadata, and corresponding-source obligations. Offline tests prove installation, not redistribution clearance. Ubuntu's Resolute package records identify `zenity` as graphical dialog support and `pkexec` as PolicyKit-authorized command execution: <https://packages.ubuntu.com/resolute/zenity>, <https://packages.ubuntu.com/resolute/pkexec>. |
 | N.O.M.A.D. image | Project N.O.M.A.D. is Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest; all-layer SBOM and candidate notice inventory are retained under `/mnt/shared/fieldos-e2e/repository-review-233b980/`. The pinned image includes Debian `ghostscript`, `libgs10`, and `libgs10-common` version `10.0.0~dfsg-11+deb12u8`; `/usr/share/doc/ghostscript/copyright` identifies AGPL-3+. The current candidate's payload hash matches the prepared archive, whose file list includes `manifests/source-offers.json` and the three checksum-pinned Ghostscript source-offer files. | Review the bundled source offer and its notice, verify the signer trust chain, review its dependencies and all other SBOM components, and finish license-specific offer analysis. |
 | MySQL image | GPL-2.0 with MySQL's additional permissions; upstream licensing information: <https://github.com/mysql/mysql-server/blob/8.0/LICENSE> | Pinned OCI digest | Verify exact image version/layers, third-party component notices, and corresponding source/offer requirements. |
-| Redis image | The pinned image config reports `REDIS_VERSION=7.4.12`; Redis's [official licensing overview](https://redis.io/legal/licenses/) lists 7.4.x as RSALv2 or SSPLv1, not BSD-3-Clause. The earlier [licensing-change announcement](https://redis.io/blog/redis-adopts-dual-source-available-licensing/) records the change. | Local image ID matches the pinned digest in `payload/manifests/images.json`; `REDIS_VERSION` was read from the image config. Read-only image inspection is retained at `/mnt/shared/fieldos-e2e/redis-license-image-inspect-20261103.txt`. | Redis's licensing overview describes RSALv2 as allowing distribution while prohibiting commercializing the software or providing it as a managed service that exposes Redis functionality; SSPLv1 has source obligations when providing a service. Applicability to a FieldOS appliance sold or distributed to customers is not determined here. Obtain license-specific review or evaluate Valkey, then rebuild and acceptance-test the offline payload. Valkey compatibility with pinned N.O.M.A.D. and the replacement image's own transitive licenses are unverified. |
+| Redis 7.4.12 in the validated `f250cc1` ISO | Redis Community Edition 7.4.x: [official licensing overview](https://redis.io/legal/licenses/) lists RSALv2 or SSPLv1, not BSD-3-Clause. | This exact ISO contains digest `sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f`; version `7.4.12` was observed in image config. | This ISO is not cleared for customer/commercial distribution. The current source tree replaces it with Valkey, pending new payload and full acceptance. |
+| Valkey 8.0.12 source candidate | [Valkey upstream](https://github.com/valkey-io/valkey), BSD-3-Clause; [migration guide](https://valkey.io/topics/migration/). | Pinned digest `sha256:19f0b3d350f5e6de618086d79ecdc9c474ab159bebb16ed95a92e4211562fee5`; isolated compose test with pinned N.O.M.A.D. passed startup, migrations, worker startup, HTTP health, and ioredis PING/SET/GET. | Candidate image is not yet in an accepted offline ISO. Review all image layers/notices; validate upgrade behavior and keep legacy Redis data intact. Redis 7.4 data files are not compatible with Valkey. |
 | Dozzle, Ollama, Qdrant, Kiwix images | Direct licenses are recorded in `payload/manifests/images.json` and upstream links in `CONTAINER-IMAGES.md` | Pinned OCI digests | Generate/review SBOMs for the exact images; include transitive notices and any corresponding source required by the applicable licenses. |
 | Qwen3 0.6B chat model | Apache-2.0 model page: <https://huggingface.co/Qwen/Qwen3-0.6B> | `models/manifest.json` pins the Ollama manifest SHA-256 and quantized model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Qwen3 1.7B Q4_K_M chat model | Ollama reports Apache-2.0; model card: <https://ollama.com/library/qwen3/tags> | Pulled from `qwen3:1.7b-q4_K_M`; manifest SHA-256 `8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7`, model layer SHA-256 `3d0b790534fe4b79525fc3692950408dca41171676ed7e21db57af5c65ef6ab6` (1,359,279,776 bytes). Ollama's license layer hash matches the 0.6B model. Current `562fee9` customer guest selected it on CPU and generated a response after two reboots. CPU evaluation is recorded at `/mnt/shared/fieldos-model-eval-20261105/benchmark.json`. | Review exact model provenance, complete Ollama-layer license terms, and notices for public distribution; the model/runtime licensing inventory is not closed. |
@@ -73,7 +82,7 @@ publish or distribute the candidate until those reviews are resolved.
    specific source offers remains necessary. An all-layer notice extraction
    from the seven exact pinned images found 1,174 unique candidate notice files
    (2,367 layer/path occurrences; 11.45 MB). It is filename-based, so zero
-   matches for Redis, Dozzle, or Kiwix does not mean those images have no notice
+   matches for Valkey, Dozzle, or Kiwix does not mean those images have no notice
    obligations. The current candidate's payload was built with the source
    collector and source-offer changes; confirm all notices and source files
    again whenever its payload is rebuilt.

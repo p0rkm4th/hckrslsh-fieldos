@@ -370,7 +370,7 @@ objects for private evaluation. Upstream source and license locations:
 |---|---|---|
 | Project N.O.M.A.D. | Apache-2.0 | https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1 |
 | MySQL | GPL-2.0 | https://github.com/mysql/mysql-server |
-| Redis | BSD-3-Clause | https://github.com/redis/redis |
+| Valkey | BSD-3-Clause | https://github.com/valkey-io/valkey |
 | Dozzle | MIT | https://github.com/amir20/dozzle |
 | Ollama | MIT | https://github.com/ollama/ollama |
 | Qdrant | Apache-2.0 | https://github.com/qdrant/qdrant |
