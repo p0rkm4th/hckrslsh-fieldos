@@ -2,9 +2,10 @@
 
 ## Current customer-mode candidate — interactive install PASS in VM
 
-Current source: `aedc5705915d4ff57bad18e535b602eace7310b8` (public `main`,
-clean at build). `make check test` passed 127 tests and validation accepted 12
-content packs.
+Current public repository HEAD: `c5150734f0946c6aedc9250b5ba3f77a4da4aaf2`
+(documentation-only acceptance update after the candidate build). The customer
+ISO itself was built cleanly from `aedc5705915d4ff57bad18e535b602eace7310b8`.
+`make check test` passed 127 tests and validation accepted 12 content packs.
 
 Customer ISO:
 `/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
