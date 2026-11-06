@@ -58,6 +58,20 @@ network test is `/mnt/shared/fieldos-e2e/customer-correct-entry-20261102/`
 network did not expose the guest to a LAN peer, so the customer-LAN gate remains
 partial.
 
+A current-source follow-up at commit `b67ee12` repeated the connected-network
+check on the disposable unattended E2E guest using a live QEMU user-mode NIC.
+The guest OS had outbound internet access (`https://example.com` returned
+HTTP 200), while an outbound fetch from the N.O.M.A.D. container timed out.
+Five published service listeners remained on guest loopback; MySQL and Valkey
+were not host-published. Direct requests to all seven service ports at the
+guest's `10.0.2.15` address failed. Temporary host-forward probes were bound
+only to host loopback and returned no application data. The QEMU NIC and
+backend were removed afterward; the guest returned to no NIC, no default route,
+and healthy local services. The detailed record is
+`/mnt/shared/fieldos-e2e/20261106T130335Z-1217572/security-network-followup.md`.
+This strengthens the guest-interface check but remains short of a scan from an
+independent peer on a physical LAN.
+
 ## Operational checks
 
 For manually entered operator credentials, use a memorable passphrase made
