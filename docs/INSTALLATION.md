@@ -2,6 +2,11 @@
 
 ## Customer installation
 
+Older customer ISO binaries have been retired after the later `129da89`
+accepted candidate passed. Historical run reports, screenshots, guest disks,
+and checksum sidecars remain under `/mnt/shared`; retired checksums and paths
+are recorded in `/mnt/shared/fieldos-retired/customer-isos-20261106/retirement.txt`.
+
 **Current private customer-mode candidate (2026-11-06; interactive install PASS in VM):**
 `/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`, source
 `129da89fff0bd769b85f42b541bf195eedb70b31`, SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`. Structural verification and a fresh interactive
@@ -35,7 +40,7 @@ describe the latest candidate.
 **Previous customer-mode installation PASS (2026-11-05; historical):**
 `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, source
 `562fee9`, SHA-256
-`4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
+`4d9ccf3f3e7d9b30bc0b7f645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`.
 Interactive account and target-disk selection, destructive-action confirmation,
 normal virtual-media handoff, installed-disk boot, and offline firstboot passed
 in a fresh no-NIC 80 GiB UEFI VM. The branded desktop, local AI, embeddings,

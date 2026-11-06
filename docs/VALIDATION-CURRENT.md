@@ -2,6 +2,11 @@
 
 ## Current customer-mode candidate — interactive install PASS in VM
 
+Older customer ISO binaries have been retired after the later `129da89`
+accepted candidate passed. Historical run reports, screenshots, guest disks,
+and checksum sidecars remain under `/mnt/shared`; retired checksums and paths
+are recorded in `/mnt/shared/fieldos-retired/customer-isos-20261106/retirement.txt`.
+
 The private engineering candidate is
 `/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`, built
 from clean source `129da89fff0bd769b85f42b541bf195eedb70b31`. ISO SHA-256: `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`. Payload SHA-256:
