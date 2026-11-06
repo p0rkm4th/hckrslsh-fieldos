@@ -2,36 +2,30 @@
 
 ## Customer installation
 
-Older customer ISO binaries, including the superseded `129da89` candidate, have
-been retired after the `aedc570` successor passed install and reboot
-acceptance. Historical run reports, screenshots, guest disks, and checksum
-sidecars remain under `/mnt/shared`; retired checksums and paths
-are recorded in `/mnt/shared/fieldos-retired/customer-isos-20261106/retirement.txt`.
+**Current private customer-mode engineering candidate (2026-11-06; interactive install and two reboot checks PASS in VM):**
+`/mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso`, source
+`b67ee122124f3f897957b64426cfc6b831fee418`, SHA-256
+`29725549f4071455b5582e134939079f19b2d39deba89d3b17eab991b488c0a6`.
+It was built from clean source and structurally verified. A fresh interactive
+installation completed in an 80 GiB no-NIC UEFI VM; identity and disk selection,
+firstboot, branded desktop, CPU chat, 768-D embeddings, Kiwix article retrieval,
+and a visibly rendered zoom-13 Nashville map passed. Two guest-initiated
+reboots preserved the user marker and seven services; chat, embeddings, Kiwix,
+and map payload checks passed after reboot 2. Full evidence and screenshots:
+`/mnt/shared/fieldos-e2e/customer-b67ee12-interactive/validation.md`.
 
-**Current private customer-mode engineering candidate (2026-11-06; interactive install PASS in VM):**
-`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`, source
-`aedc5705915d4ff57bad18e535b602eace7310b8`, SHA-256
-`538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`. Its
-embedded build manifest is clean and pins the Ubuntu source and payload; the
-payload SHA-256 is
-`a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB).
-Structural verification passed. Fresh interactive installation, identity and
-disk choice, offline firstboot, branded desktop, CPU inference, embeddings,
-Kiwix article retrieval, ten indexed references, a visible zoom-13 Nashville
-map, and two reboot checks passed in a disposable no-NIC UEFI VM (4 vCPU, 8
-GiB RAM, 80 GiB disk). Detailed evidence and screenshots:
-`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
+At Ubuntu's standard media-removal prompt, Enter powered off the guest after the
+virtual CD had been detached. A normal start with only the installed disk
+booted without repair. This handoff passed in the VM; physical USB firmware
+behavior is untested. The separate unattended E2E report is
+`/mnt/shared/fieldos-e2e/20261106T130335Z-1217572/report.md`. This ISO is a
+private engineering candidate, not a redistribution-cleared public release.
 
-At Ubuntu's normal “Please remove the installation medium, then press ENTER”
-prompt, the guest powered off after Enter with the virtual CD already ejected.
-A normal power-on with only the installed disk booted without repair. The
-media-prompt poweroff and subsequent disk boot are confirmed; a seamless
-automatic restart through that virtual-media prompt and physical USB behavior
-are not established. This remains a private engineering candidate, not a
-cleared public release. The related unattended E2E report is
-`/mnt/shared/fieldos-e2e/current-31a244c/20261106T111141Z-909878/report.md`;
-its worktree was marked dirty because documentation-only corrections were
-pending, later committed as `aedc570`.
+Do not install on a disk containing data you need. Review the target device and
+confirm the destructive action in the interactive installer. For evaluation,
+use a disposable disk, disconnect networking if validating offline operation,
+and keep a backup. Known limitations and recovery guidance are maintained in
+[`OPERATIONS.md`](OPERATIONS.md) and [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md).
 
 The preceding candidate
 `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (source `8c81d64`,

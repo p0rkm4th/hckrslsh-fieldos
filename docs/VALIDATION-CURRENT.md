@@ -1,68 +1,70 @@
 # Current validation status — 2026-11-06
 
-## Current customer-mode candidate — interactive install PASS in VM
+## Current customer-mode candidate — interactive installation and two reboots PASS in VM
 
-The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. The current source tree has newer text-only versions of four CDC content packs, but they have not been built into an ISO or installed/tested in a guest. The accepted `aedc570` ISO still contains the earlier illustrated CDC PDFs. No ISO built from the text-only pack updates has passed acceptance. The current source checks pass 128 tests and all 12 content-pack manifests validate.
+Source revision `b67ee122124f3f897957b64426cfc6b831fee418` is clean and synced
+with `origin/main` at report time. The customer-mode ISO is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso`, SHA-256
+`29725549f4071455b5582e134939079f19b2d39deba89d3b17eab991b488c0a6` (13,522,239,488 bytes).
+The separate unattended E2E ISO has SHA-256
+`6f5cb44bdf04c291f8460d23eb8e0ccdcc2dd6bd77faa6f75b59a9b7471eb89f`.
 
-Customer ISO:
-`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
-SHA-256: `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`
-Payload SHA-256: `a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614`
-(6.6 GiB). The clean embedded build manifest records source `aedc570`, the
-pinned Ubuntu source, and the payload checksum. `build/verify-iso.sh` confirmed
-BIOS/UEFI boot records, interactive customer setup, offline APT, and payload
-presence.
+Fresh interactive installation to a disposable 80 GiB qcow2 in a UEFI VM
+completed without a virtual NIC. The user selected the identity and install
+disk; the installer displayed its destructive-action confirmation and planned
+EFI/root partitions. Ubuntu reached its standard media-removal prompt, the
+virtual CD was detached, and a normal power-on booted the installed disk
+without repair. Firstboot status is `complete`. The FieldOS-branded GNOME login
+screen and desktop were observed.
 
-A fresh interactive customer install passed in a disposable no-NIC UEFI VM
-(4 vCPU, 8 GiB RAM, 80 GiB qcow2). The installer accepted identity and target
-disk selection, showed `vda` and its planned EFI/root partitions, and completed
-offline. The standard remove-media prompt appeared after the guest had ejected
-the virtual CD; Enter powered the VM off. A normal start with only the
-installed disk booted without repair. Firstboot completed at
-`2026-11-06T12:08:58+00:00`. The desktop showed FieldOS branding; Firefox
-visibly rendered zoom-13 Nashville; Kiwix opened an offline article; local CPU
-chat and embeddings worked; ten reference documents were indexed; and all
-seven services persisted across two reboots with a user-data marker unchanged.
-Detailed results and screenshots:
-`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
+The actual desktop was used before reboot validation: Command Center opened
+N.O.M.A.D.; local CPU chat generated a response; the embedding endpoint returned
+768 dimensions; Kiwix opened its bundled 100-article fixture, searched, and
+rendered an article; and Firefox visibly rendered the statewide map at zoom 13
+around Nashville. The Source Library and content-pack GUI import are separately
+verified in the clean-source unattended run below.
 
-## Fresh unattended offline E2E
+Two guest-initiated reboots were verified with distinct boot IDs. The persistent
+user marker retained SHA-256
+`68c6e50f3c04ae6505cbb952e60458301739b5109f0deead1579da83dde5537b`. After
+reboot 1, all seven containers were running, N.O.M.A.D. health returned
+`{"status":"ok"}`, Ollama generated `POST_REBOOT_CHAT_OK`, embeddings returned
+768 dimensions, the Kiwix catalog responded, and the PMTiles file was served.
+After reboot 2, the same checks passed with `SECOND_REBOOT_CHAT_OK`; firstboot
+remained complete and the marker hash was unchanged. The guest has no virtual
+NIC and only `vda` is attached. Evidence, including screenshots and run output:
+`/mnt/shared/fieldos-e2e/customer-b67ee12-interactive/validation.md`.
 
-The separate E2E run at
-`/mnt/shared/fieldos-e2e/current-31a244c/20261106T111141Z-909878/report.md`
-passed installation, provisioning, local inference, embeddings, reference
-retrieval, Kiwix, statewide map rendering in Firefox at Memphis, Nashville,
-Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and rural Big South
-Fork, and two reboots with no NIC. Test ISO SHA-256:
-`f12942cf13c62de1ecf98ad77c572339eeb7c6feda4882f65a591137252591a3`. The report
-records dirty source because documentation-only checksum/retirement edits were
-pending; those corrections were committed in `aedc570`. No installer or runtime
-code changed between that E2E and the clean customer ISO build. The optional
-content-pack transfer check was skipped.
+## Fresh unattended offline E2E — PASS
+
+The clean-source run at
+`/mnt/shared/fieldos-e2e/20261106T130335Z-1217572/report.md` used the same
+source revision, installed offline with no virtual NIC, completed firstboot,
+and passed two reboots. Firefox visibly rendered all eight regional test views
+(Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson
+City, and rural Big South Fork). Optional CDC food-safety content was
+transferred from read-only media, validated, installed offline, indexed, and
+remained available; the Source Library browser and local documents were checked.
+The run also verified container egress blocking and CPU model selection.
 
 | Area | Result | Evidence and limits |
 |---|---|---|
-| Source and ISO | PASS | `make check test`: 127 tests; 12 packs validate; clean customer ISO manifest and BIOS/UEFI structure verified; ISO SHA above. |
-| Interactive customer install | PASS in UEFI VM | Identity and `vda` selection, partition review, offline install, media prompt and installed-disk boot. Physical USB is untested. |
-| Firstboot and services | PASS | Firstboot status `complete`; seven Compose services running. |
-| N.O.M.A.D. | PASS | `/api/health` returned `{"status":"ok"}`; Command Center rendered in Firefox. |
-| Local AI and embeddings | PASS, CPU | `FIELDOS_CUSTOMER_OK` and `FIELDOS_REBOOT_OK`; embedding dimension 768. No physical GPU validation. |
-| Knowledge and Kiwix | PASS, limited | Ten bundled reference documents (690 chunks) indexed; a Kiwix article returned HTTP 200. Wikipedia 100 is a fixture. |
-| Maps | PASS, map only | Nashville zoom 13 visibly rendered in the customer VM; eight Firefox locations rendered in the separate E2E. No routing/GPS claim. |
-| Persistence | PASS | Two reboots retained services, AI, embeddings, references, Kiwix, map pack access, and user marker hash. |
-| Offline / connected-network security | PARTIAL | Customer VM had no NIC/default route; separate E2E blocked container egress. LAN exposure and connected-interface egress testing remain open. |
-| Physical hardware, GPU, GPS | NOT TESTED | Disposable QEMU VMs only. |
-| Redistribution | INCOMPLETE | Ubuntu, software, model, map, and reference bundle review is not complete; do not publish ISO binaries. |
-| Current-source CDC text-only packs | PASS, archive integrity only | Four versioned pack archives build and pass `zstd -t`, checksums, and member inspection with no PDFs. Pack installation, GUI activation, and fresh ISO acceptance remain untested; see [`CONTENT-PACKS.md`](CONTENT-PACKS.md). |
+| Source and customer ISO | PASS, engineering candidate | Source `b67ee12`, clean worktree; customer ISO SHA above; separate structural verifier passed. Not redistribution-cleared. |
+| Interactive customer installation | PASS in disposable UEFI VM | User/disk selection, destructive confirmation, media handoff, installed-disk boot. Physical USB behavior untested. |
+| Firstboot and services | PASS | Provisioning status complete; all seven Compose services running after two reboots. |
+| N.O.M.A.D. and local AI | PASS, CPU | Health endpoint and real chat responses before and after reboot 2. No physical GPU validation. |
+| Embeddings | PASS | Bundled embedding model returned 768 dimensions after both reboots. |
+| Knowledge and Kiwix | PASS, limited | Offline source retrieval/import in E2E; Kiwix UI search/article in customer VM. Wikipedia 100 is a fixture, not a broad library. |
+| Tennessee maps | PASS in VM browser | Zoom-13 Nashville visibly rendered in customer desktop; eight regional browser views in E2E. No routing or GPS claim. |
+| Persistence | PASS, two reboots | User marker hash and services persisted; inference, embeddings, Kiwix, and map file responded after reboot 2. |
+| Network isolation | PASS for no-NIC operation; PARTIAL overall | Customer VM had no NIC/default route; separate E2E blocked container egress. LAN exposure testing with a connected interface remains open. |
+| Physical hardware, GPU, GPS | NOT TESTED | Evidence is from disposable QEMU VMs only. |
+| Redistribution | INCOMPLETE | Ubuntu, software, model, map, and content review remains open. Do not publish ISO binaries. |
 
-**Assessment:** The current customer-mode candidate and fresh unattended
-acceptance both pass in disposable no-NIC UEFI VMs. This does not demonstrate
-physical-machine compatibility or customer readiness. Remaining gates include
-physical USB/hardware, connected-network security, wider authoritative content,
-retrieval quality, GPS/GPU validation, and redistribution clearance.
-The tested candidate is not current with the source pack revisions and retains
-the earlier CDC PDFs; it must not be treated as validation of the current
-source tree or as distribution-cleared.
+**Assessment:** Interactive customer installation and the separate unattended
+offline E2E now pass for this exact source/ISO in disposable UEFI VMs. FieldOS
+is still not release-ready: physical USB/hardware, connected-network security,
+content breadth and retrieval quality, and redistribution clearance remain open.
 
 ## Historical customer-mode candidate
 
