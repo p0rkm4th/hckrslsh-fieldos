@@ -35,6 +35,17 @@ The superseded `aedc570` customer ISO and checksum sidecar were retired after
 Its stopped guest disk and validation evidence remain under
 `/mnt/shared/fieldos-e2e/customer-aedc570-interactive/`.
 
+After the current candidate passed, seven superseded stopped customer-test
+disks were retired; their validation reports, screenshots, logs, saved domain
+XML, and per-run retirement records remain. Seven VM definitions had no
+snapshots and their NVRAM/TPM state was retained. The cleanup reclaimed
+277,406,625,792 bytes (258.36 GiB). The `8012474` and `cc4aa38` disks were kept
+because their standard validation reports were absent; the `aedc570` guest was
+kept as the predecessor rollback. Full path-by-path audit:
+`/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261106-stale-vms.txt`.
+After cleanup `/mnt/shared` had 334 GiB free. The current customer and E2E VMs
+were left running and their no-NIC configuration was unchanged.
+
 ## Earlier customer ISO acceptance: `cc4aa38`
 
 - Source revision: `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start).
