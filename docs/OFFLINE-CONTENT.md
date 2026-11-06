@@ -7,16 +7,17 @@ artifact is missing or its checksum differs.
 
 ## Current installation status (2026-11-06)
 
-The current private customer-mode test ISO is source `129da89` at
-`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`
-(SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`).
-Interactive no-NIC install, firstboot, map interaction, local apps, and two
-reboots passed in a disposable UEFI VM. Separate same-source E2E visibly
-rendered eight Tennessee locations. Full evidence is in
+The current private customer-mode test ISO is source `aedc570` at
+`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
+(SHA-256 `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`).
+Interactive no-NIC install, firstboot, visible Nashville map, Kiwix article,
+local apps, and two reboots passed in a disposable UEFI VM. A separate fresh
+unattended E2E from the same code state visibly rendered eight Tennessee
+locations. Full evidence is in
 [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md). Physical USB/hardware and
 redistribution are unverified; this is not a cleared release.
 
-The current candidate embeds payload SHA-256
+The candidate embeds payload SHA-256
 `a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB),
 recorded in its build manifest.
 It provides the world overview, zoom 0–5, and statewide Tennessee vector map,

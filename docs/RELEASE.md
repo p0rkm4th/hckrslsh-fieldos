@@ -1,32 +1,39 @@
 # Release readiness and evidence
 
-**Current source:** `129da89fff0bd769b85f42b541bf195eedb70b31` (`129da89`, clean at build/test). The source
-suite passed 126 tests and content validation before ISO creation.
+**Current source:** `aedc5705915d4ff57bad18e535b602eace7310b8`, public `main`,
+clean at build. `make check test` passed 127 tests; all 12 content-pack
+manifests validated.
 
 **Current private customer-mode engineering candidate:**
-`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`
-SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`; payload SHA-256 `a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB). Structural verification
-passed. A fresh interactive offline install passed in a disposable UEFI VM,
-including firstboot, desktop access, actual local CPU inference/embeddings,
-Kiwix retrieval, Source Library indexing, map interaction, and two reboots.
-Detailed customer evidence:
-`/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
-The standard Ubuntu virtual-media prompt powered the guest off after Enter and
-eject; a normal power-on with the ISO detached booted the installed disk.
-Physical USB handoff remains untested.
+`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
+SHA-256: `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`
+Payload SHA-256:
+`a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB).
+The embedded manifest is clean and pins the source revision, Ubuntu ISO, and
+payload checksum. Structural verification passed. A fresh interactive customer
+install passed in a disposable no-NIC UEFI VM; firstboot completed; the branded
+desktop, actual local CPU inference and embeddings, Kiwix article, indexed
+references, and visible zoom-13 Nashville map worked. Two reboots preserved
+services and a local data marker. Evidence:
+`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
+At Ubuntu's standard remove-media prompt, Enter powered the guest off after the
+virtual CD had been ejected; a normal power-on with only the installed disk
+booted without repair. Physical USB handoff is untested.
 
-The exact-source unattended E2E separately passed with no NIC, eight visible
-Firefox Tennessee map locations, blocked container egress, core service checks,
-and two reboots. Report:
-`/mnt/shared/fieldos-e2e/valkey-129da89/20261106T092845Z-735158/report.md`.
-The customer-mode and unattended tests are distinct.
+The fresh unattended no-NIC E2E separately passed all eight Tennessee browser
+map renders, local AI and reference checks, container egress blocking, and two
+reboots. Its report is
+`/mnt/shared/fieldos-e2e/current-31a244c/20261106T111141Z-909878/report.md`.
+The test ISO was built before documentation-only corrections were committed as
+`aedc570`; runtime and installer code did not change. Its optional pack
+transfer test was skipped. The customer-mode and unattended tests are distinct.
 
-**Not release approved.** The customer ISO remains an unpublished engineering
-candidate. Wikipedia 100 is a fixture; the broader content library and semantic
-retrieval quality are limited. Physical hardware, physical USB, GPU/GPS, and
-attached-network exposure/egress remain unverified. Redistribution clearance
-for the complete Ubuntu/software/model/map/reference bundle is incomplete.
-Do not distribute this ISO as a customer release until those gates pass.
+**Not release approved.** This is a private engineering candidate, not a
+redistribution-cleared customer release. Wikipedia 100 and the ten indexed
+source documents are limited. Physical hardware/USB, GPU/GPS, and
+attached-network security behavior remain unverified; final redistribution
+review is incomplete. Do not publish the ISO as a customer release until these
+gates pass.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 

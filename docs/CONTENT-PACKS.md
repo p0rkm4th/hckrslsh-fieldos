@@ -8,9 +8,10 @@ transferable separately. This is a useful starter collection, not a
 comprehensive customer library.
 
 The current customer-mode engineering candidate is
-`fieldos-customer-test-valkey-129da89.iso` (SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`). It passed
+`fieldos-customer-test-aedc570.iso` (SHA-256 `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`). It passed
 interactive no-NIC installation, firstboot, local applications, and two reboots
-in a disposable UEFI VM. The exact-source unattended E2E also passed. See
+in a disposable UEFI VM. A fresh unattended E2E on the same code state also
+passed. See
 [current validation](VALIDATION-CURRENT.md). The CDC private-well core pack is
 included and indexed. These are VM test results; physical USB is unverified and
 redistribution remains uncleared.

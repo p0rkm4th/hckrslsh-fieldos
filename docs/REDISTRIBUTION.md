@@ -14,13 +14,15 @@ create new binaries. This FieldOS image is modified and retains Ubuntu marks;
 no Canonical permission or complete debranding is recorded. See [Canonical's
 IPRights Policy](https://canonical.com/legal/intellectual-property-policy).
 
-The exact customer candidate reviewed here is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`, SHA-256
-`ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`, source `129da89fff0bd769b85f42b541bf195eedb70b31`. The embedded build manifest pins the Ubuntu input
-and prepared payload checksums. Structural verification, interactive no-NIC
-UEFI installation, firstboot, local application checks, and two reboots passed
-in a disposable VM. Evidence is linked from [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md)
-and `/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
+The exact current customer candidate reviewed here is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`, SHA-256
+`538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`, source
+`aedc5705915d4ff57bad18e535b602eace7310b8`. Its embedded manifest pins the
+Ubuntu input and prepared payload checksums. Structural verification,
+interactive no-NIC UEFI installation, firstboot, actual local application
+checks, and two reboots passed in a disposable VM. Evidence is linked from
+[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
+`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
 These functional results do not clear the ISO or payload for redistribution.
 
 The current payload includes the CDC-authored private-well text pack; the
@@ -52,7 +54,7 @@ retroactively change the contents or redistribution status of the tested ISO.
 | N.O.M.A.D. image | Project N.O.M.A.D. is Apache-2.0; upstream release source: <https://github.com/Crosstalk-Solutions/project-nomad/tree/v1.35.1> | Pinned OCI digest; all-layer SBOM and candidate notice inventory are retained under `/mnt/shared/fieldos-e2e/repository-review-233b980/`. The pinned image includes Debian `ghostscript`, `libgs10`, and `libgs10-common` version `10.0.0~dfsg-11+deb12u8`; `/usr/share/doc/ghostscript/copyright` identifies AGPL-3+. The current candidate's payload hash matches the prepared archive, whose file list includes `manifests/source-offers.json` and the three checksum-pinned Ghostscript source-offer files. | Review the bundled source offer and its notice, verify the signer trust chain, review its dependencies and all other SBOM components, and finish license-specific offer analysis. |
 | MySQL image | GPL-2.0 with MySQL's additional permissions; upstream licensing information: <https://github.com/mysql/mysql-server/blob/8.0/LICENSE> | Pinned OCI digest | Verify exact image version/layers, third-party component notices, and corresponding source/offer requirements. |
 | Redis 7.4.12 in the historical `f250cc1` ISO | Redis Community Edition 7.4.x: [official licensing overview](https://redis.io/legal/licenses/) lists RSALv2 or SSPLv1, not BSD-3-Clause. | This exact ISO contains digest `sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f`; version `7.4.12` was observed in image config. | This ISO is not cleared for customer/commercial distribution. Source `129da89` replaces Redis with a pinned Valkey image; the current candidate uses Valkey and remains subject to full license review. |
-| Valkey 8.0.12 source candidate | [Valkey upstream](https://github.com/valkey-io/valkey), BSD-3-Clause; [migration guide](https://valkey.io/topics/migration/). | Pinned digest `sha256:19f0b3d350f5e6de618086d79ecdc9c474ab159bebb16ed95a92e4211562fee5`; isolated compose test with pinned N.O.M.A.D. passed startup, migrations, worker startup, HTTP health, and ioredis PING/SET/GET. | Pinned Valkey image is included in the `129da89` candidate, which passed offline customer and unattended VM acceptance. Review all image layers/notices; validate upgrade behavior and keep legacy Redis data intact. Redis 7.4 data files are not compatible with Valkey. |
+| Valkey 8.0.12 source candidate | [Valkey upstream](https://github.com/valkey-io/valkey), BSD-3-Clause; [migration guide](https://valkey.io/topics/migration/). | Pinned digest `sha256:19f0b3d350f5e6de618086d79ecdc9c474ab159bebb16ed95a92e4211562fee5`; isolated compose test with pinned N.O.M.A.D. passed startup, migrations, worker startup, HTTP health, and ioredis PING/SET/GET. | Pinned Valkey image is included in the `aedc570` candidate, which passed offline customer and unattended VM acceptance. Review all image layers/notices; validate upgrade behavior and keep legacy Redis data intact. Redis 7.4 data files are not compatible with Valkey. |
 | Dozzle, Ollama, Qdrant, Kiwix images | Direct licenses are recorded in `payload/manifests/images.json` and upstream links in `CONTAINER-IMAGES.md` | Pinned OCI digests | Generate/review SBOMs for the exact images; include transitive notices and any corresponding source required by the applicable licenses. |
 | Qwen3 0.6B chat model | Apache-2.0 model page: <https://huggingface.co/Qwen/Qwen3-0.6B> | `models/manifest.json` pins the Ollama manifest SHA-256 and quantized model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Qwen3 1.7B Q4_K_M chat model | Ollama reports Apache-2.0; model card: <https://ollama.com/library/qwen3/tags> | Pulled from `qwen3:1.7b-q4_K_M`; manifest SHA-256 `8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7`, model layer SHA-256 `3d0b790534fe4b79525fc3692950408dca41171676ed7e21db57af5c65ef6ab6` (1,359,279,776 bytes). Ollama's license layer hash matches the 0.6B model. Current `562fee9` customer guest selected it on CPU and generated a response after two reboots. CPU evaluation is recorded at `/mnt/shared/fieldos-model-eval-20261105/benchmark.json`. | Review exact model provenance, complete Ollama-layer license terms, and notices for public distribution; the model/runtime licensing inventory is not closed. |

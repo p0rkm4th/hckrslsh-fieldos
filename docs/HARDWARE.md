@@ -50,10 +50,13 @@ battery, and storage facts are reported when the kernel exposes them.
 | Model override | Tries the requested bundled model first, then smaller bundled models if its firstboot generation check fails | Operator must choose a bundled model that fits; a missing or too-large override is rejected |
 | GPS hardware | Detects likely device nodes | Device protocol, permission model, local position service, map UI integration, and field testing are not implemented |
 
-The measured acceptance VM was x86-64 with 12 GiB RAM, 6 virtual CPUs, an 80
-GiB virtual disk, no virtual NIC, and no GPU. It is the only end-to-end
-hardware profile tested so far. The initial physical support matrix is not
-established; do not infer universal laptop compatibility from the QEMU run.
+The customer acceptance VM was x86-64 with 8 GiB RAM, 4 virtual CPUs, an 80
+GiB virtual disk, no virtual NIC, and no GPU. It booted the model selected by
+firstboot (`qwen3:0.6b-q4_K_M`) and passed its local generation smoke test. A
+separate 12 GiB/6-vCPU unattended profile also passed. These are virtual CPU
+profiles only; no physical acceleration was tested. The initial physical
+support matrix is not established; do not infer universal laptop compatibility
+from the QEMU run.
 
 The operator may set `/etc/fieldos/model-override` before firstboot to request a
 bundled model by manifest ID. The selector still rejects a model absent from
@@ -64,9 +67,10 @@ instead of silently selecting another model. The default firstboot path marks
 only CPU as validated; GPU configuration is not enabled just because a GPU
 appears in the detector output.
 
-The manual-override fallback behavior is a source change after the tested
-`129da89` customer ISO. Its selector fixtures pass, but it has not yet been
-included in a rebuilt ISO or exercised by firstboot on a VM.
+The manual-override fallback behavior is included in the `aedc570` customer
+candidate, and selector fixtures pass. Automatic CPU selection was exercised
+by firstboot on the 8 GiB customer VM; setting an explicit override and
+observing fallback from a failed override have not yet been exercised in a VM.
 
 After a model passes firstboot's local generation smoke test, FieldOS seeds
 N.O.M.A.D.'s supported `chat.lastModel` preference from that model's Ollama
@@ -75,8 +79,10 @@ is preserved. The firstboot unit is configured to block GNOME startup until
 this preference is written, so the UI cannot save its initial default first;
 this startup gate still needs fresh-VM validation.
 N.O.M.A.D. continues to save a user's manual model selection through its
-normal UI setting, and subsequent provisioning does not replace it. The source
-change is committed but has not yet been included in an ISO or VM-validated.
+normal UI setting, and subsequent provisioning does not replace it. The
+firstboot preference gate passed on the `aedc570` customer install; preserving
+an operator-changed model across a later provisioning rerun remains covered by
+source tests, not an interactive VM test.
 
 The tested `8020fd3` candidate bundles Qwen3 1.7B Q4_K_M and 0.6B; firstboot
 selected and validated 1.7B in the VM, while N.O.M.A.D.'s UI initially chose
