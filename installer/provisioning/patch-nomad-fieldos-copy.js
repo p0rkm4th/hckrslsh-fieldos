@@ -10,6 +10,10 @@ const path = require('node:path')
 const assetsRoot = process.argv[2] || '/app/public/assets'
 const replacements = [
   [
+    'const ge={label:"Maps",to:"/maps",target:"",description:"View offline maps"',
+    'const ge={label:"Maps",to:"/maps?lat=35.86&lng=-86.35&zoom=7",target:"",description:"View offline maps"',
+  ],
+  [
     'Offline access to Wikipedia, medical references, how-to guides, and encyclopedias',
     'Search installed offline archives. Coverage depends on the content packs installed on this system.',
   ],
