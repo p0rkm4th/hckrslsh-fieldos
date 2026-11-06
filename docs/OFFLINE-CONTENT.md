@@ -7,38 +7,30 @@ artifact is missing or its checksum differs.
 
 ## Current installation status (2026-11-06)
 
-The last customer-mode candidate, source `8c81d64`, remains at
-`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (SHA-256
-`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`). Its
-interactive no-NIC UEFI VM installation, offline services, statewide map, and
-two reboot checks passed. It is an older source revision, not a build of current
-`main` (`1e4627c`). Evidence:
-`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+The current customer-mode test ISO was built from source `5abae15` at
+`/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso` (SHA-256
+`8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`). A fresh
+interactive install on a disposable no-NIC UEFI VM completed, booted from its
+installed disk, indexed the bundled source documents, and passed two reboot
+checks. The Command Center Maps tile was clicked in Firefox and visibly opened
+the statewide Tennessee view, including after reboot 2. Full evidence:
+`/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`.
 
-A newer test-only unattended ISO from `c13ac18` completed no-NIC provisioning,
-rendered all eight Tennessee map locations in Firefox, imported a ZIM through
-the desktop UI, served its article from Kiwix, generated local chat and
-embeddings, indexed/searched references, and passed two reboot checks. See
-`/mnt/shared/fieldos-e2e/20261106T034204Z-104800/report.md`. The run's
-`qualification.md` records that its reused payload contained superseded pack
-archives as well as current versions, so it is not clean-payload release
-acceptance.
+The default payload remains `/mnt/shared/fieldos-payload/offline-payload.tar.zst`
+(SHA-256 `751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9`).
+It provides the world overview, zoom 0–5, and statewide Tennessee vector map,
+zoom 0–13, plus the small Kiwix `Wikipedia 100` fixture and ten indexed source
+documents. The user's map tile now opens a zoom-7 Tennessee overview by
+default; higher-detail zooms remain available. This is a geographic reference,
+not turn-by-turn routing or GPS positioning.
 
-The current default offline payload
-`/mnt/shared/fieldos-payload/offline-payload.tar.zst` has SHA-256
-`751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9`, exactly
-the eight currently declared core content packs, and passes the payload
-verifier. A fresh no-NIC E2E install using this payload and current source is
-still required before claiming clean-payload acceptance.
-
-An additional manual GUI test imported an optional household communications
-pack from read-only media on the same guest. The corrected archive was built
-from the tracked manifest; the Source Library displayed its attribution and
-local document link, the document returned HTTP 200, and pack state survived a
-further reboot. This does not verify physical USB insertion/navigation. The
-`cc4aa38` paragraphs below describe a historical six-pack image unless marked
-otherwise. The candidate is still private test material; content functionality
-does not establish redistribution clearance.
+The current customer test recorded two content access issues: two Kiwix in-book
+queries did not return results, and Firefox direct navigation to the local
+Source Library URL showed `NS_ERROR_OFFLINE` even though the guest's local HTTP
+request returned 200. These are follow-up usability checks, not proof that the
+content is comprehensive. Do not describe the mini ZIM or ten source files as a
+complete preparedness, medical, agricultural, or survival library. Redistribution
+clearance and per-item review remain incomplete; do not publish this ISO.
 
 ## Statewide Tennessee map candidate, verified 2026-11-05
 
