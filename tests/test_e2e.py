@@ -21,7 +21,7 @@ import time
 import zlib
 import unicodedata
 import xml.etree.ElementTree as ET
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 from shutil import disk_usage
 from urllib.parse import quote
@@ -50,22 +50,25 @@ def kiwix_content_url(zim_name: str) -> str:
 
 
 def kiwix_library_identity(library_xml: str, archive_path: str) -> dict[str, str] | None:
-    """Find a library record for a registered archive path."""
+    """Find a library record for absolute or kiwix-manage-relative archive paths."""
     try:
         root = ET.fromstring(library_xml)
     except ET.ParseError as exc:
         raise TestFailure(f"Kiwix generated invalid library XML: {exc}") from exc
-    expected_path = "/data/" + archive_path.lstrip("/")
+    expected_path = PurePosixPath(archive_path.lstrip("/")).as_posix()
     for book in root.iter():
         if book.tag.rsplit("}", 1)[-1].lower() != "book":
             continue
         values = {key.rsplit("}", 1)[-1].lower(): value.strip() for key, value in book.attrib.items()}
         values.update({item.tag.rsplit("}", 1)[-1].lower(): item.text.strip()
                        for item in book if item.text})
-        stored_path = values.get("path", "")
-        if stored_path == expected_path or stored_path.lstrip("/") == expected_path.lstrip("/"):
+        stored_path = values.get("path", "").strip()
+        normalized_path = PurePosixPath(stored_path.lstrip("/")).as_posix()
+        if normalized_path.startswith("data/"):
+            normalized_path = normalized_path[len("data/"):]
+        if normalized_path == expected_path:
             return {"id": values.get("id", ""), "title": values.get("title", ""),
-                    "path": stored_path}
+                    "path": "/data/" + normalized_path}
     return None
 
 
