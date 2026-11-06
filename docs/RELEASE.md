@@ -29,6 +29,12 @@ Do not publish customer binaries or present the local model as a safety-critical
 authority. Preserve the customer candidate and test evidence until a successor
 passes equivalent gates.
 
+The superseded `aedc570` customer ISO and checksum sidecar were retired after
+`b67ee12` passed interactive installation and two reboots. Retirement audit:
+`/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261106-aedc570.txt`.
+Its stopped guest disk and validation evidence remain under
+`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/`.
+
 ## Earlier customer ISO acceptance: `cc4aa38`
 
 - Source revision: `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start).

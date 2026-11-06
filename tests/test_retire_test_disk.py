@@ -66,9 +66,23 @@ class TestDiskRetirementTests(unittest.TestCase):
 
     def test_requires_a_report_beside_the_disk(self):
         self.report.unlink()
-        with self.assertRaisesRegex(RetirementError, "report.md must remain"):
+        with self.assertRaisesRegex(RetirementError, "non-empty report.md"):
             self.validate()
         self.assertTrue(self.disk.exists())
+
+    def test_accepts_retained_customer_validation_record_when_report_absent(self):
+        self.report.unlink()
+        validation = self.run_dir / "validation.md"
+        validation.write_text("# Customer install acceptance\n", encoding="utf-8")
+        disk, evidence = self.validate()
+        self.assertEqual(disk, self.disk.resolve())
+        self.assertEqual(evidence, validation)
+
+    def test_rejects_empty_alternative_validation_record(self):
+        self.report.unlink()
+        (self.run_dir / "validation.md").write_text("", encoding="utf-8")
+        with self.assertRaisesRegex(RetirementError, "non-empty report.md"):
+            self.validate()
 
     def test_disk_must_be_inside_evidence_root(self):
         outside = Path(self.temp.name) / "guest.qcow2"

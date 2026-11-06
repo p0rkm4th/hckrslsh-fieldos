@@ -18,6 +18,7 @@ class RetirementError(RuntimeError):
 
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
+EVIDENCE_NAMES = ("report.md", "validation.md", "customer-acceptance.md", "diagnostics.md")
 
 
 def attached_file_disks(runner: Runner = subprocess.run) -> set[Path]:
@@ -64,9 +65,18 @@ def validate_candidate(
     except ValueError as exc:
         raise RetirementError(f"disk must be inside E2E evidence root {e2e_root}") from exc
 
-    report = disk.parent / "report.md"
-    if report.is_symlink() or not report.is_file() or report.stat().st_size == 0:
-        raise RetirementError("a non-empty report.md must remain beside the disk")
+    evidence = next(
+        (disk.parent / name for name in EVIDENCE_NAMES
+         if (disk.parent / name).is_file()
+         and not (disk.parent / name).is_symlink()
+         and (disk.parent / name).stat().st_size > 0),
+        None,
+    )
+    if evidence is None:
+        raise RetirementError(
+            "a non-empty report.md, validation.md, customer-acceptance.md, "
+            "or diagnostics.md must remain beside the disk"
+        )
     if not release_doc.is_file():
         raise RetirementError(f"release record is unavailable: {release_doc}")
     release_text = release_doc.read_text(encoding="utf-8", errors="replace")
@@ -86,7 +96,7 @@ def validate_candidate(
         raise RetirementError(f"qemu-img could not safely inspect the disk: {exc}") from exc
     if image.get("format") != "qcow2":
         raise RetirementError("disk image format is not qcow2")
-    return disk, report
+    return disk, evidence
 
 
 def retire(disk: Path, reason: str, runner: Runner = subprocess.run) -> None:
