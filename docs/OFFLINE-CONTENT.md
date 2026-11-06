@@ -5,15 +5,31 @@ checksum, and redistribution/license record. Do not bundle content with
 unclear or non-redistributable terms. The build fails closed when a required
 artifact is missing or its checksum differs.
 
-## Current installation status (2026-11-05)
+## Current installation status (2026-11-06)
 
-The latest customer-mode test candidate, built from source `8c81d64`, is
+The last customer-mode candidate, source `8c81d64`, remains at
 `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (SHA-256
 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`). Its
-fresh interactive no-NIC UEFI VM installation passed, including firstboot,
-installed-disk boot, core offline features, and two reboots. The eight-pack
-core content set and statewide map were present. Detailed evidence:
+interactive no-NIC UEFI VM installation, offline services, statewide map, and
+two reboot checks passed. It is an older source revision, not a build of current
+`main` (`1e4627c`). Evidence:
 `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+
+A newer test-only unattended ISO from `c13ac18` completed no-NIC provisioning,
+rendered all eight Tennessee map locations in Firefox, imported a ZIM through
+the desktop UI, served its article from Kiwix, generated local chat and
+embeddings, indexed/searched references, and passed two reboot checks. See
+`/mnt/shared/fieldos-e2e/20261106T034204Z-104800/report.md`. The run's
+`qualification.md` records that its reused payload contained superseded pack
+archives as well as current versions, so it is not clean-payload release
+acceptance.
+
+The current default offline payload
+`/mnt/shared/fieldos-payload/offline-payload.tar.zst` has SHA-256
+`751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9`, exactly
+the eight currently declared core content packs, and passes the payload
+verifier. A fresh no-NIC E2E install using this payload and current source is
+still required before claiming clean-payload acceptance.
 
 An additional manual GUI test imported an optional household communications
 pack from read-only media on the same guest. The corrected archive was built

@@ -1,19 +1,12 @@
 # Release readiness and evidence
 
-**Current status (2026-11-05): customer candidate `8c81d64` passed interactive installation, installed-disk boot, offline firstboot, tested desktop/services, local CPU inference and embeddings, Kiwix fixture search, statewide browser-rendered maps at eight locations, and two reboot checks in a disposable no-NIC UEFI VM.** ISO: `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`; SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. Detailed evidence: [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+**Current source (2026-11-06): `1e4627c` on `main`, pushed to GitHub; `make check test` passes 125 tests.** The latest customer-mode ISO remains the separately validated older candidate `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`). It passed interactive installation, installed-disk boot, offline firstboot, local services, maps, and two reboot checks in a no-NIC UEFI VM, but it was not rebuilt from current source. See [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
 
-Source commits `a1257f2` and `0f83517` add optional ZIM-pack activation and its
-Kiwix library-path fix.
-The current source passes 115 tests. A targeted check with the exact Kiwix image verified real
-library registration, live `--monitorLibrary` catalog update, and article
-retrieval over an internal-only Docker network. See
-`/mnt/shared/fieldos-e2e/kiwix-zim-runtime-20261106/report.md`. The accepted
-ISO does not include the feature; guest desktop/browser import remains
-unverified. This is not a replacement build or full release gate.
+The latest unattended test ISO was built from `c13ac18`, SHA-256 `c84037360019afa1dec09c70eeadf905969dcfa41e6c9af5348429bdc7114880`. Its automated report at `/mnt/shared/fieldos-e2e/20261106T034204Z-104800/report.md` records PASS for no-NIC installation, offline provisioning, seven services, local chat/embeddings, indexed references/search, GUI content-pack import, Kiwix registration/article retrieval, eight Firefox map renders, and two reboots. Read `/mnt/shared/fieldos-e2e/20261106T034204Z-104800/qualification.md` before treating that as acceptance: its payload included superseded core-pack archives as well as current versions. The test guest is shut off and its disk, report, logs, hashes, and screenshots are retained.
 
-A separate manual GUI test transferred and installed the optional household communications reference from read-only media on the same guest. The test rebuilt the archive from the tracked manifest after discovering the shared prebuilt archive carried stale metadata. The corrected pack appeared in the Source Library, its local document returned HTTP 200, and its file, index entry, and all seven services persisted through one additional reboot. Evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/content-pack-import-validation.txt`. This add-on check is manual and separate from the clean installation acceptance.
+The current verified payload at `/mnt/shared/fieldos-payload/offline-payload.tar.zst` has SHA-256 `751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9` and exactly the eight current core-pack versions. A verifier guard now rejects extra or superseded archives. **A fresh E2E install from this clean payload and current source remains the next acceptance gate.**
 
-This is **not release approval**. Physical USB and hardware behavior, GPU/GPS, network-enabled/LAN exposure, comprehensive content, complete redistribution rights, and the map attribution disclosure details remain unverified or open; do not distribute the ISO or present the AI as emergency or medical authority. The `cc4aa38` and `8020fd3` sections below remain historical evidence and do not supersede the current result.
+This is **not release approval**. Physical USB/hardware behavior, GPU/GPS, connected-network/LAN exposure, comprehensive content, full redistribution clearance, and map-attribution disclosure details remain open. Do not distribute a customer ISO or present AI as emergency or medical authority. The `cc4aa38` and `8020fd3` sections below remain historical evidence and do not supersede the current status.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 
