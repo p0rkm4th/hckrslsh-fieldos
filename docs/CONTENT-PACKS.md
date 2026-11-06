@@ -200,11 +200,18 @@ The launcher uses the same validator and installer described below; it asks
 N.O.M.A.D. to index reference documents after activation. This adds no new
 network service and exposes no remote administrative interface.
 
-Kiwix is a current integration gap: the installed server reads a generated
-library containing the bundled 100-article Wikipedia test ZIM, but content-pack
-imports do not yet accept or register additional ZIM archives. Optional ZIM
-packs must not be described as active until the installer can validate the
-archive, add it to Kiwix's library safely, and the browser can open its entry.
+Kiwix remains limited to the bundled 100-article Wikipedia test ZIM in the
+accepted `8c81d64` ISO. Source commit `a1257f2` includes an optional ZIM-pack import
+adapter: it accepts only `.zim` artifacts, verifies manifest size and SHA-256,
+hard-links verified immutable pack data into the persistent Kiwix directory
+(with a space-checked copy fallback), updates a temporary Kiwix XML library
+using the pinned local image with networking disabled, and atomically publishes
+the updated library. The server's existing `--monitorLibrary` option should
+pick up that change. Unit tests cover registration, idempotence, conflict and
+failure handling, and hard-link reuse. This source change has not yet been
+tested with the real pinned Kiwix image or in a guest browser, and it is not in
+the accepted ISO. Do not describe optional ZIM import as runtime-verified until
+that integration check passes.
 
 For operator use, verify and add a bundle with:
 

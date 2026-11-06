@@ -2,6 +2,11 @@
 
 **Current status (2026-11-05): customer candidate `8c81d64` passed interactive installation, installed-disk boot, offline firstboot, tested desktop/services, local CPU inference and embeddings, Kiwix fixture search, statewide browser-rendered maps at eight locations, and two reboot checks in a disposable no-NIC UEFI VM.** ISO: `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`; SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. Detailed evidence: [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
 
+Source commit `a1257f2` subsequently adds optional ZIM-pack activation and
+passes the 114-test source suite. The accepted ISO does not include it, and
+actual Kiwix-image/browser activation remains unverified. Do not treat this
+source change as a replacement build or release gate.
+
 A separate manual GUI test transferred and installed the optional household communications reference from read-only media on the same guest. The test rebuilt the archive from the tracked manifest after discovering the shared prebuilt archive carried stale metadata. The corrected pack appeared in the Source Library, its local document returned HTTP 200, and its file, index entry, and all seven services persisted through one additional reboot. Evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/content-pack-import-validation.txt`. This add-on check is manual and separate from the clean installation acceptance.
 
 This is **not release approval**. Physical USB and hardware behavior, GPU/GPS, network-enabled/LAN exposure, comprehensive content, complete redistribution rights, and the map attribution disclosure details remain unverified or open; do not distribute the ISO or present the AI as emergency or medical authority. The `cc4aa38` and `8020fd3` sections below remain historical evidence and do not supersede the current result.
