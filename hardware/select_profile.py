@@ -54,8 +54,6 @@ def select(hardware: dict, manifest: dict, available_ids: set[str] | None = None
     for model in manifest.get("chat_models", []):
         if model["id"] not in available_ids:
             continue
-        if manual_model and model["id"] != manual_model:
-            continue
         if model.get("license") not in {"Apache-2.0", "MIT", "BSD-3-Clause", "CC0-1.0"}:
             continue
         needs_ram = float(model.get("ram_gib", 0))
@@ -73,6 +71,18 @@ def select(hardware: dict, manifest: dict, available_ids: set[str] | None = None
         if fits_cpu or fits_gpu:
             candidates.append((int(model.get("quality_priority", 0)), model, gpu_backend if fits_gpu else "cpu"))
     candidates.sort(key=lambda item: (item[0], item[1]["id"]), reverse=True)
+    if manual_model:
+        # Honor the operator's selected bundled model first, but retain only
+        # lower-parameter candidates as startup-smoke fallbacks.
+        requested = next((item for item in candidates if item[1]["id"] == manual_model), None)
+        if requested is None:
+            candidates = []
+        else:
+            requested_parameters = float(requested[1].get("parameters_b", 0))
+            smaller = [item for item in candidates
+                       if item[1]["id"] != manual_model
+                       and float(item[1].get("parameters_b", 0)) < requested_parameters]
+            candidates = [requested, *smaller]
 
     embedding_candidates = [model for model in manifest.get("embedding_models", [])
                             if model["id"] in available_embedding_ids and

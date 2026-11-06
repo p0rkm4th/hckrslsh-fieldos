@@ -89,6 +89,15 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertIsNone(too_small["chat_model"])
         self.assertIsNone(missing["chat_model"])
 
+    def test_manual_override_keeps_smaller_bundled_smoke_fallbacks(self):
+        medium = "qwen3-1.7b-q4_k_m"
+        result = select(
+            {"memory_gib": 8, "gpus": []}, MANIFEST, {SMALL, medium},
+            manual_model=medium,
+        )
+        self.assertEqual(result["chat_model"], medium)
+        self.assertEqual(result["fallback_model_ids"], [SMALL])
+
     def test_validated_model_maps_to_nomad_ollama_reference(self):
         medium = "qwen3-1.7b-q4_k_m"
         self.assertEqual(
