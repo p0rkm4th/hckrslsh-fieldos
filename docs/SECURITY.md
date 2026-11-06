@@ -28,14 +28,15 @@ PID, or added Linux capabilities. They use Docker's default capability set;
 future capability changes should be justified against upstream behavior and
 tested. Kiwix receives the reference directory read-only: the admin service
 retains the writable `/app/storage` mount required to manage content, while
-the serving container needs to read it only. Persistent host paths are limited to `/var/lib/fieldos/storage`,
-`mysql`, `redis`, and `qdrant`. Credentials are generated on first boot in the
-root-owned Compose environment file and are not part of the ISO payload.
+the serving container needs to read it only. Persistent host paths are limited to `/var/lib/fieldos/storage`, `mysql`,
+`redis` (legacy data retained for recovery), `valkey`, and `qdrant`. Credentials
+are generated on first boot in the root-owned Compose environment file and are
+not part of the ISO payload.
 
 ## Network exposure
 
 Published HTTP ports bind to host loopback: N.O.M.A.D. `8080`, Kiwix `8090`,
-Dozzle `9999`, Ollama `11434`, and Qdrant `6333`. MySQL and Redis are not
+Dozzle `9999`, Ollama `11434`, and Qdrant `6333`. MySQL and Valkey are not
 published to the host. The main Compose bridge is internal; the UI bridge has
 IP masquerading disabled. Acceptance tests have verified no-NIC operation and
 blocked external egress from the N.O.M.A.D. container. A separate guest test
@@ -135,7 +136,7 @@ Rendered the current `services/compose.yaml` with `docker compose config
 --format json` using synthetic placeholder credentials. The seven services
 still have no privileged mode, host networking, host PID namespace, or added
 capabilities. The five published ports bind to `127.0.0.1` (`8080`, `8090`,
-`9999`, `11434`, and `6333`); MySQL and Redis remain unpublished. The default
+`9999`, `11434`, and `6333`); MySQL and Valkey remain unpublished. The default
 bridge is internal, and `local-ui` has IP masquerading disabled. Only N.O.M.A.D.
 and Dozzle mount the Docker socket; Dozzle's bind is marked read-only, which
 does not restrict Docker API methods. Current Compose source SHA-256:

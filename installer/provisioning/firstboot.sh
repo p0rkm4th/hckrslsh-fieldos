@@ -125,7 +125,7 @@ if [[ "$root_lv" == /dev/mapper/* ]] && command -v lvextend >/dev/null && comman
 fi
 
 install -d -m 0755 "$STATE/storage/zim" "$STATE/storage/references"
-install -d -m 0750 "$STATE/storage/maps/pmtiles" "$STATE/storage/maps/basemaps-assets" "$STATE/storage/ollama" "$STATE/mysql" "$STATE/redis" "$STATE/qdrant"
+install -d -m 0750 "$STATE/storage/maps/pmtiles" "$STATE/storage/maps/basemaps-assets" "$STATE/storage/ollama" "$STATE/mysql" "$STATE/redis" "$STATE/valkey" "$STATE/qdrant"
 
 echo "Activating checksum-validated content packs bundled in the offline payload..."
 shopt -s nullglob

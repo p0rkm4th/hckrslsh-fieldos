@@ -61,14 +61,14 @@ services:
       retries: 15
 
   redis:
-    image: redis:7-alpine@sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f
-    container_name: nomad_redis
+    image: valkey/valkey:8.0-alpine@sha256:19f0b3d350f5e6de618086d79ecdc9c474ab159bebb16ed95a92e4211562fee5
+    container_name: nomad_valkey
     restart: unless-stopped
-    command: [redis-server, --appendonly, "yes"]
+    command: [valkey-server, --appendonly, "yes"]
     volumes:
-      - /var/lib/fieldos/redis:/data
+      - /var/lib/fieldos/valkey:/data
     healthcheck:
-      test: [CMD, redis-cli, ping]
+      test: [CMD, valkey-cli, ping]
       interval: 10s
       timeout: 5s
       retries: 10

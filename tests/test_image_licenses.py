@@ -7,17 +7,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ImageLicenseManifestTests(unittest.TestCase):
-    def test_redis_74_digest_is_not_mislabeled_bsd(self):
+    def test_valkey_image_is_pinned_and_uses_a_bsd_license(self):
         manifest = json.loads((ROOT / "payload/manifests/images.json").read_text())
-        image = next(item for item in manifest["images"] if item["name"] == "redis")
-        self.assertEqual(image["ref"], "redis:7-alpine")
-        self.assertEqual(image["observed_version"], "7.4.12")
-        self.assertEqual(image["digest"], "sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f")
-        self.assertEqual(image["license"], "RSALv2 OR SSPLv1")
-        self.assertIn("redis-adopts-dual-source-available-licensing", image["license_url"])
+        image = next(item for item in manifest["images"] if item["name"] == "valkey")
+        self.assertEqual(image["ref"], "valkey/valkey:8.0-alpine")
+        self.assertEqual(image["observed_version"], "8.0.12")
+        self.assertEqual(image["digest"], "sha256:19f0b3d350f5e6de618086d79ecdc9c474ab159bebb16ed95a92e4211562fee5")
+        self.assertEqual(image["license"], "BSD-3-Clause")
+        self.assertIn("github.com/valkey-io/valkey", image["license_url"])
 
         compose = (ROOT / "services/compose.yaml").read_text()
-        self.assertIn("redis:7-alpine@" + image["digest"], compose)
+        self.assertIn("valkey/valkey:8.0-alpine@" + image["digest"], compose)
+        self.assertIn("/var/lib/fieldos/valkey:/data", compose)
+        self.assertIn("container_name: nomad_valkey", compose)
 
 
 if __name__ == "__main__":

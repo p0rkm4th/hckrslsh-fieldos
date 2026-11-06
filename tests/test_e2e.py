@@ -1055,7 +1055,7 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
             "container security baseline",
             "python3 - <<'PY'\n"
             "import grp, json, os, stat, subprocess\n"
-            "names = ['nomad_admin', 'nomad_mysql', 'nomad_redis', 'nomad_ollama', 'nomad_qdrant', 'nomad_kiwix_server', 'nomad_dozzle']\n"
+            "names = ['nomad_admin', 'nomad_mysql', 'nomad_valkey', 'nomad_ollama', 'nomad_qdrant', 'nomad_kiwix_server', 'nomad_dozzle']\n"
             "items = json.loads(subprocess.run(['docker', 'inspect', *names], check=True, capture_output=True, text=True).stdout)\n"
             "assert len(items) == len(names), 'missing expected containers'\n"
             "socket_users = set()\n"
