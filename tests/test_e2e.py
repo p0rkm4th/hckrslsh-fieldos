@@ -476,6 +476,9 @@ autoinstall:
             pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
             quote = shlex.quote
             artifact_checks = []
+            # Activation may hard-link or use the installer's verified copy
+            # fallback when the target filesystem disallows hard links.
+            # Check content identity; inode identity is not a product contract.
             for artifact in self.pack_manifest["artifacts"]:
                 source_path = f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{artifact['path']}"
                 zim_path = f"/var/lib/fieldos/storage/zim/{artifact['path']}"
@@ -484,7 +487,6 @@ autoinstall:
                     f"test -s {quote(zim_path)}",
                     f"printf '%s  %s\\n' {quote(artifact['sha256'])} {quote(source_path)} | sha256sum -c -",
                     f"printf '%s  %s\\n' {quote(artifact['sha256'])} {quote(zim_path)} | sha256sum -c -",
-                    f"test \"$(stat -c %i {quote(source_path)})\" = \"$(stat -c %i {quote(zim_path)})\"",
                 ])
             self.check(
                 "offline ZIM pack transfer and persistent activation",

@@ -1,3 +1,4 @@
+import errno
 import hashlib
 import importlib.util
 import io
@@ -256,6 +257,30 @@ class ContentPackBundleTests(unittest.TestCase):
             add_calls = [call for call in run.call_args_list
                          if call.args[0][call.args[0].index(CONTENT_PACKS.KIWIX_IMAGE) + 2] == "add"]
             self.assertEqual(len(add_calls), 2)
+
+    def test_zim_pack_activates_by_verified_copy_when_hardlinks_are_disallowed(self):
+        archive = self.configure_zim_pack()
+        zim_root = self.install_root / "storage/zim"
+        real_link = CONTENT_PACKS.os.link
+
+        def link_or_deny_pack_source(source, destination, *args, **kwargs):
+            source, destination = Path(source), Path(destination)
+            if source.name == "reference.zim" and destination == zim_root / "reference.zim":
+                raise OSError(errno.EPERM, "hard links disabled by filesystem policy")
+            return real_link(source, destination, *args, **kwargs)
+
+        with patch.object(CONTENT_PACKS.os, "link", side_effect=link_or_deny_pack_source):
+            with patch.object(CONTENT_PACKS.subprocess, "run", side_effect=self.kiwix_manage_fake()):
+                result = CONTENT_PACKS.install_bundle(archive, self.install_root, self.schema, reserve_bytes=0)
+
+        self.assertIn("activated Kiwix ZIM archives", result)
+        source = self.install_root / "content-packs/fixture-reference/1.0.0/reference.zim"
+        activated = zim_root / "reference.zim"
+        self.assertEqual(CONTENT_PACKS.file_sha256(source), CONTENT_PACKS.file_sha256(activated))
+        self.assertEqual(activated.stat().st_mode & 0o777, 0o644)
+        self.assertNotEqual(source.stat().st_ino, activated.stat().st_ino)
+        library = ET.parse(zim_root / "kiwix-library.xml").getroot()
+        self.assertEqual([book.attrib["path"] for book in library.findall("book")], ["reference.zim"])
 
     def test_zim_pack_preserves_existing_library_and_refuses_filename_conflict(self):
         archive = self.configure_zim_pack()
