@@ -1,50 +1,31 @@
-# Current validation status — 2026-11-05
+# Current validation status — 2026-11-06
 
 ## Latest customer-mode candidate
 
-The latest customer ISO is `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256
-`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`.
-It was built from clean source commit `8c81d649e50e9ea793c0f85b104459302d4548ff`.
-The later source commits, through `f7b1962`, update documentation and
-provenance only; they are not the ISO payload revision. The candidate remains
-an engineering test image, not a
-redistribution-cleared release.
+The current customer candidate is `/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso`, SHA-256 `8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`. It was built cleanly from public source `5abae15ac13fe001178c01e8dd31b255d5714500` with the pinned Ubuntu source and payload checksums recorded in its embedded manifest. The ISO structure and payload verifier passed. This remains an engineering test image, not a redistribution-cleared release.
 
-Detailed run evidence, including logs and actual desktop screenshots, is at
-`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+A fresh no-NIC interactive customer install from this exact ISO completed, booted from the installed disk, finished firstboot, and passed two reboot checks. Detailed steps, outcomes, and screenshots are at `/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`.
 
 | Area | Current result | Evidence and limits |
 |---|---|---|
-| Clean-source build and ISO structure | PASS | `make check test` passed 110 tests before the run; ISO verification passed. ISO hash above. |
-| Customer interactive install and disk boot | PASS in disposable UEFI VM | User selected/confirmed `vda`; install completed; ISO was ejected at the standard prompt; ordinary VM power-on booted installed disk. Physical USB handoff remains unverified. |
-| Offline provisioning | PASS in no-NIC VM | Firstboot status complete; unit succeeded; no failed systemd units. VM had no virtual NIC/default route. |
-| Branded desktop | PASS in VM | Fresh installed GNOME desktop showed FieldOS wallpaper, dark appearance, orange accent, and dock; OOBE completed offline. |
-| N.O.M.A.D. | PASS for tested local features | `/api/health` returned `ok`; Command Center and AI UI opened; seven expected containers returned after two reboots. |
-| Local inference | PASS, CPU | Bundled Qwen3 1.7B generated three marker responses; selector chose CPU profile. GPU acceleration is unverified. |
-| Embeddings | PASS | Bundled model returned a non-empty 768-D vector, including after reboot 2. |
-| Knowledge retrieval | PARTIAL | 10 local files / 690 chunks; browser search for “flood” found three references and a real response cited the vegetable handbook. Breadth and semantic quality are limited; emergency response test returned the configured source-directed refusal. |
-| Optional pack import | PASS, separate manual add-on | Current-manifest household communications archive imported via GNOME picker and administrator prompt from read-only optical media; Source Library displayed attribution and local document. Hash and HTTP checks passed, and pack/index/services persisted across one additional reboot. Not part of the clean install acceptance run; physical USB remains untested. See `content-pack-import-validation.txt`. |
-| Kiwix | PASS, fixture limited | Browser search worked against the bundled 100-article `Wikipedia 100` archive; this is not a substantial encyclopedia. |
-| Tennessee maps | PASS, actual browser rendering | Zoom-13 map rendered at eight required urban/rural locations; post-reboot Nashville screenshots and a local tile/range request also passed. No routing or GPS claim. |
-| Persistence | PASS, two post-install reboot cycles | All seven containers and functional checks recovered after both cycles. Browser profile/chat history, user marker, and map checksum persisted. See exact boot IDs and hashes in run diagnostics. |
-| Network security with adapter enabled | NOT TESTED | This acceptance VM had no NIC, no default route, and locally inspected service listeners bound to loopback. That does not establish safe LAN exposure or container-egress policy when connected. |
-| Physical hardware / GPU / GPS | NOT TESTED | VM evidence only. |
-| Content redistribution clearance | BLOCKED / INCOMPLETE | Ubuntu, software, model, map, and reference-data rights still require a complete documented review before customer redistribution. |
+| Source checks | PASS | `make check test`: 126 tests passed on source `5abae15`. |
+| Clean-source customer ISO | PASS, structural | Full customer ISO built from clean source; BIOS/UEFI boot records, interactive customer setup, offline APT, and payload checks passed. ISO hash above. |
+| Customer interactive install and disk boot | PASS in disposable UEFI VM | Identity and target `vda` were selected; erase confirmed; install completed. At the standard handoff prompt, the guest ejected the CD and shut down on Enter; an ordinary power-on booted the installed disk with the ISO detached. Physical USB handoff and automatic restart remain unverified. |
+| Offline provisioning | PASS | Firstboot status `complete`, systemd result success / exit 0; seven service containers running; ten source documents indexed (690 chunks). |
+| Offline operation | PASS for no-NIC guest | `virsh domiflist` empty, zero non-loopback guest adapters, zero default routes. This does not validate LAN-connected exposure. |
+| Branded desktop and Command Center | PASS in VM | Fresh GNOME desktop, wallpaper, dark appearance, orange accent, dock, and Command Center rendered. |
+| N.O.M.A.D. | PASS for tested local endpoints | `/api/health` returned `{"status":"ok"}` and seven containers ran after reboot 2. |
+| Local inference | PASS, CPU | Bundled `qwen3:0.6b-q4_K_M` generated a real response after reboot 2. Physical GPU acceleration is unverified. |
+| Embeddings | PASS | Bundled embedding model returned a 768-dimensional vector after reboot 2. |
+| Tennessee maps | PASS, actual browser click/render | The Command Center Maps card opened a statewide Tennessee view with visible roads, towns, and waterways at zoom 7. The click and visible map rendering repeated after reboot 2. Zoom-13 detail and eight-location screenshots are verified in earlier same-payload browser runs; see the historical evidence below. The map is not routing or GPS navigation. |
+| Kiwix | PARTIAL | Browser displayed the bundled `Wikipedia 100` book after reboot 2 and the service returned HTTP 200. Two attempted in-book queries returned no results during this run; a known-title retrieval needs retest. This is a tiny test fixture, not a substantial encyclopedia. |
+| Source Library | PARTIAL | N.O.M.A.D. indexed ten local files / 690 chunks and guest `curl` received HTTP 200 for the 3.3 MB Source Library page. Firefox direct navigation to that local URL showed `NS_ERROR_OFFLINE`, while Command Center, Maps, and Kiwix links loaded. Browser access to direct local references needs investigation. |
+| Persistence | PASS, two post-install reboot cycles | All seven containers, N.O.M.A.D. health, generation, embeddings, map, and local data were checked after the second reboot. The user-data marker SHA-256 remained identical across three boot IDs. See the exact IDs and hash in the run report. |
+| Connected-network security | NOT TESTED | No NIC was attached during this run. LAN exposure and outbound egress with a NIC remain open. |
+| Physical hardware / GPU / GPS | NOT TESTED | Disposable VM only. |
+| Redistribution clearance | BLOCKED / INCOMPLETE | Ubuntu, software, model, map, and source-material review remains incomplete. Do not publish this ISO. |
 
-**Assessment:** A current customer-mode installation has passed the defined VM
-offline functional and two-reboot checks. FieldOS is not yet customer-release
-ready because physical-hardware validation, connected-network security
-testing, meaningful library breadth, and redistribution review remain open.
-
-**Source-only update (`a1257f2`, fixed in `0f83517`):** Optional Kiwix
-ZIM-pack activation passes `make check test` with 115 tests. A targeted test
-used the exact pinned Kiwix image in an internal-only container, installed the
-existing small ZIM through the content-pack installer, confirmed its entry and
-article through Kiwix HTTP/OPDS, then imported a second pack and observed the
-live catalog path change. Evidence:
-`/mnt/shared/fieldos-e2e/kiwix-zim-runtime-20261106/report.md`. Guest desktop
-import and browser interaction remain unverified. The accepted ISO above
-predates this change; this is not a new ISO or full installation acceptance.
+**Assessment:** The exact current-source customer ISO now passes the tested offline installation, local AI, embedding, default-map interaction, and two-reboot VM gates. FieldOS is not release-ready: Firefox local Source Library navigation and Kiwix search need follow-up, and physical hardware, connected-network security, content breadth, and redistribution review remain open.
 
 ## Historical customer ISO validation: `cc4aa38`
 
