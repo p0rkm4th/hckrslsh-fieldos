@@ -7,31 +7,33 @@ artifact is missing or its checksum differs.
 
 ## Current installation status (2026-11-06)
 
-The current private customer-mode test ISO is source `aedc570` at
-`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
-(SHA-256 `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`).
-Interactive no-NIC install, firstboot, visible Nashville map, Kiwix article,
-local apps, and two reboots passed in a disposable UEFI VM. A separate fresh
-unattended E2E from the same code state visibly rendered eight Tennessee
-locations. Full evidence is in
-[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md). Physical USB/hardware and
-redistribution are unverified; this is not a cleared release.
+The current private customer-mode test ISO is source `b67ee12` at
+`/mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso` (SHA-256
+`29725549f4071455b5582e134939079f19b2d39deba89d3b17eab991b488c0a6`). Its
+fresh no-NIC interactive install passed firstboot, visible Tennessee mapping,
+Kiwix article retrieval, local inference, embeddings, and two reboots in a
+disposable UEFI VM. The separate same-source unattended E2E rendered eight
+Tennessee locations and exercised offline reference-pack import. Full evidence
+is in [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md). Physical USB/hardware,
+connected-network behavior, and redistribution remain unresolved; this is not
+a cleared release.
 
-The candidate embeds payload SHA-256
-`a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB),
-recorded in its build manifest.
+The current payload includes a world overview at zoom 0–5, a statewide
+Tennessee vector map at zoom 0–13, the small Kiwix `Wikipedia 100` fixture, and
+the versioned core reference packs declared in
+`payload/manifests/content-packs.json`. Firstboot indexes sources marked for AI
+indexing; users can open original local documents from the Source Library.
+Search/retrieval availability is verified, but the small corpus and local model
+are not an authoritative or comprehensive emergency, medical, agricultural,
+or survival library. The map opens at a Tennessee overview and supplies
+geographic reference only, not routing or GPS positioning.
 
-Current source pack manifests have since replaced CDC-branded illustrated PDFs
-with four version-bumped text-only packs. Those archives pass checksum/archive
-validation and temporary-root Source Library activation, but the accepted ISO
-above still carries the earlier PDF versions. A fresh ISO build and offline
-customer acceptance are required before claiming the updated content is on the
-installed system.
-It provides the world overview, zoom 0–5, and statewide Tennessee vector map,
-zoom 0–13, plus the small Kiwix `Wikipedia 100` fixture and ten indexed source
-documents. The map opens a Tennessee overview by default; zoom-13 vector tiles are available
-across the statewide extract. This is a geographic reference,
-not turn-by-turn routing or GPS positioning.
+The current source uses versioned text-only revisions for the CDC packs whose
+earlier PDFs contained agency marks and graphics. The b67ee12 customer
+candidate and matching clean-source E2E were built after those revisions. The
+E2E validated an optional CDC food-safety pack from transfer media and checked
+the local Source Library; see [`CONTENT-PACKS.md`](CONTENT-PACKS.md). These
+engineering checks do not settle commercial redistribution rights.
 
 Follow-up browser testing clarified the earlier apparent access failures.
 Opening the bundled `Wikipedia 100` ZIM and searching within the book for
