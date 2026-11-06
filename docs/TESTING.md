@@ -116,6 +116,13 @@ libvirt domains. Preserve current acceptance disks and any disk referenced by
 `docs/RELEASE.md`. Old test logs and screenshots are useful evidence and remain
 after disk retirement.
 
+For a stopped persistent test domain, first verify that it has no snapshots and
+that the exact disk is not used by another VM. Save `virsh dumpxml <domain>` in
+the run's evidence directory, then undefine only that disposable test domain
+with `virsh undefine <domain> --keep-nvram --keep-tpm`. The cleanup helper will
+still refuse the disk if any remaining libvirt domain references it. Do not
+apply this procedure to production or unrelated guests.
+
 The test runner reports only checks actually executed. A successful ISO build
 is not an installation or service acceptance result. Synthetic hardware
 fixtures in `tests/test_select_profile.py` exercise policy branches but are

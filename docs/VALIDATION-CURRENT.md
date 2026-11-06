@@ -188,12 +188,14 @@ behavior remains unverified.
 - This run proves operation with no network adapter; it does not prove safety
   when a network adapter is enabled.
 
-## Storage retained for this run
+## Storage and later cleanup
 
 - ISO: 13,523,091,456 bytes; SHA-256 above.
-- Retained test disks: the original accepted-services run at
-  `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/guest.qcow2` and the clean
-  handoff retest at
-  `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/guest.qcow2`.
-  Both VMs remain available and are intentionally retained as test evidence.
+- At report time the original accepted-services disk and clean handoff retest
+  disk were retained. The latter, at
+  `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/guest.qcow2`, was
+  retired on 2026-11-06 after the b67ee12 candidate passed; its validation
+  record, screenshots, logs, domain XML, and retirement record remain. The
+  original cc4aa38 disk is still retained as a historical VM. See
+  `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261106-stale-vms.txt`.
 - At report time `/mnt/shared` had 399 GiB free (745 GiB used of 1.2 TiB).
