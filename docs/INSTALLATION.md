@@ -2,20 +2,20 @@
 
 ## Customer installation
 
-**Latest customer-mode ISO candidate (2026-11-05; installation BLOCKED, not accepted):**
+**Latest customer-mode test candidate (2026-11-05; interactive VM installation PASS, not a release):**
 `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, source
 `8c81d64`, SHA-256
 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`.
-A fresh no-NIC UEFI run reached Subiquity storage setup; `/dev/vda` was visible
-but Next remained disabled, so installation did not complete and no installed
-system was validated. Diagnostics:
-`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
-The last completed customer-mode install test is `8020fd3` below; it is a
-historical PASS with a model-default mismatch, not validation of this candidate.
-Do not treat the 8c81d64 candidate as a release.
+A fresh no-NIC UEFI VM installation completed, booted from its installed disk,
+finished firstboot, and passed local feature and two-reboot checks. The guest
+also passed a separate manual optional-pack import and additional reboot.
+Physical USB/hardware behavior and redistribution remain unverified. Detailed
+evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+The candidate remains a private engineering image, not a release.
 
-The detailed `cc4aa38` record in [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md)
-is retained as historical evidence and does not describe the latest candidate.
+The detailed `cc4aa38` and `8020fd3` records in
+[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) are historical and do not
+describe the latest candidate.
 
 **Previous customer-mode installation PASS (2026-11-05; historical):**
 `/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso`, source
@@ -74,7 +74,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network
