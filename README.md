@@ -19,13 +19,11 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The current worktree extends pushed `main` revision `0a877e3` with a CDC
-private-well text pack and its catalog/test updates. The pack has a verified
-portable archive but has not yet been built into an ISO. `make check test`
-passes 126 tests
-and the content-pack validator accepts 11 catalog entries. The payload
-verifier requires exactly the catalog's core content-pack archive versions,
-so stale versions fail closed.
+The latest tested source revision is `d04f450`. `make check test` passes 126 tests and the
+content-pack validator accepts 11 catalog entries. The CDC private-well pack
+has a checksum-verified portable archive and passed in the clean-source
+no-network test ISO below. It is not yet in the separately tested interactive
+customer ISO.
 
 The latest customer-mode test candidate is
 `/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso` (SHA-256
@@ -37,18 +35,16 @@ limitations are in [current validation](docs/VALIDATION-CURRENT.md). This ISO
 predates the private-well pack and remains an engineering candidate, not a
 redistribution-cleared release.
 
-A clean-payload unattended no-NIC E2E from source `42bcad3`
-(`5723732d1ce9bc354ce6d41f39a7c6b8e88352679a64eee857586dba7dc2f2ab`) passed
-installation, local chat and embeddings, reference indexing/search, Kiwix
-retrieval, actual Firefox rendering at eight Tennessee locations, and two
-reboots. Its report is
-`/mnt/shared/fieldos-e2e/20261106T043231Z-184238/report.md`. This is separate
-from physical-device qualification and customer-mode ISO testing. The corrected
-payload used in that run is at
-`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
-`751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9`) and
-passed payload verification for that run. The private-well pack is not in that
-payload or any tested ISO.
+A clean-source unattended no-NIC E2E from `d04f450` passed installation,
+firstboot, CPU chat and embeddings, Kiwix retrieval, the FieldOS Source Library
+including the new private-well entry, Firefox renders at eight Tennessee
+locations, and two reboots. Test ISO SHA-256:
+`6a3fef4deba8b8ade1f1e04df15b2da97665a777fb19c120fc4bcea97e81a624`;
+payload SHA-256:
+`ad0e28863afbddd94b65ecd9d0cc8101ee0119cdfe7a1a33b9054f895f63eae`.
+Evidence is `/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md`.
+The test ISO was removed by the runner; physical-device qualification and the
+separate customer-mode installation remain distinct gates.
 
 Physical hardware, GPU acceleration, GPS, connected-network/LAN exposure,
 broader offline references, AI retrieval quality, and redistribution clearance

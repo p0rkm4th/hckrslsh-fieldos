@@ -18,9 +18,9 @@ contains eight core packs: CDC water/food references, NWS-based FieldOS
 summaries for tornadoes, hurricanes/winter storms, and floods, a NIOSH
 heat-illness reference, a Southeastern vegetable production handbook, a
 two-page CDC emergency-kit checklist, and a short MedlinePlus first-aid
-overview. The current source worktree adds CDC private-well guidance as a ninth
-core pack; this addition has a validated portable archive but has not been
-included in a built or tested ISO. The
+overview. Source revision `d04f450` adds CDC private-well guidance as a ninth
+core pack. It is included and passed in a clean-source unattended test ISO, but
+is not in the separately validated interactive customer ISO. The
 MedlinePlus item is a high-level summary, not a procedure manual or clinical
 review, and is excluded from AI indexing. One CDC emergency-health skills
 orientation remains optional; it names skills to learn but does not teach
