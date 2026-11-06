@@ -15,7 +15,7 @@ class ContentPackValidationTests(unittest.TestCase):
         catalog_path = ROOT / "payload/manifests/content-packs.json"
         self.assertEqual(
             validate_catalog(catalog_path),
-            ["us-basic-emergency-health", "us-cdc-keep-calm-prepared",
+            ["us-basic-emergency-health", "us-cdc-food-safety", "us-cdc-keep-calm-prepared",
              "us-cdc-private-wells", "us-flood-safety",
              "us-household-communications", "us-medlineplus-first-aid",
              "us-niosh-heat-first-aid", "us-southeastern-vegetable-growers", "us-tornado-safety",

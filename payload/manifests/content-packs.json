@@ -13,7 +13,8 @@
     "../content-packs/us-household-communications/manifest.json",
     "../content-packs/us-cdc-keep-calm-prepared/manifest.json",
     "../content-packs/us-medlineplus-first-aid/manifest.json",
-    "../content-packs/us-cdc-private-wells/manifest.json"
+    "../content-packs/us-cdc-private-wells/manifest.json",
+    "../content-packs/us-cdc-food-safety/manifest.json"
   ],
   "core_packs": [
     "../content-packs/us-water-food-emergency/manifest.json",
@@ -27,10 +28,7 @@
     "../content-packs/us-cdc-private-wells/manifest.json"
   ],
   "planned_categories": [
-    "agriculture",
     "wildlife-overlanding",
-    "water-food",
-    "first-aid-emergency",
     "maps-gis",
     "general-reference"
   ]
