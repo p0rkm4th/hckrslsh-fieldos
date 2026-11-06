@@ -97,7 +97,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-b67ee12.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network

@@ -67,7 +67,7 @@ instead of silently selecting another model. The default firstboot path marks
 only CPU as validated; GPU configuration is not enabled just because a GPU
 appears in the detector output.
 
-The manual-override fallback behavior is included in the `aedc570` customer
+The manual-override fallback behavior is included in the `b67ee12` customer
 candidate, and selector fixtures pass. Automatic CPU selection was exercised
 by firstboot on the 8 GiB customer VM; setting an explicit override and
 observing fallback from a failed override have not yet been exercised in a VM.
@@ -80,7 +80,7 @@ this preference is written, so the UI cannot save its initial default first;
 this startup gate still needs fresh-VM validation.
 N.O.M.A.D. continues to save a user's manual model selection through its
 normal UI setting, and subsequent provisioning does not replace it. The
-firstboot preference gate passed on the `aedc570` customer install; preserving
+firstboot preference gate passed on the `b67ee12` customer install; preserving
 an operator-changed model across a later provisioning rerun remains covered by
 source tests, not an interactive VM test.
 

@@ -8,19 +8,20 @@ transferable separately. This is a useful starter collection, not a
 comprehensive customer library.
 
 The current customer-mode engineering candidate is
-`fieldos-customer-test-aedc570.iso` (SHA-256 `538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`). It passed
+`fieldos-customer-test-b67ee12.iso` (SHA-256 `29725549f4071455b5582e134939079f19b2d39deba89d3b17eab991b488c0a6`). It passed
 interactive no-NIC installation, firstboot, local applications, and two reboots
-in a disposable UEFI VM. A fresh unattended E2E on the same code state also
-passed. See
-[current validation](VALIDATION-CURRENT.md). The CDC private-well core pack is
-included and indexed. These are VM test results; physical USB is unverified and
-redistribution remains uncleared.
+in a disposable UEFI VM. A fresh same-source unattended E2E also passed; it
+verified local Source Library retrieval and offline import of an optional CDC
+food-safety pack from transfer media. See
+[current validation](VALIDATION-CURRENT.md). These are VM test results;
+physical USB is unverified and redistribution remains uncleared.
 
-The source tree now has versioned text-only revisions of four CDC packs after
+The source tree has versioned text-only revisions of four CDC packs after
 visual inspection found agency marks and third-party photographs/graphics in
-their original PDFs. The accepted ISO still contains the previous illustrated
-pack versions. The revised archives are integrity-checked but have not yet been
-installed in a guest or included in a rebuilt/accepted ISO.
+their original PDFs. These versions are present in the b67ee12 customer
+candidate built from the current source. The separate E2E exercised optional
+pack import, but that does not constitute an item-specific legal determination
+or final commercial redistribution clearance.
 
 The `8c81d64` ISO source contains all eight then-current core pack manifests.
 Guest runtime records confirm the CDC emergency-kit checklist was indexed as
@@ -285,11 +286,10 @@ SHA-256 `8c55b298bc66b7bbde439ecdf940320f14f58695b20626e864eddded45caca16`) and
 `82e3793cfcb6287d40b16b722447953907b560ba954393b962ca270e6ca8911a`). The new
 `us-water-food-emergency-1.0.1.tar.zst` archive has SHA-256
 `bad91714686696426ec4efa23356644db396d6292bb5870e8cb18555b5555dae`; it passed
-`zstd -t`, checksum, and archive-member checks (no PDFs). The exact accepted
-`aedc570` ISO still contains the former illustrated PDF artifacts and has not
-been rebuilt with this update. This source change is not yet installation or
-end-to-end acceptance evidence; the customer candidate remains private and
-unapproved.
+`zstd -t`, checksum, and archive-member checks (no PDFs). The revised packs are
+in the b67ee12 customer ISO; customer install and runtime results are recorded
+in [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md). The candidate remains
+private and unapproved pending final redistribution review.
 
 ## CDC food-safety mistakes factsheet (optional transfer pack)
 
