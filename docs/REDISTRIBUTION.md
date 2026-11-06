@@ -32,21 +32,24 @@ an engineering inference from CDC's general agency-materials policy, not an
 item-specific rights label, and commercial redistribution clearance remains
 open. Exact CDC Stacks records identify several other CDC documents as Public
 Domain, but that alone does not resolve reuse of CDC/HHS logos or agency marks.
-The retained illustrated PDFs in the food-safety, emergency-water/food, and
-preparedness packs still need page/asset review for agency marks and third-party
-material, or written permission where required. CDC's policy requires
-attribution, prominent non-endorsement, no substantive changes, and notice that
-the source is available at no charge. The Wikipedia ZIM, Ubuntu marks, all
-container transitive components (including the Valkey image layers), map assets,
-model terms, notices, and source offers also have unresolved review items. This
-is an engineering rights assessment, not legal advice or full commercial
-distribution clearance. Do not publish or distribute the candidate until those
-reviews are resolved.
+The exact illustrated PDFs in the CDC packs were visually reviewed and found to
+contain CDC/HHS marks; some also contain photographs or graphics whose separate
+reuse terms were not established. The current source revision removes those
+five PDFs from the tracked pack artifacts and replaces them with text-only
+extractions. The currently accepted `aedc570` ISO predates that update and still
+contains the illustrated PDFs, so that ISO remains unsuitable for distribution
+without rights clearance. Older public Git commits also retain historical PDF
+blobs; repository history was not rewritten. The Wikipedia ZIM, Ubuntu marks,
+all container transitive components (including the Valkey image layers), map
+assets, model terms, notices, and source offers still have unresolved review
+items. This is an engineering rights assessment, not legal advice or full
+commercial distribution clearance. Do not publish or distribute the candidate
+until those reviews are resolved.
 
 ### CDC PDF asset inspection — 2026-11-06
 
-All pages of the five CDC PDFs currently staged in the packs were rendered and
-visually inspected: *Prepare Your Health: Practical Skills*;
+All pages of the five CDC PDFs staged in the original pack revision were
+rendered and visually inspected: *Prepare Your Health: Practical Skills*;
 *Keep Calm and Be Prepared*; *10 Dangerous Food Safety Mistakes*; *Make Water
 Safe During an Emergency*; and *Eat Safe Food after a Power Outage*. Each
 contains visible CDC or CDC/HHS agency marks. The *Practical Skills* page also
@@ -57,12 +60,16 @@ photograph or graphic. Exact Stacks Public Domain labels for some documents do
 not by themselves settle reuse of agency marks under CDC's
 [separate policy](https://www.cdc.gov/other/agencymaterials.html).
 Therefore the exact illustrated PDFs are **not cleared for redistribution**
-based on this review. Before a customer release, obtain permission covering
-marks and any third-party assets, or replace each affected PDF with a complete,
-source-faithful text-only rendition that excludes those assets and preserves
-attribution, warnings, and no-endorsement notices. Existing searchable text
-companions must be checked for completeness and usability before serving as
-those replacements.
+based on this review. The current tracked manifests now bundle only text files
+for these four packs. Their updated, versioned archives passed integrity checks
+and contain no PDF members. The text files were checked for the obvious
+encoding/duplication errors observed in the CDC food-safety extracts; no
+substantive safety instructions or numeric values were intentionally changed.
+The `aedc570` installer has not been rebuilt or tested with these updates, so
+no claim is made that an installed FieldOS uses the revised packs. Their
+archives passed checksum, member, and temporary-root Source Library activation
+checks. Full desktop import, reboot persistence, fresh ISO acceptance, and final
+rights review remain open before distribution.
 
 ## Current artifact inventory
 
@@ -88,7 +95,7 @@ historical ISO's contents and status are unchanged.
 | Nomic Embed Text v1.5 | Apache-2.0 model page: <https://huggingface.co/nomic-ai/nomic-embed-text-v1.5> | `models/manifest.json` pins the Ollama manifest SHA-256 and model-layer SHA-256/size. The payload builder verifies both before archiving and emits `manifests/model-payload.json`. | Confirm all non-model Ollama layers and upstream source provenance match the reviewed model; exact upstream source revision remains to be documented. |
 | Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes. Current guest's source/license documents match the repo checksums. | Archive-level provenance and attribution are present; article/media-level license review remains open. |
 | MedlinePlus First Aid summary | NLM reuse policy: <https://medlineplus.gov/about/using/usingcontent/>; source page: <https://medlineplus.gov/firstaid.html> | 3,086-byte text snapshot of the health-topic page summary last updated 2026-07-22. Artifact SHA-256 `32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893`; pack archive and validation are recorded in `docs/CONTENT-PACKS.md`. NLM policy expressly identifies health-topic summaries as public domain; this artifact excludes linked pages and all images/media. | Attribution and exact source scope are recorded in the manifest. This is a U.S. rights assessment, not a clinical review or international rights determination. The 8c81d64 guest contains the pack at `/var/lib/fieldos/content-packs/us-medlineplus-first-aid/2026.07.22/`. |
-| CDC Keep Calm and Be Prepared checklist | Exact CDC STACKS item record: <https://stacks.cdc.gov/view/cdc/23954> | Unmodified 138,605-byte PDF, SHA-256 `d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`, plus a searchable text extraction. The record identifies this item as Public Domain. | CDC attribution and no-endorsement note are in the manifest. The 8c81d64 guest contains this pack at `/var/lib/fieldos/content-packs/us-cdc-keep-calm-prepared/1.0.0/`; it is not medical or first-aid instruction. |
+| CDC Keep Calm and Be Prepared checklist | Exact CDC STACKS item record: <https://stacks.cdc.gov/view/cdc/23954> | Historical pack `1.0.0` included the 138,605-byte PDF (SHA-256 `d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`) and was installed in an earlier VM. Current source pack `1.0.1` omits the PDF and provides a text-only extraction. | Current text-only source excludes visible CDC/HHS marks and artwork; its rebuilt archive and temporary-root activation are checked, but no guest or ISO acceptance has been run for `1.0.1`. This checklist names preparedness skills but is not medical or first-aid instruction. |
 | CDC private-well emergency guidance | CDC *How to Disinfect Wells After an Emergency*, May 29, 2025: <https://www.cdc.gov/water-emergency/about/how-to-disinfect-wells-after-an-emergency.html>; CDC reuse policy: <https://www.cdc.gov/other/agencymaterials.html> | 15,338-byte text rendition, SHA-256 `d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6`; included in the `f250cc1` and `129da89` candidate payloads and their acceptance runs. | Text-only rendition excludes photograph and page navigation, preserving warnings and table values. Manifest records CDC attribution, non-endorsement, free-source notice, and no substantive edits. The CDC policy has exceptions for third-party material and urges periodic update checks. This is an engineering review; commercial redistribution clearance remains open. |
 | Protomaps Tennessee, world, and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | The 8c81d64 guest contains the official ODbL text (SHA-256 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`). Its map screen visibly shows `MapLibre | Protomaps © OpenStreetMap` and a collapsed attribution-info icon. Statewide bounds, zoom, size, and checksum are recorded in `CONTENT-SOURCES.md` and the acceptance evidence. | Review the derivative database and confirm the contributor and ODbL details in the collapsed map attribution disclosure are practically accessible before distribution. |
 | Project N.O.M.A.D. Maps assets | Upstream source README, font OFL, and Tangrams-derived sprite notices are carried in the generated payload | Source commit pinned during build; exact Tangrams MIT notice copied to `licenses/project-nomad-maps/TANGRAMS-ICONS-MIT.txt` from upstream license commit `d7e160177365e00532d36e35e689727b97eb6be1` | The notice applies to Tangrams-derived sprite components; upstream does not identify the exact artwork revision or per-file provenance. Verify the notice in a rebuilt payload and resolve asset provenance before distribution. |

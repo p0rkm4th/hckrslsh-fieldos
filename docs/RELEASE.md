@@ -1,6 +1,6 @@
 # Release readiness and evidence
 
-The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. Subsequent public repository changes only update documentation and acceptance evidence; installer/runtime code is unchanged. `make check test` passed 127 tests; all 12 content-pack manifests validated.
+The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. The current source tree now contains text-only, version-bumped CDC pack revisions, but they have not been composed into an ISO or accepted in a guest. The accepted ISO still contains earlier illustrated CDC PDFs. Current source validation passes 128 tests and all 12 content-pack manifests.
 
 **Current private customer-mode engineering candidate:**
 `/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
@@ -25,6 +25,13 @@ reboots. Its report is
 The test ISO was built before documentation-only corrections were committed as
 `aedc570`; runtime and installer code did not change. Its optional pack
 transfer test was skipped. The customer-mode and unattended tests are distinct.
+
+The current source pack update removes five CDC PDFs containing visible agency
+marks and replaces the four affected packs with checksum-pinned text artifacts.
+Their archives pass integrity and temporary-root Source Library activation
+checks, but no desktop import, reboot, ISO build, or fresh acceptance test has
+yet verified the revised pack set. The accepted ISO above remains a private
+historical engineering candidate, not evidence for the current source.
 
 **Not release approved.** This is a private engineering candidate, not a
 redistribution-cleared customer release. Wikipedia 100 and the ten indexed

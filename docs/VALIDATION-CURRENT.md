@@ -2,7 +2,7 @@
 
 ## Current customer-mode candidate — interactive install PASS in VM
 
-The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. Subsequent public repository changes only update documentation and acceptance evidence; installer/runtime code is unchanged. `make check test` passed 127 tests; all 12 content-pack manifests validated.
+The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. The current source tree has newer text-only versions of four CDC content packs, but they have not been built into an ISO or installed/tested in a guest. The accepted `aedc570` ISO still contains the earlier illustrated CDC PDFs. No ISO built from the text-only pack updates has passed acceptance. The current source checks pass 128 tests and all 12 content-pack manifests validate.
 
 Customer ISO:
 `/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
@@ -53,12 +53,16 @@ content-pack transfer check was skipped.
 | Offline / connected-network security | PARTIAL | Customer VM had no NIC/default route; separate E2E blocked container egress. LAN exposure and connected-interface egress testing remain open. |
 | Physical hardware, GPU, GPS | NOT TESTED | Disposable QEMU VMs only. |
 | Redistribution | INCOMPLETE | Ubuntu, software, model, map, and reference bundle review is not complete; do not publish ISO binaries. |
+| Current-source CDC text-only packs | PASS, archive integrity only | Four versioned pack archives build and pass `zstd -t`, checksums, and member inspection with no PDFs. Pack installation, GUI activation, and fresh ISO acceptance remain untested; see [`CONTENT-PACKS.md`](CONTENT-PACKS.md). |
 
 **Assessment:** The current customer-mode candidate and fresh unattended
 acceptance both pass in disposable no-NIC UEFI VMs. This does not demonstrate
 physical-machine compatibility or customer readiness. Remaining gates include
 physical USB/hardware, connected-network security, wider authoritative content,
 retrieval quality, GPS/GPU validation, and redistribution clearance.
+The tested candidate is not current with the source pack revisions and retains
+the earlier CDC PDFs; it must not be treated as validation of the current
+source tree or as distribution-cleared.
 
 ## Historical customer-mode candidate
 

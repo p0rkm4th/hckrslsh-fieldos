@@ -26,6 +26,24 @@ exceptions. Non-text media can have separate licenses. The bundled CC BY-SA
 FieldOS has not completed an entry-by-entry media license review, so this test
 archive is not cleared for public redistribution.
 
+## CDC reference-pack format and current ISO limitation
+
+The current source manifests bundle text-only CDC extractions for the
+emergency-water/food pack and the preparedness/food-safety packs. The exact
+CDC Stacks records, source revision dates, checksums, attribution, no-charge
+notices, and non-endorsement statements are in each pack manifest and the
+FieldOS Source Library. These text files exclude the illustrated PDFs' visible
+CDC/HHS marks, photographs, and graphics; formatting can be lost. A few
+obvious extraction-only encoding/duplication errors were normalized without
+intentionally changing safety instructions or numeric values. Open the
+attributed CDC source when visual context or current updates are needed.
+
+The already tested customer ISO `aedc570` predates this text-only pack update
+and still contains the original illustrated PDFs. The ISO's functional VM
+acceptance does not clear those PDFs for redistribution, and it does not prove
+the new text pack revisions have been installed or tested. The current source
+changes require a rebuilt ISO and fresh acceptance before a customer release.
+
 ## Maps
 
 The test payload includes a global Protomaps basemap and a U.S. sample
@@ -122,13 +140,14 @@ agriculture or livestock manual. Source and reuse terms:
 
 ## Optional CDC emergency-health checklist
 
-The optional `us-basic-emergency-health` pack contains CDC's 2019 one-page
-*Prepare Your Health: Practical Skills* checklist. The original is unmodified,
-294,644 bytes, SHA-256
-`f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966`. The
-exact CDC STACKS item is marked Public Domain. It identifies practical skills
-to learn but does not teach first-aid procedures. Its source metadata and CDC
-attribution are in the installed manifest and Source Library.
+The optional `us-basic-emergency-health` pack contains a 2,548-byte text-only
+extraction of CDC's 2019 one-page *Prepare Your Health: Practical Skills*
+checklist (SHA-256
+`750dc9b8275f3208465af3d6de1b3c131f856fe9ffae825fabbdc473b5a5bae8`). The exact
+CDC STACKS item is marked Public Domain. The extraction excludes the page's
+CDC/HHS marks, CPR photograph, and graphics. It lists practical skills to learn
+but does not teach first-aid procedures. Its source metadata, limitations, and
+CDC attribution are in the pack manifest and generated Source Library.
 
 ## CDC private-well emergency guidance (unattended test ISO)
 

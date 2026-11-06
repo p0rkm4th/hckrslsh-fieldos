@@ -16,6 +16,12 @@ passed. See
 included and indexed. These are VM test results; physical USB is unverified and
 redistribution remains uncleared.
 
+The source tree now has versioned text-only revisions of four CDC packs after
+visual inspection found agency marks and third-party photographs/graphics in
+their original PDFs. The accepted ISO still contains the previous illustrated
+pack versions. The revised archives are integrity-checked but have not yet been
+installed in a guest or included in a rebuilt/accepted ISO.
+
 The `8c81d64` ISO source contains all eight then-current core pack manifests.
 Guest runtime records confirm the CDC emergency-kit checklist was indexed as
 one chunk and Southeastern handbook version `2026.1.1` as 678 chunks. The
@@ -261,49 +267,59 @@ linked as originals; open them and use the browser's Find command to search
 within the document. Search results are document links and text excerpts, not
 AI answers.
 
-The core starter reference pack is `us-water-food-emergency` version 1.0.0.
-It contains two unchanged CDC PDFs: “Make Water Safe During an Emergency” and
-“Eat Safe Food After a Power Outage.” Their source records are CDC STACKS
-items [128149](https://stacks.cdc.gov/view/cdc/128149) and
-[88473](https://stacks.cdc.gov/view/cdc/88473); each record identifies the item
-as Public Domain. The original PDFs are reproduced unmodified with CDC
-attribution and a non-endorsement statement. The included files are 730,926
-bytes (SHA-256
-`c39b55b4d8f3dd40ecd2b13175f7661b52dfc6e73e4a24ef189de64fb9d513b1`) and
-1,675,372 bytes (SHA-256
-`0982174617e2b3405e966b0b1dc2838e3ce92dfad3185da3d450b525a62a7ebf`). The
-manifest records source URLs, access and review dates, and license basis. The
-archive built from this revision is
-`/mnt/shared/fieldos-content-packs/content-packs/us-water-food-emergency-1.0.0.tar.zst`,
-SHA-256 `c862c023e8999268be6d78692e4d3a01c95a3f5f840fa954b424b5604eb9518c`.
-It is a small starter set, not a complete water, food, first-aid, medical, or
-disaster-preparedness library. Consult current local guidance. Source-tree
-configuration includes this pack in the offline payload, and its installation
-in the current candidate is verified by fresh E2E and interactive-install
-reports. The customer candidate is not approved for release.
+The core starter reference pack is now `us-water-food-emergency` version
+`1.0.1`. Its two CDC artifacts are text-only extractions of “Make Water Safe
+During an Emergency” and “Eat Safe Food After a Power Outage.” The exact CDC
+STACKS records are [128149](https://stacks.cdc.gov/view/cdc/128149) and
+[88473](https://stacks.cdc.gov/view/cdc/88473), respectively. The current pack
+omits the CDC/HHS marks, photographs, and infographic artwork in the source
+PDFs. It normalizes layout and extraction-only encoding errors while preserving
+the source text and numeric guidance; visual-only context may be lost. The
+documents are not a complete water, food, first-aid, medical, or disaster
+library. Consult current local guidance and the linked sources for visual
+context and updates.
+
+Current text artifacts: `cdc-water-treatment-searchable.txt` (2,787 bytes,
+SHA-256 `8c55b298bc66b7bbde439ecdf940320f14f58695b20626e864eddded45caca16`) and
+`cdc-food-power-outage-searchable.txt` (4,399 bytes, SHA-256
+`82e3793cfcb6287d40b16b722447953907b560ba954393b962ca270e6ca8911a`). The new
+`us-water-food-emergency-1.0.1.tar.zst` archive has SHA-256
+`bad91714686696426ec4efa23356644db396d6292bb5870e8cb18555b5555dae`; it passed
+`zstd -t`, checksum, and archive-member checks (no PDFs). The exact accepted
+`aedc570` ISO still contains the former illustrated PDF artifacts and has not
+been rebuilt with this update. This source change is not yet installation or
+end-to-end acceptance evidence; the customer candidate remains private and
+unapproved.
 
 ## CDC food-safety mistakes factsheet (optional transfer pack)
 
-`us-cdc-food-safety` version `2023.04.14.1` is an optional, independently
-installable pack. It contains CDC's original five-page *Food Safety: 10
-Dangerous Food Safety Mistakes* factsheet and a searchable text companion. The
-factsheet covers cooking, cross-contamination, thawing, time at room
-temperature, produce washing, handwashing, risk groups, and food spoilage. Its
-charts and illustrations remain in the PDF; the text extraction is only a
-search aid. It is dated April 14, 2023, links to more detailed resources that
-are not bundled, and is not a comprehensive food-preservation, canning, or
-power-outage manual.
+`us-cdc-food-safety` version `2023.04.14.2` is an optional, independently
+installable text-only pack. It contains a text extraction of CDC's five-page
+*Food Safety: 10 Dangerous Food Safety Mistakes* factsheet. It covers cooking,
+cross-contamination, thawing, time at room temperature, produce washing,
+handwashing, risk groups, and food spoilage. The photographs and graphics are
+omitted; the extraction may lose their context. The source is dated April 14,
+2023, links to more detailed resources that are not bundled, and is not a
+comprehensive food-preservation, canning, or power-outage manual.
 
 The [CDC Stacks record](https://stacks.cdc.gov/view/cdc/129474) marks this exact
 item Public Domain, identifies the publisher and date, and provides a SHA-512
-checksum matching the unchanged local PDF. CDC's [agency-materials policy](https://www.cdc.gov/Other/imagereuse.html)
+checksum for the source PDF. The text-only extraction excludes its CDC/HHS
+marks, photographs, and graphics; layout, encoding, duplication, and link
+artifacts were normalized, with no intended change to substantive guidance. CDC's
+[agency-materials policy](https://www.cdc.gov/other/agencymaterials.html)
 requires attribution, a prominent non-endorsement disclaimer, and notice that
-the source is available at no charge; those are recorded in the pack manifest
-and generated Source Library. This is a source-specific U.S. rights review,
-not clearance of the entire FieldOS distribution. The content is not indexed
-for AI; users access the attributed PDF and searchable text directly.
+the source is available at no charge; the pack manifest records these terms.
+This is a source-specific U.S. rights review, not clearance of the entire
+FieldOS distribution. The content is excluded from AI indexing; users read the
+attributed text directly. The normalized current text artifact is 7,188 bytes,
+SHA-256 `41c4ddf15d107123b2898cc9d1044b5438c20aef95e0812eca6918ab88eec603`;
+the rebuilt version `2023.04.14.2` archive SHA-256 is
+`32bcf952fd8e14ab4212396fdf1d1a2afc75278fd5b9bfe7987c2d388c668622` and has no
+PDF members. Four external-link glyphs are replaced with explicit “CDC link not
+bundled” notes.
 
-The archive built from source `1ab692c` is
+The historical archive built from source `1ab692c` is
 `/mnt/shared/fieldos-content-review-a88aece/content-packs/us-cdc-food-safety-2023.04.14.1.tar.zst`
 (912 KiB; SHA-256
 `6326e5eb910ef5ad1f7260507ce83722f54ba28b71afc4cc5f0d9a58450abd8c`). `zstd
@@ -410,7 +426,7 @@ failed safely without overwriting it; its report is
 
 ## Basic emergency-health checklist
 
-`us-basic-emergency-health` version `1.0.0` is a portable, optional CDC source
+`us-basic-emergency-health` version `1.0.1` is a portable, optional CDC text-only source
 document. It is not one of the eight core packs in the `8c81d64` ISO. It contains the CDC's
 one-page 2019 *Prepare Your Health: Practical Skills* checklist. The sheet
 encourages users to learn skills such as Hands-Only CPR, AED use, seizure first
@@ -418,21 +434,22 @@ aid, choking response, and wound care; it does not explain how to perform those
 procedures. Treat it as a training checklist, not a first-aid manual, medical
 advice, or substitute for professional instruction.
 
-The unchanged PDF is 294,644 bytes with SHA-256
-`f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966`. Its
+The pack retains the 2,548-byte text extraction, SHA-256
+`750dc9b8275f3208465af3d6de1b3c131f856fe9ffae825fabbdc473b5a5bae8`. The
 [CDC STACKS record](https://stacks.cdc.gov/view/cdc/79987) marks the exact item
-Public Domain; the [CDC STACKS rights guidance](https://stacks.cdc.gov/Content%20and%20Copyright)
-requests acknowledgement and warns that some materials have separate rights.
-The pack retains CDC attribution and says no endorsement is implied. The
-manifest records source, license basis, checksum, review date, and its
-nonclinical-review limitation. This is a small orientation sheet and does not
-close FieldOS's first-aid or medical-reference gap. It remains optional and
-outside the `8c81d64` core catalog.
+Public Domain; the pack excludes the original page's CDC/HHS marks and CPR
+photograph. It names skills such as Hands-Only CPR, AED use, seizure first aid,
+choking response, and wound care but does not teach those procedures. It is a
+training checklist, not a first-aid manual, medical advice, or substitute for
+professional instruction. The text is optional and remains outside the core
+catalog. Its rebuilt `1.0.1` archive has SHA-256
+`6d4d966b05a223df99584a523834b9dfbcf6161b7a43530c0c203a7b2abd595a` and has no
+PDF members. The older PDF archive and its VM test are historical evidence only.
 
 ## CDC emergency kit checklist
 
-`us-cdc-keep-calm-prepared` version `1.0.0` is an unchanged two-page
-CDC emergency-kit checklist. It covers household, workplace, school, vehicle,
+`us-cdc-keep-calm-prepared` version `1.0.1` is a two-page CDC emergency-kit
+checklist delivered as text-only extraction. It covers household, workplace, school, vehicle,
 and additional family or pet supply considerations. It is a brief 2013
 preparedness checklist, not a complete all-hazards plan, first-aid guide, or
 medical reference. The exact [CDC STACKS record](https://stacks.cdc.gov/view/cdc/23954)
@@ -441,25 +458,21 @@ extent, and provides the original PDF link. The current source catalog marks
 this pack as core. It was absent from historical ISO `cc4aa38`, but the
 `8c81d64` candidate contains it and its guest runtime record shows one indexed
 chunk; see the current-candidate evidence above.
-The bundled file is 138,605 bytes
-with SHA-256
-`d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`; its PDF
-text is extractable. In a separate offline copy-on-write guest test, the
+The current bundled text is 1,933 bytes, SHA-256
+`7d7cf2398af712db6b41b76fbdace254b8b77fdab396fec91ab5c84f08912253`. It omits
+the CDC/HHS seal and decorative artwork; layout is normalized. In a separate
+offline copy-on-write guest test of the earlier PDF archive, the
 archive was transferred from read-only media, appeared in Firefox's Source
 Library, opened as a two-page PDF, and indexed in N.O.M.A.D. as one chunk. The
 file, Source Library listing, and indexed row persisted through two reboots.
 The manifest records CDC attribution and makes clear that source and license
-review is not a clinical review. Its portable archive is
-`/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0.tar.zst`
-(109,922 bytes; SHA-256
-`ebfb8bb14588f9af2521a3139420b17eb7db5e96014ad093526dba27d38f8617`). The
-existing offline installer was exercised against this archive on the build
-host: checksum validation, immutable installation, checksum recheck, generated
-Source Library entry, and local original-document link all passed. This
-archive then passed the isolated guest integration above. No AI semantic
-question-answering test was run for this checklist. Host-side validation
-details are at
-`/mnt/shared/fieldos-content-packs/content-packs/us-cdc-keep-calm-prepared-1.0.0-validation.md`.
+review is not a clinical review. The rebuilt `1.0.1` text-only archive has
+SHA-256 `fe289ffcc1f973635fbc8f78dfbd5dcaa6e4931f9bc62e32a998a4889b38be22` and
+no PDF member. The checksum-verified archive was installed into an isolated
+temporary root; its Source Library page linked the text file and displayed the
+attribution and limitations. No full desktop import, reboot, or AI semantic
+question-answering test has been run for this revised pack. The older version
+`1.0.0` PDF archive and VM test remain historical evidence only.
 
 ## MedlinePlus first-aid overview
 

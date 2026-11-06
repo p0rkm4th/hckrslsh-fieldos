@@ -1,43 +1,36 @@
 {
   "schema_version": 1,
   "id": "us-basic-emergency-health",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "U.S. Basic Emergency Health Preparedness",
-  "description": "One CDC preparedness checklist that points readers toward first-aid and emergency-health skills to learn. It does not teach the procedures and is not a first-aid manual or medical advice.",
+  "description": "CDC Prepare Your Health: Practical Skills text-only extraction. Original visual layout and graphic-only context are not included; use the source citation to identify the document and its limits.",
   "category": "first-aid-emergency",
   "sources": [
     {
       "id": "cdc-practical-skills",
       "name": "CDC STACKS: Prepare Your Health: Practical Skills (2019; item record cdc:79987)",
       "url": "https://stacks.cdc.gov/view/cdc/79987",
-      "license": "The exact CDC STACKS item record identifies this CDC-authored fact sheet as Public Domain.",
-      "attribution": "Centers for Disease Control and Prevention, Center for Preparedness and Response. Reproduced unmodified; CDC attribution retained. No endorsement is implied.",
+      "license": "CDC STACKS identifies this exact source item as Public Domain. The listed artifact is a text-only pdftotext extraction; agency marks, photographs, and graphics from the PDF are excluded. Formatting and visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC reuse guidance requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "attribution": "Source: CDC STACKS: Prepare Your Health: Practical Skills (2019; item record cdc:79987). Text-only extraction; original graphics, photographs, and agency marks are omitted. Available from CDC at no charge. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
       "accessed": "2026-11-04"
     },
     {
       "id": "cdc-stacks-rights",
       "name": "CDC STACKS Content and Copyright guidance",
       "url": "https://stacks.cdc.gov/Content%20and%20Copyright",
-      "license": "Rights guidance used to record the source item's public-domain status; not bundled as a content artifact.",
+      "license": "Rights guidance only; not bundled as a content artifact.",
       "attribution": "Centers for Disease Control and Prevention (CDC).",
       "accessed": "2026-11-04"
     }
   ],
   "artifacts": [
     {
-      "path": "cdc-prepare-your-health-practical-skills.pdf",
-      "size_bytes": 294644,
-      "sha256": "f29fe3dd877b45c11c4a752a783af2aad965339a695137573c4445a5d8b97966",
-      "source": "cdc-practical-skills",
-      "license": "Public Domain per the exact CDC STACKS item record; original PDF is unmodified."
-    },
-    {
       "path": "cdc-practical-skills-searchable.txt",
       "size_bytes": 2548,
       "sha256": "750dc9b8275f3208465af3d6de1b3c131f856fe9ffae825fabbdc473b5a5bae8",
       "source": "cdc-practical-skills",
-      "license": "Machine-generated pdftotext search aid derived from the accompanying source PDF; formatting and some layout may be lost. Governed by the source license and attribution in this pack.",
-      "title": "Searchable text companion: CDC practical skills PDF",
+      "license": "CDC STACKS identifies the exact source item as Public Domain. This artifact is a text-only pdftotext extraction; the original PDF's agency marks, photographs, and graphics are excluded, and formatting or visually conveyed context may be lost. Only extraction encoding, duplication, and layout artifacts were normalized; source meaning and numerical guidance were not substantively changed. Consult the linked CDC source for current guidance and visual context. CDC's agency-materials policy requires attribution, a non-endorsement notice, and notice that the source is available at no charge.",
+      "title": "CDC Prepare Your Health: Practical Skills text-only extraction",
       "index_with_ai": false
     }
   ],
@@ -50,7 +43,7 @@
   "authority": "authoritative-reference",
   "review": {
     "reviewer": "FieldOS source and metadata review; not clinical review",
-    "reviewed_at": "2026-11-04",
+    "reviewed_at": "2026-11-06",
     "content_revision": "2019-02-06"
   }
 }
