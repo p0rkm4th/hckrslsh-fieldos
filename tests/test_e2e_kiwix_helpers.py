@@ -55,6 +55,20 @@ class E2EKiwixHelperTests(unittest.TestCase):
             {"urn:uuid:attribute-id", "urn:uuid:element-id"},
         )
 
+    def test_library_identity_accepts_kiwix_relative_book_paths(self):
+        library = (
+            '<library><book id="urn:uuid:relative" title="Climate change" '
+            'path="nested/climate-mini.zim" /></library>'
+        )
+        self.assertEqual(
+            E2E.kiwix_library_identity(library, "nested/climate-mini.zim"),
+            {
+                "id": "urn:uuid:relative",
+                "title": "Climate change",
+                "path": "/data/nested/climate-mini.zim",
+            },
+        )
+
     def test_catalog_parser_supports_title_match_when_ids_are_not_exposed(self):
         catalog = (
             '<feed xmlns="http://www.w3.org/2005/Atom"><entry>'
