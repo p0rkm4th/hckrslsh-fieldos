@@ -1,14 +1,48 @@
-# Historical customer ISO validation: `cc4aa38`
+# Current validation status — 2026-11-05
 
-This file records the historical `cc4aa38` run and is not the latest customer
-candidate. Candidate `8c81d64` is newer, but its fresh no-NIC interactive
-installation is blocked at Subiquity storage setup: `/dev/vda` is visible and
-Next remains disabled. No installed OS, firstboot, service, or reboot result
-exists for that candidate. Diagnostics are at
-`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. The last
-completed install test, `8020fd3`, passed VM install and two reboots but its UI
-selected Qwen3 0.6B while firstboot validated 1.7B. Current model handoff and
-graphical-startup changes are not validated by either ISO.
+## Latest customer-mode candidate
+
+The latest customer ISO is `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`.
+It was built from clean source commit `8c81d649e50e9ea793c0f85b104459302d4548ff`.
+The current repository head is `64841d6754af9090b01c43618001b65e7397a52f`;
+that follow-on commit changes documentation/provenance only and is not the ISO
+payload revision. The candidate remains an engineering test image, not a
+redistribution-cleared release.
+
+Detailed run evidence, including logs and actual desktop screenshots, is at
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+
+| Area | Current result | Evidence and limits |
+|---|---|---|
+| Clean-source build and ISO structure | PASS | `make check test` passed 110 tests before the run; ISO verification passed. ISO hash above. |
+| Customer interactive install and disk boot | PASS in disposable UEFI VM | User selected/confirmed `vda`; install completed; ISO was ejected at the standard prompt; ordinary VM power-on booted installed disk. Physical USB handoff remains unverified. |
+| Offline provisioning | PASS in no-NIC VM | Firstboot status complete; unit succeeded; no failed systemd units. VM had no virtual NIC/default route. |
+| Branded desktop | PASS in VM | Fresh installed GNOME desktop showed FieldOS wallpaper, dark appearance, orange accent, and dock; OOBE completed offline. |
+| N.O.M.A.D. | PASS for tested local features | `/api/health` returned `ok`; Command Center and AI UI opened; seven expected containers returned after two reboots. |
+| Local inference | PASS, CPU | Bundled Qwen3 1.7B generated three marker responses; selector chose CPU profile. GPU acceleration is unverified. |
+| Embeddings | PASS | Bundled model returned a non-empty 768-D vector, including after reboot 2. |
+| Knowledge retrieval | PARTIAL | 10 local files / 690 chunks; browser search for “flood” found three references and a real response cited the vegetable handbook. Breadth and semantic quality are limited; emergency response test returned the configured source-directed refusal. |
+| Kiwix | PASS, fixture limited | Browser search worked against the bundled 100-article `Wikipedia 100` archive; this is not a substantial encyclopedia. |
+| Tennessee maps | PASS, actual browser rendering | Zoom-13 map rendered at eight required urban/rural locations; post-reboot Nashville screenshots and a local tile/range request also passed. No routing or GPS claim. |
+| Persistence | PASS, two post-install reboot cycles | All seven containers and functional checks recovered after both cycles. Browser profile/chat history, user marker, and map checksum persisted. See exact boot IDs and hashes in run diagnostics. |
+| Network security with adapter enabled | NOT TESTED | This acceptance VM had no NIC, no default route, and locally inspected service listeners bound to loopback. That does not establish safe LAN exposure or container-egress policy when connected. |
+| Physical hardware / GPU / GPS | NOT TESTED | VM evidence only. |
+| Content redistribution clearance | BLOCKED / INCOMPLETE | Ubuntu, software, model, map, and reference-data rights still require a complete documented review before customer redistribution. |
+
+**Assessment:** A current customer-mode installation has passed the defined VM
+offline functional and two-reboot checks. FieldOS is not yet customer-release
+ready because physical-hardware validation, connected-network security
+testing, meaningful library breadth, and redistribution review remain open.
+
+## Historical customer ISO validation: `cc4aa38`
+
+This section preserves the historical `cc4aa38` report. Its following
+paragraphs reflect what was known at the time and are superseded by the current
+validation summary above. In particular, the initial concern about the later
+`8c81d64` installer's disabled Next button was disproven: the customer-mode
+installation completed, booted from its installed disk, and passed two reboot
+cycles in the VM described above.
 
 **Run date:** 2026-11-05  
 **Source:** `cc4aa38f3debd078b877589355221e94821bd160` (`main`, clean at test start; same commit as `origin/main`)  
