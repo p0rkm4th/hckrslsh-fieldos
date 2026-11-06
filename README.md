@@ -20,22 +20,26 @@ build outputs and are excluded from Git.
 ## Current status
 
 The current private customer-mode candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`
-(source `129da89fff0bd769b85f42b541bf195eedb70b31`, SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`). Structural verification passed. A fresh
-interactive install to a disposable 80 GiB UEFI VM disk with no NIC passed;
-firstboot completed; FieldOS desktop, local CPU chat and embeddings, Kiwix,
-source indexing, and maps were exercised; and services and user data persisted
-across two reboots. At Ubuntu's standard virtual-media prompt the guest powered
-off after Enter/eject, then booted normally from the installed disk on power-on.
-Physical USB handoff is untested. Detailed evidence is in
+`/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
+(source `aedc5705915d4ff57bad18e535b602eace7310b8`, SHA-256
+`538ad22a3f024a173196bd9d18953b4a16c492cecc2338bf90d0bd028cccfab6`). Structural
+verification and a fresh interactive install to a disposable 80 GiB UEFI VM
+disk with no NIC passed. Firstboot, branded desktop, local CPU chat and
+embeddings, Kiwix retrieval, source indexing, and a visible zoom-13 Nashville
+map worked; services and user data persisted across two reboots. At Ubuntu's
+standard virtual-media prompt the guest powered off after Enter/eject, then
+booted normally from the installed disk on power-on. Physical USB handoff is
+untested. Detailed evidence is in
 [`docs/VALIDATION-CURRENT.md`](docs/VALIDATION-CURRENT.md) and
-`/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
+`/mnt/shared/fieldos-e2e/customer-aedc570-interactive/customer-acceptance.md`.
 
-The exact-source unattended E2E also passed: offline installation, local
+The fresh unattended E2E also passed: offline installation, local
 inference/embeddings, Kiwix, source indexing, eight actual Firefox Tennessee
 map views, egress isolation, and two reboots. Report:
-`/mnt/shared/fieldos-e2e/valkey-129da89/20261106T092845Z-735158/report.md`.
-These are VM results, not physical-device validation. This is not a public
+`/mnt/shared/fieldos-e2e/current-31a244c/20261106T111141Z-909878/report.md`.
+Its worktree was dirty only for documentation corrections that were committed
+as `aedc570`; the customer ISO above was built cleanly from that commit. These
+are VM results, not physical-device validation. This is not a public
 release: redistribution clearance, attached-network security testing, physical
 hardware, useful broad reference coverage, and AI retrieval quality remain
 open. Wikipedia 100 remains a fixture; do not use the local model as a
@@ -53,7 +57,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
