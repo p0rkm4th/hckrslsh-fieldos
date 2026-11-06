@@ -6,26 +6,37 @@
 This document records an engineering review of the current test payload; it is
 not a legal opinion or a substitute for counsel's review.
 
-Canonical's official IPRights Policy was rechecked on 2026-11-04. It permits
-modified Ubuntu for personal/internal use. For redistribution, it requires
-Canonical approval/certification/provision when Ubuntu marks remain; otherwise
-the policy says to remove/replace those marks and recompile. This candidate
-still contains Ubuntu branding. No Canonical permission or complete debranding
-is recorded. See [Canonical's IPRights Policy](https://ubuntu.com/legal/intellectual-property-policy).
+Canonical's current IPRights Policy was checked on 2026-11-06. It says
+unmodified Ubuntu may be redistributed. A modified Ubuntu image that retains
+Canonical trademarks requires Canonical approval, certification, or provision;
+otherwise the trademarks must be removed/replaced and the source recompiled to
+create new binaries. This FieldOS image is modified and retains Ubuntu marks;
+no Canonical permission or complete debranding is recorded. See [Canonical's
+IPRights Policy](https://canonical.com/legal/intellectual-property-policy).
 
-The latest built customer candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso`, SHA-256
-`8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`, from
-source `5abae15`. Its fresh interactive no-NIC installation, installed-disk
-boot, offline firstboot, tested features, and two reboot cycles passed in a
-disposable UEFI VM. See [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
-`/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`. The CDC
-private-well text pack added in the current source revision is not part of this
-ISO. These functional results do not clear the ISO or
-payload for redistribution.
-Ubuntu branding remains, and complete notice, trademark, source-offer, model,
-map, and content reviews are outstanding. Do not distribute the ISO or payload
-until the reviews below are complete.
+The exact customer candidate reviewed here is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, SHA-256
+`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`, source
+`f250cc175ccfac137bb6bf1236497e16b3f4cbd3`. The embedded build manifest pins
+the Ubuntu input and prepared payload checksums. Structural verification and
+interactive no-NIC UEFI installation, firstboot, local application checks, and
+two reboots passed in a disposable VM. See
+[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
+`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/report.md`. These
+functional results do not clear the ISO or payload for redistribution.
+
+The current payload includes the CDC-authored private-well text pack; the
+pack's manifest records its source, date, checksum, text-only scope, CDC
+attribution, non-endorsement, and no-charge notice. CDC's current agency
+materials policy says most CDC website information is public domain, with
+exceptions for third-party material, and requires attribution, a prominent
+non-endorsement disclaimer, no substantive changes, and notice that the source
+is available at no charge. This is an engineering rights assessment, not legal
+advice or full commercial distribution clearance. The Wikipedia ZIM, Ubuntu
+marks, Redis image, all container transitive components, map assets, model
+terms, notices, and source offers still have unresolved review items. Do not
+publish or distribute the candidate until those reviews are resolved.
+
 ## Current artifact inventory
 
 | Artifact | Recorded terms and source | Evidence in payload | Open release review |
@@ -42,7 +53,7 @@ until the reviews below are complete.
 | Miniature Wikipedia ZIM | Wikimedia text terms: <https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use>; CC BY-SA 4.0 text is bundled | `payload/manifests/references.json` pins Project N.O.M.A.D. v1.35.1 commit `0dbbd21c2f470975e86131c497694c147ca8bc00`, exact archive size `4537782`, and SHA-256 `2811724b72fd34a0728c28b7456d3d6866579019fbbe7ffe28528f3450c252db`; direct upstream download matched the candidate bytes. Current guest's source/license documents match the repo checksums. | Archive-level provenance and attribution are present; article/media-level license review remains open. |
 | MedlinePlus First Aid summary | NLM reuse policy: <https://medlineplus.gov/about/using/usingcontent/>; source page: <https://medlineplus.gov/firstaid.html> | 3,086-byte text snapshot of the health-topic page summary last updated 2026-07-22. Artifact SHA-256 `32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893`; pack archive and validation are recorded in `docs/CONTENT-PACKS.md`. NLM policy expressly identifies health-topic summaries as public domain; this artifact excludes linked pages and all images/media. | Attribution and exact source scope are recorded in the manifest. This is a U.S. rights assessment, not a clinical review or international rights determination. The 8c81d64 guest contains the pack at `/var/lib/fieldos/content-packs/us-medlineplus-first-aid/2026.07.22/`. |
 | CDC Keep Calm and Be Prepared checklist | Exact CDC STACKS item record: <https://stacks.cdc.gov/view/cdc/23954> | Unmodified 138,605-byte PDF, SHA-256 `d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`, plus a searchable text extraction. The record identifies this item as Public Domain. | CDC attribution and no-endorsement note are in the manifest. The 8c81d64 guest contains this pack at `/var/lib/fieldos/content-packs/us-cdc-keep-calm-prepared/1.0.0/`; it is not medical or first-aid instruction. |
-| CDC private-well emergency guidance | CDC *How to Disinfect Wells After an Emergency*, May 29, 2025: <https://www.cdc.gov/water-emergency/about/how-to-disinfect-wells-after-an-emergency.html>; CDC reuse policy: <https://www.cdc.gov/other/agencymaterials.html> | 15,338-byte text rendition, SHA-256 `d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6`; included in test-only ISO `d04f450`, whose no-NIC E2E passed. Not in the current interactive customer ISO `5abae15`. | The text-only pack excludes the page photograph and navigation, and preserves warnings and tables. Its manifest records CDC attribution, non-endorsement, free-source notice, and no substantive edits. This is an engineering rights review under the CDC policy, not legal advice or clearance of other assets. Full commercial redistribution review remains open. |
+| CDC private-well emergency guidance | CDC *How to Disinfect Wells After an Emergency*, May 29, 2025: <https://www.cdc.gov/water-emergency/about/how-to-disinfect-wells-after-an-emergency.html>; CDC reuse policy: <https://www.cdc.gov/other/agencymaterials.html> | 15,338-byte text rendition, SHA-256 `d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6`; included in current candidate `f250cc1` and exact interactive acceptance run. | Text-only rendition excludes photograph and page navigation, preserving warnings and table values. Manifest records CDC attribution, non-endorsement, free-source notice, and no substantive edits. The CDC policy has exceptions for third-party material and urges periodic update checks. This is an engineering review; commercial redistribution clearance remains open. |
 | Protomaps Tennessee, world, and U.S. PMTiles | Protomaps states its basemap is an ODbL Produced Work and requires OSM attribution: <https://docs.protomaps.com/basemaps/downloads>; ODbL text: <https://opendatacommons.org/licenses/odbl/1-0/> | The 8c81d64 guest contains the official ODbL text (SHA-256 `607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5`). Its map screen visibly shows `MapLibre | Protomaps © OpenStreetMap` and a collapsed attribution-info icon. Statewide bounds, zoom, size, and checksum are recorded in `CONTENT-SOURCES.md` and the acceptance evidence. | Review the derivative database and confirm the contributor and ODbL details in the collapsed map attribution disclosure are practically accessible before distribution. |
 | Project N.O.M.A.D. Maps assets | Upstream source README, font OFL, and Tangrams-derived sprite notices are carried in the generated payload | Source commit pinned during build; exact Tangrams MIT notice copied to `licenses/project-nomad-maps/TANGRAMS-ICONS-MIT.txt` from upstream license commit `d7e160177365e00532d36e35e689727b97eb6be1` | The notice applies to Tangrams-derived sprite components; upstream does not identify the exact artwork revision or per-file provenance. Verify the notice in a rebuilt payload and resolve asset provenance before distribution. |
 
