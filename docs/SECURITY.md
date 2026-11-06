@@ -147,6 +147,17 @@ retained SLIRP checks above are from an earlier guest/source and do not prove
 current runtime behavior or LAN-peer isolation. Do not treat the current-source
 render as completion of the network-enabled exposure gate.
 
+Two separate disposable QEMU-user-NIC installs of the unchanged `8c81d64` ISO
+were attempted on 2026-11-06, one with a VirtIO scratch disk and one SATA. Both
+reached installer Disk setup with “Erase disk and install Ubuntu” selected and
+Next disabled. Neither installation completed, so no current guest services,
+network behavior, or container egress were tested. The accepted guest, ISO,
+and evidence were not modified. Screenshots and reports are retained under
+`~/Workspaces/hckrslsh-fieldos-artifacts/network-review-20261106/` and
+`~/Workspaces/hckrslsh-fieldos-artifacts/network-review-sata-20261106/`.
+Diagnose the installer storage-step block
+before another connected-network attempt.
+
 ## Live runtime recheck — 2026-11-03
 
 After two additional reboots of the retained no-NIC guest from the 10:23 E2E
