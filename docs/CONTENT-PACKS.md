@@ -302,7 +302,7 @@ and generated Source Library. This is a source-specific U.S. rights review,
 not clearance of the entire FieldOS distribution. The content is not indexed
 for AI; users access the attributed PDF and searchable text directly.
 
-The archive built from source `a88aece` plus this pack is
+The archive built from source `1ab692c` is
 `/mnt/shared/fieldos-content-review-a88aece/content-packs/us-cdc-food-safety-2023.04.14.1.tar.zst`
 (912 KiB; SHA-256
 `6326e5eb910ef5ad1f7260507ce83722f54ba28b71afc4cc5f0d9a58450abd8c`). `zstd
