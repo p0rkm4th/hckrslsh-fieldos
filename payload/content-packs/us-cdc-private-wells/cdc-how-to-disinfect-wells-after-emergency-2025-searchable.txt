@@ -1,0 +1,148 @@
+How to Disinfect Wells After an Emergency
+CDC page dated May 29, 2025
+
+About
+
+- Disasters such as earthquakes, fires, and floods can damage private well piping and electrical systems.
+- Contact your local or state health department or agriculture extension agent for specific advice on disinfecting your well.
+- Working on a well after a natural disaster can be hazardous and should be done by a well or pump contractor.
+- Use the guidance below after checking with local authorities for precautions for wells in your area.
+Overview
+
+After an emergency, if you suspect that your well might be contaminated, contact your local or state health department or agriculture extension agent for information on disinfecting it. Wells should be disinfected by a well or pump contractor, due to safety concerns. The guidance below can be used after first checking with local authorities for private well flood precautions.
+
+Fact
+Fact: After a disaster, it is safest to drink bottled water until you are certain that your water is free of contaminants and safe to drink. If extensive flooding has occurred or you suspect that the well may be contaminated, do not drink the water.
+
+Warning
+Warning: If your water smells like fuel or chemicals, or if you live in an area where the potential for a release of fuels, pesticides, or other chemicals is high, contact your local health department. Water contaminated with fuel or toxic chemicals will not be made safe by boiling or disinfection. Until you know the water is safe, use bottled water.
+
+Safety precautions before starting
+
+Clear hazards away from wells before cleaning and disinfecting them. Follow these precautions:
+
+- Turn off all electricity to the well area before clearing debris. Do not attempt to repair the water system unless you are experienced with this type of work; electrical shock can occur. Inspect all electric connections for breaks in insulation and for moisture. Connections must be dry and unbroken to avoid electric shock.
+- Carefully inspect the area around the well for hazards such as power lines on the ground or in the water; sharp metal, glass, or wood debris; open holes; and slippery conditions.
+- Do not enter the well pit. Gases and vapors can build up in well pits, creating a hazardous environment.
+- Before the power is turned back on for the well, a qualified electrician, well contractor, or pump contractor should check the equipment wiring system.
+- Wear protective goggles or a face shield when working with chlorine solutions. Chlorine solutions may cause injury to the eye, irritate skin, and damage clothing.
+- Work in well-ventilated areas and avoid breathing vapors when mixing and handling chlorine solutions.
+- Warn users not to drink or bathe in water until all the well disinfection steps have been completed.
+Disinfection steps
+
+Drilled or driven wells
+
+Follow these steps to disinfect a drilled or driven well:
+
+1. If the well is equipped with an electrical pump, turn off all electricity and clear debris from around the top of the well.
+2. Repair the electrical system and pump if needed. Contact a qualified electrician, well contractor, or pump contractor if you are not experienced with this type of work.
+3. Start the pump and run water until it is clear. Use the outside faucet closest to the well to drain the potentially contaminated water from the well and keep the unsafe well water out of the interior household plumbing. If there isn't a pump, bail water from the well with a bucket or other device until the water is clear.
+4. If the well is connected to interior home plumbing, close valves to any water softener units.
+5. Use Table 2 below to determine the amount of liquid household bleach needed to disinfect the well. Use only unscented bleach. For a table in metric units, please see Table 2.1: Approximate Amount of Bleach for Disinfection of a Drilled or Driven Well (Metric) below.
+6. Using a 5-gallon bucket, mix the bleach from Table 2 with 3-5 gallons of water (12-19 liters).
+7. Remove the vent cap.
+8. Pour the bleach water mixture into the well using a funnel. Avoid all electrical connections. Attach a clean hose to the nearest outside faucet and use it to circulate water back into the well for thorough mixing.
+9. Rinse the inside of the well casing with a garden hose or bucket for 5-10 minutes.
+10. Open all faucets inside the home and run the water until you notice a strong odor of chlorine (bleach) at each faucet. Turn off all faucets and allow the solution to remain in the well and plumbing for a minimum of 12 hours.
+11. After at least 12 hours, attach a hose to an outside faucet and drain the chlorinated water onto an area without plants or other vegetation, such as a driveway. Continue draining until the chlorine odor disappears. Avoid draining into open sources of water (streams, ponds, etc.).
+12. Turn on all indoor faucets and run water until the chlorine odor disappears.
+13. Until well water has been tested, boil it (rolling boil for 1 minute) before using or use another alternative water source. Wait at least 7-10 days after disinfection, then have the water in your well sampled. Water sampling cannot be done until all traces of chlorine have been flushed from the system.
+Table 1: Approximate Amount of Bleach for Disinfection of a Drilled or Driven Well
+
+Depth of Water | Diameter of Well Casing
+2 inches | 4 inches | 6 inches | 8 inches | 10 inches | 24 inches | 36 inches
+10 feet | 3/4 tbsp | 3 1/4 tbsp | 1/2 cup | 3/4 cup | 1 1/4 cups | 7 cups | 1 gal
+20 feet | 1 1/2 tbsp | 6 1/2 tbsp | 1 cup | 1 1/2 cups | 2 1/2 cups | 14 cups | 2 gal
+30 feet | 2 1/4 tbsp | 9 3/4 tbsp | 1 1/2 cups | 2 1/4 cups | 3 1/4 cups | 1 1/4 gal | 3 gal
+40 feet | 3 tbsp | 13 tbsp | 2 cups | 3 cups | 5 cups | 1 3/4 gal | 4 gal
+50 feet | 3 3/4 tbsp | 1 cup | 2 1/2 cups | 3 3/4 cups | 6 1/4 cups | 2 1/4 gal | 5 gal
+100 feet | 7 1/2 tbsp | 2 cups | 5 cups | 7 1/2 cups | 12 1/2 cups | 4 1/2 gal | 10 gal
+Notes: Use only unscented household liquid chlorine bleach. Bleach concentrations are generally between 5-9%. Quantities given in this table are approximate and are rounded to the nearest practical measurement. Amounts given are calculated in accordance with reaching a chlorine concentration of >100 mg/L.
+Key: tbsp: tablespoon gal: gallon 1 cup = 8 fluid ounces = 16 tablespoons 1 gallon = 16 cups
+Table 1a: Approximate Amount of Bleach for Disinfection of a Drilled or Driven Well (Metric)
+
+Depth of Water | Diameter of Well Casing
+5 cm | 10 cm | 15 cm | 20 cm | 25 cm | 0.6 m | 0.9 m
+3 m | 12 mL | 48 mL | 118 mL | 177 mL | 296 mL | 1.66 L | 3.78 L
+6 m | 24 mL | 96 mL | 236 mL | 354 mL | 592 mL | 3.32 L | 7.56 L
+9 m | 36 mL | 144 mL | 354 mL | 531 mL | 888 mL | 4.98 L | 11.34 L
+12 m | 48 mL | 192 mL | 472 mL | 708 mL | 1.18 L | 6.64 L | 15.12 L
+15 m | 60 mL | 240 mL | 590 mL | 885 mL | 1.48 L | 8.30 L | 18.90 L
+30 m | 120 mL | 480 mL | 1.18 L | 1.77 L | 2.96 L | 16.60 L | 37.80 L
+Notes: Use only unscented household liquid chlorine bleach. Bleach concentrations are generally between 5-9%. Quantities given in this table are approximate and are rounded to the nearest practical measurement. Amounts given are calculated in accordance with reaching a chlorine concentration of >100 mg/L.
+Key: cm: centimeter m: meter 1 m = 100 centimeters mL: milliliter L: liter 1 liter = 1000 milliliters
+Bored or dug wells
+
+Bored and dug wells can be difficult to disinfect because the shallow depth and inadequate protection from flood water can allow contaminants to re-enter the well. Follow these steps to disinfect bored or dug wells:
+
+1. If the well has an electrical pump, turn off all electricity and clear debris from around the top of the well.
+2. Repair the electrical system and pump if needed. Contact a qualified electrician, well contractor, or pump contractor if you are not experienced with this type of work.
+3. Start the pump and run water until it is clear. Use the outside faucet closest to the well to drain potentially contaminated water from the well and keep unsafe well water out of the interior household plumbing. If there isn't a pump, bail water from the well with a bucket until water is clear.
+4. If the well is connected to interior home plumbing, close valves to any water softener unit.
+5. Use Table 1 below to determine the amount of liquid household bleach needed to disinfect the well. Use only unscented bleach. For a table in metric units, please see Table 1.1: Approximate Amount of Bleach for Disinfection of a Bored or Dug Well (Metric) below.
+6. Using a 5-gallon bucket, mix the bleach from Table 1 with 3-5 gallons of water (12-19 liters).
+7. Add the bleach water mixture to the well. Avoid all electrical connections. Attach a clean hose to an outside faucet and use it to circulate water back into the well for thorough mixing. If there isn't a pump, mix water by pouring it back into the well using a bucket.
+8. Rinse the inside of the well casing with a garden hose or bucket for 5-10 minutes.
+9. Open all faucets inside the home and run the water until you notice a strong odor of chlorine (bleach) at each faucet. Turn off all faucets and allow the solution to remain in the well and plumbing for at least 12 hours.
+10. After at least 12 hours, attach a hose to an outside faucet and drain the chlorinated water onto an area without plants or other vegetation, such as a driveway. Continue draining until the chlorine odor disappears. Avoid draining into open sources of water (streams, ponds, etc.).
+11. Turn on all indoor faucets and run water until the chlorine odor disappears.
+12. Until well water has been tested, boil it (roiling boil for 1 minute) before using or use another alternative water source. Wait at least 7-10 days after disinfection, then have the water in your well tested. Water testing cannot be done until all traces of chlorine have been flushed from the system.
+Table 2: Approximate Amount of Bleach for Disinfection of a Bored or Dug Well
+
+Depth of Water | Diameter of Well
+0.5 foot | 1 foot | 2 feet | 3 feet | 4 feet | 5 feet
+10 feet | 1/2 cup | 1 3/4 cups | 7 cups | 1 gal | 1 3/4 gal | 2 3/4 gal
+20 feet | 1 cup | 3 1/2 cups | 14 cups | 2 gal | 3 1/2 gal | 5 1/2 gal
+30 feet | 1 1/2 cups | 5 1/4 cups | 1 1/4 gal | 3 gal | 5 1/4 gal | 8 1/4 gal
+40 feet | 2 cups | 7 cups | 1 3/4 gal | 4 gal | 7 gal | 11 gal
+50 feet | 2 1/2 cups | 8 3/4 cups | 2 1/4 gal | 5 gal | 8 3/4 gal | 13 3/4 gal
+Notes: Use only unscented household liquid chlorine bleach. Bleach concentrations are generally between 5-9%. Quantities given in this table are approximate and are rounded to the nearest practical measurement. Amounts given are calculated in accordance with reaching a chlorine concentration of >100 mg/L.
+Key: gal: gallon 1 cup = 8 fluid ounces 1 gallon = 16 cups
+Table 2a: Approximate Amount of Bleach for Disinfection of a Bored or Dug Well (Metric)
+
+Depth of Water | Diameter of Well
+0.15 meter | 0.3 meter | 0.6 meter | 0.9 meter | 1.2 meters | 1.5 meters
+3 meters | 118 mL | 414 mL | 1.66 L | 3.78 L | 6.62 L | 10.41 L
+6 meters | 236 mL | 828 mL | 3.32 L | 7.56 L | 13.24 L | 20.82 L
+9 meters | 354 mL | 1.24 L | 4.98 L | 11.34 L | 19.86 L | 31.23 L
+12 meters | 472 mL | 2.49 L | 6.64 L | 15.12 L | 26.48 L | 41.64 L
+15 meters | 590 mL | 3.72 L | 8.30 L | 18.9 L | 33.10 L | 52.05 L
+Notes: Use only unscented household liquid chlorine bleach. Bleach concentrations are generally between 5-9%. Quantities given in this table are approximate and are rounded to the nearest practical measurement. Amounts given are calculated in accordance with reaching a chlorine concentration of >100 mg/L.
+Key: mL: milliliter L: Liter 1 liter = 1000 milliliters
+Sampling after disinfection
+
+- Wait at least 7 to 10 days to test the water after disinfection to ensure that the chlorine has been thoroughly flushed from the system. Until well water has been tested, boil it (rolling boil for 1 minute) before using or use another alternative water source.
+- Contact the local health department for water sampling and testing information or contact your state laboratory certification officer to find a certified lab near you. You can also get water sampling information from the U.S. Environmental Protection Agency's Safe Drinking Water Hotline (800-426-4791).
+- Sample the water for total coliform and either E. coli or fecal coliform bacteria to confirm that the water is safe to drink.
+- If the results show no presence of total coliforms or fecal coliforms, the water can be considered safe to drink.
+- Follow up with more water tests, one in the next 2 to 4 weeks and another in 3 to 4 months.
+- Check the safety of your water over the long term, continue to monitor bacterial quality at least twice per year or more often if you suspect any changes in your water quality.
+If results show the presence of any coliform bacteria, repeat the well disinfection process and test again. If tests continue to show the presence of bacteria, contact your local health department for assistance.
+
+Disinfection issues and concerns
+
+Drilled or driven wells
+
+The disinfection process may damage water softeners due to the large amounts of chlorine used. Follow your manufacturers’ instructions for appropriate methods to disinfect your softener unit. You may need to bypass the unit until completing the disinfection process.
+
+Bored or dug wells
+
+Bored and dug wells can be difficult to disinfect because of how they are constructed. Many are shallow and have no lining, casing, or grouting, which can allow contaminants to enter the well from the land surface or upper soil levels. If contamination problems continue, consider upgrading the existing well or drilling a new well.
+
+The disinfection process may damage water softeners due to the large amounts of chlorine used. Follow your manufacturers' instructions for appropriate methods to disinfect your softener unit. You will need to bypass the unit until the disinfection process is complete.
+
+Resources
+
+- EPA. What to Do With Your Private Well After a Flood [PDF – 3 pages]. A guide to well and pump inspection and emergency disinfection of wells that have been flooded (with illustrated instructions), also available in Spanish [PDF – 3 pages].
+- EPA. Private Drinking Water Wells
+- WHO. Household Water Treatment and Safe Storage Following Emergencies and Disasters.
+- Wellowner. Working with Well Contractors.
+- National Ground Water Association. How to Hire a Water Well Contractor.
+
+Online links included in the CDC page (internet access is required to open them):
+- Safe Drinking Water Hotline: https://www.epa.gov/aboutepa/epa-hotlines#drinking
+- What to Do With Your Private Well After a Flood [PDF – 3 pages]: https://www.epa.gov/sites/default/files/2015-05/documents/epa816f05021.pdf
+- available in Spanish [PDF – 3 pages]: https://espanol.epa.gov/sites/default/files/2017-09/documents/spanish_pdf_on_wells.pdf
+- Household Water Treatment and Safe Storage Following Emergencies and Disasters.: https://www.who.int/publications/m/item/household-water-treatment-and-safe-storage-following-emergencies-and-disasters
+- Working with Well Contractors: https://wellowner.org/resources/working-with-contractors/
+- How to Hire a Water Well Contractor: https://www.ngwa.org/docs/default-source/default-document-library/contractor-toolkit/how-to-hire-a-water-well-contractor.pdf

@@ -12,7 +12,8 @@
     "../content-packs/us-basic-emergency-health/manifest.json",
     "../content-packs/us-household-communications/manifest.json",
     "../content-packs/us-cdc-keep-calm-prepared/manifest.json",
-    "../content-packs/us-medlineplus-first-aid/manifest.json"
+    "../content-packs/us-medlineplus-first-aid/manifest.json",
+    "../content-packs/us-cdc-private-wells/manifest.json"
   ],
   "core_packs": [
     "../content-packs/us-water-food-emergency/manifest.json",
@@ -22,7 +23,8 @@
     "../content-packs/us-niosh-heat-first-aid/manifest.json",
     "../content-packs/us-southeastern-vegetable-growers/manifest.json",
     "../content-packs/us-cdc-keep-calm-prepared/manifest.json",
-    "../content-packs/us-medlineplus-first-aid/manifest.json"
+    "../content-packs/us-medlineplus-first-aid/manifest.json",
+    "../content-packs/us-cdc-private-wells/manifest.json"
   ],
   "planned_categories": [
     "agriculture",

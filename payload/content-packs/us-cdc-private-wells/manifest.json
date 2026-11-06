@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "id": "us-cdc-private-wells",
+  "version": "1.0.0",
+  "title": "Private Well Recovery after an Emergency",
+  "description": "CDC's May 2025 text-only guidance for private wells after emergencies, including flood and electrical hazards, well disinfection, and follow-up testing. CDC advises contacting local authorities and a qualified well or pump contractor. Fuel or toxic chemical contamination is not made safe by boiling or disinfection. This is a text rendition, not a substitute for current local guidance.",
+  "category": "water-food",
+  "sources": [
+    {
+      "id": "cdc-private-well-disinfection",
+      "name": "CDC: How to Disinfect Wells After an Emergency (May 29, 2025)",
+      "url": "https://www.cdc.gov/water-emergency/about/how-to-disinfect-wells-after-an-emergency.html",
+      "license": "CDC agency-materials policy: most CDC information is U.S. public-domain material; this CDC-authored page has no page-level third-party copyright notice. The source policy requires CDC attribution, a prominent non-endorsement disclaimer, no substantive changes, and notice that it is available from CDC at no charge. This plain-text rendition excludes the page photograph and navigation. U.S. rights assessment only; commercial redistribution review remains open.",
+      "attribution": "Source: Centers for Disease Control and Prevention (CDC), National Center for Environmental Health, How to Disinfect Wells After an Emergency (May 29, 2025). Text content is reproduced as a plain-text rendition; the source is available from CDC at no charge. CDC, HHS, and the U.S. Government do not endorse FieldOS.",
+      "accessed": "2026-11-06"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "cdc-how-to-disinfect-wells-after-emergency-2025-searchable.txt",
+      "size_bytes": 15338,
+      "sha256": "d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6",
+      "source": "cdc-private-well-disinfection",
+      "license": "Text-only format rendition of the CDC-authored public-domain page under CDC's agency-materials policy. Headings, prose, warnings, and table values are preserved; page layout, navigation, and the third-party photograph are excluded. The underlying CDC content is not substantively edited. CDC attribution, free-source notice, and non-endorsement statement are in this manifest and FieldOS Source Library.",
+      "title": "CDC text rendition: How to Disinfect Wells After an Emergency (2025)",
+      "index_with_ai": false
+    }
+  ],
+  "geographic_coverage": null,
+  "installation": {
+    "target": "storage/references/documents",
+    "requirements": [],
+    "optional": false
+  },
+  "authority": "authoritative-reference",
+  "review": {
+    "reviewer": "FieldOS engineering source and rights review",
+    "reviewed_at": "2026-11-06",
+    "content_revision": "2025-05-29"
+  }
+}
