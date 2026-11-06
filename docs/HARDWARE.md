@@ -47,7 +47,7 @@ battery, and storage facts are reported when the kernel exposes them.
 | CPU architecture/features and core count | Detects x86-64 and relevant instruction flags | New architecture/runtime support requires compatible Ubuntu packages, container images, and model formats |
 | RAM and local storage | Reports installed/available RAM, physical disk capacity/type, and root filesystem free space; chooses a bundled model that fits installed RAM | The operator must choose an installation disk with sufficient capacity; a new payload tier/model needs its own manifest and bundle |
 | GPU vendor/device and memory budget | Reports NVIDIA and DRM-visible GPUs; when `vulkaninfo` is present, reports Vulkan device-local budgets including shared memory on integrated GPUs; includes a GPU backend only after runtime validation | Driver/kernel compatibility, Secure Boot signing, container device access, runtime libraries, and physical inference tests must be added and validated |
-| Model override | Accepts `/etc/fieldos/model-override` only for a bundled model that fits | Operator is responsible for choosing a supported model ID |
+| Model override | Tries the requested bundled model first, then smaller bundled models if its firstboot generation check fails | Operator must choose a bundled model that fits; a missing or too-large override is rejected |
 | GPS hardware | Detects likely device nodes | Device protocol, permission model, local position service, map UI integration, and field testing are not implemented |
 
 The measured acceptance VM was x86-64 with 12 GiB RAM, 6 virtual CPUs, an 80
@@ -57,9 +57,16 @@ established; do not infer universal laptop compatibility from the QEMU run.
 
 The operator may set `/etc/fieldos/model-override` before firstboot to request a
 bundled model by manifest ID. The selector still rejects a model absent from
-the payload or above the detected memory budget. The default firstboot path
-marks only CPU as validated; GPU configuration is not enabled just because a
-GPU appears in the detector output.
+the payload or above the detected memory budget. If the requested model fits
+but fails firstboot's generation smoke test, firstboot tries lower-parameter
+bundled models that also fit. An invalid or over-budget override is rejected
+instead of silently selecting another model. The default firstboot path marks
+only CPU as validated; GPU configuration is not enabled just because a GPU
+appears in the detector output.
+
+The manual-override fallback behavior is a source change after the tested
+`129da89` customer ISO. Its selector fixtures pass, but it has not yet been
+included in a rebuilt ISO or exercised by firstboot on a VM.
 
 After a model passes firstboot's local generation smoke test, FieldOS seeds
 N.O.M.A.D.'s supported `chat.lastModel` preference from that model's Ollama
