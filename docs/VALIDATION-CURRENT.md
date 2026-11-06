@@ -1,52 +1,76 @@
 # Current validation status — 2026-11-06
 
-## Latest customer-mode candidate — interactive installation PASS in VM
+## Current customer-mode candidate — interactive install PASS in VM
 
-The current private engineering candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, SHA-256
-`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`. Its
-embedded manifest records clean source revision
-`f250cc175ccfac137bb6bf1236497e16b3f4cbd3`, Ubuntu source SHA-256
-`601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f`, payload
-SHA-256 `c1741d5ab506f47d307e6da57ae7b2ba16caaeefad41df874a0fb198d36f4724`,
-and Project N.O.M.A.D. `v1.35.1`. `make verify ISO=...` passed structural,
-BIOS/UEFI, customer setup, offline APT, and payload checks.
+The private engineering candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`, built
+from clean source `129da89fff0bd769b85f42b541bf195eedb70b31`. ISO SHA-256: `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`. Payload SHA-256:
+`a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB). Structural verification (`make iso-test` / ISO verifier)
+passed. The source test suite passed 126 tests before the ISO build; no source
+code changed after those tests. Exact interactive evidence is at
+`/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
 
-A fresh interactive installation of this exact ISO passed in a disposable
-UEFI VM (4 vCPU, 8 GiB RAM, 80 GiB qcow2, no virtual NIC). The installer
-allowed local identity and disk selection, confirmed erasure of `vda`,
-installed Ubuntu, and completed the standard media handoff. The guest booted
-from its installed disk after the ISO was ejected. Firstboot succeeded; all
-seven services ran; the N.O.M.A.D. health API returned `{"status":"ok"}`;
-CPU chat generation and 768-dimensional embeddings worked; Kiwix search and an
-article opened; Source Library located and opened the CDC private-well source;
-and Firefox rendered statewide map detail at Nashville, Memphis, and Johnson
-City. The guest completed two reboots. After reboot 2, services, inference,
-embeddings, Kiwix retrieval, the source document, a Nashville z13 map tile,
-the no-NIC state, and the unchanged user-data marker hash all passed.
+A fresh customer-mode install passed in a disposable UEFI VM (4 vCPU, 8 GiB
+RAM, 80 GiB qcow2, no virtual NIC). The user selected the identity and target
+`vda`, reviewed the partition plan, confirmed erase, and completed installation
+offline. Ubuntu's standard “Please remove the installation medium, then press
+ENTER” prompt appeared. The virtual CD was ejected; Enter powered the VM off;
+a normal power-on with the ISO detached booted the installed Ubuntu disk
+without repair. Installed-disk boot passes; seamless automatic restart from
+the virtual handoff prompt and physical USB behavior were not demonstrated.
 
-Evidence is preserved at
-`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/`; the human-readable
-run record is `report.md` in that directory. Screenshots include installer
-disk/erase selection, handoff, desktop, Command Center, map views, Kiwix,
-Start Here, Source Library, and a real AI response. Reboot evidence is in
-`post-reboot-1.txt`, `post-reboot-2.txt`, and `reboot-acceptance.txt`.
+Firstboot completed at `2026-11-06T10:22:30+00:00` (systemd success, exit 0).
+All seven containers ran and N.O.M.A.D. `/api/health` returned `{"status":"ok"}`.
+The bundled CPU chat model generated `CUSTOMER_OFFLINE_OK`; embeddings returned
+768 dimensions; all 10 references indexed. Firefox searched the bundled
+Wikipedia 100 ZIM and opened a local article. The actual N.O.M.A.D. Maps page
+rendered Tennessee and coordinate navigation rendered Memphis. The separate
+same-source E2E visibly rendered eight required Tennessee locations in Firefox.
+The map is not routing or GPS navigation.
 
-This demonstrates offline operation and installation in this VM profile, not
-physical hardware compatibility or a public release. The bundled Wikipedia
-100 archive remains a test fixture. The CDC source is searchable/openable in
-Source Library but is not indexed for AI retrieval. The desktop's “Index your
-10 existing files” banner persists even though firstboot indexed the bundled
-documents; investigate that confusing prompt. Physical USB installation,
-GPU/GPS, connected-network exposure testing, broad content coverage, and full
-redistribution clearance remain unverified.
+After two guest-side reboots, the seven services, health endpoint, CPU
+inference, embeddings, reference indexing, and Kiwix retrieval passed again.
+The user marker SHA-256 remained
+`b814820ddd265c079ea767774b2bed93b06a19f1aaa1291efd3b6e750e1a1268`, and chat
+history was visible after reboot 2. The guest had no virtual NIC/default route;
+published service ports were loopback-only, the desktop user was not in the
+Docker group, and the environment file was `0600 root:root`. Connected-network
+exposure/egress remains untested.
 
-The prior `5abae15` candidate record below is historical and is superseded by
-this exact-source customer-mode acceptance.
+| Area | Result | Evidence and limits |
+|---|---|---|
+| Source/build | PASS | `make check test`: 126 tests on exact source before build; `make iso-test` and structural verifier passed. |
+| Interactive customer install | PASS in UEFI VM | Interactive identity and disk selection, erase confirmation, offline install, installed-disk boot. Standard virtual-media prompt powered off guest after Enter; normal power-on booted disk. Physical USB untested. |
+| Firstboot / services | PASS | Firstboot status complete; seven Compose services running. |
+| N.O.M.A.D. | PASS | Health endpoint returned `{"status":"ok"}`; real UI opened. |
+| Local AI / embeddings | PASS, CPU | Chat returned `CUSTOMER_OFFLINE_OK`; embedding dimension 768. Semantic answer quality remains limited. |
+| Knowledge / Kiwix | PASS, limited | 10 source docs indexed; Kiwix Wikipedia 100 search opened an article. This is a test fixture, not a substantial encyclopedia. |
+| Maps | PASS, limited function | Customer GUI rendered Tennessee and navigated to Memphis; same-source E2E rendered eight points. No routing/GPS claim. |
+| Persistence | PASS | Two reboots retained services, references, Kiwix, inference, and user marker hash. |
+| Offline / exposure | PASS for disconnected VM only | No guest NIC/default route; loopback published ports. Attached-network testing remains open. |
+| Physical hardware, GPU, GPS | NOT TESTED | Disposable QEMU VM only. |
+| Redistribution | INCOMPLETE | Do not publish ISO until all bundled software/data and Ubuntu redistribution requirements are cleared. |
+
+## Exact-source unattended E2E
+
+Source `129da89fff0bd769b85f42b541bf195eedb70b31` also passed a clean-source unattended E2E with no NIC. Test
+ISO SHA-256: `5907bd4dacb0587009bb6ad4005391e4b10b9f75c944525a7cfd808883d07ca9`.
+Report and screenshots:
+`/mnt/shared/fieldos-e2e/valkey-129da89/20261106T092845Z-735158/report.md`.
+The run passed provisioning, CPU chat and embeddings, Kiwix, indexed references,
+all eight Tennessee browser renders, container egress disabled, and two
+reboots. It is separate from the customer-mode installation above.
+
+**Assessment:** Both unattended acceptance and interactive customer installation
+pass in disposable no-NIC UEFI VMs for the exact source/ISO stated above.
+This does not establish physical-machine compatibility or release readiness.
+The candidate remains private. Main blockers are physical hardware/USB,
+network-connected security, richer references and retrieval quality, GPS/GPU
+validation, and redistribution review.
 
 ## Historical customer-mode candidate
 
-The current customer candidate is `/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso`, SHA-256 `8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`. It was built cleanly from public source `5abae15ac13fe001178c01e8dd31b255d5714500` with the pinned Ubuntu source and payload checksums recorded in its embedded manifest. The ISO structure and payload verifier passed. This remains an engineering test image, not a redistribution-cleared release.
+Historical customer candidate `5abae15` is `/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso`, SHA-256 `8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`. It was built cleanly from public source `5abae15ac13fe001178c01e8dd31b255d5714500` with the pinned Ubuntu source and payload checksums recorded in its embedded manifest. The ISO structure and payload verifier passed. This remains an engineering test image, not a redistribution-cleared release.
 
 A fresh no-NIC interactive customer install from this exact ISO completed, booted from the installed disk, finished firstboot, and passed two reboot checks. Detailed steps, outcomes, and screenshots are at `/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`.
 

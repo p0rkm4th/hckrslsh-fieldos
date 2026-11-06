@@ -19,27 +19,27 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest customer candidate is
-`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso` (source
-`f250cc175ccfac137bb6bf1236497e16b3f4cbd3`, SHA-256
-`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`). It
-passed structural verification and a fresh interactive install in a disposable
-no-NIC UEFI VM, followed by firstboot and two reboots. The test exercised local
-CPU chat, embeddings, Kiwix, Source Library, and real browser map views. Full
-results and limits are in [current validation](docs/VALIDATION-CURRENT.md) and
-`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/report.md`. This remains
-a private engineering candidate, not a redistribution-cleared public release.
+The current private customer-mode candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`
+(source `129da89fff0bd769b85f42b541bf195eedb70b31`, SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`). Structural verification passed. A fresh
+interactive install to a disposable 80 GiB UEFI VM disk with no NIC passed;
+firstboot completed; FieldOS desktop, local CPU chat and embeddings, Kiwix,
+source indexing, and maps were exercised; and services and user data persisted
+across two reboots. At Ubuntu's standard virtual-media prompt the guest powered
+off after Enter/eject, then booted normally from the installed disk on power-on.
+Physical USB handoff is untested. Detailed evidence is in
+[`docs/VALIDATION-CURRENT.md`](docs/VALIDATION-CURRENT.md) and
+`/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
 
-The separate clean-source unattended E2E from `d04f450` passed no-NIC install,
-firstboot, AI, embeddings, Kiwix, Source Library, eight Tennessee browser map
-views, and two reboots. Evidence:
-`/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md`. Its test ISO and
-payload are distinct from the interactive customer candidate.
-
-Physical installation/hardware, GPU acceleration, GPS, network-connected
-exposure, broader reference coverage, AI retrieval quality, and redistribution
-clearance remain open. Wikipedia 100 is a fixture; do not rely on the local
-model for safety-critical decisions. FieldOS is not release approved.
+The exact-source unattended E2E also passed: offline installation, local
+inference/embeddings, Kiwix, source indexing, eight actual Firefox Tennessee
+map views, egress isolation, and two reboots. Report:
+`/mnt/shared/fieldos-e2e/valkey-129da89/20261106T092845Z-735158/report.md`.
+These are VM results, not physical-device validation. This is not a public
+release: redistribution clearance, attached-network security testing, physical
+hardware, useful broad reference coverage, and AI retrieval quality remain
+open. Wikipedia 100 remains a fixture; do not use the local model as a
+safety-critical authority.
 
 ## Build and test
 
@@ -53,7 +53,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an

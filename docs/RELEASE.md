@@ -1,33 +1,32 @@
 # Release readiness and evidence
 
-**Current source:** `f250cc175ccfac137bb6bf1236497e16b3f4cbd3` (`main` at test
-start; clean source recorded in the ISO manifest). Last full source check/test
-recorded on the preceding `d04f450` revision: 126 tests passed and 11 catalog
-packs validated. The current f250cc1 revision adds the CDC private-well source
-pack and associated records; the exact current ISO passed structural checks
-and an interactive customer-mode installation in a fresh no-NIC UEFI VM.
+**Current source:** `129da89fff0bd769b85f42b541bf195eedb70b31` (`129da89`, clean at build/test). The source
+suite passed 126 tests and content validation before ISO creation.
 
-**Current private customer test candidate:**
-`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, SHA-256
-`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`.
-Its clean-source manifest records Ubuntu SHA-256
-`601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f` and
-payload SHA-256
-`c1741d5ab506f47d307e6da57ae7b2ba16caaeefad41df874a0fb198d36f4724`.
-The install, firstboot, offline application checks, and two reboots passed in a
-disposable VM. Exact evidence:
-`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/report.md`.
-The prior unattended no-NIC E2E is separately documented at
-`/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md` and is not a
-substitute for customer-mode testing.
+**Current private customer-mode engineering candidate:**
+`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`
+SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`; payload SHA-256 `a257d4e4113254411b56e072fe301d35cb90dc4e6dceb2e002fdfb0f6d720614` (6.6 GiB). Structural verification
+passed. A fresh interactive offline install passed in a disposable UEFI VM,
+including firstboot, desktop access, actual local CPU inference/embeddings,
+Kiwix retrieval, Source Library indexing, map interaction, and two reboots.
+Detailed customer evidence:
+`/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
+The standard Ubuntu virtual-media prompt powered the guest off after Enter and
+eject; a normal power-on with the ISO detached booted the installed disk.
+Physical USB handoff remains untested.
 
-**Not release approved.** The Kiwix Wikipedia 100 archive is a test fixture;
-reference breadth and AI grounding remain limited. The CDC wells source is
-available in Source Library but not AI indexed. The installed desktop showed a
-confusing index prompt after firstboot had already indexed its bundled sources.
-Physical USB/hardware, GPU/GPS, LAN exposure and egress with networking enabled,
-and full redistribution clearance remain unresolved. Do not publish the ISO
-as a customer release until those gates have evidence.
+The exact-source unattended E2E separately passed with no NIC, eight visible
+Firefox Tennessee map locations, blocked container egress, core service checks,
+and two reboots. Report:
+`/mnt/shared/fieldos-e2e/valkey-129da89/20261106T092845Z-735158/report.md`.
+The customer-mode and unattended tests are distinct.
+
+**Not release approved.** The customer ISO remains an unpublished engineering
+candidate. Wikipedia 100 is a fixture; the broader content library and semantic
+retrieval quality are limited. Physical hardware, physical USB, GPU/GPS, and
+attached-network exposure/egress remain unverified. Redistribution clearance
+for the complete Ubuntu/software/model/map/reference bundle is incomplete.
+Do not distribute this ISO as a customer release until those gates pass.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 
@@ -233,7 +232,7 @@ That confirms direct source access, not successful in-app search or reliable
 AI retrieval. The original acceptance disk was not modified. Full observations
 and artifact paths: `/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/semantic-retrieval-report.md`.
 
-## Current offline capabilities
+## Historical offline capabilities (older candidate)
 
 The current `cc4aa38` customer-mode candidate has been installed in a no-NIC
 UEFI VM. The installer reached the standard media-removal prompt and shut down

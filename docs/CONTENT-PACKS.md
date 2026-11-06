@@ -6,18 +6,13 @@ schema is `payload/manifests/content-pack.schema.json`; the source catalog is
 eight core packs plus optional packs and planned categories. This is a useful
 starter collection, not a comprehensive customer library.
 
-The latest customer candidate is `fieldos-customer-5abae15.iso` (SHA-256
-`8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`). It
-passed fresh interactive no-NIC installation, firstboot, and two reboots; the
-installed desktop rendered the statewide Tennessee map and exercised local
-source search and Kiwix retrieval. See [current validation](VALIDATION-CURRENT.md).
-A clean-source no-NIC E2E from `d04f450` passed with the CDC private-well pack
-as a ninth core pack. Firefox rendered all eight Tennessee locations; the new
-reference appeared in the Source Library, and two reboots passed. Test ISO
-SHA-256 is `6a3fef4deba8b8ade1f1e04df15b2da97665a777fb19c120fc4bcea97e81a624`;
-the report is `/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md`.
-This is an unattended test ISO; the interactive customer ISO remains the
-earlier `5abae15` candidate. Physical USB behavior is unverified.
+The current customer-mode engineering candidate is
+`fieldos-customer-test-valkey-129da89.iso` (SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`). It passed
+interactive no-NIC installation, firstboot, local applications, and two reboots
+in a disposable UEFI VM. The exact-source unattended E2E also passed. See
+[current validation](VALIDATION-CURRENT.md). The CDC private-well core pack is
+included and indexed. These are VM test results; physical USB is unverified and
+redistribution remains uncleared.
 
 The `8c81d64` ISO source contains all eight then-current core pack manifests.
 Guest runtime records confirm the CDC emergency-kit checklist was indexed as
@@ -34,7 +29,7 @@ passed `zstd -t` and their SHA-256 sidecars passed `sha256sum -c`. These are
 transfer/build artifacts, not a rebuilt or accepted ISO, and they do not close
 the separate rights review.
 
-**Current-candidate pack-import check (manual, 2026-11-05):** An optional
+**Historical pack-import check (manual, 2026-11-05):** An optional
 household communications pack was built from the tracked manifest and imported
 through the installed GNOME launcher, file picker, and administrator prompt
 from read-only optical media. Firefox showed it in the Source Library with

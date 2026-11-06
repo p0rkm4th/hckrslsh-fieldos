@@ -2,19 +2,22 @@
 
 ## Customer installation
 
-**Current customer-mode candidate (2026-11-06; interactive VM installation PASS):**
-`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, source
-`f250cc175ccfac137bb6bf1236497e16b3f4cbd3`, SHA-256
-`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`.
-Structural verification and a fresh interactive installation in a disposable
-no-NIC UEFI VM passed. The installed system completed firstboot, booted from
-disk after media handoff, and passed two reboot checks covering services, local
-AI generation, embeddings, Kiwix, source retrieval, maps, and persistence.
-Detailed results and evidence are in
-[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
-`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/report.md`. This is a
-private engineering test candidate, not a redistribution-cleared public
-release. Physical USB and hardware compatibility remain unverified.
+**Current private customer-mode candidate (2026-11-06; interactive install PASS in VM):**
+`/mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso`, source
+`129da89fff0bd769b85f42b541bf195eedb70b31`, SHA-256 `ddd9015cbc56dad3635f5453f8d0f6b5ff6a834610394cf3d2fab38dd2d796e2`. Structural verification and a fresh interactive
+install passed in a disposable no-NIC UEFI VM (4 vCPU, 8 GiB RAM, 80 GiB disk).
+Firstboot, services, local CPU AI and embeddings, Kiwix, source indexing, maps,
+and two reboots passed. Detailed evidence:
+`/mnt/shared/fieldos-e2e/customer-valkey-129da89-interactive/customer-acceptance.md`.
+
+At Ubuntu's normal “Please remove the installation medium, then press ENTER”
+prompt, the virtual CD had been ejected. Pressing Enter powered off this QEMU
+guest. A normal power-on with the installed disk and no ISO booted successfully
+without repair. The installation and installed-disk boot passed; seamless
+automatic restart through the virtual media handoff and physical USB behavior
+are not established. This remains an engineering candidate, not a cleared
+public release. The separate exact-source unattended E2E report is
+`/mnt/shared/fieldos-e2e/valkey-129da89/20261106T092845Z-735158/report.md`.
 
 The preceding candidate
 `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (source `8c81d64`,
@@ -86,7 +89,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-valkey-129da89.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network
