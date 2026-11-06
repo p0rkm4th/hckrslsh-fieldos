@@ -19,6 +19,8 @@ import sys
 import tarfile
 import time
 import zlib
+import unicodedata
+import xml.etree.ElementTree as ET
 from pathlib import Path
 import shutil
 from shutil import disk_usage
@@ -28,6 +30,79 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_UBUNTU_ISO = Path("/mnt/shared/ISO Library/Linux Distributions/ubuntu-26.04.1-desktop-amd64.iso")
 MIN_FREE_GIB = 48
+KIWIX_BASE_URL = "http://127.0.0.1:8090"
+
+
+def kiwix_zim_name(artifact_path: str) -> str:
+    """Return kiwix-serve's filename-derived ZIM name for a ZIM artifact."""
+    stem = Path(artifact_path).name.rsplit(".", 1)[0]
+    normalized = unicodedata.normalize("NFKD", stem)
+    ascii_stem = "".join(char for char in normalized if not unicodedata.combining(char))
+    return ascii_stem.lower().replace("+", "plus").replace(" ", "_")
+
+
+def e2e_content_pack_target_supported(target: str) -> bool:
+    return target in {"storage/maps/pmtiles", "storage/references/documents", "storage/zim"}
+
+
+def kiwix_content_url(zim_name: str) -> str:
+    return f"{KIWIX_BASE_URL}/content/{quote(zim_name, safe='_-.')}"
+
+
+def kiwix_library_identity(library_xml: str, archive_path: str) -> dict[str, str] | None:
+    """Find a library record for a registered archive path."""
+    try:
+        root = ET.fromstring(library_xml)
+    except ET.ParseError as exc:
+        raise TestFailure(f"Kiwix generated invalid library XML: {exc}") from exc
+    expected_path = "/data/" + archive_path.lstrip("/")
+    for book in root.iter():
+        if book.tag.rsplit("}", 1)[-1].lower() != "book":
+            continue
+        values = {key.rsplit("}", 1)[-1].lower(): value.strip() for key, value in book.attrib.items()}
+        values.update({item.tag.rsplit("}", 1)[-1].lower(): item.text.strip()
+                       for item in book if item.text})
+        stored_path = values.get("path", "")
+        if stored_path == expected_path or stored_path.lstrip("/") == expected_path.lstrip("/"):
+            return {"id": values.get("id", ""), "title": values.get("title", ""),
+                    "path": stored_path}
+    return None
+
+
+def kiwix_library_ids(library_xml: str) -> set[str]:
+    """Return all registered Kiwix book IDs from its library XML."""
+    try:
+        root = ET.fromstring(library_xml)
+    except ET.ParseError as exc:
+        raise TestFailure(f"Kiwix generated invalid library XML: {exc}") from exc
+    identities: set[str] = set()
+    for book in root.iter():
+        if book.tag.rsplit("}", 1)[-1].lower() != "book":
+            continue
+        if book.attrib.get("id", "").strip():
+            identities.add(book.attrib["id"].strip())
+        identities.update(item.text.strip() for item in book
+                          if item.tag.rsplit("}", 1)[-1].lower() == "id" and item.text and item.text.strip())
+    return identities
+
+
+def kiwix_catalog_entry(catalog_xml: str, identity: dict[str, str]) -> dict[str, str] | None:
+    """Find the OPDS record corresponding to a library id or title."""
+    try:
+        root = ET.fromstring(catalog_xml)
+    except ET.ParseError as exc:
+        raise TestFailure(f"Kiwix returned invalid OPDS XML: {exc}") from exc
+    for entry in root.iter():
+        if entry.tag.rsplit("}", 1)[-1].lower() != "entry":
+            continue
+        values = {item.tag.rsplit("}", 1)[-1].lower(): item.text.strip()
+                  for item in entry if item.text}
+        entry_id, title = values.get("id", ""), values.get("title", "")
+        if not ((identity.get("id") and entry_id == identity["id"])
+                or (identity.get("title") and title == identity["title"])):
+            continue
+        return {"id": entry_id, "title": title}
+    return None
 
 
 def git_source_state() -> tuple[str, bool | None]:
@@ -128,8 +203,12 @@ class AcceptanceRun:
                     raise TestFailure("Could not read test content-pack manifest")
                 self.pack_manifest = json.loads(manifest_stream.read())
             self.pack_target = self.pack_manifest.get("installation", {}).get("target")
-            if self.pack_target not in {"storage/maps/pmtiles", "storage/references/documents"}:
+            if not e2e_content_pack_target_supported(self.pack_target):
                 raise TestFailure(f"No end-to-end activation check exists for pack target {self.pack_target!r}")
+            if (self.pack_target == "storage/zim" and
+                    any(Path(item.get("path", "")).suffix.lower() != ".zim"
+                        for item in self.pack_manifest.get("artifacts", []))):
+                raise TestFailure("Kiwix test packs must contain only .zim artifacts")
         self.run_dir = evidence_root / f"{self.stamp}-{os.getpid()}"
         self.run_dir.mkdir(parents=True, exist_ok=False)
         self.vm_name = f"fieldos-e2e-{self.stamp.lower()}"
@@ -293,6 +372,12 @@ autoinstall:
         self.check("read-only content transfer media", common +
                    f"test -s /mnt/fieldos-pack-test/{shlex.quote(self.pack_archive.name)} && "
                    f"test -s /mnt/fieldos-pack-test/{shlex.quote(self.pack_archive.name + '.sha256')}")
+        zim_library_before = None
+        if self.pack_target == "storage/zim":
+            zim_library_before = self.guest("cat /var/lib/fieldos/storage/zim/kiwix-library.xml")
+            for artifact in self.pack_manifest["artifacts"]:
+                if kiwix_library_identity(zim_library_before, artifact["path"]):
+                    raise TestFailure(f"ZIM archive was already registered before import: {artifact['path']}")
         uid = self.guest("id -u fieldos").strip()
         wayland = self.guest(
             f"find /run/user/{uid} -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1"
@@ -386,6 +471,104 @@ autoinstall:
             )
             if "activated map:" not in installed:
                 raise TestFailure(f"Optional map bundle was not activated from removable media: {installed}")
+        elif self.pack_target == "storage/zim":
+            assert self.pack_manifest is not None and zim_library_before is not None
+            pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
+            quote = shlex.quote
+            artifact_checks = []
+            for artifact in self.pack_manifest["artifacts"]:
+                source_path = f"/var/lib/fieldos/content-packs/{pack_id}/{version}/{artifact['path']}"
+                zim_path = f"/var/lib/fieldos/storage/zim/{artifact['path']}"
+                artifact_checks.extend([
+                    f"test -s {quote(source_path)}",
+                    f"test -s {quote(zim_path)}",
+                    f"printf '%s  %s\\n' {quote(artifact['sha256'])} {quote(source_path)} | sha256sum -c -",
+                    f"printf '%s  %s\\n' {quote(artifact['sha256'])} {quote(zim_path)} | sha256sum -c -",
+                    f"test \"$(stat -c %i {quote(source_path)})\" = \"$(stat -c %i {quote(zim_path)})\"",
+                ])
+            self.check(
+                "offline ZIM pack transfer and persistent activation",
+                " && ".join(artifact_checks),
+            )
+            library_xml = self.guest("cat /var/lib/fieldos/storage/zim/kiwix-library.xml")
+            before_ids = kiwix_library_ids(zim_library_before)
+            identities = []
+            for artifact in self.pack_manifest["artifacts"]:
+                identity = kiwix_library_identity(library_xml, artifact["path"])
+                if not identity:
+                    raise TestFailure(f"Kiwix library XML does not register {artifact['path']}")
+                if identity.get("id") and identity["id"] in before_ids:
+                    raise TestFailure(f"Kiwix library entry was not newly registered: {identity['id']}")
+                identities.append(identity)
+
+            entries = []
+            deadline = time.monotonic() + 120
+            while time.monotonic() < deadline:
+                catalog = self.guest(
+                    "curl --fail --silent --show-error --max-time 10 "
+                    "'http://127.0.0.1:8090/catalog/v2/entries?count=-1'",
+                    timeout=20,
+                )
+                entries = [kiwix_catalog_entry(catalog, identity) for identity in identities]
+                if all(entries):
+                    break
+                time.sleep(2)
+            if not all(entries):
+                missing = [artifact["path"] for artifact, entry in zip(self.pack_manifest["artifacts"], entries)
+                           if not entry]
+                raise TestFailure(f"New ZIM record(s) were not visible in Kiwix OPDS catalog: {missing}")
+            entry = entries[0]
+            self.record("Kiwix OPDS catalog registration", "PASS",
+                        f"{len(entries)} new archive record(s); first: {entry.get('id') or '(no id)'}: "
+                        f"{entry.get('title') or self.pack_manifest['title']}")
+
+            artifact = self.pack_manifest["artifacts"][0]
+            artifact_path = artifact["path"]
+            zim_name = kiwix_zim_name(artifact_path)
+            article_url = kiwix_content_url(zim_name)
+            article = self.check(
+                "offline ZIM article retrieved through Kiwix",
+                "set -euo pipefail; out=/tmp/fieldos-e2e-kiwix-article.html; "
+                f"code=$(curl --fail --silent --show-error --location --max-time 60 -o \"$out\" "
+                f"-w '%{{http_code}}' {quote(article_url)}); test \"$code\" = 200; "
+                "python3 -c 'import html,re,sys; text=open(sys.argv[1],encoding=\"utf-8\",errors=\"replace\").read(); "
+                "match=re.search(r\"<title[^>]*>(.*?)</title>\",text,re.I|re.S); "
+                "title=html.unescape(re.sub(r\"<[^>]+>\",\"\",match.group(1))).strip() if match else \"\"; "
+                "assert title, \"article response has no title\"; print(\"HTTP=200 TITLE=\"+title)' \"$out\"",
+                timeout=90,
+            )
+            title_match = re.search(r"TITLE=(.+)$", article)
+            if not title_match:
+                raise TestFailure(f"Kiwix article response had no visible document title: {article}")
+
+            uid = self.guest("id -u fieldos").strip()
+            wayland = self.guest(
+                f"find /run/user/{uid} -maxdepth 1 -type s -name 'wayland-*' -printf '%f\\n' | head -n 1"
+            ).strip()
+            if not wayland.startswith("wayland-"):
+                raise TestFailure(f"No active Wayland session for Kiwix browser check: {wayland!r}")
+            self.guest(
+                f"uid={uid}; runtime=/run/user/$uid; wayland={wayland}; "
+                "runuser -u fieldos -- env \"XDG_RUNTIME_DIR=$runtime\" "
+                "\"DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime/bus\" \"WAYLAND_DISPLAY=$wayland\" "
+                "GDK_BACKEND=wayland /usr/bin/firefox --new-window "
+                f"{quote(article_url)} "
+                ">/tmp/fieldos-kiwix-firefox.log 2>&1 </dev/null &",
+                timeout=30,
+            )
+            time.sleep(10)
+            screenshot = self.run_dir / "kiwix-zim-article-render.png"
+            self.command(["virsh", "screenshot", self.vm_name, str(screenshot)], timeout=30)
+            width, height, colors, _water_pixels = self.screenshot_color_count(screenshot)
+            if colors < 500:
+                raise TestFailure(
+                    f"Kiwix article did not visibly render in Firefox: {colors} sampled colors "
+                    f"in {width}x{height} screenshot"
+                )
+            self.record("offline Kiwix Firefox page", "PASS",
+                        f"Firefox opened article title {title_match.group(1).strip()!r}; "
+                        f"{width}x{height}, {colors} sampled colors; screenshot {screenshot.name}")
+            return
         else:
             assert self.pack_manifest is not None
             pack_id, version = self.pack_manifest["id"], self.pack_manifest["version"]
@@ -1075,6 +1258,42 @@ printf 'home-card database description and Easy Setup text are truthful\\n'"""
         catalog = self.check("Kiwix library", "curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8090/catalog/v2/entries", 350)
         if "wikipedia" not in catalog.lower():
             raise TestFailure("Kiwix catalog does not list bundled Wikipedia")
+        if self.pack_target == "storage/zim" and self.pack_manifest:
+            library = self.guest("cat /var/lib/fieldos/storage/zim/kiwix-library.xml")
+            for artifact in self.pack_manifest["artifacts"]:
+                identity = kiwix_library_identity(library, artifact["path"])
+                if not identity:
+                    raise TestFailure(
+                        f"Imported ZIM was missing from persistent Kiwix library after reboot={reboot}: "
+                        f"{artifact['path']}"
+                    )
+                catalog = self.guest(
+                    "curl --fail --silent --show-error --max-time 15 "
+                    "'http://127.0.0.1:8090/catalog/v2/entries?count=-1'",
+                    timeout=30,
+                )
+                if not kiwix_catalog_entry(catalog, identity):
+                    raise TestFailure(
+                        f"Imported ZIM was missing from Kiwix OPDS after reboot={reboot}: "
+                        f"{identity.get('title') or artifact['path']}"
+                    )
+                zim_name = kiwix_zim_name(artifact["path"])
+                article = self.guest(
+                    f"curl --fail --silent --show-error --location --max-time 30 "
+                    f"-o /dev/null -w '%{{http_code}}' {shlex.quote(kiwix_content_url(zim_name))}",
+                    timeout=40,
+                )
+                if article.strip() != "200":
+                    raise TestFailure(
+                        f"Imported ZIM article route returned {article!r} after reboot={reboot}: "
+                        f"{artifact['path']}"
+                    )
+            self.record(
+                "imported ZIM persists and serves after reboot" if reboot else
+                "imported ZIM remains registered and serves",
+                "PASS",
+                f"{len(self.pack_manifest['artifacts'])} archive(s) in Kiwix library, OPDS, and article routes",
+            )
         notices = self.check(
             "bundled container notices and corresponding sources",
             "python3 - <<'PY'\n"

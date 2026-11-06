@@ -11,7 +11,7 @@
     "title": {"type": "string", "minLength": 1},
     "description": {"type": "string", "minLength": 1},
     "geographic_scope": {"type": "string", "minLength": 1},
-    "category": {"enum": ["agriculture", "wildlife-overlanding", "water-food", "first-aid-emergency", "weather-disaster", "communications", "maps-gis"]},
+    "category": {"enum": ["agriculture", "wildlife-overlanding", "water-food", "first-aid-emergency", "weather-disaster", "communications", "maps-gis", "general-reference"]},
     "sources": {
       "type": "array", "minItems": 1,
       "items": {
