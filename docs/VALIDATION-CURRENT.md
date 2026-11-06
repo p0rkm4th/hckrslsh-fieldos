@@ -5,9 +5,9 @@
 The latest customer ISO is `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256
 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`.
 It was built from clean source commit `8c81d649e50e9ea793c0f85b104459302d4548ff`.
-The current repository head is `64841d6754af9090b01c43618001b65e7397a52f`;
-that follow-on commit changes documentation/provenance only and is not the ISO
-payload revision. The candidate remains an engineering test image, not a
+The later source commits, through `f7b1962`, update documentation and
+provenance only; they are not the ISO payload revision. The candidate remains
+an engineering test image, not a
 redistribution-cleared release.
 
 Detailed run evidence, including logs and actual desktop screenshots, is at
@@ -23,6 +23,7 @@ Detailed run evidence, including logs and actual desktop screenshots, is at
 | Local inference | PASS, CPU | Bundled Qwen3 1.7B generated three marker responses; selector chose CPU profile. GPU acceleration is unverified. |
 | Embeddings | PASS | Bundled model returned a non-empty 768-D vector, including after reboot 2. |
 | Knowledge retrieval | PARTIAL | 10 local files / 690 chunks; browser search for “flood” found three references and a real response cited the vegetable handbook. Breadth and semantic quality are limited; emergency response test returned the configured source-directed refusal. |
+| Optional pack import | PASS, separate manual add-on | Current-manifest household communications archive imported via GNOME picker and administrator prompt from read-only optical media; Source Library displayed attribution and local document. Hash and HTTP checks passed, and pack/index/services persisted across one additional reboot. Not part of the clean install acceptance run; physical USB remains untested. See `content-pack-import-validation.txt`. |
 | Kiwix | PASS, fixture limited | Browser search worked against the bundled 100-article `Wikipedia 100` archive; this is not a substantial encyclopedia. |
 | Tennessee maps | PASS, actual browser rendering | Zoom-13 map rendered at eight required urban/rural locations; post-reboot Nashville screenshots and a local tile/range request also passed. No routing or GPS claim. |
 | Persistence | PASS, two post-install reboot cycles | All seven containers and functional checks recovered after both cycles. Browser profile/chat history, user marker, and map checksum persisted. See exact boot IDs and hashes in run diagnostics. |

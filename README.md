@@ -3,11 +3,11 @@
 FieldOS is an offline capable x86-64 field computer built on Ubuntu Desktop
 and [Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad).
 It bundles the container images, local AI models, a 100-article Wikipedia
-fixture, low-zoom overview maps, and a zoom-13 statewide Tennessee map,
-six searchable reference packs, and attributed FieldOS-edited NWS tornado,
-flood, hurricane, and winter-storm summaries for offline use. The core packs
-also include a narrow NIOSH heat-illness reference and a Southeastern vegetable
-crop handbook. The owner uses
+fixture, low-zoom overview maps, a zoom-13 statewide Tennessee map, and eight
+core source packs. These include CDC water and food references, NWS-derived
+tornado, flood, hurricane, and winter-storm summaries, a narrow NIOSH
+heat-illness reference, a Southeastern vegetable crop handbook, a CDC emergency
+kit checklist, and a MedlinePlus first-aid overview. The owner uses
 N.O.M.A.D. as the main interface.
 This is still an engineering prototype, not a complete emergency or navigation
 appliance.
@@ -19,17 +19,34 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-Candidate ISO source revision: `cc4aa38f3debd078b877589355221e94821bd160`.
-The repository includes newer documentation and content metadata updates that
-are not yet present in this ISO; check release notes before using it.
+The latest customer-mode test candidate was built from source revision
+`8c81d649e50e9ea793c0f85b104459302d4548ff`:
+`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. A fresh
+interactive no-NIC UEFI VM installation passed disk and identity selection,
+destructive confirmation, firstboot, installed-disk boot, local feature
+checks, and two reboots. See the [current validation report](docs/VALIDATION-CURRENT.md),
+[release readiness](docs/RELEASE.md), and detailed evidence at
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
 
-Current customer-mode candidate: `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso`, SHA-256 `0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`. A fresh no-NIC UEFI VM installation passed interactive target/account selection, destructive confirmation, firstboot, installed-disk boot, functional checks, and two reboots. Ubuntu displayed its standard media-removal prompt; Enter shut the guest down normally, and an ordinary VM power-on booted from the installed disk without reset or repair. This verifies customer installation and disk boot in a VM; seamless automatic restart and physical USB/hardware behavior remain unverified. The ISO is still an unpublished test candidate.
+In that guest, CPU Qwen3 1.7B generated responses and the embedding model
+returned 768-dimensional vectors. Kiwix searched its bundled 100-article
+Wikipedia fixture. Firefox visibly rendered zoom-13 Tennessee maps at Memphis,
+Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big
+South Fork. The Source Library exposed bundled source material, and a real RAG
+response named its handbook source. An emergency prompt produced the configured
+source-directed refusal. An additional manual test imported an optional
+household communications pack through the desktop UI; it appeared in the Source
+Library and persisted across a further reboot. This was a VM test, not physical
+USB validation.
 
-The installed system selected Qwen3 1.7B Q4_K_M on CPU and generated a response after the second reboot; the embedding model returned 768-dimensional vectors. Kiwix opened and searched its bundled 100-article Wikipedia fixture. Firefox visibly rendered zoom-13 Tennessee maps at Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big South Fork. Nine installed reference files (689 chunks) were indexed and the Source Library returned three flood-related matches, but semantic answers and citations remain unreliable. Rural map detail is sparse; routing and GPS positioning are not provided.
+`make check test` passed 110 tests and `make verify ISO=...` passed for this
+candidate. The ISO remains a private engineering image. Physical hardware, GPU
+acceleration, GPS, network-enabled/LAN exposure, broad reference coverage, AI
+retrieval quality, and redistribution clearance remain open. FieldOS is not an
+emergency or medical appliance; do not rely on the local model for
+safety-critical decisions.
 
-`make check test` passed 87 tests, and `make verify ISO=...` confirmed BIOS/UEFI boot records, customer setup, offline APT, and payload presence. See the [current validation report](docs/VALIDATION-CURRENT.md) and [release readiness](docs/RELEASE.md). Clean handoff evidence is under `/mnt/shared/fieldos-e2e/customer-cc4aa38-handoff-20261105/`; the eight-location map screenshots are in `/mnt/shared/fieldos-e2e/customer-cc4aa38-20261105/`.
-
-Physical installation and varied hardware, GPU acceleration, GPS, connected-LAN exposure, broader reference coverage, semantic retrieval quality, and redistribution clearance remain open. FieldOS is not an emergency or medical appliance; do not rely on the local model for safety-critical decisions.
 ## Build and test
 
 Build dependencies include Python 3, Bash, Docker Engine with Compose v2,
@@ -42,7 +59,7 @@ make check
 make test
 make test-e2e UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
 make iso-test UBUNTU_ISO="/path/to/ubuntu-26.04.1-desktop-amd64.iso"
-make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso
+make verify ISO=/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso
 ```
 
 `make test-e2e` creates a unique test directory, temporary credentials, an
@@ -75,9 +92,8 @@ Start with the [documentation guide](docs/README.md), then read
 [operations and troubleshooting](docs/OPERATIONS.md), [hardware support](docs/HARDWARE.md),
 and [offline content/licensing](docs/OFFLINE-CONTENT.md). The
 [content-pack architecture](docs/CONTENT-PACKS.md) documents the eight core
-reference packs in the current source catalog and planned categories. The last
-accepted `cc4aa38` ISO contains the previous six-pack set; the CDC emergency-kit
-and MedlinePlus first-aid additions await a successor build and acceptance.
+reference packs in the tested candidate, additional optional packs, and planned
+categories.
 Review [security boundaries](docs/SECURITY.md)
 before changing exposed ports or Docker access.
 

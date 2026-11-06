@@ -1,43 +1,62 @@
 # Modular offline content packs
 
-FieldOS keeps reference content independent from the core installer wherever
-possible. The repository defines a versioned JSON manifest schema at
-`payload/manifests/content-pack.schema.json` and a catalog at
-`payload/manifests/content-packs.json`. The catalog contains the core reference
-packs and planned categories; this is not a comprehensive customer library.
-The Middle Tennessee map previously passed offline transfer and activation
-testing as a pack. The statewide Tennessee map is pinned by the current source
-manifest and is present in the `fieldos-customer-cc4aa38.iso` test image (SHA-256
-`0319a069a4874d0522f660c6d69027e6ab9c4aaf86f2f8c995efb9d359a1e139`). That
-image passed a fresh no-NIC interactive install, installer media handoff,
-installed-disk boot, Firefox rendering at eight Tennessee locations, and two
-reboots. The exact candidate, checksum, and reports are recorded in
-[`RELEASE.md`](RELEASE.md). Physical USB behavior remains unverified.
-Other regional and specialist reference collections remain modular packs
-outside the core image.
+FieldOS keeps reference content modular where practical. The versioned manifest
+schema is `payload/manifests/content-pack.schema.json`; the source catalog is
+`payload/manifests/content-packs.json`. It currently defines eight core packs
+plus optional packs and planned categories. This is a useful starter collection,
+not a comprehensive customer library.
 
-The optional MedlinePlus pack was also transferred from read-only ISO media and
-activated offline in a fresh no-NIC E2E guest on source `aeeeadd98d8fd7fb11baabb770028647e96cf1fb`.
-The archive and source-document checksums, Source Library links, and two reboot
-cycles passed. This validates the pack installer and content activation. A later
-manual diagnostic on source `ed21454d19a71e4e42b29b5a81866bab53df7bb1`
-launched the desktop importer from GNOME search, authenticated through GNOME's
-prompt, and displayed the success dialog. That E2E run had already failed its
-automated gate and was manually intervened in, so this is diagnostic evidence,
-not a clean GUI E2E pass. The automation now launches through GNOME search and
-needs a fresh no-NIC run. Screenshot:
-`/mnt/shared/fieldos-e2e/20261105T142957Z-3004889/manual-ui-import-final.png`.
-The clean earlier transfer report is
-`/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
+The current customer candidate `fieldos-customer-8c81d64.iso` (SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`) passed
+interactive installation and two post-install reboots in an offline UEFI VM.
+The statewide Tennessee map rendered in Firefox at all eight required
+locations. Its full test record is in [`RELEASE.md`](RELEASE.md) and
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. Physical USB
+behavior remains unverified. Other regional and specialist collections remain
+optional packs.
 
-The automated GUI flow ran again on source `327488c`. GNOME launched the picker,
-the real authentication dialog succeeded, the importer showed its success
-dialog, and the Source Library entry plus installed document checksums passed.
-That run failed at a redundant stdout verifier. The verifier correction passed
-in a complete clean run on source `8c9870ba6994cf3bdb78c769cccf8e3b3290f2fe`:
-`/mnt/shared/fieldos-e2e/20261105T155548Z-3200639/report.md`. The clean run
-also verified the desktop launcher flow, source indexing, all eight browser map
-views, and two reboots.
+The `8c81d64` ISO source contains all eight then-current core pack manifests.
+Guest runtime records confirm the CDC emergency-kit checklist was indexed as
+one chunk and Southeastern handbook version `2026.1.1` as 678 chunks. The
+MedlinePlus core pack was version `2026.07.22`; its `index_with_ai: false`
+setting keeps it out of the N.O.M.A.D. vector-index count, and direct Source
+Library activation was not recorded in the acceptance report. Current source
+metadata is newer for MedlinePlus (`2026.07.22.1`) and Southeastern
+(`2026.1.2`); those updates are not in this ISO.
+
+Current-source core archives were rebuilt from `f7b1962` under
+`/mnt/shared/fieldos-content-packs/source-f7b1962/content-packs/`. All eight
+passed `zstd -t` and their SHA-256 sidecars passed `sha256sum -c`. These are
+transfer/build artifacts, not a rebuilt or accepted ISO, and they do not close
+the separate rights review.
+
+**Current-candidate pack-import check (manual, 2026-11-05):** An optional
+household communications pack was built from the tracked manifest and imported
+through the installed GNOME launcher, file picker, and administrator prompt
+from read-only optical media. Firefox showed it in the Source Library with
+source notes and a local document link. The document endpoint returned HTTP
+200; package metadata, bundle checksum, and document checksum matched the
+current source, and the pack, generated index, and seven containers survived an
+additional reboot without a network adapter. This is an add-on test on the
+customer acceptance guest, separate from the clean install run; physical USB
+insertion/navigation remains untested. Evidence:
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/content-pack-import-validation.txt`
+and `viewer/content-pack-import-search.png` in that run directory.
+
+The previous shared archive for `us-household-communications` had a valid
+checksum for its own bytes but carried stale manifest metadata
+(`weather-disaster` / `authoritative-reference`) inconsistent with the current
+tracked pack (`communications` / `fieldos-authored`). That import was excluded
+from acceptance and its test-only installed copies were removed. The old shared
+archive was preserved. The current-candidate check used a newly built archive
+from the tracked manifest (SHA-256
+`114e846643edf5b4d196bc0e6ef4e33167e90e494efba84c2ed90ddea43ded63`). Keep
+this discrepancy in mind before transferring the historical archive elsewhere.
+
+Historical clean no-NIC pack-import and map checks are also recorded at
+`/mnt/shared/fieldos-e2e/20261105T155548Z-3200639/report.md` (source
+`8c9870b`). Earlier failed/intervened UI attempts remain historical only and
+are not current-candidate acceptance evidence.
 
 Staged pack directories use `payload/content-packs/<pack-id>/manifest.json`
 with artifact paths relative to that pack. The catalog lists relative paths to
@@ -115,8 +134,10 @@ asset-level credits are recorded in a pack manifest.
 `us-southeastern-vegetable-growers` source manifest version `2026.1.2` is a
 Tennessee-relevant agriculture pack. It declares textual regional scope as the
 Southeastern United States, including Tennessee; this does not make the handbook
-a Tennessee-specific calendar. The current tested ISOs predate this manifest
-update. It contains the unmodified, searchable
+a Tennessee-specific calendar. The `8c81d64` ISO contains the unmodified
+handbook and manifest version `2026.1.1`; guest logs show it indexed as 678
+chunks. Current source version `2026.1.2` adds the Southeastern U.S. scope
+field. It contains the unmodified, searchable
 397-page 2026 Southeastern U.S. Vegetable Crop Handbook (3,991,344 bytes;
 SHA-256
 `f7b07e9d630a39a998d0ed5da717a73cd3de5306773695b4d83b16f1ddd27e9c`). The
@@ -135,9 +156,10 @@ publication page](https://www.pubs.ext.vt.edu/AREC/AREC-66/AREC-66.html). This i
 regional commercial-vegetable reference, not a complete farm manual, livestock
 guide, or Tennessee-specific calendar. The source record advises that local
 markets, weather, and location can require changed practices or planting dates.
-It remains independently packaged for transfer. No archive has been rebuilt
-for manifest version `2026.1.2`; the recorded archive below is version
-`2026.1.1`. Searchability was checked
+It remains independently packaged for transfer. A `2026.1.2` archive was
+built and verified under
+`/mnt/shared/fieldos-content-packs/source-f7b1962/content-packs/`; the archive
+below is historical version `2026.1.1`. Searchability was checked
 by extracting 1.8 MB of text from the PDF. A fresh no-NIC E2E imported the
 archive from read-only transfer media, activated its Source Library link, and
 indexed the document in N.O.M.A.D. as 678 chunks. It survived two guest
@@ -146,9 +168,9 @@ USB interface. The portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-southeastern-vegetable-growers-2026.1.1.tar.zst`
 (3,737,859 bytes; SHA-256
 `67ba6be8136afcdfbe14642675520369fc04b8f5a44bbf39d36da31a69a175a9`).
-The earlier `2026.1` archive remains as a historical package. The recorded customer ISOs predate the `2026.1.2` metadata; the new scope
-field is source-only until a versioned archive/payload and ISO are built and
-tested.
+The earlier `2026.1` archive remains historical. The `2026.1.2` archive is
+current-source transfer material only; the new scope field remains source-only
+in the accepted ISO until a successor payload/ISO is built and tested.
 E2E evidence: `/mnt/shared/fieldos-e2e/20261104T215624Z-1056575/report.md`.
 
 Each populated pack has its own stable ID and version. Its manifest records
@@ -177,6 +199,12 @@ navigation through GNOME Files have not yet been tested.
 The launcher uses the same validator and installer described below; it asks
 N.O.M.A.D. to index reference documents after activation. This adds no new
 network service and exposes no remote administrative interface.
+
+Kiwix is a current integration gap: the installed server reads a generated
+library containing the bundled 100-article Wikipedia test ZIM, but content-pack
+imports do not yet accept or register additional ZIM archives. Optional ZIM
+packs must not be described as active until the installer can validate the
+archive, add it to Kiwix's library safely, and the browser can open its entry.
 
 For operator use, verify and add a bundle with:
 
@@ -308,7 +336,7 @@ failed safely without overwriting it; its report is
 ## Basic emergency-health checklist
 
 `us-basic-emergency-health` version `1.0.0` is a portable, optional CDC source
-document and is not included in the current core ISO. It contains the CDC's
+document. It is not one of the eight core packs in the `8c81d64` ISO. It contains the CDC's
 one-page 2019 *Prepare Your Health: Practical Skills* checklist. The sheet
 encourages users to learn skills such as Hands-Only CPR, AED use, seizure first
 aid, choking response, and wound care; it does not explain how to perform those
@@ -323,9 +351,8 @@ requests acknowledgement and warns that some materials have separate rights.
 The pack retains CDC attribution and says no endorsement is implied. The
 manifest records source, license basis, checksum, review date, and its
 nonclinical-review limitation. This is a small orientation sheet and does not
-close FieldOS's first-aid or medical-reference gap. It is now core in the
-source catalog but remains absent from the tested ISO pending a successor build
-and acceptance.
+close FieldOS's first-aid or medical-reference gap. It remains optional and
+outside the `8c81d64` core catalog.
 
 ## CDC emergency kit checklist
 
@@ -336,8 +363,9 @@ preparedness checklist, not a complete all-hazards plan, first-aid guide, or
 medical reference. The exact [CDC STACKS record](https://stacks.cdc.gov/view/cdc/23954)
 identifies the item as Public Domain, gives its publication date and two-page
 extent, and provides the original PDF link. The current source catalog marks
-this pack as core; it is absent from the previously tested `cc4aa38` ISO, so a
-successor payload/ISO must pass acceptance before it is described as installed.
+this pack as core. It was absent from historical ISO `cc4aa38`, but the
+`8c81d64` candidate contains it and its guest runtime record shows one indexed
+chunk; see the current-candidate evidence above.
 The bundled file is 138,605 bytes
 with SHA-256
 `d8d3ad68df32f5c069968e5f71d58e2e03bd3751e985877f28122a988388f319`; its PDF
@@ -377,9 +405,13 @@ third-party material, images, logos, and page chrome. The artifact SHA-256 is
 `32cc39ebdff811dd08e6ca2550a432a8b1d436c304e899162d742a18a0829893`. Its
 manifest attributes the source to MedlinePlus and NLM and disclaims endorsement.
 This is a U.S. public-domain review, not a statement about international rights.
-The current source catalog marks the pack as core. The archive and guest
-evidence below are for the earlier `2026.07.22` pack version; the policy-source
-metadata update has not been repackaged or tested in an ISO.
+The current source catalog marks the pack as core. The `8c81d64` candidate
+source records version `2026.07.22`; source version `2026.07.22.1` adds the
+policy page as a source record without changing the text artifact. The current
+archive was rebuilt under `/mnt/shared/fieldos-content-packs/source-f7b1962/`,
+but that updated metadata has not been tested in an ISO. The guest acceptance
+log does not record direct Source Library activation for this pack; its
+`index_with_ai: false` setting excludes it from the vector-index count.
 
 Its portable archive is
 `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`
@@ -407,28 +439,26 @@ record primary and backup contacts, meeting locations, alternate channels,
 school or caregiver contacts, access needs, and a review date. It warns that
 communications can fail, recommends paper copies and privacy-conscious data
 handling, and does not collect or store the user's personal plan. This is not
-an official FEMA form, live alert service, or emergency communications
-system. It contains no copied FEMA text, branding, artwork, or template.
+an official FEMA form, live alert service, or emergency communications system.
+It contains no copied FEMA text, branding, artwork, or template. The text is
+licensed under the project Apache-2.0 license; sources are listed for attribution
+and factual context only. The manifest identifies it as `fieldos-authored`,
+category `communications`, and records the artifact checksum.
 
-The authored text is licensed under the project Apache-2.0 license. FEMA and
-NWS pages are listed as factual references only; no source files are bundled.
-Source links, review date, and the exact artifact checksum are in
-`payload/content-packs/us-household-communications/manifest.json`. Its portable
-archive is built alongside the other optional packs with `make content-packs`.
-The archived pack is 4,037 bytes with SHA-256
-`3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812` at
-`/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`.
-The latest current-source no-NIC E2E transferred the archive on read-only
-optical media, verified and installed it, generated a Source Library entry,
-and indexed its document as three chunks in N.O.M.A.D. Firefox visibly opened
-the local Source Library. The pack's installed files and generated index
-survived two reboots. A later isolated query check failed to retrieve simple
-contact fields from the indexed worksheet, although Firefox could open the
-original text directly. Treat the pack as locally readable; do not rely on
-chat retrieval to extract its fields. The pack remains optional and is not
-embedded in the customer ISO. Evidence:
-`/mnt/shared/fieldos-e2e/20261105T051319Z-2105879/report.md` and
-`reference-library-render.png` in the same directory.
+A clean GUI import and persistence test on the current customer guest is
+recorded in `content-pack-import-validation.txt` under the latest acceptance
+run. The archive for that check was built from the current tracked manifest
+(SHA-256 `114e846643edf5b4d196bc0e6ef4e33167e90e494efba84c2ed90ddea43ded63`).
+The older portable archive at
+`/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`
+(SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`)
+has stale metadata and does not match the current tracked manifest. It remains
+preserved as historical material; do not transfer it. A prior clean E2E
+reported this pack as `authoritative-reference` and indexed its content, but
+that evidence is superseded for the current manifest. The verified current
+candidate import showed the worksheet directly in the Source Library and served
+the local original; chat extraction of household fields remains unverified.
+The pack is optional and is not embedded in the customer ISO.
 
 ## Flood safety reference pack
 

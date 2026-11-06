@@ -129,6 +129,24 @@ and are absent from the saved result. Evidence:
 `2c8331bcaf29930a381769ca3299ee4c9b78d63432495a0a7bb75a8b0f450d41`). This
 is a source configuration check, not a fresh installation or LAN peer test.
 
+## Current source review — 2026-11-06
+
+Rendered the current `services/compose.yaml` with `docker compose config
+--format json` using synthetic placeholder credentials. The seven services
+still have no privileged mode, host networking, host PID namespace, or added
+capabilities. The five published ports bind to `127.0.0.1` (`8080`, `8090`,
+`9999`, `11434`, and `6333`); MySQL and Redis remain unpublished. The default
+bridge is internal, and `local-ui` has IP masquerading disabled. Only N.O.M.A.D.
+and Dozzle mount the Docker socket; Dozzle's bind is marked read-only, which
+does not restrict Docker API methods. Current Compose source SHA-256:
+`dcbdce025039909390b1f7afd9cbe00f4865d172fced32fd4b98f52f6d9c58a0`.
+
+This is a source configuration review only. The accepted `8c81d64` guest has
+no NIC, and its current connected-network behavior has not been exercised. The
+retained SLIRP checks above are from an earlier guest/source and do not prove
+current runtime behavior or LAN-peer isolation. Do not treat the current-source
+render as completion of the network-enabled exposure gate.
+
 ## Live runtime recheck — 2026-11-03
 
 After two additional reboots of the retained no-NIC guest from the 10:23 E2E

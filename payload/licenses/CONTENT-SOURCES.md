@@ -37,17 +37,16 @@ file has SHA-256
 from pinned Protomaps build `20261102.pmtiles`. The source manifest pins the
 archive and metadata URLs, the N.O.M.A.D. image digest, and PMTiles CLI version
 and commit; each generated `map-payload.json` records extraction arguments and
-the derived file hash. The tested customer ISO from
-source `cc4aa38` passed a fresh no-NIC E2E and a separate interactive customer
-installation that visibly rendered eight Tennessee locations; reports and
-screenshots are listed in `docs/RELEASE.md`. The later source attribution fix
-is not yet included in an ISO. It is a
+the derived file hash. The customer ISO built from source `8c81d64` passed a fresh interactive,
+no-NIC UEFI VM install, disk boot, and two reboot checks; the map rendered in
+Firefox at eight Tennessee locations. The exact ISO hash and screenshots are
+listed in `docs/RELEASE.md` and the dated acceptance evidence. The visible map
+attribution reads `MapLibre | Protomaps © OpenStreetMap` with a collapsed
+attribution-info icon. The source manifest declares `© OpenStreetMap
+contributors; Protomaps Basemap` and ODbL-1.0, but the attribution disclosure
+has not yet been opened and inspected in the installed browser. This is a
 local geographic reference, not turn-by-turn navigation, GPS positioning,
-trail guidance, or emergency advice. The `cc4aa38` tested ISO's map style
-shows Protomaps and links to the OpenStreetMap homepage, but does not visibly
-name contributors or link to the ODbL. The next source-built payload patches
-the style to show OpenStreetMap contributors, Protomaps, and an ODbL link; that
-change requires a fresh browser check before any claim that it is verified.
+trail guidance, or emergency advice.
 The full ODbL 1.0 text is at
 `/usr/share/doc/fieldos/ODbL-1.0.txt`; the attribution notice and source-build
 details are in the installed documentation. The payload also carries the
@@ -75,10 +74,12 @@ service, or a complete severe-weather guide.
 
 ## Local AI models and generated answers
 
-The test payload includes Qwen3 0.6B Q4_K_M for chat and Nomic Embed Text v1.5
-for embeddings. Their pinned model-layer checksums and license sources are
-listed in `/opt/fieldos/models/manifest.json`; license texts are available in
-`/usr/share/doc/fieldos/models/`.
+The current customer candidate includes Qwen3 1.7B Q4_K_M as the selected
+CPU chat model, Qwen3 0.6B Q4_K_M as fallback, and Nomic Embed Text v1.5 for
+embeddings. The installed hardware selector selected the CPU 1.7B model in the
+acceptance VM and validated generation. Their pinned model-layer checksums and
+license sources are listed in `/opt/fieldos/models/manifest.json`; license
+texts are available in `/usr/share/doc/fieldos/models/`.
 
 AI answers are generated output, not authoritative reference documents. They
 can be incomplete or incorrect. Open the underlying reference article and

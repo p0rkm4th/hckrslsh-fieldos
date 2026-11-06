@@ -1,8 +1,10 @@
 # Release readiness and evidence
 
-**Current status (2026-11-05): source `8c81d64` produced an unvalidated customer ISO candidate at `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. A fresh no-NIC interactive UEFI install is blocked at Subiquity storage setup: `/dev/vda` is visible, but Next remains disabled. The run is not an installation PASS; diagnostics are `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. The last completed install acceptance is historical candidate `8020fd3` (below); its desktop selected Qwen3 0.6B although firstboot validated 1.7B. Current source changes and provenance metadata are not included in the tested 8c81d64 ISO. This is not a release approval. Physical USB/hardware behavior, connected-LAN exposure, and redistribution clearance remain unverified; do not distribute the ISO or recommend FieldOS for emergency or medical use.**
+**Current status (2026-11-05): customer candidate `8c81d64` passed interactive installation, installed-disk boot, offline firstboot, tested desktop/services, local CPU inference and embeddings, Kiwix fixture search, statewide browser-rendered maps at eight locations, and two reboot checks in a disposable no-NIC UEFI VM.** ISO: `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`; SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. Detailed evidence: [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
 
-The `cc4aa38` and `8020fd3` records below are historical test evidence. Neither validates the newer `8c81d64` candidate or the current source changes.
+A separate manual GUI test transferred and installed the optional household communications reference from read-only media on the same guest. The test rebuilt the archive from the tracked manifest after discovering the shared prebuilt archive carried stale metadata. The corrected pack appeared in the Source Library, its local document returned HTTP 200, and its file, index entry, and all seven services persisted through one additional reboot. Evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/content-pack-import-validation.txt`. This add-on check is manual and separate from the clean installation acceptance.
+
+This is **not release approval**. Physical USB and hardware behavior, GPU/GPS, network-enabled/LAN exposure, comprehensive content, complete redistribution rights, and the map attribution disclosure details remain unverified or open; do not distribute the ISO or present the AI as emergency or medical authority. The `cc4aa38` and `8020fd3` sections below remain historical evidence and do not supersede the current result.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 
@@ -20,7 +22,7 @@ The `cc4aa38` and `8020fd3` records below are historical test evidence. Neither 
 
 This current snapshot supersedes status claims in the revision-specific historical records below.
 
-## Source changes after the validated ISO
+## Historical source changes after the `cc4aa38` ISO
 
 Pushed source revision `bd719c8` includes the map-style patch linking
 OpenStreetMap contributors, Protomaps, and the ODbL; a full pinned MIT notice
@@ -86,7 +88,7 @@ testing used read-only optical media.
 - Test-only ISO SHA-256: `fdac92a70988cc975e8486ad5da27666123cacde1183dede1abf56c88467ab33` (removed by the harness after the run).
 - Offline payload used by that prior E2E: `/mnt/shared/fieldos-payload-aeeeadd/offline-payload.tar.zst`, SHA-256 `f7bc22211c3e442c4ba56eb44ec8cce56bbd2c8a9e6d39af4e37b2dde12cd7e1` (6.6 GiB).
 - Optional MedlinePlus pack archive: `/mnt/shared/fieldos-content-packs/content-packs/us-medlineplus-first-aid-2026.07.22.tar.zst`, SHA-256 `2670511092fb5796fef918a9468062bf24691b9ca3bee917f947046c17f94745`.
-- Optional communications pack: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`.
+- Historical optional communications archive: `/mnt/shared/fieldos-content-packs/content-packs/us-household-communications-1.0.0.tar.zst`, SHA-256 `3f5e60f956a8604cb8ee4d08e37993191af745e9484d4d36aab7d2bb6b28c812`. Its internal checksum is valid, but its manifest metadata is stale (`weather-disaster` / `authoritative-reference`) and does not match the current tracked manifest. Do not transfer it. The current-manifest archive used for the manual GUI add-on check is retained in the customer run directory and has SHA-256 `114e846643edf5b4d196bc0e6ef4e33167e90e494efba84c2ed90ddea43ded63`.
 
 ### Historical adaptive model update (CPU tested; semantic quality unresolved)
 

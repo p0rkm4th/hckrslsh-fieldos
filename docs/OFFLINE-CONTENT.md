@@ -7,16 +7,22 @@ artifact is missing or its checksum differs.
 
 ## Current installation status (2026-11-05)
 
-The newest ISO candidate is source `8c81d64`,
+The latest customer-mode test candidate, built from source `8c81d64`, is
 `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (SHA-256
 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`). Its
-fresh interactive no-NIC UEFI installation is blocked in Subiquity storage
-setup; no installed system or content activation was verified from that ISO.
-Evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
-The `cc4aa38` installation and content claims below describe a historical ISO,
-not the newest candidate or current source manifests. The last later completed
-install test (`8020fd3`) also had a model-default mismatch. Do not infer that
-current source pack metadata is present in either tested ISO.
+fresh interactive no-NIC UEFI VM installation passed, including firstboot,
+installed-disk boot, core offline features, and two reboots. The eight-pack
+core content set and statewide map were present. Detailed evidence:
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+
+An additional manual GUI test imported an optional household communications
+pack from read-only media on the same guest. The corrected archive was built
+from the tracked manifest; the Source Library displayed its attribution and
+local document link, the document returned HTTP 200, and pack state survived a
+further reboot. This does not verify physical USB insertion/navigation. The
+`cc4aa38` paragraphs below describe a historical six-pack image unless marked
+otherwise. The candidate is still private test material; content functionality
+does not establish redistribution clearance.
 
 ## Statewide Tennessee map candidate, verified 2026-11-05
 
@@ -29,14 +35,14 @@ zoom 0–5 world and U.S. overview maps. The source is Protomaps build
 `0d123132839b77e627c4f4f103bf7a78925099c57319e759757be3207cb89525`.
 Source metadata, bounds, expected size, and checksum are pinned in
 `payload/manifests/maps.json`. The data is an ODbL 1.0 Produced Work derived
-from OpenStreetMap. The tested `cc4aa38` ISO's inherited map style shows
-Protomaps and an OpenStreetMap homepage link, but does not visibly name
-contributors or link to the ODbL. The source build now patches that style to
-show contributor, Protomaps, and ODbL links; this change is not in the tested
-ISO and still needs browser verification in a rebuilt candidate. The source
-manifest pins the Protomaps source and metadata URLs, the N.O.M.A.D. image
-digest, and PMTiles CLI version/commit; `map-payload.json` will record exact
-extraction arguments and resulting file hashes on the next payload build.
+from OpenStreetMap. In the current customer candidate, Firefox visibly showed
+`MapLibre | Protomaps © OpenStreetMap` and a collapsed attribution-info icon;
+the expanded information has not yet been browser-checked. The source manifest
+declares `© OpenStreetMap contributors; Protomaps Basemap` attribution and pins
+the source and metadata URLs, N.O.M.A.D. image digest, PMTiles CLI
+version/commit, extraction arguments, and derived file hash. The map is a local
+geographic reference, not routing, GPS positioning, trail guidance, or
+emergency advice.
 
 Fresh clean-source no-NIC E2E report:
 `/mnt/shared/fieldos-e2e/20261105T031700Z-1734990/report.md`. Firefox screenshots
@@ -45,14 +51,11 @@ Memphis, Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City,
 and Big South Fork. Nonempty zoom-13 vector tiles at all eight locations were
 also checked. The world and U.S. overviews remain low resolution. This map does
 not supply routing, GPS positioning, trail data, or navigation. The statewide
-map is present in the interactive customer ISO candidate
-`/mnt/shared/fieldos-releases/fieldos-customer-searchable-562fee9.iso` (SHA-256
-`4d9ccf3f3e7d9b30bc0b0bf645303bb97e683a7eb79a9ffcd570edcbb2111ccfe`). Its
-customer-mode install completed virtual-media handoff, booted the installed
-disk, visibly rendered all eight locations, and passed two reboots in a no-NIC
-UEFI VM. Screenshots are in
-`/mnt/shared/fieldos-e2e/customer-searchable-562fee9/`; physical USB behavior
-remains unverified. Full evidence is recorded in [`RELEASE.md`](RELEASE.md).
+The map is also verified in the current interactive customer candidate. Its
+no-NIC UEFI install completed, booted the installed disk, visibly rendered all
+eight locations, and passed two reboots. Screenshots are in
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/viewer/`; physical USB
+behavior remains unverified. Full evidence is in [`RELEASE.md`](RELEASE.md).
 
 The historical `cc4aa38` customer candidate was
 `/mnt/shared/fieldos-releases/fieldos-customer-cc4aa38.iso` (SHA-256
@@ -133,30 +136,22 @@ present.
 The extensible pack format and planned categories are documented in
 [`CONTENT-PACKS.md`](CONTENT-PACKS.md). An earlier candidate on source
 `1fb6806` installed and indexed both CDC PDFs and the NWS tornado text in
-N.O.M.A.D.; the historical E2E and customer-mode
-evidence is in `/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md`
-and `/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`. The tested customer candidate from `cc4aa38` installed and indexed all six core packs; its interactive results are recorded in [`RELEASE.md`](RELEASE.md). This remains a narrow
-starter set, not a complete emergency library. The current source catalog also
-includes the CDC emergency-kit checklist and short MedlinePlus first-aid
-overview as core packs, pending a successor ISO build and acceptance. The
-optional CDC practical-skills checklist is a training prompt; the MedlinePlus
-item is brief orientation, not procedural training or a medical manual. The 2026 Southeastern Vegetable Crop
-Handbook provides an attributed, searchable agriculture reference for
-Tennessee; it is included in the current ISO and indexed as 678 chunks. The
-NIOSH heat-illness text pack is also core and indexed as three chunks in the
-interactive customer guest. Wildlife, broader agriculture, procedural
-first-aid, and comprehensive reference packs still need source selection,
-licensing review, and activation evidence. The MedlinePlus pack passed offline
-read-only-media import, Source Library activation, checksum, and two-reboot
-checks in a fresh unattended guest on source `aeeeadd98d8fd7fb11baabb770028647e96cf1fb`.
-The test invoked the pack installer directly; the desktop file-picker flow was
-not exercised. It remains optional and outside the customer ISO. Evidence:
-`/mnt/shared/fieldos-e2e/20261105T120618Z-2754929/report.md`.
-The statewide map is verified in both the unattended E2E and interactive
-customer installation. The current ISO includes both agriculture and NIOSH
-packs; all six core packs activated and were indexed in the customer VM. These
-references remain limited and do not close the broader agriculture or medical
-coverage gaps.
+N.O.M.A.D.; its historical reports are in
+`/mnt/shared/fieldos-e2e/20261104T080251Z-3272638/report.md` and
+`/mnt/shared/fieldos-e2e/customer-nws-1fb6806/`.
+
+The current `8c81d64` customer guest installed the eight packs marked core in
+the source catalog, including the CDC emergency-kit checklist and short
+MedlinePlus first-aid overview. After firstboot, N.O.M.A.D. indexed 10 files
+and 690 chunks. The 2026 Southeastern Vegetable Crop Handbook search companion
+supplied 678 chunks; the NIOSH heat-illness source remains narrow, worker-focused
+material. Wildlife, broader agriculture, procedural first aid, and
+comprehensive reference packs still need source selection, licensing review,
+and activation evidence. These references remain limited and do not close the
+broader agriculture or medical coverage gaps. A further manual test imported
+the optional FieldOS-authored communications planner from read-only media; the
+Source Library displayed it and it survived a reboot. Physical USB import
+remains unverified.
 
 For direct source discovery, the 2026 crop handbook and selected CDC PDFs now
 have small `pdftotext -layout` search companions in their content packs. The
