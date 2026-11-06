@@ -43,6 +43,27 @@ is an engineering rights assessment, not legal advice or full commercial
 distribution clearance. Do not publish or distribute the candidate until those
 reviews are resolved.
 
+### CDC PDF asset inspection — 2026-11-06
+
+All pages of the five CDC PDFs currently staged in the packs were rendered and
+visually inspected: *Prepare Your Health: Practical Skills*;
+*Keep Calm and Be Prepared*; *10 Dangerous Food Safety Mistakes*; *Make Water
+Safe During an Emergency*; and *Eat Safe Food after a Power Outage*. Each
+contains visible CDC or CDC/HHS agency marks. The *Practical Skills* page also
+contains a CPR photograph; the food-safety mistakes PDF contains a family
+photograph and multiple graphics; the remaining documents contain infographic
+artwork. This inspection did not establish independent reuse terms for every
+photograph or graphic. Exact Stacks Public Domain labels for some documents do
+not by themselves settle reuse of agency marks under CDC's
+[separate policy](https://www.cdc.gov/other/agencymaterials.html).
+Therefore the exact illustrated PDFs are **not cleared for redistribution**
+based on this review. Before a customer release, obtain permission covering
+marks and any third-party assets, or replace each affected PDF with a complete,
+source-faithful text-only rendition that excludes those assets and preserves
+attribution, warnings, and no-endorsement notices. Existing searchable text
+companions must be checked for completeness and usability before serving as
+those replacements.
+
 ## Current artifact inventory
 
 The historical `f250cc1` ISO contains Redis `7.4.12` (RSALv2 or SSPLv1) and is
