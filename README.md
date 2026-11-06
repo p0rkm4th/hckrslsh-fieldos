@@ -19,38 +19,31 @@ build outputs and are excluded from Git.
 
 ## Current status
 
-The latest customer-mode test candidate was built from source revision
-`8c81d649e50e9ea793c0f85b104459302d4548ff`:
-`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, SHA-256
-`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`. A fresh
-interactive no-NIC UEFI VM installation passed disk and identity selection,
-destructive confirmation, firstboot, installed-disk boot, local feature
-checks, and two reboots. See the [current validation report](docs/VALIDATION-CURRENT.md),
-[release readiness](docs/RELEASE.md), and detailed evidence at
-`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
+Current source is `1e4627c` on `main` and synced to GitHub. `make check test`
+passes 125 tests. The payload verifier now requires exactly the catalog's core
+content-pack archive versions, so stale versions fail closed.
 
-In that guest, CPU Qwen3 1.7B generated responses and the embedding model
-returned 768-dimensional vectors. Kiwix searched its bundled 100-article
-Wikipedia fixture. Firefox visibly rendered zoom-13 Tennessee maps at Memphis,
-Nashville, Knoxville, Chattanooga, Clarksville, Jackson, Johnson City, and Big
-South Fork. The Source Library exposed bundled source material, and a real RAG
-response named its handbook source. An emergency prompt produced the configured
-source-directed refusal. An additional manual test imported an optional
-household communications pack through the desktop UI; it appeared in the Source
-Library and persisted across a further reboot. This was a VM test, not physical
-USB validation.
+The last customer-mode ISO remains the separately tested candidate
+`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (SHA-256
+`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`). It
+passed interactive no-NIC UEFI installation and two reboot checks, but it was
+not built from the current source revision. See [release readiness](docs/RELEASE.md)
+and the [customer validation report](docs/VALIDATION-CURRENT.md).
 
-The candidate build passed 110 tests and `make verify ISO=...` at acceptance
-time. Later source commit `a1257f2` adds optional Kiwix ZIM-pack activation and
-`0f83517` fixes the exact Kiwix image's relative library-path format;
-the source tree now passes 115 tests, but this code is not in the candidate ISO.
-It was runtime-tested with the exact Kiwix image in an isolated local
-container; guest desktop/browser import remains unverified. The ISO remains a
-private engineering image. Physical hardware, GPU
-acceleration, GPS, network-enabled/LAN exposure, broad reference coverage, AI
-retrieval quality, and redistribution clearance remain open. FieldOS is not an
-emergency or medical appliance; do not rely on the local model for
-safety-critical decisions.
+A test-only unattended ISO from `c13ac18` (`c84037360019afa1dec09c70eeadf905969dcfa41e6c9af5348429bdc7114880`)
+completed an offline installation, all eight Firefox map renders, GUI ZIM
+import and retrieval, local chat and embeddings, source search, and two reboots.
+The automated report says PASS, but a qualification note records duplicate
+superseded packs in its payload; it is diagnostic evidence, not clean-payload
+release acceptance. The corrected current-catalog payload is now at
+`/mnt/shared/fieldos-payload/offline-payload.tar.zst` (SHA-256
+`751c923846d3c3bf6e15e63e7680f351ca27d51f7030a75b818321845ffd3aa9`) and has
+passed payload verification. It still needs a fresh E2E install.
+
+Physical hardware, GPU acceleration, GPS, connected-network/LAN exposure,
+broader offline references, AI retrieval quality, and redistribution clearance
+remain open. FieldOS is not an emergency or medical appliance; do not rely on
+the local model for safety-critical decisions.
 
 ## Build and test
 
