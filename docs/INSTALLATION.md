@@ -2,16 +2,23 @@
 
 ## Customer installation
 
-**Latest customer-mode test candidate (2026-11-05; interactive VM installation PASS, not a release):**
-`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso`, source
-`8c81d64`, SHA-256
-`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`.
-A fresh no-NIC UEFI VM installation completed, booted from its installed disk,
-finished firstboot, and passed local feature and two-reboot checks. The guest
-also passed a separate manual optional-pack import and additional reboot.
-Physical USB/hardware behavior and redistribution remain unverified. Detailed
-evidence: `/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`.
-The candidate remains a private engineering image, not a release.
+**Current customer-mode candidate (2026-11-06; structure verified, installation pending):**
+`/mnt/shared/fieldos-releases/fieldos-customer-8012474.iso`, source
+`8012474`, SHA-256
+`e13dc77009d88438fa6abba41954b8fbf99f583a40defcf4992536f84fd124df`.
+BIOS/UEFI boot structure, interactive customer setup, offline APT, and payload
+presence passed `make verify`. A fresh interactive no-network installation,
+installed-disk boot, firstboot, and post-install checks on this exact ISO are
+still pending. It is a private engineering candidate, not a release.
+
+The preceding candidate
+`/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (source `8c81d64`,
+SHA-256 `3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`)
+passed a fresh no-NIC UEFI VM installation, installed-disk boot, offline
+firstboot, local feature checks, and two-reboot checks. Evidence:
+`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. This is
+historical evidence for that previous ISO only. Physical USB/hardware behavior
+and redistribution remain unverified.
 
 The detailed `cc4aa38` and `8020fd3` records in
 [`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) are historical and do not
