@@ -1,9 +1,6 @@
 # Release readiness and evidence
 
-**Current public repository HEAD:** `c5150734f0946c6aedc9250b5ba3f77a4da4aaf2`
-(documentation-only acceptance update after the candidate build). The customer
-ISO was built cleanly from `aedc5705915d4ff57bad18e535b602eace7310b8`.
-`make check test` passed 127 tests; all 12 content-pack manifests validated.
+The tested installer source revision is `aedc5705915d4ff57bad18e535b602eace7310b8`, clean at build. Subsequent public repository changes only update documentation and acceptance evidence; installer/runtime code is unchanged. `make check test` passed 127 tests; all 12 content-pack manifests validated.
 
 **Current private customer-mode engineering candidate:**
 `/mnt/shared/fieldos-releases/fieldos-customer-test-aedc570.iso`
