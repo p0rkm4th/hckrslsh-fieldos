@@ -2,14 +2,19 @@
 
 ## Customer installation
 
-**Current customer-mode candidate (2026-11-06; structure verified, installation pending):**
-`/mnt/shared/fieldos-releases/fieldos-customer-8012474.iso`, source
-`8012474`, SHA-256
-`e13dc77009d88438fa6abba41954b8fbf99f583a40defcf4992536f84fd124df`.
-BIOS/UEFI boot structure, interactive customer setup, offline APT, and payload
-presence passed `make verify`. A fresh interactive no-network installation,
-installed-disk boot, firstboot, and post-install checks on this exact ISO are
-still pending. It is a private engineering candidate, not a release.
+**Current customer-mode candidate (2026-11-06; interactive VM installation PASS):**
+`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, source
+`f250cc175ccfac137bb6bf1236497e16b3f4cbd3`, SHA-256
+`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`.
+Structural verification and a fresh interactive installation in a disposable
+no-NIC UEFI VM passed. The installed system completed firstboot, booted from
+disk after media handoff, and passed two reboot checks covering services, local
+AI generation, embeddings, Kiwix, source retrieval, maps, and persistence.
+Detailed results and evidence are in
+[`VALIDATION-CURRENT.md`](VALIDATION-CURRENT.md) and
+`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/report.md`. This is a
+private engineering test candidate, not a redistribution-cleared public
+release. Physical USB and hardware compatibility remain unverified.
 
 The preceding candidate
 `/mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso` (source `8c81d64`,
@@ -81,7 +86,7 @@ in [`RELEASE.md`](RELEASE.md) are complete.
 Before testing, compare the ISO SHA-256 with the current candidate value above:
 
 ```sh
-sha256sum /mnt/shared/fieldos-releases/fieldos-customer-8c81d64.iso
+sha256sum /mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso
 ```
 
 For future install tests, use a disposable VM disk with no virtual network

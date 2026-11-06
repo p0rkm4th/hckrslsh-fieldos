@@ -1,6 +1,50 @@
 # Current validation status — 2026-11-06
 
-## Latest customer-mode candidate
+## Latest customer-mode candidate — interactive installation PASS in VM
+
+The current private engineering candidate is
+`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, SHA-256
+`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`. Its
+embedded manifest records clean source revision
+`f250cc175ccfac137bb6bf1236497e16b3f4cbd3`, Ubuntu source SHA-256
+`601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f`, payload
+SHA-256 `c1741d5ab506f47d307e6da57ae7b2ba16caaeefad41df874a0fb198d36f4724`,
+and Project N.O.M.A.D. `v1.35.1`. `make verify ISO=...` passed structural,
+BIOS/UEFI, customer setup, offline APT, and payload checks.
+
+A fresh interactive installation of this exact ISO passed in a disposable
+UEFI VM (4 vCPU, 8 GiB RAM, 80 GiB qcow2, no virtual NIC). The installer
+allowed local identity and disk selection, confirmed erasure of `vda`,
+installed Ubuntu, and completed the standard media handoff. The guest booted
+from its installed disk after the ISO was ejected. Firstboot succeeded; all
+seven services ran; the N.O.M.A.D. health API returned `{"status":"ok"}`;
+CPU chat generation and 768-dimensional embeddings worked; Kiwix search and an
+article opened; Source Library located and opened the CDC private-well source;
+and Firefox rendered statewide map detail at Nashville, Memphis, and Johnson
+City. The guest completed two reboots. After reboot 2, services, inference,
+embeddings, Kiwix retrieval, the source document, a Nashville z13 map tile,
+the no-NIC state, and the unchanged user-data marker hash all passed.
+
+Evidence is preserved at
+`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/`; the human-readable
+run record is `report.md` in that directory. Screenshots include installer
+disk/erase selection, handoff, desktop, Command Center, map views, Kiwix,
+Start Here, Source Library, and a real AI response. Reboot evidence is in
+`post-reboot-1.txt`, `post-reboot-2.txt`, and `reboot-acceptance.txt`.
+
+This demonstrates offline operation and installation in this VM profile, not
+physical hardware compatibility or a public release. The bundled Wikipedia
+100 archive remains a test fixture. The CDC source is searchable/openable in
+Source Library but is not indexed for AI retrieval. The desktop's “Index your
+10 existing files” banner persists even though firstboot indexed the bundled
+documents; investigate that confusing prompt. Physical USB installation,
+GPU/GPS, connected-network exposure testing, broad content coverage, and full
+redistribution clearance remain unverified.
+
+The prior `5abae15` candidate record below is historical and is superseded by
+this exact-source customer-mode acceptance.
+
+## Historical customer-mode candidate
 
 The current customer candidate is `/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso`, SHA-256 `8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`. It was built cleanly from public source `5abae15ac13fe001178c01e8dd31b255d5714500` with the pinned Ubuntu source and payload checksums recorded in its embedded manifest. The ISO structure and payload verifier passed. This remains an engineering test image, not a redistribution-cleared release.
 

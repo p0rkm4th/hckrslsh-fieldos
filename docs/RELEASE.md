@@ -1,14 +1,33 @@
 # Release readiness and evidence
 
-**Latest tested source:** `d04f450` on `main`. `make check test` passes 126 tests and the content catalog validator accepts 11 packs. A clean-source unattended no-NIC E2E from this commit passed with the CDC private-well pack in the core payload. Test ISO SHA-256 is `6a3fef4deba8b8ade1f1e04df15b2da97665a777fb19c120fc4bcea97e81a624`; payload SHA-256 is `ad0e28863afbddd94b65ecd9d0cc8101ee0119cdfe7a1a33b9054f895f63eae`. Its report and screenshots are at `/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md`.
+**Current source:** `f250cc175ccfac137bb6bf1236497e16b3f4cbd3` (`main` at test
+start; clean source recorded in the ISO manifest). Last full source check/test
+recorded on the preceding `d04f450` revision: 126 tests passed and 11 catalog
+packs validated. The current f250cc1 revision adds the CDC private-well source
+pack and associated records; the exact current ISO passed structural checks
+and an interactive customer-mode installation in a fresh no-NIC UEFI VM.
 
-The latest separately tested interactive customer-mode ISO remains `/mnt/shared/fieldos-releases/fieldos-customer-5abae15.iso`, SHA-256 `8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`. It predates the CDC private-well pack. The customer-mode install passed from selected disk through installed-disk boot and two reboots in a disposable no-NIC UEFI VM; see `/mnt/shared/fieldos-e2e/customer-5abae15-interactive/validation.md`.
+**Current private customer test candidate:**
+`/mnt/shared/fieldos-releases/fieldos-customer-test-f250cc1.iso`, SHA-256
+`26789db27ec52c683893d7cf1644782b83490e845339ada854538b7f1facebc2`.
+Its clean-source manifest records Ubuntu SHA-256
+`601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f` and
+payload SHA-256
+`c1741d5ab506f47d307e6da57ae7b2ba16caaeefad41df874a0fb198d36f4724`.
+The install, firstboot, offline application checks, and two reboots passed in a
+disposable VM. Exact evidence:
+`/mnt/shared/fieldos-e2e/customer-f250cc1-interactive/report.md`.
+The prior unattended no-NIC E2E is separately documented at
+`/mnt/shared/fieldos-e2e/20261106T072733Z-566287/report.md` and is not a
+substitute for customer-mode testing.
 
-**This is not release approval.** The E2E verified source-pack files and attribution in the local Source Library, and its Firefox screenshot shows the private-well entry. The interactive customer ISO still lacks that pack. The Kiwix archive remains a 100-article fixture and the overall reference collection is limited. Physical USB/hardware/GPU/GPS validation, connected-network exposure review, and complete redistribution clearance remain open. Do not publish either ISO.
-
-The previous customer candidate `8012474` had the Maps tile blank because it opened `/maps` without a default viewport. The `5abae15` patch sets an initial statewide Tennessee viewport; a focused regression test and actual browser click/render were verified. After this candidate passed installation and reboot checks, the superseded `fieldos-customer-8012474.iso` and checksum sidecar were retired after verifying neither was open nor attached to a VM; 12.6 GiB was reclaimed. Its installed guest disk and screenshots remain as historical evidence. Retirement record: `/mnt/shared/fieldos-releases/fieldos-artifact-retirement-20261106-8012474.txt`.
-
-The preceding unattended test ISO from `42bcad3` is historical evidence; the newer `d04f450` run above supersedes it for the current core payload. The separate customer interactive installation remains at `5abae15` pending a rebuild with current source.
+**Not release approved.** The Kiwix Wikipedia 100 archive is a test fixture;
+reference breadth and AI grounding remain limited. The CDC wells source is
+available in Source Library but not AI indexed. The installed desktop showed a
+confusing index prompt after firstboot had already indexed its bundled sources.
+Physical USB/hardware, GPU/GPS, LAN exposure and egress with networking enabled,
+and full redistribution clearance remain unresolved. Do not publish the ISO
+as a customer release until those gates have evidence.
 
 ## Earlier customer ISO acceptance: `cc4aa38`
 
