@@ -130,6 +130,23 @@ exact CDC STACKS item is marked Public Domain. It identifies practical skills
 to learn but does not teach first-aid procedures. Its source metadata and CDC
 attribution are in the installed manifest and Source Library.
 
+## CDC private-well emergency guidance (next source candidate)
+
+The FieldOS source tree contains a text-only rendition of CDC's *How to Disinfect
+Wells After an Emergency*, dated May 29, 2025. The file is 15,338 bytes with
+SHA-256 `d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6`.
+It preserves CDC warnings, tables, and follow-up testing information, and
+excludes the page photograph and navigation. CDC's agency-materials policy
+requires attribution, a non-endorsement notice, no substantive changes, and a
+notice that the source is available from CDC at no charge. The pack manifest
+records these terms and links to the exact source:
+<https://www.cdc.gov/water-emergency/about/how-to-disinfect-wells-after-an-emergency.html>.
+The document stresses that well work is hazardous, recommends a qualified well
+or pump contractor, and says fuel or toxic chemical contamination is not made
+safe by boiling or disinfection. This pack is in the current source tree, not
+in the tested customer ISO; legal review for a commercial FieldOS release
+and all other payload items remains open.
+
 ## Software notices
 
 Payloads built from a source revision with the container notice-collection

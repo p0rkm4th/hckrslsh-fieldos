@@ -24,13 +24,17 @@ documents. The user's map tile now opens a zoom-7 Tennessee overview by
 default; higher-detail zooms remain available. This is a geographic reference,
 not turn-by-turn routing or GPS positioning.
 
-The current customer test recorded two content access issues: two Kiwix in-book
-queries did not return results, and Firefox direct navigation to the local
-Source Library URL showed `NS_ERROR_OFFLINE` even though the guest's local HTTP
-request returned 200. These are follow-up usability checks, not proof that the
-content is comprehensive. Do not describe the mini ZIM or ten source files as a
-complete preparedness, medical, agricultural, or survival library. Redistribution
-clearance and per-item review remain incomplete; do not publish this ISO.
+Follow-up browser testing clarified the earlier apparent access failures.
+Opening the bundled `Wikipedia 100` ZIM and searching within the book for
+“United States” returned 59 results; the article “List of states and
+territories of the United States” opened offline. The supported Start Here
+link opened the Source Library in Firefox, where “flood” returned three
+documents with source attribution. An earlier direct address-bar attempt still
+showed `NS_ERROR_OFFLINE`, so use the documented Start Here workflow. This
+validates access to the included small corpus; it does not make the mini ZIM or
+19 displayed source entries a complete preparedness, medical, agricultural,
+or survival library. Redistribution clearance and per-item review remain
+incomplete; do not publish this ISO.
 
 ## Statewide Tennessee map candidate, verified 2026-11-05
 

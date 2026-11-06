@@ -2,18 +2,21 @@
 
 FieldOS keeps reference content modular where practical. The versioned manifest
 schema is `payload/manifests/content-pack.schema.json`; the source catalog is
-`payload/manifests/content-packs.json`. It currently defines eight core packs
-plus optional packs and planned categories. This is a useful starter collection,
-not a comprehensive customer library.
+`payload/manifests/content-packs.json`. The accepted customer candidate contains
+eight core packs plus optional packs and planned categories. This is a useful
+starter collection, not a comprehensive customer library.
 
-The current customer candidate `fieldos-customer-8c81d64.iso` (SHA-256
-`3dd16528cde1cbbfa7dac9f8a4cea325a09857eb58a5c9b079d5917ab5c6147d`) passed
-interactive installation and two post-install reboots in an offline UEFI VM.
-The statewide Tennessee map rendered in Firefox at all eight required
-locations. Its full test record is in [`RELEASE.md`](RELEASE.md) and
-`/mnt/shared/fieldos-e2e/customer-8c81d64-20261105/diagnostics.md`. Physical USB
-behavior remains unverified. Other regional and specialist collections remain
-optional packs.
+The latest customer candidate is `fieldos-customer-5abae15.iso` (SHA-256
+`8cd07f41cf34b0606553364b89acf5689ee531d150446a1d5551b41694550f67`). It
+passed fresh interactive no-NIC installation, firstboot, and two reboots; the
+installed desktop rendered the statewide Tennessee map and exercised local
+source search and Kiwix retrieval. See [current validation](VALIDATION-CURRENT.md).
+A separate clean-payload no-NIC E2E at source `42bcad3` rendered all eight
+required Tennessee locations in Firefox and also passed two reboots. Its report
+is `/mnt/shared/fieldos-e2e/20261106T043231Z-184238/report.md`. These remain VM
+tests; physical USB behavior is unverified. The current worktree adds a CDC
+private-well pack as a ninth core pack, but no ISO or payload has yet been built
+or tested with it.
 
 The `8c81d64` ISO source contains all eight then-current core pack manifests.
 Guest runtime records confirm the CDC emergency-kit checklist was indexed as
@@ -280,6 +283,35 @@ disaster-preparedness library. Consult current local guidance. Source-tree
 configuration includes this pack in the offline payload, and its installation
 in the current candidate is verified by fresh E2E and interactive-install
 reports. The customer candidate is not approved for release.
+
+## Private-well emergency reference (pending ISO validation)
+
+The current source worktree adds `us-cdc-private-wells` version `1.0.0`, a
+15,338-byte searchable text rendition of CDC's *How to Disinfect Wells After
+an Emergency* (May 29, 2025), SHA-256
+`d8a05f9568a60c1e568869018e0ec769cae3a0bf13260765cc8f6edbee8e09a6`. It
+preserves the page's hazard callouts, disinfection tables, testing advice, and
+source links, while excluding the photograph and page navigation. CDC warns
+that well work is hazardous and should be handled by a qualified contractor;
+water contaminated by fuel or toxic chemicals is not made safe by boiling or
+disinfection. The pack is not a substitute for local health-department advice.
+
+The source is the CDC National Center for Environmental Health page at
+<https://www.cdc.gov/water-emergency/about/how-to-disinfect-wells-after-an-emergency.html>.
+CDC's agency-materials policy requires attribution, a clear non-endorsement
+statement, no substantive edits, and notice that the material is available
+from CDC at no charge; the pack records those terms and is text-only. Rights
+review supports reuse of this CDC-authored text under that policy, but does not
+constitute legal advice or clear unrelated FieldOS payloads. This pack is now
+listed as a core pack in the source catalog; it has not been included in a
+payload or ISO, or tested in an installed guest. Its independently transferable
+archive was built and checksum-verified at
+`/mnt/shared/fieldos-content-packs/us-cdc-private-wells-2026.1.0/content-packs/us-cdc-private-wells-1.0.0.tar.zst`
+(5,758 bytes; SHA-256
+`e9f088235420ace9ffaa71b9c162e095ac817a78f1ece8cb4a14775b1541aac4`). The
+archive passed `zstd -t`, member listing, and a temporary-root install through
+the production pack installer; the installed file hash matched the manifest.
+This does not yet prove desktop/browser activation in a FieldOS guest.
 
 ## Severe-weather content
 
