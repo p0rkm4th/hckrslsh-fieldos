@@ -101,6 +101,10 @@ class ContentPackValidationTests(unittest.TestCase):
         })
         self.assertEqual(validate_catalog(catalog), ["fixture-reference"])
 
+    def test_general_reference_category_is_valid_for_offline_encyclopedia_packs(self):
+        catalog, _, _ = self.fixture(category="general-reference")
+        self.assertEqual(validate_catalog(catalog), ["fixture-reference"])
+
     def test_artifact_can_link_all_declared_source_records(self):
         catalog, manifest, pack = self.fixture()
         manifest["sources"].append({

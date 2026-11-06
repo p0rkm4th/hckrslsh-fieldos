@@ -20,6 +20,7 @@ CATEGORIES = {
     "weather-disaster",
     "communications",
     "maps-gis",
+    "general-reference",
 }
 INSTALL_TARGETS = {
     "storage/maps/pmtiles",

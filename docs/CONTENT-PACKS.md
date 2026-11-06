@@ -73,6 +73,7 @@ Planned pack categories are:
 - Water treatment and food preservation
 - Severe weather and emergency reference
 - First aid
+- General offline reference and encyclopedia collections
 - Regional maps, GPS, and GIS data
 
 ## Wildlife and plant-reference licensing review
