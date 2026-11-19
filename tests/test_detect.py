@@ -29,14 +29,18 @@ class DetectionTests(unittest.TestCase):
     def test_available_memory_conversion(self, _):
         self.assertEqual(available_memory_gib(), 4.0)
 
+    # logical_cores comes from os.cpu_count(), not from the /proc/cpuinfo
+    # text, so it must be mocked too — otherwise this test only passes on a
+    # host whose core count matches the hardcoded expectation.
+    @patch("hardware.detect.detect.os.cpu_count", return_value=3)
     @patch("hardware.detect.detect.read_text", return_value=(
         "processor : 0\nphysical id : 0\ncore id : 0\nmodel name : Example CPU\nflags : avx2\n\n"
         "processor : 1\nphysical id : 0\ncore id : 0\nmodel name : Example CPU\nflags : avx2\n\n"
         "processor : 2\nphysical id : 0\ncore id : 1\nmodel name : Example CPU\nflags : avx2"
     ))
-    def test_cpu_reports_unique_physical_cores(self, _):
+    def test_cpu_reports_unique_physical_cores(self, _read_text, _cpu_count):
         result = cpu_facts()
-        self.assertEqual(result["logical_cores"], 20)
+        self.assertEqual(result["logical_cores"], 3)
         self.assertEqual(result["physical_cores"], 2)
 
     @patch("hardware.detect.detect.run", return_value=(
