@@ -1,0 +1,52 @@
+name: History Rewrite (one-off)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rewrite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install git-filter-repo
+        run: pip install git-filter-repo
+      - name: Rewrite history
+        run: |
+          set -euo pipefail
+          git checkout main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "== Before =="
+          echo "commits with old email: $(git log --format='%ae %ce' | grep -c 'scott.greer@zoho.com' || true)"
+          echo "pdf paths in history: $(git log --name-only --pretty=format: | grep -c '\.pdf$' || true)"
+          git filter-repo --force --invert-paths --path 'payload/content-packs/us-basic-emergency-health/cdc-prepare-your-health-practical-skills.pdf' --path 'payload/content-packs/us-cdc-food-safety/cdc-ten-dangerous-food-safety-mistakes-2023.pdf' --path 'payload/content-packs/us-cdc-keep-calm-prepared/keep-calm-and-be-prepared-cdc-2013.pdf' --path 'payload/content-packs/us-water-food-emergency/cdc-food-power-outage.pdf' --path 'payload/content-packs/us-water-food-emergency/cdc-water-treatment.pdf'
+          git filter-repo --force --email-callback 'return b"33230231+p0rkm4th@users.noreply.github.com" if email == b"scott.greer@zoho.com" else email' --name-callback 'return b"p0rkm4th" if email in (b"scott.greer@zoho.com", b"33230231+p0rkm4th@users.noreply.github.com") else name'
+          echo "== After =="
+          echo "commits with old email: $(git log --format='%ae %ce' | grep -c 'scott.greer@zoho.com' || true)"
+          echo "pdf paths in history: $(git log --name-only --pretty=format: | grep -c '\.pdf$' || true)"
+      - name: Verify rewrite before push
+        run: |
+          set -euo pipefail
+          remaining="$(git log --format='%ae %ce' | grep -c 'scott.greer@zoho.com' || true)"
+          if [ "$remaining" != "0" ]; then echo "FAIL: $remaining commits still carry the old email"; exit 1; fi
+          for p in 'payload/content-packs/us-basic-emergency-health/cdc-prepare-your-health-practical-skills.pdf' 'payload/content-packs/us-cdc-food-safety/cdc-ten-dangerous-food-safety-mistakes-2023.pdf' 'payload/content-packs/us-cdc-keep-calm-prepared/keep-calm-and-be-prepared-cdc-2013.pdf' 'payload/content-packs/us-water-food-emergency/cdc-food-power-outage.pdf' 'payload/content-packs/us-water-food-emergency/cdc-water-treatment.pdf'; do
+            if git log --name-only --pretty=format: | grep -qF "$p"; then echo "FAIL: still in history: $p"; exit 1; fi
+          done
+          echo "verification passed: no old email, none of the five CDC PDFs in history"
+      - name: Run tests on rewritten history
+        run: python3 -m unittest discover -s tests
+      - name: Force-push rewritten main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "new HEAD: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          git remote remove origin || true
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git push --force origin main
+          echo "force-push complete"
